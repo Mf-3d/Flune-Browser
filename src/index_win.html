@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style/style_win.css"/>
+        <script>
+          function moveview(){
+            window.api.open_url(document.getElementById('url').value);
+          }
+          function close(){
+            window.api.close();
+          }
+          function maximize(){
+            window.api.maximize();
+          }
+          function minimize(){
+            window.api.minimize();
+          }
+          function maxmin(){
+            window.api.maxmin();
+          }
+        </script>
+    </head>
+    <body>
+        <nav class="menu">
+            <ul>
+              <li id="movewin"></li>
+              <li>Flune Browser.　</li>
+              <input id="url" type="text"/>　
+              <li><a href="javascript:moveview()">＞</a></li>　
+              <li><a href="javascript:minimize()">ー</a></li>
+              <li><a href="javascript:maxmin()">○</a></li>
+              <li><a href="javascript:close()">×</a></li>
+            </ul>
+          </nav>
+    </body>
+</html>

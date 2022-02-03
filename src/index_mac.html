@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style/style_mac.css"/>
+        <script>
+          function moveview(){
+            window.api.open_url(document.getElementById('url').value);
+          }
+          function close(){
+            window.api.close();
+          }
+          function maximize(){
+            window.api.maximize();
+          }
+          function minimize(){
+            window.api.minimize();
+          }
+          function maxmin(){
+            window.api.maxmin();
+          }
+        </script>
+    </head>
+    <body>
+        <nav class="menu">
+            <ul>
+              <li><a href="javascript:close()">●</a></li>
+              <li><a href="javascript:minimize()">●</a></li>
+              <li><a href="javascript:maxmin()">●</a></li>
+              <input id="url" type="text"/>　
+              <li><a href="javascript:moveview()">＞</a></li>　
+              <li>Flune Browser.</li>
+              <li id="movewin"></li>
+            </ul>
+          </nav>
+    </body>
+</html>
