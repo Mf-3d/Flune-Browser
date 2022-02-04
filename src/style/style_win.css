@@ -53,3 +53,7 @@ input[type = 'text'] {
     padding: 0.5em;
     font-family: 'Noto Sans JP', sans-serif;
 }
+
+#secrity_icon {
+    font-size: 1.4em;
+}

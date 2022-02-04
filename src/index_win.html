@@ -22,7 +22,46 @@
             window.api.maxmin();
           }
           function pageback(){
-            window.api.Pageback();
+            window.api.pageback();
+          }
+          window.api.on('page_changed', async (event, data) => {
+            await _sleep(1000);
+            let url = await window.api.bv_url();
+            console.log(url)
+            if(url.match('https://')){
+              document.getElementById('secrity_icon').style.color = '#00ff00';
+              document.getElementById('secrity_icon').innerHTML = '☺';
+            }
+            if(url.match('http://')){
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '☹';
+            }
+            if(url.match('file://')){
+              document.getElementById('secrity_icon').style.color = '#0000ff';
+              document.getElementById('secrity_icon').innerHTML = '❐';
+            }
+            else{
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '？';
+            }
+          });
+          window.onload = () => {
+            if(window.location.href.match('https://')){
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '☺';
+            }
+            if(window.location.href.match('http://')){
+              document.getElementById('secrity_icon').style.color = '#00ff00';
+              document.getElementById('secrity_icon').innerHTML = '☹';
+            }
+            if(window.location.href.match('file://')){
+              document.getElementById('secrity_icon').style.color = '#0000ff';
+              document.getElementById('secrity_icon').innerHTML = '❐';
+            }
+            else{
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '？';
+            }
           }
         </script>
     </head>
@@ -30,8 +69,9 @@
         <nav class="menu">
             <ul>
               <li id="movewin"></li>
-              <li><a href="javascript:pageback()">←</a></li>
-              <li><a>→</a></li>
+              <li><a id="secrity_icon">　</a></li>　
+              <li><a href="javascript:pageback()">＜</a></li>
+              <li><a>＞</a></li>
               <li>Flune Browser.　</li>
               <li><a href="javascript:movehome()">Home</a></li>　
               <input id="url" type="text"/>　

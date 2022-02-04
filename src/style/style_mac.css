@@ -17,6 +17,7 @@ body {
     height: 20px;
     width: 100%;
     background-color: #303030;
+    position: relative;
 }
 
 .menu > ul {
@@ -47,4 +48,10 @@ input[type = 'text'] {
     outline: 0;
     padding: 0.5em;
     font-family: 'Noto Sans JP', sans-serif;
+}
+
+#secrity_icon {
+    margin-top: -0.2em;
+    padding-top: 0em;
+    font-size: 1.4em;
 }
