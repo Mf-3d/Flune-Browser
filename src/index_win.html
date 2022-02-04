@@ -6,6 +6,9 @@
           function moveview(){
             window.api.open_url(document.getElementById('url').value);
           }
+          function movehome(){
+            window.api.open_home();
+          }
           function close(){
             window.api.close();
           }
@@ -18,13 +21,19 @@
           function maxmin(){
             window.api.maxmin();
           }
+          function pageback(){
+            window.api.Pageback();
+          }
         </script>
     </head>
     <body>
         <nav class="menu">
             <ul>
               <li id="movewin"></li>
+              <li><a href="javascript:pageback()">←</a></li>
+              <li><a>→</a></li>
               <li>Flune Browser.　</li>
+              <li><a href="javascript:movehome()">Home</a></li>　
               <input id="url" type="text"/>　
               <li><a href="javascript:moveview()">＞</a></li>　
               <li><a href="javascript:minimize()">ー</a></li>

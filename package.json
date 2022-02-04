@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx electron .",
     "start:dev": "npx electron . --dev",
-    "build:mac": "npx electron-builder --mac --x64"
+    "build:mac": "npx electron-builder --mac --x64",
+    "build:win": "npx electron-builder --win --x64 --dir"
   },
   "keywords": [],
   "author": "mf7cli <mf7cli120@icloud.com>",
@@ -23,7 +24,15 @@
       "main.js",
       "package-lock.json",
       "package.json"
-    ]
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "src/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/icon.png"
+    }
   },
   "dependencies": {
     "electron-store": "^8.0.1"

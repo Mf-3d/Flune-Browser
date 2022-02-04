@@ -1,1 +1,21 @@
-Hello
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style/style.css"/>
+        <script>
+            function moveview(){
+                window.api.open_url(document.getElementById('url').value);
+            }
+        </script>
+    </head>
+    <body>
+        <br>
+        <br>
+        <br>
+        <h1>Flune Browser.</h1>
+        <div>
+            <input id="url" type="text">
+            <a href="javascript:moveview()">＞</a>
+        </div>
+    </body>
+</html>
