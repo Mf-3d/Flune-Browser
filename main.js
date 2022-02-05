@@ -233,6 +233,7 @@ const template = Menu.buildFromTemplate([
               detail: `Flune Browser 1.0.0 Alpha 3
                 バージョン: 1.0.0 Alpha 3
                 開発者: mf7cli
+                License by monochrome License.
                 
                 Copyright 2022 mf7cli.`
               }
