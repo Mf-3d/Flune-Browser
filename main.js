@@ -3,14 +3,39 @@ const Store = require('electron-store');
 const store = new Store();
 const contextMenu = require('electron-context-menu');
 let win;
-let bv;
+let bv=[];
 let menu;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
-var viewY = 45;
+var viewY = 72;
+
+var index = 0;
 
 let winSize;
+
+function nt(index){
+  bv[index] = new BrowserView({
+    width: store.get('width', 800),
+    height: store.get('height', 500),
+    minWidth: 800, 
+    minHeight: 400,
+    icon: `${__dirname}/icon.png`,
+    frame: false,
+    toolbar: false,
+    title: 'Flune Browser',
+    webPreferences: {
+      preload: `${__dirname}/src/preload.js`
+    }
+  });
+
+  win.addBrowserView(bv[index]);
+
+  bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+
+  // bv.webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
+  bv[index].webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
+}
 
 function nw(){
   win=new BrowserWindow({
@@ -26,12 +51,7 @@ function nw(){
 
   winSize = win.getSize();
 
-  bv=new BrowserView({
-      width: `${win.getSize()[0]}`,
-      webPreferences: {
-        preload: `${__dirname}/src/preload.js`
-      }
-  });
+  nt(0);
 
   menu=new BrowserView({
     width: `${win.getSize()[0]}`,
@@ -41,7 +61,6 @@ function nw(){
   });
   // menu.webContents.openDevTools();
 
-  win.setBrowserView(bv);
   win.addBrowserView(menu);
   menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
   if(is_mac) {
@@ -52,11 +71,6 @@ function nw(){
     menu.webContents.loadURL(`file://${__dirname}/src/index_win.html`);
   }
 
-  bv.setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
-
-  // bv.webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
-  bv.webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
-
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);
@@ -65,23 +79,24 @@ function nw(){
   win.on('resize', () => {
     winSize = win.getSize();
     menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
-    bv.setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+    bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
   });
 
-  bv.webContents.on('did-start-loading',()=>{});
-  bv.webContents.on('did-stop-loading',()=>{
+  bv[index].webContents.on('did-start-loading',()=>{});
+  bv[index].webContents.on('did-stop-loading',()=>{
     // 盗人ブルートしてきた
-    console.log(bv.webContents.getURL())
-    menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv.webContents.getURL()}'`)
+    console.log(bv[index].webContents.getURL());
+    menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv[index].webContents.getURL()}'`);
   });
 }
 
 app.on('ready',()=>{
   nw();
+  console.log(index);
   console.log(process.argv[2])
   if(process.argv[2] == '--dev'){
     console.log('develop!');
-    viewY = 100;
+    viewY = 600;
     menu.webContents.openDevTools();
   }
 });
@@ -89,41 +104,96 @@ app.on('window-all-closed', ()=>app.quit());
 app.on('activate',()=>{if (win === null) nw});
 
 // IPC
+
+// Monotから盗人ブルートしてきた
+ipcMain.handle('tab_move',(e,i)=>{
+  menu.webContents.send('page_changed', '');
+  if(i<0)
+    i=0;
+  win.setTopBrowserView(bv[i]);
+  index= i;
+  console.log(index);
+  win.webContents.executeJavaScript(
+    `document.getElementsByTagName('title')[0].innerText='${bv[i].webContents.getTitle()}';`)
+});
+
+// Monotから盗人ブルートしてきた
+ipcMain.handle('remove_tab',(e,i)=>{
+  //source: https://www.gesource.jp/weblog/?p=4112
+  try{
+    var ind = i + 1;
+    if(ind > 0){
+      ind - 1;
+      win.removeBrowserView(bv[ind])
+      console.log(bv[ind]);
+      bv[ind].webContents.destroy();
+      bv.splice(ind,1);
+    }
+    else{
+      win.removeBrowserView(bv[ind])
+      console.log(bv[ind]);
+      bv[ind].webContents.destroy();
+      bv.splice(ind,1);
+    }
+    index - 1;
+  }
+  catch(e){
+    console.log(e);
+    console.log(ind);
+  }
+
+  if(index == -1){
+    nt(0);
+    menu.webContents.send('newtab', 0);
+  }
+})
+
 ipcMain.handle('open_url', (event, data) => {
   url_regexp = /(https:?|http:?|file:\/)\/\/([\w\/:%#\$&\?\(\)~\.=\+\-]+)/g;
   no_http_url_regexp = /([\w\/:%#\$&\?\(\)~\.=\+\-]+)/g;
   if(data.match(url_regexp)) {
     console.log('🤔')
-    bv.webContents.loadURL(data);
+    bv[index].webContents.loadURL(data);
     menu.webContents.send('page_changed', data);
   }
   else if(data.match('://')){
-    bv.webContents.loadURL(data);
+    bv[index].webContents.loadURL(data);
     menu.webContents.send('page_changed', data);
   }
   else {
-    bv.webContents.loadURL('https://www.google.com/search?q=' + data);
+    bv[index].webContents.loadURL('https://www.google.com/search?q=' + data);
     menu.webContents.send('page_changed', data);
   }
   console.log(data);
 });
 
 ipcMain.handle('pageback', (event, data) => {
-  bv.webContents.goBack();
+  bv[index].webContents.goBack();
   menu.webContents.send('page_changed', '');
 });
 
 ipcMain.handle('bv_url', (event, data) => {
-  return (bv.webContents.getURL());
+  return (bv[index].webContents.getURL());
+});
+
+ipcMain.handle('open_tab', (event, tabindex) => {
+  win.addBrowserView(bv[tabindex]);
+  bv[tabindex].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+  index = tabindex;
+});
+
+ipcMain.handle('new_tab', (event, tabindex) => {
+  nt(tabindex);
+  index = tabindex;
 });
 
 ipcMain.handle('pageforward', (event, data) => {
-  bv.webContents.goForward();
+  bv[index].webContents.goForward();
   menu.webContents.send('page_changed', '');
 });
 
 ipcMain.handle('open_home', (event, data) => {
-  bv.webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
+  bv[index].webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
   menu.webContents.send('page_changed', '');
 });
 
@@ -220,23 +290,30 @@ const template = Menu.buildFromTemplate([
       {
         accelerator: 'Shift+R',
         click:()=>{
-          bv.webContents.reload();
+          bv[index].webContents.reload();
         },         
         label:'再読み込み'
       },
       {
         accelerator: 'Shift+Alt+R',
         click:()=>{
-          bv.webContents.reloadIgnoringCache();
+          bv[index].webContents.reloadIgnoringCache();
         },         
         label:'強制的に再読み込み'
       },
       {
         accelerator: 'F12',
         click:()=>{
-          bv.webContents.openDevTools();
+          bv[index].webContents.openDevTools();
         }, 
         label:'開発者ツールを表示'
+      },
+      {
+        accelerator: 'F12',
+        click:()=>{
+          menu.webContents.openDevTools();
+        }, 
+        label:'ナビゲーションの開発者ツールを表示'
       },
       {type:'separator'},
       {role:'resetZoom',      label:'実際のサイズ'},

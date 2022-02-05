@@ -12,7 +12,6 @@
   },
   "keywords": [],
   "author": "mf7cli <mf7cli120@icloud.com>",
-  "license": "ISC",
   "build": {
     "appId": "ml.mf7cli.flune",
     "productName": "Flune Browser",

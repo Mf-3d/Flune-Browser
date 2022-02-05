@@ -10,6 +10,10 @@ contextBridge.exposeInMainWorld('api', {
     minimize: async (data) => await ipcRenderer.invoke('minimize', data),
     maxmin: async (data) => await ipcRenderer.invoke('maxmin', data),
     bv_url: async (data) => await ipcRenderer.invoke('bv_url', data),
+    open_tab: async (data) => await ipcRenderer.invoke('open_tab', data),
+    remove_tab: async (index)=> await ipcRenderer.invoke('remove_tab',index),
+    new_tab: async (data) => await ipcRenderer.invoke('new_tab', data),
+    tab_move: async (data) => await ipcRenderer.invoke('tab_move', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
