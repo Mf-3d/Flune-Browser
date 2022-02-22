@@ -114,7 +114,9 @@ ipcMain.handle('tab_move',(e,i)=>{
   index= i;
   console.log(index);
   win.webContents.executeJavaScript(
-    `document.getElementsByTagName('title')[0].innerText='${bv[i].webContents.getTitle()}';`)
+    `document.getElementsByTagName('title')[0].innerText='${bv[i].webContents.getTitle()}';`
+  );
+  bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
 });
 
 // Monotから盗人ブルートしてきた
