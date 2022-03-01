@@ -123,20 +123,10 @@ ipcMain.handle('tab_move',(e,i)=>{
 ipcMain.handle('remove_tab',(e,i)=>{
   //source: https://www.gesource.jp/weblog/?p=4112
   try{
-    var ind = i + 1;
-    if(ind > 0){
-      ind - 1;
-      win.removeBrowserView(bv[ind])
-      console.log(bv[ind]);
-      bv[ind].webContents.destroy();
-      bv.splice(ind,1);
-    }
-    else{
-      win.removeBrowserView(bv[ind])
-      console.log(bv[ind]);
-      bv[ind].webContents.destroy();
-      bv.splice(ind,1);
-    }
+    var ind = i;
+    bv[ind].webContents.destroy();
+    win.removeBrowserView(bv[ind]);
+    bv.splice(ind,1);
     index - 1;
   }
   catch(e){
@@ -144,7 +134,7 @@ ipcMain.handle('remove_tab',(e,i)=>{
     console.log(ind);
   }
 
-  if(index == -1){
+  if(index == 0){
     nt(0);
     menu.webContents.send('newtab', 0);
   }

@@ -62,6 +62,8 @@ window.api.on('page_changed', async (event, data) => {
     document.getElementById('secrity_icon').style.color = '#0000ff';
     document.getElementById('secrity_icon').innerHTML = '❐';
   }
+
+  document.getElementById('url').value = url;
 });
 
 window.api.on('newtab', async (event, data) => {
