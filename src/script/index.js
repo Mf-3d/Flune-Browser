@@ -125,8 +125,3 @@ function newtab(title){
   each();
   window.api.new_tab(getCurrent());
 }
-
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-  window.api.show_context_menu();
-});

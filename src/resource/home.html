@@ -6,6 +6,9 @@
             function moveview(){
                 window.api.open_url(document.getElementById('url').value);
             }
+            function open_setting(){
+                window.api.open_setting()
+            }
         </script>
     </head>
     <body>
@@ -14,10 +17,13 @@
         <br>
         <h1 style="display: inline-block; _display: inline;">Flune Browser.</h1>
         &nbsp;
-        <div style="color: red; display: inline-block; _display: inline;">Beta!</div>
+        <div style="color: rgb(0, 255, 191); display: inline-block; _display: inline;">Stable!</div>
         <div>
             <input id="url" type="text">
             <a href="javascript:moveview()">＞</a>
         </div>
+        <footer>
+            <a href="javascript:open_setting()" style="position:absolute; bottom:0%; right:1%; font-size: 2em;">⚙</a>
+        </footer>
     </body>
 </html>

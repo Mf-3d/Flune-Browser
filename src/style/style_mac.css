@@ -1,11 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap');
 
-#movewin {
-    -webkit-app-region: drag;
-    width:2%;
-    height: 20px;
-}
 body {
+    -webkit-app-region: drag;
     background: #303030;
     color: #f0f0f0;
     margin: 0em;

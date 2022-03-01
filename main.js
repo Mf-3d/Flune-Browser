@@ -1,10 +1,10 @@
 const {app, BrowserWindow, dialog, Menu, ipcMain, BrowserView} = require('electron');
 const Store = require('electron-store');
 const store = new Store();
-const contextMenu = require('electron-context-menu');
 let win;
-let bv=[];
+let bv = [];
 let menu;
+let setting;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
@@ -13,10 +13,6 @@ var viewY = 72;
 var index = 0;
 
 let winSize;
-
-contextMenu({
-  showSaveImageAs: true
-});
 
 function nt(index){
   bv[index] = new BrowserView({
@@ -28,10 +24,14 @@ function nt(index){
     frame: false,
     toolbar: false,
     title: 'Flune Browser',
+    background: '#ffffff',
+    transparent: false,
     webPreferences: {
       preload: `${__dirname}/src/preload.js`
     }
   });
+
+  bv[index].setBackgroundColor('#ffffff');
 
   win.addBrowserView(bv[index]);
 
@@ -90,25 +90,15 @@ function nw(){
     bv[index].webContents.loadURL(url);
   });
 
-  bv[index].webContents.setWindowOpenHandler(({ url }) => {
-    // if (url === 'about:blank') {
-      nt(index + 1);
-      bv[index + 1].webContents.loadURL(url);
-      console.log('🧐')
-      index = index + 1;
-      return {
-        action: 'deny'
-      }
-    // }
-    // else {
-    //   return {
-    //     action: 'deny'
-    //   }
-    // }
-  });
-
   bv[index].webContents.on('did-start-loading',()=>{});
   bv[index].webContents.on('did-stop-loading',()=>{
+    bv[index].setBackgroundColor('#fff');
+    bv[index].webContents.executeJavaScript(`
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        window.api.show_context_menu();
+      });`
+    );
     // 盗人ブルートしてきた
     console.log(bv[index].webContents.getURL());
     menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv[index].webContents.getURL()}'`);
@@ -227,14 +217,66 @@ ipcMain.handle('minimize', (event, data) => {
   win.minimize();
 });
 
+ipcMain.handle('open_setting', (event, data) => {
+  setting = new BrowserWindow({
+    width: 700,
+    height: 600,
+    icon: `${__dirname}/icon.png`,
+    toolbar: false,
+    title: 'Flune Browser',
+    webPreferences: {
+      preload: `${__dirname}/src/preload.js`
+    }
+  });
+  setting.webContents.executeJavaScript(`
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        window.api.show_context_menu();
+      });`
+  );
+  setting.webContents.loadFile(`src/resource/setting.html`);
+
+  setting.on('close', () => {
+    
+  });
+});
+
+ipcMain.handle('close_setting', (event, data) => {
+  setting.close();
+  console.log('👍');
+});
+
 ipcMain.handle('show_context_menu', (event, data) => {
   const template = [
-    {
-      label: 'Menu Item 1',
-      click: () => { event.sender.send('context-menu-command', 'menu-item-1') }
-    },
+    { role: 'undo' },
+    { role: 'redo' },
     { type: 'separator' },
-    { label: 'Menu Item 2', type: 'checkbox', checked: true }
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { 
+      label: 'Reload',
+      click: () => {
+        setting.webContents.openDevTools();
+      }
+    },
+    ...(is_mac ? [
+      { role: 'pasteAndMatchStyle' },
+      { role: 'delete' },
+      { role: 'selectAll' },
+      { type: 'separator' },
+      {
+        label: 'Speech',
+        submenu: [
+          { role: 'startSpeaking' },
+          { role: 'stopSpeaking' }
+        ]
+      }
+    ] : [
+      { role: 'delete' },
+      { type: 'separator' },
+      { role: 'selectAll' }
+    ])
   ]
   const menu = Menu.buildFromTemplate(template)
   menu.popup(BrowserWindow.fromWebContents(event.sender));
@@ -261,8 +303,8 @@ const template = Menu.buildFromTemplate([
               icon: './src/icon.png',
               title: 'Flune Browserについて',
               message: 'Flune Browserについて',
-              detail: `Flune Browser 1.0.0 Alpha 3
-                バージョン: 1.0.0 Alpha 3
+              detail: `Flune Browser 1.0.0
+                バージョン: 1.0.0
                 開発者: mf7cli
                 License by monochrome License.
                 
@@ -371,6 +413,23 @@ const template = Menu.buildFromTemplate([
     ]
   },
   {
+    label:'Develop',
+    submenu: [
+      {
+        label:'Betaバージョンを試す',
+        click: () => {
+          //
+        }
+      },
+      {
+        label:'Devバージョンを試す',
+        click: () => {
+          //
+        }
+      }
+    ]
+  },
+  {
     label:'ヘルプ',
     submenu: [
       {label:`Flune Browser ヘルプ`},    // ToDo
@@ -384,8 +443,8 @@ const template = Menu.buildFromTemplate([
               icon: './src/icon.png',
               title: 'Flune Browserについて',
               message: 'Flune Browserについて',
-              detail: `Flune Browser 1.0.0 Alpha 3
-                バージョン: 1.0.0 Alpha 3
+              detail: `Flune Browser 1.0.0
+                バージョン: 1.0.0
                 開発者: mf7cli
                 
                 Copyright 2022 mf7cli.`
