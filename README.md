@@ -5,4 +5,4 @@ c.Monotの後継のRuna-Browserの後継。
 Flune-Browser 1.0.0 Alpha 3以降ではSorakimeさんのMonot 1.0.0 Beta 6のコードを使用しています。
 
 Copyright 2022 mf7cli.
-Licensed by [monochrome License.](https://sorakime.github.io/mncr/license?v=1.1.1)
+Licensed by [monochrome License V2.](https://sorakime.github.io/mncr/license?v=2.0.0)
