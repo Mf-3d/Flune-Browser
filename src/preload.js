@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('api', {
     remove_tab: async (index)=> await ipcRenderer.invoke('remove_tab',index),
     new_tab: async (data) => await ipcRenderer.invoke('new_tab', data),
     tab_move: async (data) => await ipcRenderer.invoke('tab_move', data),
+    show_context_menu: async (data) => await ipcRenderer.invoke('show_context_menu', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }

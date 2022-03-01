@@ -14,6 +14,10 @@ var index = 0;
 
 let winSize;
 
+contextMenu({
+  showSaveImageAs: true
+});
+
 function nt(index){
   bv[index] = new BrowserView({
     width: store.get('width', 800),
@@ -80,6 +84,27 @@ function nw(){
     winSize = win.getSize();
     menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
     bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+  });
+
+  bv[index].webContents.on('will-navigate', (e, url)=>{
+    bv[index].webContents.loadURL(url);
+  });
+
+  bv[index].webContents.setWindowOpenHandler(({ url }) => {
+    // if (url === 'about:blank') {
+      nt(index + 1);
+      bv[index + 1].webContents.loadURL(url);
+      console.log('🧐')
+      index = index + 1;
+      return {
+        action: 'deny'
+      }
+    // }
+    // else {
+    //   return {
+    //     action: 'deny'
+    //   }
+    // }
   });
 
   bv[index].webContents.on('did-start-loading',()=>{});
@@ -159,6 +184,7 @@ ipcMain.handle('open_url', (event, data) => {
   console.log(data);
 });
 
+
 ipcMain.handle('pageback', (event, data) => {
   bv[index].webContents.goBack();
   menu.webContents.send('page_changed', '');
@@ -199,6 +225,19 @@ ipcMain.handle('maximize', (event, data) => {
 
 ipcMain.handle('minimize', (event, data) => {
   win.minimize();
+});
+
+ipcMain.handle('show_context_menu', (event, data) => {
+  const template = [
+    {
+      label: 'Menu Item 1',
+      click: () => { event.sender.send('context-menu-command', 'menu-item-1') }
+    },
+    { type: 'separator' },
+    { label: 'Menu Item 2', type: 'checkbox', checked: true }
+  ]
+  const menu = Menu.buildFromTemplate(template)
+  menu.popup(BrowserWindow.fromWebContents(event.sender));
 });
 
 ipcMain.handle('maxmin', (event, data) => {
