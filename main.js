@@ -10,8 +10,8 @@ let setting;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
-var theme_json = JSON.parse(fs.readFileSync(store.get('theme', 'config/dark.json'), 'utf-8'));
-var theme_url = store.get('theme', 'config/dark.json');
+var theme_json = JSON.parse(fs.readFileSync(store.get('theme', 'config/theme/Dark/theme.json'), 'utf-8'));
+var theme_url = store.get('theme', 'config/theme/Dark/theme.json');
 console.log(theme_json);
 var viewY = 72;
 var index = 0;
@@ -83,7 +83,7 @@ function nw(){
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);
-    store.set('theme', theme_url);
+    store.set('theme', store.get('theme', 'config/theme/Dark/theme.json'));
   });
 
   win.on('resize', () => {
@@ -180,6 +180,19 @@ ipcMain.handle('open_url', (event, data) => {
   console.log(data);
 });
 
+ipcMain.handle('apply_setting', (event, data) => {
+  if(data !== null){
+    if(data === 'Dark'){
+      store.set('theme', 'config/theme/Dark/theme.json');
+    }
+    else if(data === 'Light'){
+      store.set('theme', 'config/theme/Light/theme.json');
+    }
+    else {
+      store.set('theme', data);
+    }
+  }
+});
 
 ipcMain.handle('pageback', (event, data) => {
   bv[index].webContents.goBack();

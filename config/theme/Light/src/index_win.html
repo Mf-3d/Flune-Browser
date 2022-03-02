@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style/style_win.css"/>
+        <script>
+          function moveview(){
+            window.api.open_url(document.getElementById('url').value);
+          }
+          function movehome(){
+            window.api.open_home();
+          }
+          function close(){
+            window.api.close();
+          }
+          function maximize(){
+            window.api.maximize();
+          }
+          function minimize(){
+            window.api.minimize();
+          }
+          function maxmin(){
+            window.api.maxmin();
+          }
+          function pageback(){
+            window.api.pageback();
+          }
+          function pageforward(){
+            window.api.pageforward();
+          }
+          window.api.on('page_changed', async (event, data) => {
+            await _sleep(1000);
+            let url = await window.api.bv_url();
+            console.log(url)
+            if(url.match('https://')){
+              document.getElementById('secrity_icon').style.color = '#00ff00';
+              document.getElementById('secrity_icon').innerHTML = '☺';
+            }
+            if(url.match('http://')){
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '☹';
+            }
+            if(url.match('file://')){
+              document.getElementById('secrity_icon').style.color = '#0000ff';
+              document.getElementById('secrity_icon').innerHTML = '❐';
+            }
+            else{
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '？';
+            }
+          });
+          window.onload = () => {
+            if(window.location.href.match('https://')){
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '☺';
+            }
+            if(window.location.href.match('http://')){
+              document.getElementById('secrity_icon').style.color = '#00ff00';
+              document.getElementById('secrity_icon').innerHTML = '☹';
+            }
+            if(window.location.href.match('file://')){
+              document.getElementById('secrity_icon').style.color = '#0000ff';
+              document.getElementById('secrity_icon').innerHTML = '❐';
+            }
+            else{
+              document.getElementById('secrity_icon').style.color = '#ffffff';
+              document.getElementById('secrity_icon').innerHTML = '？';
+            }
+          }
+        </script>
+    </head>
+    <body>
+        <nav class="menu">
+          <ul>
+            <li id="movewin"></li>
+            <li><a id="secrity_icon">　</a></li>　
+            <li><a href="javascript:pageback()">＜</a></li>
+            <li><a href="javascript:pageforward()">＞</a></li>
+            <li><a href="javascript:movehome()">Home</a></li>　
+            <input id="url" type="text"/>　
+            <li><a href="javascript:moveview()">＞</a></li>　
+            <li><a href="javascript:minimize()">ー</a></li>
+            <li><a href="javascript:maxmin()">○</a></li>
+            <li><a href="javascript:close()">×</a></li>
+          </ul>
+        </nav>
+        <tab-el>
+          <div id="tabs">
+            <span id="opened">
+              <a href="javascript:void(0)">Home</a>
+              <a href="javascript:void(0)">×</a>
+            </span>
+          </div>
+          <a href="javascript:newtab('Home')">＋</a>
+        </tab-el>
+        <script src="script/index.js"></script>
+    </body>
+</html>

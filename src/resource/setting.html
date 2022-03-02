@@ -6,18 +6,16 @@
             function close_setting(){
                 window.api.close_setting();
             }
+            function apply_setting(){
+                window.api.apply_setting(document.getElementById('theme').value);
+            }
         </script>
     </head>
     <body>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div>
-            <h1>Nothing yet...</h1>
-        </div>
+        <h2>Setting</h2>
+        Theme: <input type="text" id="theme" style="font-size: 0.7em;"/>
         <footer>
+            <a href="javascript:apply_setting()" style="position:absolute; bottom:0%; font-size: 1.5em;">Apply</a>
             <a href="javascript:close_setting()" style="position:absolute; bottom:0%; right:1%; font-size: 1.5em;">Close</a>
         </footer>
     </body>

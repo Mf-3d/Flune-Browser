@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style/style_mac.css"/>
+        <script>
+
+        </script>
+    </head>
+    <body>
+        <nav class="menu">
+          <ul>
+            <li><a href="javascript:close()">●</a></li>
+            <li><a href="javascript:minimize()">●</a></li>
+            <li><a href="javascript:maxmin()">●</a></li>
+            <li><a href="javascript:movehome()">Home</a></li>　
+            <li><a id="secrity_icon">❐</a></li>　
+            <input id="url" type="text"/>　
+            <li><a href="javascript:moveview()">＞</a></li>　
+            <li><a href="javascript:pageback()">＜</a></li>
+            <li><a href="javascript:pageforward()">＞</a></li>
+          </ul>
+        </nav>
+        <tab-el>
+          <div id="tabs">
+            <span id="opened">
+              <a href="javascript:void(0)">Home</a>
+              <a href="javascript:void(0)">×</a>
+            </span>
+          </div>
+          <a href="javascript:newtab('Home')">＋</a>
+        </tab-el>
+        <script src="script/index.js"></script>
+    </body>
+</html>

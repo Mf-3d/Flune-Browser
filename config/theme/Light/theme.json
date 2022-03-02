@@ -1,0 +1,13 @@
+{
+    "theme": {
+        "name": "Light",
+        "version": "1.0.0",
+        "nav": {
+            "html_mac": "src/index_mac.html",
+            "html_win": "src/index_win.html"
+        },
+        "start": {
+            "html": "src/resource/home.html"
+        }
+    }
+}
