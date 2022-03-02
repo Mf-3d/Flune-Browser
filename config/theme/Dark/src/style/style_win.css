@@ -18,16 +18,21 @@ body {
 
 .menu > ul {
     display: flex;
+    justify-content: right;
+    align-items: center;
+    list-style: none;
+    display: flex;
     margin: 0.2em;
     padding: 0.4em;
 }
 
 .menu > ul > li {
+    -webkit-app-region: none;
     list-style: none;
     -webkit-app-region: no-drag;
 }
 
-.menu > ul > li > a {  
+.menu > ul > li > a {
     display: block;
     text-decoration: none;
     color: white;
@@ -44,11 +49,10 @@ input[type = 'text'] {
     outline: 0;
     padding: 0.5em;
     font-family: 'Noto Sans JP', sans-serif;
+    -webkit-app-region: no-drag;
 }
 
 #secrity_icon {
-    margin-top: -0.2em;
-    padding-top: 0em;
     font-size: 1.4em;
 }
 

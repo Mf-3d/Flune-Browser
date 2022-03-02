@@ -2,6 +2,7 @@ const {app, BrowserWindow, dialog, Menu, ipcMain, BrowserView} = require('electr
 const Store = require('electron-store');
 const store = new Store();
 const fs = require('fs');
+const path = require('path');
 let win;
 let bv = [];
 let menu;
@@ -42,7 +43,7 @@ function nt(index){
 
   bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
 
-  bv[index].webContents.loadFile(`${theme_json.theme.start.html}`);
+  bv[index].webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
 }
 
 function nw(){
@@ -72,11 +73,11 @@ function nw(){
   win.addBrowserView(menu);
   menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
   if(is_mac) {
-    menu.webContents.loadFile(`${theme_json.theme.nav.html_mac}`);
+    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_mac}`);
   }
 
   else if(is_windows) {
-    menu.webContents.loadFile(`${theme_json.theme.nav.html_win}`);
+    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_win}`);
   }
 
   win.webContents.on('close',()=>{
@@ -210,7 +211,7 @@ ipcMain.handle('pageforward', (event, data) => {
 });
 
 ipcMain.handle('open_home', (event, data) => {
-  bv[index].webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
+  bv[index].webContents.loadURL(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
   menu.webContents.send('page_changed', '');
 });
 
