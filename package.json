@@ -1,6 +1,6 @@
 {
   "name": "flune_browser",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Hello New Moon.",
   "main": "main.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "mf7cli <mf7cli120@icloud.com>",
   "build": {
     "appId": "ml.mf7cli.flune",
-    "productName": "Flune Browser",
+    "productName": "Flune-Browser",
     "files": [
       "!.git",
       "!.dist",

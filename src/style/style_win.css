@@ -13,6 +13,7 @@ body {
     height: 20px;
     width: 100%;
     background-color: #303030;
+    position: relative;
 }
 
 .menu > ul {
@@ -112,4 +113,8 @@ tab-el>a{
     cursor: default;
     text-decoration: none;
     color: #f0f0f0;
+}
+
+#opened {
+    background-color: #303030;
 }

@@ -9,6 +9,9 @@
             function open_setting(){
                 window.api.open_setting()
             }
+            window.onload = async () => {
+                document.getElementById('version').innerHTML = await window.api.version();
+            };
         </script>
     </head>
     <body>
@@ -17,13 +20,14 @@
         <br>
         <h1 style="display: inline-block; _display: inline;">Flune Browser.</h1>
         &nbsp;
-        <div style="color: rgb(0, 255, 191); display: inline-block; _display: inline;">Stable!</div>
+        <div id="channel" style="color: rgb(255, 94, 0); display: inline-block; _display: inline;">Dev!</div>
         <div>
             <input id="url" type="text">
             <a href="javascript:moveview()">＞</a>
         </div>
-        <footer>
-            <a href="javascript:open_setting()" style="position:absolute; bottom:0%; right:1%; font-size: 2em;">⚙</a>
+        <footer style="position:absolute; bottom:0%; right:1%; font-size: 2em;">
+            <small id="version" style="font-size: 0.4em;"></small>
+            <a href="javascript:open_setting()">⚙</a>
         </footer>
     </body>
 </html>

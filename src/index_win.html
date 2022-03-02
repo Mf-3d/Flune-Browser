@@ -24,6 +24,9 @@
           function pageback(){
             window.api.pageback();
           }
+          function pageforward(){
+            window.api.pageforward();
+          }
           window.api.on('page_changed', async (event, data) => {
             await _sleep(1000);
             let url = await window.api.bv_url();
@@ -71,7 +74,7 @@
             <li id="movewin"></li>
             <li><a id="secrity_icon">　</a></li>　
             <li><a href="javascript:pageback()">＜</a></li>
-            <li><a>＞</a></li>
+            <li><a href="javascript:pageforward()">＞</a></li>
             <li><a href="javascript:movehome()">Home</a></li>　
             <input id="url" type="text"/>　
             <li><a href="javascript:moveview()">＞</a></li>　

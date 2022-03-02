@@ -1,6 +1,7 @@
 const {app, BrowserWindow, dialog, Menu, ipcMain, BrowserView} = require('electron');
 const Store = require('electron-store');
 const store = new Store();
+const fs = require('fs');
 let win;
 let bv = [];
 let menu;
@@ -8,11 +9,15 @@ let setting;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
+var theme_json = JSON.parse(fs.readFileSync(store.get('theme', 'config/dark.json'), 'utf-8'));
+var theme_url = store.get('theme', 'config/dark.json');
+console.log(theme_json);
 var viewY = 72;
-
 var index = 0;
 
 let winSize;
+
+let version = '1.1.0 Dev (Build 2022.03.02.1)';
 
 function nt(index){
   bv[index] = new BrowserView({
@@ -37,8 +42,7 @@ function nt(index){
 
   bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
 
-  // bv.webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
-  bv[index].webContents.loadURL(`file://${__dirname}/src/resource/home.html`);
+  bv[index].webContents.loadFile(`${theme_json.theme.start.html}`);
 }
 
 function nw(){
@@ -68,16 +72,17 @@ function nw(){
   win.addBrowserView(menu);
   menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
   if(is_mac) {
-    menu.webContents.loadURL(`file://${__dirname}/src/index_mac.html`);
+    menu.webContents.loadFile(`${theme_json.theme.nav.html_mac}`);
   }
 
   else if(is_windows) {
-    menu.webContents.loadURL(`file://${__dirname}/src/index_win.html`);
+    menu.webContents.loadFile(`${theme_json.theme.nav.html_win}`);
   }
 
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);
+    store.set('theme', theme_url);
   });
 
   win.on('resize', () => {
@@ -195,6 +200,10 @@ ipcMain.handle('new_tab', (event, tabindex) => {
   index = tabindex;
 });
 
+ipcMain.handle('version', (event, tabindex) => {
+  return version;
+});
+
 ipcMain.handle('pageforward', (event, data) => {
   bv[index].webContents.goForward();
   menu.webContents.send('page_changed', '');
@@ -276,7 +285,42 @@ ipcMain.handle('show_context_menu', (event, data) => {
       { role: 'delete' },
       { type: 'separator' },
       { role: 'selectAll' }
-    ])
+    ]),
+    { type: 'separator' },
+    {
+      accelerator: 'Shift+R',
+      click:()=>{
+        bv[index].webContents.reload();
+      },         
+      label:'再読み込み'
+    },
+    {
+      accelerator: 'Shift+Alt+R',
+      click:()=>{
+        bv[index].webContents.reloadIgnoringCache();
+      },         
+      label:'強制的に再読み込み'
+    },
+    {
+      accelerator: 'F12',
+      click:()=>{
+        bv[index].webContents.openDevTools();
+      }, 
+      label:'開発者ツールを表示'
+    },
+    {
+      accelerator: 'F12',
+      click:()=>{
+        menu.webContents.openDevTools();
+      }, 
+      label:'ナビゲーションの開発者ツールを表示'
+    },
+    {type:'separator'},
+    {role:'resetZoom',      label:'実際のサイズ'},
+    {role:'zoomIn',         label:'拡大'},
+    {role:'zoomOut',        label:'縮小'},
+    {type:'separator'},
+    {role:'togglefullscreen', label:'フルスクリーン'}
   ]
   const menu = Menu.buildFromTemplate(template)
   menu.popup(BrowserWindow.fromWebContents(event.sender));
@@ -303,8 +347,8 @@ const template = Menu.buildFromTemplate([
               icon: './src/icon.png',
               title: 'Flune Browserについて',
               message: 'Flune Browserについて',
-              detail: `Flune Browser 1.0.0
-                バージョン: 1.0.0
+              detail: `Flune Browser
+                バージョン: ${version}
                 開発者: mf7cli
                 License by monochrome License.
                 
@@ -443,8 +487,8 @@ const template = Menu.buildFromTemplate([
               icon: './src/icon.png',
               title: 'Flune Browserについて',
               message: 'Flune Browserについて',
-              detail: `Flune Browser 1.0.0
-                バージョン: 1.0.0
+              detail: `Flune Browser
+                バージョン: ${version}
                 開発者: mf7cli
                 
                 Copyright 2022 mf7cli.`

@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld('api', {
     show_context_menu: async (data) => await ipcRenderer.invoke('show_context_menu', data),
     open_setting: async (data) => await ipcRenderer.invoke('open_setting', data),
     close_setting: async (data) => await ipcRenderer.invoke('close_setting', data),
+    version: async (data) => await ipcRenderer.invoke('version', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
