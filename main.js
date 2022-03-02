@@ -18,7 +18,7 @@ var index = 0;
 
 let winSize;
 
-let version = '1.1.0 Dev (Build 2022.03.02.1)';
+let version = '1.1.0 Beta 1';
 
 function nt(index){
   bv[index] = new BrowserView({
@@ -224,7 +224,7 @@ ipcMain.handle('pageforward', (event, data) => {
 });
 
 ipcMain.handle('open_home', (event, data) => {
-  bv[index].webContents.loadURL(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
+  bv[index].webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
   menu.webContents.send('page_changed', '');
 });
 
