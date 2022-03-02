@@ -80,6 +80,10 @@ function nw(){
     menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_win}`);
   }
 
+  else if(is_linux) {
+    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_linux}`);
+  }
+
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);

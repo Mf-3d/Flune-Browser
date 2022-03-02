@@ -1,10 +1,14 @@
 {
     "theme": {
         "name": "Dark",
-        "version": "1.0.2",
+        "version": "1.0.3",
+        "theme_loader_version": "1.0.0",
+        "description": "Linux対応板",
+        "author": "mf7cli",
         "nav": {
             "html_mac": "src/index_mac.html",
-            "html_win": "src/index_win.html"
+            "html_win": "src/index_win.html",
+            "html_linux": "src/index_win.html"
         },
         "start": {
             "html": "src/resource/home.html"
