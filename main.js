@@ -164,12 +164,11 @@ ipcMain.handle('remove_tab',(e,i)=>{
     bv[ind].webContents.destroy();
     win.removeBrowserView(bv[ind]);
     index -= 1;
-    if(index === -1){
+    if(bv[index] === undefined){
       nt(0);
       menu.webContents.send('newtab', 0);
       index = 0;
     }
-
   }
   catch(e){
     nt(index + 1);
