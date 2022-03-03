@@ -10,11 +10,13 @@ let setting;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
-var theme_json = JSON.parse(fs.readFileSync(store.get('theme', 'config/theme/Dark/theme.json'), 'utf-8'));
-var theme_url = store.get('theme', 'config/theme/Dark/theme.json');
+var theme_json = JSON.parse(fs.readFileSync(store.get('theme', '/config/theme/Dark/theme.json'), 'utf-8'));
+var theme_url = store.get('theme', __dirname + '/config/theme/Dark/theme.json');
 console.log(theme_json);
 var viewY = 72;
 var index = 0;
+
+theme_url = __dirname + '/config/theme/Dark/theme.json';
 
 let winSize;
 
@@ -87,7 +89,7 @@ function nw(){
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);
-    store.set('theme', store.get('theme', 'config/theme/Dark/theme.json'));
+    store.set('theme', store.get('theme', __dirname + '/config/theme/Dark/theme.json'));
   });
 
   win.on('resize', () => {
@@ -147,19 +149,23 @@ ipcMain.handle('tab_move',(e,i)=>{
 // Monotから盗人ブルートしてきた
 ipcMain.handle('remove_tab',(e,i)=>{
   //source: https://www.gesource.jp/weblog/?p=4112
+  console.log('あ' + i);
   try{
     var ind = i;
-    bv[ind].webContents.destroy();
+    if(bv[ind] === null){
+      ind += 1;
+    }
+    console.log('い' + ind);
     win.removeBrowserView(bv[ind]);
-    bv.splice(ind,1);
-    index - 1;
+    index -= 1;
+    bv[ind] = null;
+    console.log(bv[ind]);
   }
   catch(e){
     console.log(e);
-    console.log(ind);
   }
 
-  if(index == 0){
+  if(index == -1){
     nt(0);
     menu.webContents.send('newtab', 0);
   }
@@ -187,10 +193,10 @@ ipcMain.handle('open_url', (event, data) => {
 ipcMain.handle('apply_setting', (event, data) => {
   if(data !== null){
     if(data === 'Dark'){
-      store.set('theme', 'config/theme/Dark/theme.json');
+      store.set('theme', __dirname + '/config/theme/Dark/theme.json');
     }
     else if(data === 'Light'){
-      store.set('theme', 'config/theme/Light/theme.json');
+      store.set('theme', __dirname + '/config/theme/Light/theme.json');
     }
     else {
       store.set('theme', data);

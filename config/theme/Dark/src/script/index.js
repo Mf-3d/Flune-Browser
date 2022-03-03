@@ -30,8 +30,12 @@ function pageforward(){
 // Monotから盗人ブルートしてきた
 function getCurrent(){
   //source: https://lab.syncer.jp/Web/JavaScript/Snippet/54/
-  let el=document.getElementsByTagName('span');
-  el=[].slice.call(el);
+  var el = document.getElementById("tabs");
+
+  // HTMLCollectionから配列を作成
+  el = [].slice.call( el ) ;
+
+  // 要素の順番を取得
   return el.indexOf(document.getElementById('opened'));
 }
 
