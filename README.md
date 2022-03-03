@@ -1,6 +1,9 @@
 # Flune-Browser
 c.Monotの後継のRuna-Browserの後継。
+![image](https://user-images.githubusercontent.com/84224913/156472276-5377f268-a4c0-4fff-90b0-95477b005561.png)
+↑Flune-Browser 1.1.0 開発版
 ![image](https://user-images.githubusercontent.com/84224913/156182326-55cc3fbd-5a7c-4901-922b-7c4df55d7468.png)
+↑Flune-Browser 1.0.0
 
 Flune-Browser 1.0.0 Alpha 3以降ではSorakimeさんのMonot 1.0.0 Beta 6のコードを使用しています。
 
