@@ -39,6 +39,13 @@ function nt(index){
     }
   });
 
+  bv[index].webContents.executeJavaScript(`
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+      window.api.show_context_menu();
+    });`
+  );  
+
   bv[index].setBackgroundColor('#ffffff');
 
   win.addBrowserView(bv[index]);
@@ -152,14 +159,14 @@ ipcMain.handle('remove_tab',(e,i)=>{
   console.log('あ' + i);
   try{
     var ind = i;
+    console.log(bv[ind])
     if(bv[ind] === null){
-      ind += 1;
+      ind -= 2;
     }
     console.log('い' + ind);
+    bv[ind].webContents.destroy();
     win.removeBrowserView(bv[ind]);
     index -= 1;
-    bv[ind] = null;
-    console.log(bv[ind]);
   }
   catch(e){
     console.log(e);
