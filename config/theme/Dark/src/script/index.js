@@ -69,7 +69,7 @@ window.api.on('page_changed', async (event, data) => {
 });
 
 window.api.on('newtab', async (event, data) => {
-  console.log('タブ作るね')
+  console.log('タブ作るね');
   newtab('Home');
 });
 
@@ -93,11 +93,14 @@ function each(){
   // when close button clicked
   document.querySelectorAll('div>span>a:last-child').forEach((i, item)=>{
     i.addEventListener('click',()=>{
-      window.api.remove_tab(getCurrent());
-      console.log('Tab Remove.')
+      const index = Array.from(document.getElementsByTagName('span')).findIndex(element => element === i.parentElement);
+      console.log(index);
+      window.api.remove_tab(index);
+      // window.api.remove_tab(getCurrent());
+      console.log('Tab Remove.');
       i.parentNode.remove();
     })
-  })
+  });
   document.querySelectorAll('div>span').forEach((i, item)=>{
     //when tab-bar clicked
     i.addEventListener('click',()=>{
@@ -106,10 +109,10 @@ function each(){
         document.getElementById('opened').removeAttribute('id');
       }
       //clicked tab
-      i.setAttribute('id','opened')
+      i.setAttribute('id','opened');
       window.api.tab_move(getCurrent());
     })
-  })
+  });
 }
 
 // Monotから盗人ブルートしてきた
@@ -127,3 +130,22 @@ function newtab(title){
   each();
   window.api.new_tab(getCurrent());
 }
+
+window.api.on('now_open_tab', (e)=>{
+  console.log(getCurrent());
+  window.api.setindex(getCurrent());
+});
+
+window.api.on('new_tab', (e) => {
+  if(document.getElementById('opened')){
+    document.getElementById('opened').removeAttribute('id')
+  }
+  document.getElementsByTagName('div')[0].innerHTML=`
+    ${document.getElementsByTagName('div')[0].innerHTML}
+    <span id="opened">
+      <a href="javascript:void(0)">Home</a>
+      <a href="javascript:void(0)">×</a>
+    </span>
+  `;
+  each();
+});

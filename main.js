@@ -20,7 +20,7 @@ theme_url = __dirname + '/config/theme/Dark/theme.json';
 
 let winSize;
 
-let version = '1.1.0 Beta 1';
+let version = '1.1.0';
 
 function nt(index){
   bv[index] = new BrowserView({
@@ -130,7 +130,7 @@ app.on('ready',()=>{
   console.log(process.argv[2])
   if(process.argv[2] == '--dev'){
     console.log('develop!');
-    viewY = 600;
+    viewY = 200;
     menu.webContents.openDevTools();
   }
 });
@@ -159,22 +159,24 @@ ipcMain.handle('remove_tab',(e,i)=>{
   console.log('あ' + i);
   try{
     var ind = i;
-    console.log(bv[ind])
-    if(bv[ind] === null){
-      ind -= 2;
-    }
+    console.log(bv[ind]);
     console.log('い' + ind);
     bv[ind].webContents.destroy();
     win.removeBrowserView(bv[ind]);
     index -= 1;
+    if(index === -1){
+      nt(0);
+      menu.webContents.send('newtab', 0);
+      index = 0;
+    }
+
   }
   catch(e){
+    nt(index + 1);
+    bv[index + 1].webContents.loadFile(__dirname + '/src/resource/error.html');
+    index = index + 1;
+    menu.webContents.send('new_tab');
     console.log(e);
-  }
-
-  if(index == -1){
-    nt(0);
-    menu.webContents.send('newtab', 0);
   }
 })
 
@@ -335,14 +337,14 @@ ipcMain.handle('show_context_menu', (event, data) => {
     {
       accelerator: 'F12',
       click:()=>{
-        bv[index].webContents.openDevTools();
+        bv[index].webContents.toggleDevTools();
       }, 
       label:'開発者ツールを表示'
     },
     {
       accelerator: 'F12',
       click:()=>{
-        menu.webContents.openDevTools();
+        menu.webContents.toggleDevTools();
       }, 
       label:'ナビゲーションの開発者ツールを表示'
     },
@@ -453,14 +455,14 @@ const template = Menu.buildFromTemplate([
       {
         accelerator: 'F12',
         click:()=>{
-          bv[index].webContents.openDevTools();
+          bv[index].webContents.toggleDevTools();
         }, 
         label:'開発者ツールを表示'
       },
       {
         accelerator: 'F12',
         click:()=>{
-          menu.webContents.openDevTools();
+          menu.webContents.toggleDevTools();
         }, 
         label:'ナビゲーションの開発者ツールを表示'
       },
