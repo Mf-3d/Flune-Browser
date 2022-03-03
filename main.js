@@ -3,6 +3,7 @@ const Store = require('electron-store');
 const store = new Store();
 const fs = require('fs');
 const path = require('path');
+const tab = require('./tab')
 let win;
 let bv = [];
 let menu;
@@ -160,14 +161,20 @@ ipcMain.handle('remove_tab',(e,i)=>{
   try{
     var ind = i;
     console.log(bv[ind]);
-    console.log('い' + ind);
     bv[ind].webContents.destroy();
     win.removeBrowserView(bv[ind]);
     index -= 1;
+    if(ind == index){
+      index += 2;
+      console.log(index);
+    }
     if(bv[index] === undefined){
-      nt(0);
-      menu.webContents.send('newtab', 0);
-      index = 0;
+      nt(index);
+      menu.webContents.send('newtab', index);
+    }
+    if(bv[index] === null){
+      nt(index);
+      menu.webContents.send('newtab', index);
     }
   }
   catch(e){
