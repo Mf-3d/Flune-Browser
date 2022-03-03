@@ -28,10 +28,12 @@ function pageforward(){
 }
 
 // Monotから盗人ブルートしてきた
+//get current tab number
 function getCurrent(){
   //source: https://lab.syncer.jp/Web/JavaScript/Snippet/54/
-  let el=document.getElementsByTagName('span');
-  el=[].slice.call(el);
+  let el=document.getElementById('tabs');
+  console.log(el)
+  el=[].slice.call(el.getElementsByTagName('span'));
   return el.indexOf(document.getElementById('opened'));
 }
 
@@ -91,9 +93,9 @@ function each(){
   // when close button clicked
   document.querySelectorAll('div>span>a:last-child').forEach((i, item)=>{
     i.addEventListener('click',()=>{
-      i.parentNode.remove();
       window.api.remove_tab(getCurrent());
       console.log('Tab Remove.')
+      i.parentNode.remove();
     })
   })
   document.querySelectorAll('div>span').forEach((i, item)=>{
