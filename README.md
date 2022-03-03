@@ -8,7 +8,7 @@ Copyright 2022 mf7cli.
 Licensed by [monochrome License V2.](https://sorakime.github.io/mncr/license?v=2.0.0)
 
 ## 目次
-[テーマの作り方](https://github.com/Mf-3d/Flune-Browser/edit/main/README.md#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9--flune-browser-110)
+[テーマの作り方](https://github.com/Mf-3d/Flune-Browser#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9--flune-browser-110)
 
 ## テーマの作り方 / Flune-Browser 1.1.0
 
