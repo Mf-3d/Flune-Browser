@@ -95,7 +95,9 @@ function each(){
     i.addEventListener('click',()=>{
       const index = Array.from(document.getElementsByTagName('span')).findIndex(element => element === i.parentElement);
       console.log(index);
-      window.api.remove_tab(index);
+      var currentindex = getCurrent();
+      console.log(currentindex);
+      window.api.remove_tab(index, currentindex);
       // window.api.remove_tab(getCurrent());
       console.log('Tab Remove.');
       i.parentNode.remove();

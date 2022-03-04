@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('api', {
     maxmin: async (data) => await ipcRenderer.invoke('maxmin', data),
     bv_url: async (data) => await ipcRenderer.invoke('bv_url', data),
     open_tab: async (data) => await ipcRenderer.invoke('open_tab', data),
-    remove_tab: async (index)=> await ipcRenderer.invoke('remove_tab',index),
+    remove_tab: async (index, currentindex)=> await ipcRenderer.invoke('remove_tab',index,currentindex),
     new_tab: async (data) => await ipcRenderer.invoke('new_tab', data),
     tab_move: async (data) => await ipcRenderer.invoke('tab_move', data),
     show_context_menu: async (data) => await ipcRenderer.invoke('show_context_menu', data),

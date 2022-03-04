@@ -3,7 +3,7 @@ const Store = require('electron-store');
 const store = new Store();
 const fs = require('fs');
 const path = require('path');
-const tab = require('./tab')
+const Tab = require('./tab');
 let win;
 let bv = [];
 let menu;
@@ -16,7 +16,7 @@ var theme_url = store.get('theme', __dirname + '/config/theme/Dark/theme.json');
 console.log(theme_json);
 var viewY = 72;
 var index = 0;
-
+const tab = new Tab(win, menu, viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
 theme_url = __dirname + '/config/theme/Dark/theme.json';
 
 let winSize;
@@ -70,7 +70,7 @@ function nw(){
 
   winSize = win.getSize();
 
-  nt(0);
+  // nt(0);
 
   menu=new BrowserView({
     width: `${win.getSize()[0]}`,
@@ -78,9 +78,9 @@ function nw(){
       preload: `${__dirname}/src/preload.js`
     }
   });
-  // menu.webContents.openDevTools();
 
   win.addBrowserView(menu);
+
   menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
   if(is_mac) {
     menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_mac}`);
@@ -94,6 +94,9 @@ function nw(){
     menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_linux}`);
   }
 
+  tab.init(win, menu, viewY);
+  tab.create(0, store.get('width', 800), store.get('height', 500) - viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
+
   win.webContents.on('close',()=>{
     store.set('width', win.getSize()[0]);
     store.set('height', win.getSize()[1]);
@@ -103,26 +106,28 @@ function nw(){
   win.on('resize', () => {
     winSize = win.getSize();
     menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
-    bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+    tab.bv[tab.tabindex].setBounds({ x: 0, y: tab.viewY, width: winSize[0], height: winSize[1] - tab.viewY });
+    tab.winSize = winSize;
+    // bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
   });
 
-  bv[index].webContents.on('will-navigate', (e, url)=>{
-    bv[index].webContents.loadURL(url);
-  });
+  // bv[index].webContents.on('will-navigate', (e, url)=>{
+  //   bv[index].webContents.loadURL(url);
+  // });
 
-  bv[index].webContents.on('did-start-loading',()=>{});
-  bv[index].webContents.on('did-stop-loading',()=>{
-    bv[index].setBackgroundColor('#fff');
-    bv[index].webContents.executeJavaScript(`
-      window.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
-        window.api.show_context_menu();
-      });`
-    );
-    // 盗人ブルートしてきた
-    console.log(bv[index].webContents.getURL());
-    menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv[index].webContents.getURL()}'`);
-  });
+  // bv[index].webContents.on('did-start-loading',()=>{});
+  // bv[index].webContents.on('did-stop-loading',()=>{
+  //   bv[index].setBackgroundColor('#fff');
+  //   bv[index].webContents.executeJavaScript(`
+  //     window.addEventListener('contextmenu', (e) => {
+  //       e.preventDefault()
+  //       window.api.show_context_menu();
+  //     });`
+  //   );
+  //   // 盗人ブルートしてきた
+  //   console.log(bv[index].webContents.getURL());
+  //   menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv[index].webContents.getURL()}'`);
+  // });
 }
 
 app.on('ready',()=>{
@@ -143,43 +148,27 @@ app.on('activate',()=>{if (win === null) nw});
 // Monotから盗人ブルートしてきた
 ipcMain.handle('tab_move',(e,i)=>{
   menu.webContents.send('page_changed', '');
-  if(i<0)
-    i=0;
-  win.setTopBrowserView(bv[i]);
-  index= i;
-  console.log(index);
-  win.webContents.executeJavaScript(
-    `document.getElementsByTagName('title')[0].innerText='${bv[i].webContents.getTitle()}';`
+  if(i < 0) i = 0;
+
+  console.log(i);
+  menu.webContents.executeJavaScript(
+    `document.getElementsByTagName('title')[0].innerText='${tab.bv[i].webContents.getTitle()} - Flune';`
   );
-  bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+  tab.bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
 });
 
 // Monotから盗人ブルートしてきた
-ipcMain.handle('remove_tab',(e,i)=>{
+ipcMain.handle('remove_tab',(e, i, now_open_index)=>{
   //source: https://www.gesource.jp/weblog/?p=4112
   console.log('あ' + i);
   try{
+    console.log(now_open_index);
     var ind = i;
     console.log(bv[ind]);
-    bv[ind].webContents.destroy();
-    win.removeBrowserView(bv[ind]);
-    index -= 1;
-    if(ind == index){
-      index += 2;
-      console.log(index);
-    }
-    if(bv[index] === undefined){
-      nt(index);
-      menu.webContents.send('newtab', index);
-    }
-    if(bv[index] === null){
-      nt(index);
-      menu.webContents.send('newtab', index);
-    }
+    tab.remove(ind, now_open_index - 1);
   }
   catch(e){
-    nt(index + 1);
-    bv[index + 1].webContents.loadFile(__dirname + '/src/resource/error.html');
+    tab.create(index + 1, winSize[0], winSize[1] - tab.viewY, 'src/resource/error.html');
     index = index + 1;
     menu.webContents.send('new_tab');
     console.log(e);
@@ -191,15 +180,15 @@ ipcMain.handle('open_url', (event, data) => {
   no_http_url_regexp = /([\w\/:%#\$&\?\(\)~\.=\+\-]+)/g;
   if(data.match(url_regexp)) {
     console.log('🤔')
-    bv[index].webContents.loadURL(data);
+    tab.bv[index].webContents.loadURL(data);
     menu.webContents.send('page_changed', data);
   }
   else if(data.match('://')){
-    bv[index].webContents.loadURL(data);
+    tab.bv[index].webContents.loadURL(data);
     menu.webContents.send('page_changed', data);
   }
   else {
-    bv[index].webContents.loadURL('https://www.google.com/search?q=' + data);
+    tab.bv[index].webContents.loadURL('https://www.google.com/search?q=' + data);
     menu.webContents.send('page_changed', data);
   }
   console.log(data);
@@ -225,17 +214,18 @@ ipcMain.handle('pageback', (event, data) => {
 });
 
 ipcMain.handle('bv_url', (event, data) => {
-  return (bv[index].webContents.getURL());
+  return (tab.bv[tab.tabindex].webContents.getURL());
 });
 
 ipcMain.handle('open_tab', (event, tabindex) => {
-  win.addBrowserView(bv[tabindex]);
-  bv[tabindex].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+  win.addBrowserView(tab.bv[tabindex]);
+  tab.bv[tabindex].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
   index = tabindex;
 });
 
 ipcMain.handle('new_tab', (event, tabindex) => {
-  nt(tabindex);
+  tab.create(tabindex, winSize[0], winSize[1], tab.defaultUrl);
+  tab.tabindex = tabindex;
   index = tabindex;
 });
 
@@ -249,7 +239,7 @@ ipcMain.handle('pageforward', (event, data) => {
 });
 
 ipcMain.handle('open_home', (event, data) => {
-  bv[index].webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
+  tab.bv[index].webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
   menu.webContents.send('page_changed', '');
 });
 
