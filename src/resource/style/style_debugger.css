@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap');
+
+body {
+    background: url('../bg_blue.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: #eeeeee;
+    font-size: 2em;
+}
+
+input[type = 'text'] {
+    background: #3b3b3b5b;
+    width: 40%;
+    border-radius: 20px;
+    height: 20px;
+    font-size: 1.1em;
+    color: #d4d4d4;
+    outline: 0;
+    padding: 0.5em;
+    font-family: 'Noto Sans JP', sans-serif;
+    backdrop-filter: blur(10px);
+    border: solid 1px #3b3b3b5b;
+}
+
+select {
+    background: #3b3b3b5b;
+    border-radius: 20px;
+    color: #d4d4d4;
+    outline: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    backdrop-filter: blur(10px);
+    border: solid 1px #3b3b3b5b;
+    padding: 0.1em;
+}
+
+a {  
+    text-decoration: none;
+    color: #e6e6e6;
+}
+
+ul {
+    background: #1d1d1d;
+    border-radius: 10px;
+    padding: 0.5em;
+    list-style: none;
+}
+
+li {
+    border-bottom: solid #eeeeee 1px;
+    font-size: 0.5em;
+}
