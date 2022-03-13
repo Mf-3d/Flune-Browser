@@ -12,12 +12,13 @@ let setting;
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
-var theme_json = JSON.parse(fs.readFileSync(store.get('theme', '/config/theme/Dark/theme.json'), 'utf-8'));
+var theme_json = JSON.parse(fs.readFileSync(store.get('theme', __dirname + '/config/theme/Dark/theme.json'), 'utf-8'));
 var theme_url = store.get('theme', __dirname + '/config/theme/Dark/theme.json');
 console.log(theme_json);
 var viewY = 72;
 var index = 0;
 const tab = new Tab(win, menu, viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
+console.log(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`)
 const debug = new Debug();
 theme_url = __dirname + '/config/theme/Dark/theme.json';
 var developer_window;

@@ -23,7 +23,7 @@ module.exports = class {
             }
         });
 
-        developer_window.webContents.loadFile(__dirname + '/src/resource/debugger.html');
+        developer_window.webContents.loadFile(__dirname + '/src/resource/logger.html');
         developer_window.webContents.executeJavaScript(`
           window.addEventListener('contextmenu', (e) => {
             e.preventDefault()
