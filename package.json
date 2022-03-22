@@ -21,6 +21,8 @@
       "node_modules",
       "src",
       "main.js",
+      "tab.js",
+      "debug.js",
       "package-lock.json",
       "package.json",
       "README.md",
