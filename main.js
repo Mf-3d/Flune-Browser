@@ -1,3 +1,4 @@
+// モジュール読み込み
 const {app, BrowserWindow, dialog, Menu, ipcMain, BrowserView} = require('electron');
 const Store = require('electron-store');
 const store = new Store();
@@ -5,28 +6,53 @@ const fs = require('fs');
 const path = require('path');
 const Tab = require('./tab');
 const Debug = require('./debug');
+
+// ウィンドウの変数
 let win;
+
+// ブラウザビューの変数
 let bv = [];
+
+// メニュービューの変数
 let menu;
+
+// 設定の変数
 let setting;
+
+// OS判別
 const is_windows = process.platform==='win32';
 const is_mac = process.platform==='darwin';
 const is_linux = process.platform==='linux';
+
+// テーマ
 var theme_json = JSON.parse(fs.readFileSync(store.get('theme', __dirname + '/config/theme/Dark/theme.json'), 'utf-8'));
 var theme_url = store.get('theme', __dirname + '/config/theme/Dark/theme.json');
-console.log(theme_json);
+console.debug(theme_json);
+
+// メニュービューの高さ
 var viewY = 72;
+
+// 開いているタブの番号
 var index = 0;
+
+// タブを生成
 const tab = new Tab(win, menu, viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
-console.log(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`)
+console.log(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
+
+// デバッグウィンドウを生成
 const debug = new Debug();
+
+// テーマの場所を指定
 theme_url = __dirname + '/config/theme/Dark/theme.json';
 var developer_window;
 
+// ウィンドウサイズ
 let winSize;
 
-let version = '1.1.0';
+// バージョン
+let version = '1.1.1';
 
+// メニュー
 const template = Menu.buildFromTemplate([
   ...(is_mac ? [{
       label: 'Flune Browser',
@@ -188,6 +214,7 @@ const template = Menu.buildFromTemplate([
   }
 ]);
 
+// ウィンドウ生成
 function nw(){
   win=new BrowserWindow({
     width: store.get('width', 800),
@@ -280,7 +307,6 @@ app.on('activate',()=>{if (win === null) nw});
 // Monotから盗人ブルートしてきた
 ipcMain.handle('tab_move',(e,i)=>{
   menu.webContents.send('page_changed', '');
-  if(i < 0) i = 0;
 
   debug.log('Index: ' + i);
   menu.webContents.executeJavaScript(
@@ -292,7 +318,6 @@ ipcMain.handle('tab_move',(e,i)=>{
 // Monotから盗人ブルートしてきた
 ipcMain.handle('remove_tab',(e, i, now_open_index)=>{
   //source: https://www.gesource.jp/weblog/?p=4112
-  console.log('あ' + i);
   try{
     console.log(now_open_index);
     var ind = i;
