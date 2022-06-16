@@ -22,6 +22,15 @@ function search() {
 }
 
 window.onload = () => {
+  document.addEventListener('keydown', (e) => {
+    if (e.target === document.getElementById('address_bar')) {
+      const word = document.getElementsByTagName('input')[0].value;
+      if (!e.isComposing && e.key === 'Enter' && word != null) {
+        search();
+      }
+    }
+  });
+
   document.querySelector("#new_tab").addEventListener("click", (event) => {
     if(document.querySelector("#active")){
       document.querySelector("#active").removeAttribute("id");
@@ -29,7 +38,7 @@ window.onload = () => {
 
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div id="active"><a class="title">わりゅ</a><a class="close_button">×</a></div>
+    <div id="active"><a class="title">読み込み中…</a><a class="close_button">×</a></div>
     `;
 
     window.flune_api.new_tab();

@@ -39,24 +39,14 @@ function nt() {
 
   open_tab = bv.length - 1;
 
-  win.webContents.send('change_title', {
-    title: bv[id].webContents.getTitle(),
-    index: id
-  });
-
-  win.webContents.send('change_url', {
-    url: bv[id].webContents.getURL()
+  bv[id].webContents.on('page-title-updated', () => {
+    setTitle(id);
   });
 }
 
 function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
-
-
-  bv[index].webContents.on('page-title-updated', () => {
-    setTitle(index);
-  });
 
   setTitle(index);
 }
@@ -68,9 +58,16 @@ function setTitle(index) {
     index: index
   });
 
-  win.webContents.send('change_url', {
-    url: bv[index].webContents.getURL()
-  });
+  if(bv[index].webContents.getURL() === __dirname + "/src/views/home.html"){
+    win.webContents.send('change_url', {
+      url: ""
+    });
+  }
+  else{
+    win.webContents.send('change_url', {
+      url: bv[index].webContents.getURL()
+    });
+  }
 }
 
 function nw() {
@@ -140,13 +137,18 @@ electron.ipcMain.handle('reload', (event, data) => {
   setTitle(open_tab);
 });
 
-electron.ipcMain.handle('searchURL', (event, data) => {
-  if(data.slice(0, 5) === "https" || data.slice(0, 5) === "http:"){
-    bv[open_tab].webContents.loadURL(data);
+electron.ipcMain.handle('searchURL', (event, word) => {
+  let url;
+
+  if (word.slice(0, 3) === 'http') {
+    url = `${word}`;
+  } else if (word.match(/\S+\.\S+/)) {
+    url = `http://${word}`;
+  } else {
+    url = "https://www.google.comsearch?q=" + word;
   }
-  else{
-    bv[open_tab].webContents.loadURL(`https://www.google.com/search?q=${data}`);
-  }
+
+  bv[open_tab].webContents.loadURL(url);
 
   win.webContents.send('change_url', {
     url: bv[open_tab].webContents.getURL()
