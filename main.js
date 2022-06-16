@@ -142,6 +142,8 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
   if (word.slice(0, 3) === 'http') {
     url = `${word}`;
+  } else if(word.slice(0, 3) === 'file') {
+    url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
@@ -250,7 +252,9 @@ const template = electron.Menu.buildFromTemplate([
   {
     label:'ヘルプ',
     submenu: [
-      {label:`${app_name} ヘルプ`},
+      {label:`${app_name} ヘルプ`, click: () => {
+        electron.shell.openExternal('https://twitter.com/made_in_apple_')
+      }},
       ...(isMac ? [ ] : [
         {type:'separator'},
         {role:'about',  label:`${app.name}について` }

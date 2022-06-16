@@ -1,5 +1,5 @@
 body {
-  background-image: url("../views/image/dune.jpeg");
+  background-image: url("../views/image/yuya-hata-1OppflAoX5M-unsplash.jpeg");
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
@@ -16,13 +16,37 @@ h1 {
 }
 
 input {
-  background: #25252556;
-  border: solid 1px #515151;
+  background: #77777756;
+  border: solid 1px #989898;
   backdrop-filter: blur(10px);
   border-radius: 25px;
   font-size: 1.5em;
   padding: 0.5em;
-  width: 40%;
+  width: 80%;
   color: #fafafa;
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+}
+
+body > div {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  /* background: #00000071; */
+  border-radius: 20px;
+}
+
+#shortcut {
+  text-align: center;
+  display: flex;
+  padding: 2em;
+}
+
+#shortcut a {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#shortcut a img {
+  width: 40px;
+  border-radius: 10px;
 }
