@@ -63,7 +63,7 @@ window.onload = () => {
     });
   }
 
-  each();
+  // each();
 }
 
 window.flune_api.on('change_url', (event, data)=>{
