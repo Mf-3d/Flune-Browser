@@ -1,6 +1,3 @@
 dist
 node_modules
-config/theme/.DS_Store
-.DS_Store
-src/.DS_Store
-src/resource/.DS_Store
+*.DS_Store

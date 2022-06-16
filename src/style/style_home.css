@@ -1,0 +1,28 @@
+body {
+  background-image: url("../views/image/mojave.jpeg");
+  background-size: cover;
+  background-attachment: fixed;
+  text-align: center;
+  margin-top: 10em;
+  color: #c2c2c2;
+  text-shadow: #4c7a6a79 1px 1px 10px;
+}
+
+h1 {
+  background: linear-gradient(70deg, #41d0bd, #00ff9d);
+  background: -webkit-linear-gradient(70deg, #41d0bd, #00ff9d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+input {
+  background: #25252556;
+  border: solid 1px #515151;
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  font-size: 2em;
+  padding: 0.5em;
+  width: 40%;
+  color: #fafafa;
+  font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+}

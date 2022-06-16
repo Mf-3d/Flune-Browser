@@ -1,458 +1,144 @@
-// モジュール読み込み
-const {app, BrowserWindow, dialog, Menu, ipcMain, BrowserView} = require('electron');
-const Store = require('electron-store');
-const store = new Store();
-const fs = require('fs');
-const path = require('path');
-const Tab = require('./tab');
-const Debug = require('./debug');
+const { app } = require("electron");
+const electron = require("electron");
 
-// ウィンドウの変数
 let win;
-
-// ブラウザビューの変数
 let bv = [];
-
-// メニュービューの変数
-let menu;
-
-// 設定の変数
-let setting;
-
-// OS判別
-const is_windows = process.platform==='win32';
-const is_mac = process.platform==='darwin';
-const is_linux = process.platform==='linux';
-
-// テーマ
-var theme_json = JSON.parse(fs.readFileSync(store.get('theme', __dirname + '/config/theme/Dark/theme.json'), 'utf-8'));
-var theme_url = store.get('theme', __dirname + '/config/theme/Dark/theme.json');
-console.debug(theme_json);
-
-// メニュービューの高さ
-var viewY = 72;
-
-// 開いているタブの番号
-var index = 0;
-
-// タブを生成
-const tab = new Tab(win, menu, viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
-console.log(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
-
-// デバッグウィンドウを生成
-const debug = new Debug();
-
-// テーマの場所を指定
-theme_url = __dirname + '/config/theme/Dark/theme.json';
-var developer_window;
-
-// ウィンドウサイズ
 let winSize;
+let open_tab = 1;
 
-// バージョン
-let version = '1.1.1';
+let viewY = 47;
+// let viewY = 200;
 
-// メニュー
-const template = Menu.buildFromTemplate([
-  ...(is_mac ? [{
-      label: 'Flune Browser',
-      submenu: [
-        {
-          accelerator: 'CmdOrCtrl+Alt+A',
-          click: ()=>{
-            dialog.showMessageBox(null, {
-              type: 'info',
-              icon: './src/icon.png',
-              title: 'Flune Browserについて',
-              message: 'Flune Browserについて',
-              detail: `Flune Browser
-                バージョン: ${version}
-                開発者: mf7cli
-                License by monochrome License.
-                
-                Copyright 2022 mf7cli.`
-              }
-            )
-          }, 
-          label:`Flune Browserについて` 
-        },
-        {type:'separator'},
-        {role:'services',   label:'サービス'},
-        {type:'separator'},
-        {role:'hide',       label:`Flune Browserを隠す`},
-        {role:'hideothers', label:'ほかを隠す'},
-        {role:'unhide',     label:'すべて表示'},
-        {type:'separator'},
-        {role:'quit',       label:`Flune Browserを終了`}
-      ]
-    }] : []),
-  {
-    label: 'ファイル',
-    submenu: [
-      is_mac ? {role:'close', label:'ウィンドウを閉じる'} : {role:'quit', label:'終了'}
-    ]
-  },
-  {
-    label: '編集',
-    submenu: [
-      {role:'undo',  label:'元に戻す'},
-      {role:'redo',  label:'やり直す'},
-      {type:'separator'},
-      {role:'cut',   label:'切り取り'},
-      {role:'copy',  label:'コピー'},
-      {role:'paste', label:'貼り付け'},
-      ...(is_mac ? [
-          {role:'pasteAndMatchStyle', label:'ペーストしてスタイルを合わせる'},
-          {role:'delete',    label:'削除'},
-          {role:'selectAll', label:'すべてを選択'},
-          {type:'separator' },
-          {
-            label: 'スピーチ',
-            submenu: [
-              {role:'startSpeaking', label:'読み上げを開始'},
-              {role:'stopSpeaking',  label:'読み上げを停止'}
-            ]
-          }
-        ] : [
-          {role:'delete',    label:'削除'},
-          {type:'separator'},
-          {role:'selectAll', label:'すべてを選択'}
-        ])
-     ]
-  },
-  {
-    label: '表示',
-    submenu: [
-      {
-        accelerator: 'Shift+R',
-        click:()=>{
-          bv[index].webContents.reload();
-        },         
-        label:'再読み込み'
-      },
-      {
-        accelerator: 'Shift+Alt+R',
-        click:()=>{
-          bv[index].webContents.reloadIgnoringCache();
-        },         
-        label:'強制的に再読み込み'
-      },
-      {
-        accelerator: 'F12',
-        click:()=>{
-          bv[index].webContents.toggleDevTools();
-        }, 
-        label:'開発者ツールを表示'
-      },
-      {
-        accelerator: 'F12',
-        click:()=>{
-          menu.webContents.toggleDevTools();
-        }, 
-        label:'ナビゲーションの開発者ツールを表示'
-      },
-      {type:'separator'},
-      {role:'resetZoom',      label:'実際のサイズ'},
-      {role:'zoomIn',         label:'拡大'},
-      {role:'zoomOut',        label:'縮小'},
-      {type:'separator'},
-      {role:'togglefullscreen', label:'フルスクリーン'}
-    ]
-  },
-  {
-    label: 'ウィンドウ',
-    submenu: [
-      {role:'minimize', label:'最小化'},
-      {role:'zoom',     label:'ズーム'},
-      ...(is_mac ? [
-           {type:'separator'} ,
-           {role:'front',  label:'ウィンドウを手前に表示'},
-           {type:'separator'},
-           {role:'window', label:'ウィンドウ'}
-         ] : [
-           {role:'close',  label:'閉じる'}
-         ])
-    ]
-  },
-  {
-    label:'Develop',
-    submenu: [
-      {
-        label: '開発者モード',
-        click: () => {
-          debug.show();
-        }
-      }
-    ]
-  },
-  {
-    label:'ヘルプ',
-    submenu: [
-      {label:`Flune Browser ヘルプ`},    // ToDo
-      ...(is_mac ? [ ] : [
-        {type:'separator'} ,
-        {
-          accelerator: 'CmdOrCtrl+Alt+A',
-          click: ()=>{
-            dialog.showMessageBox(null, {
-              type: 'info',
-              icon: './src/icon.png',
-              title: 'Flune Browserについて',
-              message: 'Flune Browserについて',
-              detail: `Flune Browser
-                バージョン: ${version}
-                開発者: mf7cli
-                
-                Copyright 2022 mf7cli.`
-              }
-            )
-          }, 
-          label:`Flune Browserについて` 
-        }
-      ])
-    ]
-  }
-]);
+function nt() {
+  let id = bv.length;
+  bv[bv.length] = new electron.BrowserView({
+    transparent: false,
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload.js`
+    }
+  });
+  
+  bv[bv.length - 1].webContents.loadFile(__dirname + "/src/views/home.html");
 
-// ウィンドウ生成
-function nw(){
-  win=new BrowserWindow({
-    width: store.get('width', 800),
-    height: store.get('height', 500),
-    minWidth: 800, 
-    minHeight: 400,
-    icon: `${__dirname}/icon.png`,
+  win.addBrowserView(bv[bv.length - 1]);
+
+  bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
+
+  win.setTopBrowserView(bv[bv.length - 1]);
+
+  bv[bv.length - 1].setAutoResize({width: true, height: true});
+
+  win.webContents.send('change_title', {
+    title: bv[bv.length - 1].webContents.getTitle(),
+    index: bv.length - 1
+  });
+
+  win.webContents.send('change_url', {
+    url: bv[bv.length - 1].webContents.getURL()
+  });
+  
+  bv[bv.length - 1].webContents.on('page-title-updated', () => {
+    setTitle(id);
+  });
+
+  open_tab = bv.length - 1;
+}
+
+function ot(index) {
+  open_tab = index;
+  win.setTopBrowserView(bv[index]);
+
+  setTitle(index);
+}
+
+function setTitle(index) {
+  console.debug(open_tab);
+  win.webContents.send('change_title', {
+    title: bv[index].webContents.getTitle(),
+    index: index
+  });
+
+  win.webContents.send('change_url', {
+    url: bv[index].webContents.getURL()
+  });
+}
+
+function nw() {
+  win = new electron.BrowserWindow({
+    width: 1600, height: 900, minWidth: 400, minHeight: 400,
     frame: false,
-    toolbar: false,
-    title: 'Flune Browser'
+    transparent: false,
+    backgroundColor: '#ffffff',
+    title: 'Flune-Browser v2',
+    titleBarStyle: 'hidden',
+    // icon: `${__dirname}/src/image/logo.png`,
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload.js`
+    }
   });
 
   winSize = win.getSize();
 
-  // nt(0);
+  win.loadFile(`${__dirname}/src/views/menu.html`);
 
-  menu=new BrowserView({
-    width: `${win.getSize()[0]}`,
-    webPreferences: {
-      preload: `${__dirname}/src/preload.js`
-    }
-  });
-
-  win.addBrowserView(menu);
-
-  menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
-  if(is_mac) {
-    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_mac}`);
-  }
-
-  else if(is_windows) {
-    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_win}`);
-  }
-
-  else if(is_linux) {
-    menu.webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.nav.html_linux}`);
-  }
-
-  debug.init();
-  tab.init(win, menu, viewY);
-  tab.create(0, store.get('width', 800), store.get('height', 500) - viewY, `${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
-
-  win.webContents.on('close',()=>{
-    store.set('width', win.getSize()[0]);
-    store.set('height', win.getSize()[1]);
-    store.set('theme', store.get('theme', __dirname + '/config/theme/Dark/theme.json'));
-  });
-
-  win.on('resize', () => {
-    winSize = win.getSize();
-    menu.setBounds({ x: 0, y: 0, width: winSize[0], height: viewY });
-    tab.bv[tab.tabindex].setBounds({ x: 0, y: tab.viewY, width: winSize[0], height: winSize[1] - tab.viewY });
-    tab.winSize = winSize;
-    // bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
-  });
-
-  // bv[index].webContents.on('will-navigate', (e, url)=>{
-  //   bv[index].webContents.loadURL(url);
-  // });
-
-  // bv[index].webContents.on('did-start-loading',()=>{});
-  // bv[index].webContents.on('did-stop-loading',()=>{
-  //   bv[index].setBackgroundColor('#fff');
-  //   bv[index].webContents.executeJavaScript(`
-  //     window.addEventListener('contextmenu', (e) => {
-  //       e.preventDefault()
-  //       window.api.show_context_menu();
-  //     });`
-  //   );
-  //   // 盗人ブルートしてきた
-  //   console.log(bv[index].webContents.getURL());
-  //   menu.webContents.executeJavaScript(`document.getElementById('url').value = '${bv[index].webContents.getURL()}'`);
-  // });
+  nt();
 }
 
-app.on('ready',()=>{
-  nw();
-  debug.log('Index: ' + index);
-  if(process.argv[2] == '--dev'){
-    console.log('develop!');
-    viewY = 200;
-    menu.webContents.openDevTools();
-  }
-});
-app.on('window-all-closed', ()=>app.quit());
-app.on('activate',()=>{if (win === null) nw});
+electron.app.on("ready", nw);
 
-// IPC
-
-// Monotから盗人ブルートしてきた
-ipcMain.handle('tab_move',(e,i)=>{
-  menu.webContents.send('page_changed', '');
-
-  debug.log('Index: ' + i);
-  menu.webContents.executeJavaScript(
-    `document.getElementsByTagName('title')[0].innerText='${tab.bv[i].webContents.getTitle()} - Flune';`
-  );
-  tab.bv[index].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
+electron.ipcMain.handle('new_tab', (event, data) => {
+  nt();
 });
 
-// Monotから盗人ブルートしてきた
-ipcMain.handle('remove_tab',(e, i, now_open_index)=>{
-  //source: https://www.gesource.jp/weblog/?p=4112
-  try{
-    console.log(now_open_index);
-    var ind = i;
-    console.log(ind);
-    tab.remove(ind, now_open_index - 1);
-  }
-  catch(e){
-    tab.create(index + 1, winSize[0], winSize[1] - tab.viewY, 'src/resource/error.html');
-    index = index + 1;
-    menu.webContents.send('new_tab');
-    console.log(e);
-  }
-})
+electron.ipcMain.handle('close_tab', (event, index) => {
+  bv[index].webContents.destroy();
+  bv = bv.splice(index, 1);
 
-ipcMain.handle('open_url', (event, data) => {
-  url_regexp = /(https:?|http:?|file:\/)\/\/([\w\/:%#\$&\?\(\)~\.=\+\-]+)/g;
-  no_http_url_regexp = /([\w\/:%#\$&\?\(\)~\.=\+\-]+)/g;
-  if(data.match(url_regexp)) {
-    console.log('🤔')
-    tab.bv[index].webContents.loadURL(data);
-    menu.webContents.send('page_changed', data);
+  if(bv.length <= 0){
+    app.quit();
   }
-  else if(data.match('://')){
-    tab.bv[index].webContents.loadURL(data);
-    menu.webContents.send('page_changed', data);
-  }
-  else {
-    tab.bv[index].webContents.loadURL('https://www.google.com/search?q=' + data);
-    menu.webContents.send('page_changed', data);
-  }
-  console.log(data);
-});
-
-ipcMain.handle('apply_setting', (event, data) => {
-  if(data !== null){
-    if(data === 'Dark'){
-      store.set('theme', __dirname + '/config/theme/Dark/theme.json');
-    }
-    else if(data === 'Light'){
-      store.set('theme', __dirname + '/config/theme/Light/theme.json');
-    }
-    else {
-      store.set('theme', data);
-    }
+  else{
+    open_tab = index + 1;
+    ot(index + 1);
   }
 });
 
-ipcMain.handle('pageback', (event, data) => {
-  bv[index].webContents.goBack();
-  menu.webContents.send('page_changed', '');
+electron.ipcMain.handle('open_tab', (event, index) => {
+  ot(index);
+  console.debug(index)
 });
 
-ipcMain.handle('bv_url', (event, data) => {
-  return (tab.bv[tab.tabindex].webContents.getURL());
+electron.ipcMain.handle('go_back', (event, data) => {
+  bv[open_tab].webContents.goBack();
+  setTitle(open_tab);
 });
 
-ipcMain.handle('open_tab', (event, tabindex) => {
-  win.addBrowserView(tab.bv[tabindex]);
-  tab.bv[tabindex].setBounds({ x: 0, y: viewY, width: winSize[0], height: winSize[1] - viewY });
-  index = tabindex;
+electron.ipcMain.handle('go_forward', (event, data) => {
+  bv[open_tab].webContents.goForward();
+  setTitle(open_tab);
 });
 
-ipcMain.handle('new_tab', (event, tabindex) => {
-  tab.create(tabindex, winSize[0], winSize[1], tab.defaultUrl);
-  tab.tabindex = tabindex;
-  index = tabindex;
+electron.ipcMain.handle('reload', (event, data) => {
+  bv[open_tab].webContents.reload();
+  setTitle(open_tab);
 });
 
-ipcMain.handle('version', (event, tabindex) => {
-  return version;
-});
+electron.ipcMain.handle('searchURL', (event, data) => {
+  if(data.slice(0, 5) === "https" || data.slice(0, 5) === "http:"){
+    bv[open_tab].webContents.loadURL(data);
+  }
+  else{
+    bv[open_tab].webContents.loadURL(`https://www.google.com/search?q=${data}`);
+  }
 
-ipcMain.handle('pageforward', (event, data) => {
-  bv[index].webContents.goForward();
-  menu.webContents.send('page_changed', '');
-});
-
-ipcMain.handle('open_home', (event, data) => {
-  tab.bv[index].webContents.loadFile(`${path.dirname(theme_url)}/${theme_json.theme.start.html}`);
-  menu.webContents.send('page_changed', '');
-});
-
-ipcMain.handle('close', (event, data) => {
-  win.close();
-});
-
-ipcMain.handle('maximize', (event, data) => {
-  win.maximize();
-});
-
-ipcMain.handle('minimize', (event, data) => {
-  win.minimize();
-});
-
-ipcMain.handle('open_setting', (event, data) => {
-  setting = new BrowserWindow({
-    width: 700,
-    height: 600,
-    icon: `${__dirname}/icon.png`,
-    toolbar: false,
-    title: 'Flune Browser',
-    webPreferences: {
-      preload: `${__dirname}/src/preload.js`
-    }
-  });
-  setting.webContents.executeJavaScript(`
-      window.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
-        window.api.show_context_menu();
-      });`
-  );
-  setting.webContents.loadFile(`src/resource/setting.html`);
-
-  setting.on('close', () => {
-    
+  win.webContents.send('change_url', {
+    url: bv[open_tab].webContents.getURL()
   });
 });
-
-ipcMain.handle('close_setting', (event, data) => {
-  setting.close();
-  console.log('👍');
-});
-
-ipcMain.handle('show_context_menu', (event, data) => {
-  template.popup();
-});
-
-ipcMain.handle('maxmin', (event, data) => {
-  if(win.isMaximized()==true) {
-    win.unmaximize();
-  }
-  else {
-    win.maximize();
-  }
-});
-
-// メニューを適用する
-Menu.setApplicationMenu(template);

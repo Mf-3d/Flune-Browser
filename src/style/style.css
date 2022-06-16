@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap');
+
+body {
+  background: #252525;
+  color: #fafafa;
+  font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+  margin-top: 0.1em;
+}
+
+a {
+  display: inline-block;
+  background: linear-gradient(70deg, #41d0bd, #00ff9d);
+  background: -webkit-linear-gradient(70deg, #41d0bd, #00ff9d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#tabs {
+  width: 100%;
+  display: flex;
+  background: linear-gradient(70deg, #41d0bd, #00ff9d);
+  border-radius: 5px;
+  position: relative;
+  top: 3px;
+  padding: 1px;
+}
+
+#tabs > span {
+  width: 100%;
+  display: flex;
+}
+
+#tabs > span > div {
+  display: inline-block;
+  background: #252525;
+  border-radius: 5px;
+  padding: 1px;
+  margin: 1px;
+  width: 100%;
+  text-align: center;
+  box-shadow: #25252594 1px 1px 5px 2.5px;
+  overflow-x: hidden;
+  font-size: 0.7em;
+  white-space: nowrap;
+}
+
+#tabs > span > div > a {
+  text-overflow: ellipsis;
+}
+
+#tabs > span > div#active {
+  background: linear-gradient(70deg, #184d46, #004b2e);
+}
+
+#new_tab {
+  color: #252525;
+  display: inline-block;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  cursor: pointer;
+}
+
+nav {
+  padding-left: 4em;
+}
+
+input {
+  outline: none;
+  height: 0.9em;
+  border-radius: 5px;
+  border: solid 1px #585858;
+  background: #252525;
+  color: #fafafa;
+  font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+  width: 50%;
+  font-size: 0.7em;
+  padding: 0.2em;
+}
+
+.close_button {
+  margin-left: 1em;
+}

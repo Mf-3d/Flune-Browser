@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flune-Browser 2.0.0</title>
+        <link href="../style/style.css" rel="stylesheet"/>
+        <script src="./script/menu.js"></script>
+    </head>
+    <body>
+        <nav>
+            <a href="javascript:go_back()">&lt;</a>
+            <a href="javascript:go_forward()">&gt;</a>
+            <a href="javascript:reload()">↻</a>
+            <input type="text" id="address_bar" placeholder="検索するURLを入力"/>
+            <a href="javascript:search()">&gt;</a>
+        </nav>
+        <div id="tabs">
+            <span>
+                <div id="active"><a class="title"></a><a class="close_button">×</a></div>
+            </span>
+            <a id="new_tab" style="margin-left: 0.5em;">+</a>
+        </div>
+    </body>
+</html>
