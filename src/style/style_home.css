@@ -1,5 +1,5 @@
 body {
-  background-image: url("../views/image/mojave.jpeg");
+  background-image: url("../views/image/dune.jpeg");
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
@@ -20,7 +20,7 @@ input {
   border: solid 1px #515151;
   backdrop-filter: blur(10px);
   border-radius: 25px;
-  font-size: 2em;
+  font-size: 1.5em;
   padding: 0.5em;
   width: 40%;
   color: #fafafa;
