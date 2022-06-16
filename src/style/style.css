@@ -35,6 +35,7 @@ a {
 
 #tabs > span > div {
   display: inline-block;
+  position: relative;
   background: #252525;
   border-radius: 5px;
   padding: 1px;
@@ -44,11 +45,20 @@ a {
   box-shadow: #25252594 1px 1px 5px 2.5px;
   overflow-x: hidden;
   font-size: 0.7em;
+}
+
+#tabs .title {
+  overflow-x: hidden;
+  width: 75%;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-#tabs > span > div > a {
-  text-overflow: ellipsis;
+.close_button {
+  position: absolute;
+  right: 0.5em;
+  background-color: #004b2e;
+  width: 15px;
 }
 
 #tabs > span > div#active {
