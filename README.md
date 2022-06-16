@@ -1,7 +1,7 @@
 # Flune-Browser 2.0.0
 Flune-Browserが生まれ変わりました！
 
-![](https://user-images.githubusercontent.com/84224913/174068314-1c0f74e2-078d-4bd3-9d1b-6a1e92e7a3e2.png)
+![スクリーンショット 2022-06-17 8 51 18](https://user-images.githubusercontent.com/84224913/174196313-98b7b385-f062-444a-9b4c-f5e4266d41ce.png)
 
 
 ---
