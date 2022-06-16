@@ -145,7 +145,7 @@ electron.ipcMain.handle('searchURL', (event, word) => {
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
-    url = "https://www.google.comsearch?q=" + word;
+    url = "https://www.google.com/search?q=" + word;
   }
 
   bv[open_tab].webContents.loadURL(url);
