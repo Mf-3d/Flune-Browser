@@ -5,12 +5,37 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx electron ."
+    "start": "npx electron .",
+    "build:mac": "npx electron-builder --mac --x64",
+    "build:win": "npx electron-builder --win --x64 --dir"
   },
   "keywords": [],
   "author": "mf7cli",
-  "dependencies": {
+  "build": {
+    "appId": "ml.mf7cli.flune",
+    "productName": "Flune-Browser",
+    "files": [
+      "!.git",
+      "!.dist",
+      "node_modules",
+      "src",
+      "main.js",
+      "package-lock.json",
+      "package.json",
+      "preload"
+    ],
+    "asar": false,
+    "mac": {
+      "target": "dmg",
+      "icon": "src/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/icon.png"
+    }
+  },
+  "devDependencies": {
     "electron": "^19.0.1",
-    "electron-tabs": "^1.0.1"
+    "electron-builder": "^23.0.3"
   }
 }

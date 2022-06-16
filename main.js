@@ -30,17 +30,28 @@ function nt() {
 
   win.setTopBrowserView(bv[bv.length - 1]);
 
+
   bv[bv.length - 1].setAutoResize({width: true, height: true});
 
   open_tab = bv.length - 1;
+
+  win.webContents.send('change_title', {
+    title: bv[id].webContents.getTitle(),
+    index: id
+  });
+
+  win.webContents.send('change_url', {
+    url: bv[id].webContents.getURL()
+  });
 }
 
 function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
 
+
   bv[index].webContents.on('page-title-updated', () => {
-    setTitle(id);
+    setTitle(index);
   });
 
   setTitle(index);
@@ -89,10 +100,20 @@ electron.ipcMain.handle('new_tab', (event, data) => {
 });
 
 electron.ipcMain.handle('close_tab', (event, index) => {
-  app.quit();
+  win.removeBrowserView(bv[index]);
+  bv[index].webContents.destroy();
 
-  // open_tab = index + 1;
-  // ot(open_tab);
+  bv.splice(index, 1);
+
+  index - 1;
+
+  win.webContents.send('update_active_tab', {
+    index: index
+  });
+
+  if(bv.length === 0){
+    app.quit();
+  }
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {

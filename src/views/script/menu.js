@@ -63,7 +63,7 @@ window.onload = () => {
     });
   }
 
-  // each();
+  each();
 }
 
 window.flune_api.on('change_url', (event, data)=>{
@@ -72,4 +72,12 @@ window.flune_api.on('change_url', (event, data)=>{
 
 window.flune_api.on('change_title', (event, data)=>{
   document.querySelectorAll("#tabs > span > div > .title")[data.index].innerHTML = data.title;
+});
+
+window.flune_api.on('active_tab', (event, data)=>{
+  if(document.querySelector("#active")){
+    document.querySelector("#active").removeAttribute("id");
+  }
+  
+  val.setAttribute('id','active');
 });
