@@ -107,7 +107,9 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   bv.splice(index, 1);
 
   index - 1;
+  open_tab - 1;
 
+  ot(open_tab);
   win.webContents.send('update_active_tab', {
     index: index
   });

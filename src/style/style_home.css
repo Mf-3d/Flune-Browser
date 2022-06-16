@@ -1,5 +1,5 @@
 body {
-  background-image: url("../views/image/yuya-hata-1OppflAoX5M-unsplash.jpeg");
+  background-image: url("../views/image/mojave.jpeg");
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
@@ -16,8 +16,8 @@ h1 {
 }
 
 input {
-  background: #77777756;
-  border: solid 1px #989898;
+  background: #38383856;
+  border: solid 1px #4747478d;
   backdrop-filter: blur(10px);
   border-radius: 25px;
   font-size: 1.5em;
@@ -39,6 +39,9 @@ body > div {
   text-align: center;
   display: flex;
   padding: 2em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
 }
 
 #shortcut a {

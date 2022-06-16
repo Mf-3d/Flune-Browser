@@ -53,7 +53,7 @@ window.onload = () => {
         val.remove();
         
         window.flune_api.close_tab(index);
-        el[index].setAttribute('id','active');
+        el[index - 1].setAttribute('id','active');
 
         each();
 
