@@ -6,7 +6,7 @@ Flune-Browserが生まれ変わりました！
 
 ---
 
-現在Flune-Browser 2.0.0はDev版です。
+現在Flune-Browser 2.0.0はBeta版です。
 
 Flune-Browser 1.x.xは今後更新はされませんがサポートは続く予定です。
 
