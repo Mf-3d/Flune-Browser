@@ -38,7 +38,7 @@ a {
 #tabs > span > div {
   display: inline-block;
   position: relative;
-  background: #252525;
+  background: #262626;
   border-radius: 5px;
   padding: 1px;
   margin: 1px;
@@ -47,6 +47,15 @@ a {
   box-shadow: #25252594 1px 1px 5px 2.5px;
   overflow-x: hidden;
   font-size: 0.7em;
+  transition: all 0.1s ease;
+}
+
+#tabs > span > div:hover {
+  background: #2c2c2c;
+}
+
+#tabs > span > div#active:hover {
+  background: #154539;
 }
 
 #tabs .title {
@@ -64,7 +73,7 @@ a {
 }
 
 #tabs > span > div#active {
-  background: linear-gradient(70deg, #184d46, #004b2e);
+  background: #144f48;
 }
 
 #new_tab {
@@ -102,4 +111,14 @@ nav > a#border {
   padding-right: 0.5em;
   padding-left: 0.5em;
   font-size: 0.8em;
+}
+
+nav > a {
+  transition: all 0.5s;
+}
+
+a:hover {
+  background: linear-gradient(70deg, #dffffb, #00bfff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
