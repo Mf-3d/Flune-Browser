@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer, webFrame } = require('electron')
 
 contextBridge.exposeInMainWorld('flune_api', {
     new_tab: async (data) => await ipcRenderer.invoke('new_tab', data),
@@ -8,7 +8,15 @@ contextBridge.exposeInMainWorld('flune_api', {
     close_tab: async (data) => await ipcRenderer.invoke('close_tab', data),
     searchURL: async (data) => await ipcRenderer.invoke('searchURL', data),
     reload: async (data) => await ipcRenderer.invoke('reload', data),
+    context: async (data) => await ipcRenderer.invoke('context', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
 );
+
+webFrame.executeJavaScript(`
+  // context menu
+  document.addEventListener('contextmenu', () => {
+    window.flune_api.context();
+  });
+`);

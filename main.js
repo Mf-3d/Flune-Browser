@@ -160,6 +160,10 @@ electron.ipcMain.handle('go_forward', (event, data) => {
   setTitle(open_tab);
 });
 
+electron.ipcMain.handle('context', (event, data) => {
+  context_menu.popup();
+});
+
 electron.ipcMain.handle('reload', (event, data) => {
   bv[open_tab].webContents.reload();
   setTitle(open_tab);
@@ -184,6 +188,44 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     url: bv[open_tab].webContents.getURL()
   });
 });
+
+const context_menu = electron.Menu.buildFromTemplate([
+  {
+    label: 'コピー',
+    role: 'copy'
+  },
+  {
+    label: 'ペースト',
+    role: 'paste'
+  },
+  {
+    label:'切り取り',
+    role:'cut'
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label:'再読み込み',
+    accelerator: 'CmdOrCtrl+R',
+    click: () => {
+      bv[open_tab].webContents.reload();
+    }
+  },
+  {
+    label:'強制的に再読み込み',
+      accelerator: 'CmdOrCtrl+Shift+R',
+      click: () => {
+      bv[open_tab].webContents.reloadIgnoringCache();
+    }
+  },
+  {
+    accelerator: 'F12',
+    click: () => {
+      bv[open_tab].webContents.toggleDevTools();
+    }, label:'開発者ツールを表示'
+  }
+]);
 
 const template = electron.Menu.buildFromTemplate([
   ...(isMac ? [{
@@ -243,7 +285,7 @@ const template = electron.Menu.buildFromTemplate([
         bv[open_tab].webContents.reload();
       }},
       {label:'強制的に再読み込み',
-      // accelerator: 'CmdOrCtrl+Shift+R',
+        accelerator: 'CmdOrCtrl+Shift+R',
         click: () => {
         bv[open_tab].webContents.reloadIgnoringCache();
       }},
