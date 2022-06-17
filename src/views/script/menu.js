@@ -46,6 +46,19 @@ window.onload = () => {
     each();
   });
 
+  window.flune_api.on('new_tab_elm', () => {
+    if(document.querySelector("#active")){
+      document.querySelector("#active").removeAttribute("id");
+    }
+  
+    document.querySelector("#tabs > span").innerHTML = `
+    ${document.querySelector("#tabs > span").innerHTML}
+    <div id="active"><a class="title">読み込み中…</a><a class="close_button">×</a></div>
+    `;
+  
+    each();
+  });
+
   function each() {
     let el = document.querySelectorAll("#tabs > span > div");
     el.forEach((val, index) => {

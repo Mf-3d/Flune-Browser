@@ -14,7 +14,7 @@ let viewY = 49;
 
 const isMac = (process.platform === 'darwin');
 
-function nt() {
+function nt(url) {
   let id = bv.length;
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
@@ -26,8 +26,13 @@ function nt() {
       preload: `${__dirname}/preload/preload.js`
     }
   });
-  
-  bv[bv.length - 1].webContents.loadFile(__dirname + "/src/views/home.html");
+ 
+  if(url){
+    bv[bv.length - 1].webContents.loadURL(url);
+  }
+  else{
+    bv[bv.length - 1].webContents.loadFile(__dirname + "/src/views/home.html");
+  }
 
   win.addBrowserView(bv[bv.length - 1]);
 
@@ -42,6 +47,12 @@ function nt() {
 
   bv[id].webContents.on('page-title-updated', () => {
     setTitle(id);
+  });
+
+  bv[id].webContents.on('new-window', (event, url) => {
+    event.preventDefault();
+    nt(url);
+    win.webContents.send('new_tab_elm', {});
   });
 }
 
