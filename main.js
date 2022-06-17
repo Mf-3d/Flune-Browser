@@ -145,7 +145,11 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   bv.splice(index, 1);
 
   index - 1;
-  open_tab = open_tab - 1;
+
+  if(bv.length === 0){
+    app.quit();
+    return;
+  }
 
   ot(index - 1);
 
@@ -153,14 +157,11 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index: index - 1
   });
 
-  if(bv.length === 0){
-    app.quit();
-  }
+  open_tab = open_tab - 1;
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
-  console.debug(index);
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
