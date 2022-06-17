@@ -9,7 +9,7 @@ let open_tab = 1;
 
 let app_name = "Flune-Browser 2.0.0";
 
-let viewY = 47;
+let viewY = 49;
 // let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
@@ -91,7 +91,7 @@ function ns() {
 
 function nw() {
   win = new electron.BrowserWindow({
-    width: 1600, height: 900, minWidth: 600, minHeight: 400,
+    width: 1200, height: 700, minWidth: 600, minHeight: 400,
     frame: false,
     transparent: false,
     backgroundColor: '#ffffff',

@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
 
 body {
   background: #252525;
   color: #fafafa;
-  font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   margin-top: 0.1em;
+  font-size: 0.9em;
 }
 
 a {
@@ -87,10 +89,17 @@ input[type="text"] {
   color: #fafafa;
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
   width: 50%;
-  font-size: 0.7em;
+  font-size: 0.8em;
   padding: 0.2em;
 }
 
 .close_button {
   margin-left: 1em;
+}
+
+nav > a#border {
+  border-left: #515151 solid 1px;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  font-size: 0.8em;
 }
