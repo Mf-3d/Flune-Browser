@@ -101,5 +101,5 @@ window.flune_api.on('active_tab', (event, data)=>{
     document.querySelector("#active").removeAttribute("id");
   }
   
-  val.setAttribute('id','active');
+  document.querySelectorAll("#tabs > span > div")[data.index].setAttribute('id','active');
 });

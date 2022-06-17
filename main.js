@@ -9,8 +9,8 @@ let open_tab = 1;
 
 let app_name = "Flune-Browser 2.0.0";
 
-let viewY = 49;
-// let viewY = 200;
+// let viewY = 49;
+let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
 
@@ -145,10 +145,12 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   bv.splice(index, 1);
 
   index - 1;
-  open_tab - 1;
+  open_tab = open_tab - 1;
 
-  win.webContents.send('update_active_tab', {
-    index: index
+  ot(index - 1);
+
+  win.webContents.send('active_tab', {
+    index: index - 1
   });
 
   if(bv.length === 0){
