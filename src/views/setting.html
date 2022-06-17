@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home - Flune-Browser 2.0.0</title>
+        <link href="../style/style.css" rel="stylesheet"/>
+        <link href="../style/style_home.css" rel="stylesheet"/>
+        <link href="../style/style_setting.css" rel="stylesheet"/>
+        <script>
+            function search() {
+                window.flune_api.searchURL(document.getElementById("search_bar").value);
+                document.querySelector("#search_bar").value = "";
+            }
+        </script>
+    </head>
+    <body>
+        <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
+        2.0.0
+        <br/>
+        <h2>実験的な機能</h2>
+        <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+    </body>
+</html>

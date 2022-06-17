@@ -15,7 +15,7 @@ h1 {
   -webkit-text-fill-color: transparent;
 }
 
-input {
+input[type="text"] {
   background: #38383856;
   border: solid 1px #4747478d;
   backdrop-filter: blur(10px);

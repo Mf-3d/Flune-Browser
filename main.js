@@ -2,6 +2,7 @@ const { app } = require("electron");
 const electron = require("electron");
 
 let win;
+let setting_win;
 let bv = [];
 let winSize;
 let open_tab = 1;
@@ -70,13 +71,31 @@ function setTitle(index) {
   }
 }
 
+function ns() {
+  setting_win = new electron.BrowserWindow({
+    width: 600, height: 400, minWidth: 600, minHeight: 400,
+    transparent: false,
+    backgroundColor: '#ffffff',
+    title: 'Flune-Browser 2.0.0',
+    // icon: `${__dirname}/src/image/logo.png`,
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload.js`
+    }
+  });
+
+  setting_win.loadFile(`${__dirname}/src/views/setting.html`);
+}
+
 function nw() {
   win = new electron.BrowserWindow({
-    width: 1600, height: 900, minWidth: 400, minHeight: 400,
+    width: 1600, height: 900, minWidth: 600, minHeight: 400,
     frame: false,
     transparent: false,
     backgroundColor: '#ffffff',
-    title: 'Flune-Browser v2',
+    title: 'Flune-Browser 2.0.0',
     titleBarStyle: 'hidden',
     // icon: `${__dirname}/src/image/logo.png`,
     webPreferences: {
@@ -92,6 +111,14 @@ function nw() {
   win.loadFile(`${__dirname}/src/views/menu.html`);
 
   nt();
+
+  electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
+    // ...
+  });
+
+  electron.session.defaultSession.loadExtension(__dirname + '/Extension/looper-for-youtube').then(({ id }) => {
+    // ...
+  });
 }
 
 electron.app.on("ready", nw);
