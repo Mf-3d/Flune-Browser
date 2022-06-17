@@ -22,7 +22,8 @@
       "main.js",
       "package-lock.json",
       "package.json",
-      "preload"
+      "preload",
+      "Extension"
     ],
     "asar": false,
     "mac": {
