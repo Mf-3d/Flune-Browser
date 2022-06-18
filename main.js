@@ -130,6 +130,10 @@ function nw() {
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/looper-for-youtube').then(({ id }) => {
     // ...
   });
+
+  win.on('resize', () => {
+    winSize = win.getSize();
+  });
 }
 
 electron.app.on("ready", nw);
@@ -162,6 +166,28 @@ electron.ipcMain.handle('close_tab', (event, index) => {
 
 electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
+});
+
+electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
+  event.preventDefault();
+  electron.dialog.showMessageBox(mainWindow, {
+    title: 'Certificate error',
+    message: `Do you trust certificate from "${certificate.issuerName}"?`,
+    detail: `URL: ${url}\nError: ${error}`,
+    type: 'warning',
+    buttons: [
+      'Yes',
+      'No'
+    ],
+    cancelId: 1
+  }, function(response) {
+    if (response === 0) {
+      callback(true);
+    }
+    else {
+      callback(false);
+    }
+  });
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
