@@ -186,7 +186,7 @@ electron.ipcMain.handle('reload', (event, data) => {
 electron.ipcMain.handle('searchURL', (event, word) => {
   let url;
 
-  if (word.slice(0, 3) === 'http') {
+  if (word.slice(0, 4) === 'http') {
     url = `${word}`;
   } else if(word.slice(0, 3) === 'file') {
     url = `${word}`;
