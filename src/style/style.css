@@ -12,10 +12,7 @@ body {
 
 a {
   display: inline-block;
-  background: linear-gradient(70deg, #41d0bd, #00ff9d);
-  background: -webkit-linear-gradient(70deg, #41d0bd, #00ff9d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #00ff9d;
   cursor: pointer;
   text-decoration: none;
 }
@@ -69,20 +66,11 @@ a {
 .close_button {
   position: absolute;
   right: 0.5em;
-  background-color: #004b2e;
   width: 15px;
 }
 
 #tabs > span > div#active {
   background: #144f48;
-}
-
-#new_tab {
-  display: inline-block;
-  /* background: none; */
-  /* -webkit-background-clip: unset;
-  -webkit-text-fill-color: unset; */
-  cursor: pointer;
 }
 
 nav {
@@ -106,19 +94,23 @@ input[type="text"] {
   margin-left: 1em;
 }
 
-nav > a#border {
-  border-left: #515151 solid 1px;
+nav > a.border {
   padding-right: 0.5em;
   padding-left: 0.5em;
   font-size: 0.8em;
+}
+
+a.border {
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  transition: all 0.5s;
 }
 
 nav > a {
   transition: all 0.5s;
 }
 
-a:hover {
-  background: linear-gradient(70deg, #dffffb, #00bfff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.border:hover {
+  background: #313131;
+  border-radius: 2px;
 }

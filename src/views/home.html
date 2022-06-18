@@ -9,6 +9,17 @@
                 window.flune_api.searchURL(document.getElementById("search_bar").value);
                 document.querySelector("#search_bar").value = "";
             }
+
+            window.onload = () => {
+                document.addEventListener('keydown', (e) => {
+                    if (e.target === document.getElementById('search_bar')) {
+                        const word = document.getElementsByTagName('input')[0].value;
+                        if (!e.isComposing && e.key === 'Enter' && word != null) {
+                            window.flune_api.searchURL(document.getElementById("search_bar").value);
+                        }
+                    }
+                });
+            }
         </script>
     </head>
     <body>
