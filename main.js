@@ -11,7 +11,7 @@ let open_tab = 1;
 
 let app_name = "Flune-Browser 2.0.0";
 
-let viewY = 49;
+let viewY = 51;
 // let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
@@ -25,7 +25,7 @@ function nt(url) {
       worldSafeExecuteJavaScript: true,
       nodeIntegration:false,
       contextIsolation: true,
-      preload: `${__dirname}/preload/preload.js`
+      preload: `${__dirname}/preload/preload_browserview.js`
     }
   });
  
@@ -67,21 +67,22 @@ function ot(index) {
 
 function setTitle(index) {
   console.debug(open_tab);
+  let url = new URL(bv[index].webContents.getURL());
+  if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html"))){
+    url = "";
+  }
+  else{
+    console.debug(String(new URL("file://" + __dirname + "/src/views/home.html")), String(url));
+  }
+
   win.webContents.send('change_title', {
     title: bv[index].webContents.getTitle(),
     index: index
   });
 
-  if(bv[index].webContents.getURL() === __dirname + "/src/views/home.html"){
-    win.webContents.send('change_url', {
-      url: ""
-    });
-  }
-  else{
-    win.webContents.send('change_url', {
-      url: bv[index].webContents.getURL()
-    });
-  }
+  win.webContents.send('change_url', {
+    url: new String(url)
+  });
 }
 
 function ns() {
@@ -224,6 +225,10 @@ electron.ipcMain.handle('context', (event, data) => {
   context_menu.popup();
 });
 
+electron.ipcMain.handle('context_nav', (event, data) => {
+  context_menu_nav.popup();
+});
+
 electron.ipcMain.handle('reload', (event, data) => {
   bv[open_tab].webContents.reload();
   setTitle(open_tab);
@@ -264,6 +269,21 @@ electron.ipcMain.handle('save_setting', (event, data) => {
 
 const context_menu = electron.Menu.buildFromTemplate([
   {
+    label: '戻る',
+    click: () => {
+      bv[open_tab].webContents.goBack();
+    }
+  },
+  {
+    label: '進む',
+    click: () => {
+      bv[open_tab].webContents.goForward();
+    }
+  },
+  {
+    type: 'separator'
+  },
+  {
     label: 'コピー',
     role: 'copy'
   },
@@ -297,6 +317,30 @@ const context_menu = electron.Menu.buildFromTemplate([
     click: () => {
       bv[open_tab].webContents.toggleDevTools();
     }, label:'開発者ツールを表示'
+  }
+]);
+
+const context_menu_nav = electron.Menu.buildFromTemplate([
+  {
+    label: 'バグ報告',
+    click: () => {
+      electron.shell.openExternal('https://github.com/mf-3d/flune-browser/issues');
+    }
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: '設定',
+    click: () => {
+      if(!setting_win){
+        ns();
+      }
+      else{
+        setting_win.close();
+        setting_win = null;
+      }
+    }
   }
 ]);
 
@@ -368,7 +412,6 @@ const template = electron.Menu.buildFromTemplate([
           bv[open_tab].webContents.toggleDevTools();
         }, label:'開発者ツールを表示'
       },
-      {role:'toggleDevTools', label:'ナビゲーションバーの開発者ツールを表示'},
       {type:'separator'},
       {role:'resetZoom',      label:'実際のサイズ'},
       {role:'zoomIn',         label:'拡大'},

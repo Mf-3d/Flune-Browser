@@ -3,8 +3,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
 
 body {
-  background: #252525;
-  color: #fafafa;
+  background: var(--flune-main-background);
+  color: var(--flune-main-color);
   font-family: 'Noto Sans JP', sans-serif;
   margin-top: 0.1em;
   font-size: 0.9em;
@@ -12,7 +12,7 @@ body {
 
 a {
   display: inline-block;
-  color: #00ff9d;
+  color: var(--flune-accent-color);
   cursor: pointer;
   text-decoration: none;
 }
@@ -35,25 +35,25 @@ a {
 #tabs > span > div {
   display: inline-block;
   position: relative;
-  background: #262626;
+  background: var(--flune-main-background);
   border-radius: 5px;
   padding: 1px;
   margin: 1px;
   width: 100%;
   text-align: center;
-  box-shadow: #25252594 1px 1px 5px 2.5px;
-  border: #373737 solid 1px;
+  box-shadow: var(--flune-main-shadow-color) 1px 1px 5px 2.5px;
+  border: var(--flune-main-border-color) solid 1px;
   overflow-x: hidden;
   font-size: 0.7em;
   transition: all 0.1s ease;
 }
 
 #tabs > span > div:hover {
-  background: #2c2c2c;
+  background: var(--flune-main-hover-color);
 }
 
 #tabs > span > div#active:hover {
-  background: #154539;
+  background: var(--flune-active-tab-hover-color);
 }
 
 #tabs .title {
@@ -70,7 +70,7 @@ a {
 }
 
 #tabs > span > div#active {
-  background: #144f48;
+  background: var(--flune-active-tab-color);
 }
 
 nav {
@@ -81,9 +81,9 @@ input[type="text"] {
   outline: none;
   height: 0.9em;
   border-radius: 5px;
-  border: solid 1px #585858;
-  background: #252525;
-  color: #fafafa;
+  border: solid 1px var(--flune-main-border-color);
+  background: var(--flune-main-background);
+  color: var(--flune-main-color);
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
   width: 50%;
   font-size: 0.8em;
@@ -111,6 +111,6 @@ nav > a {
 }
 
 .border:hover {
-  background: #313131;
+  background: var(--flune-main-hover-color);
   border-radius: 2px;
 }

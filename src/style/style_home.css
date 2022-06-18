@@ -1,10 +1,10 @@
 body {
-  background-image: url("../views/image/dune.jpeg");
+  background-image: var(--flune-home-background);
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
   margin-top: 10em;
-  color: #c2c2c2;
+  color: var(--flune-main-color);
   text-shadow: #4c7a6a79 1px 1px 10px;
 }
 
@@ -16,14 +16,14 @@ h1 {
 }
 
 input[type="text"] {
-  background: #38383856;
-  border: solid 1px #4747478d;
+  background: var(--flune-home-panel-color);
+  border: solid 1px var(--flune-main-border-color);
   backdrop-filter: blur(10px);
   border-radius: 25px;
   font-size: 1.5em;
   padding: 0.5em;
   width: 80%;
-  color: #fafafa;
+  color: var(--flune-main-color);
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
 }
 
@@ -31,8 +31,8 @@ body > div {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
-  background: #1e1e1e8a;
-  border: solid 1px #2e2e2e8d;
+  background: var(--flune-home-panel-color);
+  border: solid 1px var(--flune-main-border-color);
   border-radius: 10px;
   backdrop-filter: blur(1px);
   box-shadow: 5px 5px 20px 5px #48484827;

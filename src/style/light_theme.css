@@ -1,0 +1,12 @@
+:root {
+    --flune-main-background: #ebebeb;
+    --flune-main-color: #4e4e4e;
+    --flune-main-border-color: #39393979;
+    --flune-accent-color: #24a573;
+    --flune-active-tab-color: #b4d5c9;
+    --flune-active-tab-hover-color: #83d9b9;
+    --flune-main-shadow-color: #d2d2d294;
+    --flune-main-hover-color: #dddddd;
+    --flune-home-background: url("../views/image/johny-goerend-Oz2ZQ2j8We8-unsplash.jpeg");
+    --flune-home-panel-color: #c8c8c863;
+}
