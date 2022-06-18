@@ -85,6 +85,10 @@ window.onload = () => {
     });
   }
 
+  window.flune_api.on('each', (event, data)=>{
+    each();
+  });
+
   each();
 }
 

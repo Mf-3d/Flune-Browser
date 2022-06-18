@@ -143,25 +143,39 @@ electron.ipcMain.handle('new_tab', (event, data) => {
 });
 
 electron.ipcMain.handle('close_tab', (event, index) => {
+  if(bv.length === 1){
+    win.removeBrowserView(bv[0]);
+    bv[0].webContents.destroy();
+    app.quit();
+    
+    return;
+  }
   win.removeBrowserView(bv[index]);
+  console.debug(index);
   bv[index].webContents.destroy();
 
   bv.splice(index, 1);
-
-  index - 1;
 
   if(bv.length === 0){
     app.quit();
     return;
   }
 
-  ot(index - 1);
+  if(index === 0 && bv.length !== 0){
+    index = index;
+  }
+  else{
+    index = index - 1;
+  }
+
+  ot(index);
 
   win.webContents.send('active_tab', {
-    index: index - 1
+    index: index
   });
 
-  open_tab = open_tab - 1;
+  open_tab = index;
+  bv[index].webContents.send('each');
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
