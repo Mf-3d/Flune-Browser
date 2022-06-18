@@ -10,6 +10,12 @@
                 window.flune_api.searchURL(document.getElementById("search_bar").value);
                 document.querySelector("#search_bar").value = "";
             }
+
+            function save() {
+                window.flune_api.save_setting({
+                    force_twemoji: document.getElementById("force_twemoji").value
+                });
+            }
         </script>
     </head>
     <body>
@@ -18,5 +24,9 @@
         <br/>
         <h2>実験的な機能</h2>
         <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+        <br/><br/><br/><br/>
+        <footer>
+            <a href="javascript:save">保存</a>
+        </footer>
     </body>
 </html>

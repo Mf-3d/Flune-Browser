@@ -3,3 +3,15 @@ body {
     margin-top: 0em;
     margin-left: 1em;
 }
+
+footer {
+    position: fixed; /* フッターを固定する */
+    bottom: 0; /* 上部から配置の基準位置を決める */
+    left: 0; /* 左から配置の基準位置を決める */
+    width: 100%; /* フッターの横幅を指定する */
+    height: 35px; /* フッターの高さを指定する */
+    padding:10px; /* フッター内側の余白を指定する(上下左右) */
+    background-color: #38383830; /* フッターの背景色を指定する */
+    color: #FFFFFF; /* フッターのフォントの色を指定する */
+    backdrop-filter: blur(5px);
+}

@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('flune_api', {
     searchURL: async (data) => await ipcRenderer.invoke('searchURL', data),
     reload: async (data) => await ipcRenderer.invoke('reload', data),
     context: async (data) => await ipcRenderer.invoke('context', data),
+    toggle_setting: async (data) => await ipcRenderer.invoke('toggle_setting', data),
+    save_setting: async (data) => await ipcRenderer.invoke('save_setting', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
@@ -16,7 +18,7 @@ contextBridge.exposeInMainWorld('flune_api', {
 
 webFrame.executeJavaScript(`
   // context menu
-  document.addEventListener('contextmenu', () => {
+  window.oncontextmenu = () => {
     window.flune_api.context();
-  });
+  }
 `);

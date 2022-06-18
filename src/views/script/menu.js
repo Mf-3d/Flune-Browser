@@ -16,6 +16,10 @@ function reload() {
   window.flune_api.reload();
 }
 
+function toggle_setting() {
+  window.flune_api.toggle_setting();
+}
+
 function search() {
   window.flune_api.searchURL(document.querySelector("#address_bar").value);
   document.querySelector("#address_bar").value = "";
