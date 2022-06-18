@@ -41,7 +41,7 @@ function nt(url) {
   win.setTopBrowserView(bv[bv.length - 1]);
 
 
-  bv[bv.length - 1].setAutoResize({width: true, height: true});
+  bv[id].setAutoResize({width: true, height: true});
 
   open_tab = bv.length - 1;
 
