@@ -1,5 +1,5 @@
 body {
-  background-image: url("../views/image/mojave.jpeg");
+  background-image: url("../views/image/dune.jpeg");
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
@@ -31,8 +31,11 @@ body > div {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
-  /* background: #00000071; */
-  border-radius: 20px;
+  background: #1e1e1e8a;
+  border: solid 1px #2e2e2e8d;
+  border-radius: 10px;
+  backdrop-filter: blur(1px);
+  box-shadow: 5px 5px 20px 5px #48484827;
 }
 
 #shortcut {
