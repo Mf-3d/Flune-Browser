@@ -103,7 +103,7 @@ input[type="text"] {
   background: var(--flune-main-background);
   margin-top: 0.3em;
   border: solid 1px var(--flune-main-border-color);
-  width: calc(100% - 10em);
+  width: calc(100% - 15em);
 }
 
 .close_button {
@@ -142,4 +142,5 @@ nav > a {
 
 nav {
   display: flex;
+  padding-top: 0.1em;
 }
