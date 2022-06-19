@@ -211,6 +211,10 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
   });
 });
 
+electron.ipcMain.handle('theme_path', () => {
+  return '../style/light_theme.css'
+});
+
 electron.ipcMain.handle('go_back', (event, data) => {
   bv[open_tab].webContents.goBack();
   setTitle(open_tab);

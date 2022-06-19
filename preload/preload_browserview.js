@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('flune_api', {
     context: async (data) => await ipcRenderer.invoke('context', data),
     toggle_setting: async (data) => await ipcRenderer.invoke('toggle_setting', data),
     save_setting: async (data) => await ipcRenderer.invoke('save_setting', data),
+    theme_path: async (data) => await ipcRenderer.invoke('theme_path', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }

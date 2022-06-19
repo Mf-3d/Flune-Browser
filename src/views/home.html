@@ -4,14 +4,14 @@
         <title>Home - Flune-Browser 2.0.0</title>
         <link href="../style/style.css" rel="stylesheet"/>
         <link href="../style/style_home.css" rel="stylesheet"/>
-        <link href="../style/dark_theme.css" rel="stylesheet"/>
+        <link href="../style/dark_theme.css" rel="stylesheet" id="theme"/>
         <script>
             function search() {
                 window.flune_api.searchURL(document.getElementById("search_bar").value);
                 document.querySelector("#search_bar").value = "";
             }
 
-            window.onload = () => {
+            window.onload = async () => {
                 document.addEventListener('keydown', (e) => {
                     if (e.target === document.getElementById('search_bar')) {
                         const word = document.getElementsByTagName('input')[0].value;
@@ -20,6 +20,8 @@
                         }
                     }
                 });
+
+                document.getElementById('theme').href = await window.flune_api.theme_path();
             }
         </script>
     </head>
