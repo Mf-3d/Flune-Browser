@@ -101,7 +101,6 @@ input[type="text"] {
   border-radius: 5px;
   padding: 0em;
   background: var(--flune-main-background);
-  margin-top: 0.3em;
   border: solid 1px var(--flune-main-border-color);
   width: calc(100% - 15em);
 }
