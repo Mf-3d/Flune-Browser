@@ -88,7 +88,11 @@ input[type="text"] {
   margin: 0;
   margin-top: 0em;
   font-size: 1.0em;
-  width: 50%;
+  width: calc(100% - 5em);
+}
+
+#address_box > a {
+  text-align: right;
 }
 
 #address_box {
@@ -99,6 +103,7 @@ input[type="text"] {
   background: var(--flune-main-background);
   margin-top: 0.3em;
   border: solid 1px var(--flune-main-border-color);
+  width: calc(100% - 10em);
 }
 
 .close_button {
@@ -133,4 +138,8 @@ nav > a {
 
 #bookmark.active {
   color: var(--flune-accent-color);
+}
+
+nav {
+  display: flex;
 }
