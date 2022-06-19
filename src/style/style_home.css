@@ -17,7 +17,7 @@ h1 {
 input[type="text"] {
   background: var(--flune-home-panel-color);
   border: solid 1px var(--flune-main-border-color);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(0px);
   border-radius: 25px;
   font-size: 1.5em;
   padding: 0.5em;

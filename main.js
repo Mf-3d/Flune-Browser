@@ -290,6 +290,9 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 
 electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
+  win.webContents.send('change_theme');
+  bv[open_tab].webContents.reload();
+  setting_win.webContents.reload();
 });
 
 electron.ipcMain.handle('get_setting', (event, data) => {

@@ -116,6 +116,10 @@ window.onload = async () => {
     each();
   });
 
+  window.flune_api.on('change_theme', async (event, data)=>{
+    document.getElementById('theme').href = await window.flune_api.theme_path();
+  });
+
   each();
 }
 
