@@ -1,3 +1,5 @@
+let setting;
+
 function getOpenTabIndex() {
   let el = document.querySelector("#tabs");
   el = [].slice.call(el);
@@ -26,6 +28,8 @@ function search() {
 }
 
 window.onload = async () => {
+  setting = await window.flune_api.get_setting();
+
   document.getElementById('theme').href = await window.flune_api.theme_path();
 
   document.addEventListener('keydown', (e) => {
@@ -76,6 +80,10 @@ window.onload = async () => {
 
         each();
 
+        if(setting.force_twemoji){
+          twemoji.parse(document.body);
+        }
+
         return;
       };
 
@@ -87,6 +95,10 @@ window.onload = async () => {
         val.setAttribute('id','active');
   
         window.flune_api.open_tab(index);
+
+        if(setting.force_twemoji){
+          twemoji.parse(document.body);
+        }
       };
     });
   }
@@ -104,6 +116,9 @@ window.flune_api.on('change_url', (event, data)=>{
 
 window.flune_api.on('change_title', (event, data)=>{
   document.querySelectorAll("#tabs > span > div > .title")[data.index].innerHTML = data.title;
+  if(setting.force_twemoji){
+    twemoji.parse(document.body);
+  }
 });
 
 window.flune_api.on('active_tab', (event, data)=>{
