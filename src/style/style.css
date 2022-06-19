@@ -123,6 +123,7 @@ a.border {
 
 nav > a {
   transition: all 0.2s;
+  -webkit-app-region: no-drag;
 }
 
 .border:hover {

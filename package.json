@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx electron .",
     "build:mac": "npx electron-builder --mac --x64",
-    "build:win": "npx electron-builder --win --x64 --dir"
+    "build:win": "npx electron-builder --win --x64 --dir",
+    "build:all": "npm run build:win && npm run build:mac"
   },
   "keywords": [],
   "author": "mf7cli",
