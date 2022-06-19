@@ -1,0 +1,26 @@
+nav {
+  padding-left: 1em;
+}
+
+#address_box {
+  width: calc(100% - 25em);
+}
+
+#titlebar_button {
+  text-align: right;
+  position: absolute;
+  right: 0;
+}
+
+#titlebar_button > a {
+  background: var(--flune-main-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#titlebar_button > a:hover {
+  
+  background: var(--flune-accent-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

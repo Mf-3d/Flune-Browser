@@ -5,7 +5,22 @@
         <link href="../style/style.css" rel="stylesheet"/>
         <link href="../style/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
+        <link href="../style/style_win.css" rel="stylesheet"/>
         <script src="./script/menu.js"></script>
+        <script src="https://kit.fontawesome.com/8930dea95f.js" crossorigin="anonymous"></script>
+        <script>
+            function close() {
+                window.flune_api.close();
+            }
+
+            function maxmin_min() {
+                window.flune_api.maxmin_win();
+            }
+
+            function hide_min() {
+                window.flune_api.hide_win();
+            }
+        </script>
     </head>
     <body style="user-select: none; -webkit-app-region: drag;">
         <nav>
@@ -19,6 +34,11 @@
             </span>
             <a href="javascript:toggle_setting()" class="border">⚙</a>
             <a href="javascript:view_history_list()" class="border">📘</a>
+            <nav id="titlebar_button">
+                <a href="javascript:hide_min()" class="border"><i class="fa-solid fa-minus"></i></a>
+                <a href="javascript:maxmin_min()" class="border"><i class="fa-solid fa-square"></i></a>
+                <a href="javascript:close()" class="border"><i class="fa-solid fa-xmark"></i></a>
+            </nav>
         </nav>
         <div id="tabs" style="-webkit-app-region: no-drag;">
             <span>

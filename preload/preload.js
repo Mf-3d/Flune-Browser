@@ -15,6 +15,9 @@ contextBridge.exposeInMainWorld('flune_api', {
     save_setting: async (data) => await ipcRenderer.invoke('save_setting', data),
     get_setting: async (data) => await ipcRenderer.invoke('get_setting', data),
     theme_path: async (data) => await ipcRenderer.invoke('theme_path', data),
+    close: async (data) => await ipcRenderer.invoke('close', data),
+    hide_win: async (data) => await ipcRenderer.invoke('hide_win', data),
+    maxmin_win: async (data) => await ipcRenderer.invoke('maxmin_win', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }

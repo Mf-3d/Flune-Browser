@@ -115,25 +115,45 @@ function ns() {
 }
 
 function nw() {
-  win = new electron.BrowserWindow({
-    width: 1200, height: 700, minWidth: 600, minHeight: 400,
-    frame: false,
-    transparent: false,
-    backgroundColor: '#ffffff',
-    title: 'Flune-Browser 2.0.0',
-    titleBarStyle: 'hidden',
-    // icon: `${__dirname}/src/image/logo.png`,
-    webPreferences: {
-      worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
-      contextIsolation: true,
-      preload: `${__dirname}/preload/preload.js`
-    }
-  });
+  if(isMac){
+    win = new electron.BrowserWindow({
+      width: 1200, height: 700, minWidth: 600, minHeight: 400,
+      frame: false,
+      transparent: false,
+      backgroundColor: '#ffffff',
+      title: 'Flune-Browser 2.0.0',
+      titleBarStyle: 'hidden',
+      // icon: `${__dirname}/src/image/logo.png`,
+      webPreferences: {
+        worldSafeExecuteJavaScript: true,
+        nodeIntegration:false,
+        contextIsolation: true,
+        preload: `${__dirname}/preload/preload.js`
+      }
+    });
 
+    win.loadFile(`${__dirname}/src/views/menu.html`);
+  }
+  else{
+    win = new electron.BrowserWindow({
+      width: 1200, height: 700, minWidth: 600, minHeight: 400,
+      frame: false,
+      transparent: false,
+      backgroundColor: '#ffffff',
+      title: 'Flune-Browser 2.0.0',
+      // icon: `${__dirname}/src/image/logo.png`,
+      webPreferences: {
+        worldSafeExecuteJavaScript: true,
+        nodeIntegration:false,
+        contextIsolation: true,
+        preload: `${__dirname}/preload/preload.js`
+      }
+    });
+
+    win.loadFile(`${__dirname}/src/views/menu_win.html`);
+  }
+  
   winSize = win.getSize();
-
-  win.loadFile(`${__dirname}/src/views/menu.html`);
 
   nt();
 
@@ -302,6 +322,18 @@ electron.ipcMain.handle('get_setting', (event, data) => {
       "theme": "theme_dark"
     }
   });
+});
+
+electron.ipcMain.handle('close', (event, data) => {
+  app.quit();
+});
+
+electron.ipcMain.handle('hide_win', (event, data) => {
+  win.minimize();
+});
+
+electron.ipcMain.handle('maxmin_win', (event, data) => {
+  win.isMaximized() ? win.unmaximize() : win.maximize();
 });
 
 const context_menu = electron.Menu.buildFromTemplate([
