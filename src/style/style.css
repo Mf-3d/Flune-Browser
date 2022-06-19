@@ -79,15 +79,26 @@ nav {
 
 input[type="text"] {
   outline: none;
-  height: 0.9em;
-  border-radius: 5px;
-  border: solid 1px var(--flune-main-border-color);
-  background: var(--flune-main-background);
+  /* height: 0.7em; */
+  border: none;
   color: var(--flune-main-color);
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+  background: var(--flune-main-background);
+  padding: 0;
+  margin: 0;
+  margin-top: 0em;
+  font-size: 1.0em;
   width: 50%;
-  font-size: 0.8em;
-  padding: 0.2em;
+}
+
+#address_box {
+  /* display: inline-block; */
+  font-size: 0.7em;
+  border-radius: 5px;
+  padding: 0em;
+  background: var(--flune-main-background);
+  margin-top: 0.3em;
+  border: solid 1px var(--flune-main-border-color);
 }
 
 .close_button {
@@ -113,4 +124,13 @@ nav > a {
 .border:hover {
   background: var(--flune-main-hover-color);
   border-radius: 2px;
+}
+
+#bookmark {
+  color: var(--flune-main-border-color);
+  transition: all 0.3s;
+}
+
+#bookmark.active {
+  color: var(--flune-accent-color);
 }

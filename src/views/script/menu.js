@@ -6,6 +6,15 @@ function getOpenTabIndex() {
   return el.indexOf(document.querySelector("#active"));
 }
 
+function addBookmark() {
+  if(!document.getElementById('bookmark').classList.contains('active')){
+    document.getElementById('bookmark').classList.add('active');
+  }
+  else{
+    document.getElementById('bookmark').classList.remove('active');
+  }
+}
+
 function go_back() {
   window.flune_api.go_back();
 }

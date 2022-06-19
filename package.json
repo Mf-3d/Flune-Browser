@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx electron .",
     "build:mac": "npx electron-builder --mac --x64",
-    "code_signing:mac": "codesign --deep --force --verbose --sign Flune_Browser_Sign \"/Volumes/Elements (Mac)/MfData/Program/Flune-Browser_/dist/mac/Flune-Browser.app\"",
     "build:win": "npx electron-builder --win --x64 --dir"
   },
   "keywords": [],
