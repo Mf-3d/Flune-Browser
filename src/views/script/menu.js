@@ -25,7 +25,9 @@ function search() {
   document.querySelector("#address_bar").value = "";
 }
 
-window.onload = () => {
+window.onload = async () => {
+  document.getElementById('theme').href = await window.flune_api.theme_path();
+
   document.addEventListener('keydown', (e) => {
     if (e.target === document.getElementById('address_bar')) {
       const word = document.getElementsByTagName('input')[0].value;
