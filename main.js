@@ -1,6 +1,10 @@
 const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
+require('update-electron-app')({
+  repo: 'mf-3d/Flune-Browser',
+  updateInterval: '5 minutes'
+})
 const store = new Store();
 
 let win;

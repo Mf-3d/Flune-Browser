@@ -31,7 +31,7 @@ if(setting.force_twemoji){
   webFrame.executeJavaScript(`
       // context menu
       window.oncontextmenu = () => {
-          window.flune_api.context();
+          window.flune_api.context_nav();
       }
   
       window.addEventListener('DOMContentLoaded', () => {
