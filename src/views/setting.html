@@ -14,13 +14,26 @@
             }
 
             function save() {
+                let theme_select = document.getElementById('theme_select').theme;
+                let checkValue;
+
+                for(let i = 0; i < theme_select.length; i++){
+                    if(theme_select[i].checked){
+                        checkValue = theme_select[i].id;
+                    }
+                }
+
                 window.flune_api.save_setting({
-                    force_twemoji: document.getElementById("force_twemoji").value
+                    force_twemoji: document.getElementById("force_twemoji").checked,
+                    theme: checkValue
                 });
             }
 
             window.onload = async () => {
                 document.getElementById('theme').href = await window.flune_api.theme_path();
+                let setting = await window.flune_api.get_setting();
+                document.getElementById(setting.theme).checked = true;
+                document.getElementById('force_twemoji').checked = setting.force_twemoji;
             }
         </script>
     </head>
@@ -28,11 +41,15 @@
         <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
         2.0.0
         <br/>
+        <h2>見た目</h2>
+        <form id="theme_select">
+            <label>テーマ:</label><input type="radio" id="theme_dark" name="theme" checked/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
+        </form>
         <h2>実験的な機能</h2>
         <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
         <br/><br/><br/><br/>
         <footer>
-            <a href="javascript:save">保存</a>
+            <a href="javascript:save()">保存</a>
         </footer>
     </body>
 </html>

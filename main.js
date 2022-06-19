@@ -214,7 +214,20 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 });
 
 electron.ipcMain.handle('theme_path', () => {
-  return '../style/light_theme.css'
+  let theme;
+  try{
+    if(store.get('settings').theme === 'theme_dark'){
+      theme = '../style/dark_theme.css';
+    }
+    else if(store.get('settings').theme === 'theme_light'){
+      theme = '../style/light_theme.css';
+    }
+  }
+  catch(e){
+    theme = '../style/dark_theme.css';
+  }
+  
+  return theme;
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
@@ -271,6 +284,16 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 });
 
 electron.ipcMain.handle('save_setting', (event, data) => {
+  store.set('settings', data);
+});
+
+electron.ipcMain.handle('get_setting', (event, data) => {
+  return store.get('settings', {
+    "settings": {
+      "force_twemoji": false,
+      "theme": "theme_dark"
+    }
+  });
 });
 
 const context_menu = electron.Menu.buildFromTemplate([
