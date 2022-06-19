@@ -212,7 +212,7 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 });
 
 electron.ipcMain.handle('theme_path', () => {
-  return '../style/light_theme.css'
+  return '../style/dark_theme.css'
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
