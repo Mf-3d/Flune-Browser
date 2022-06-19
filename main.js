@@ -66,6 +66,7 @@ function ot(index) {
 }
 
 function setTitle(index) {
+  bv[index].setBackgroundColor('#fafafa');
   console.debug(open_tab);
   let url = new URL(bv[index].webContents.getURL());
   if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html"))){
