@@ -319,6 +319,7 @@ electron.ipcMain.handle('get_setting', (event, data) => {
   return store.get('settings', {
     "settings": {
       "force_twemoji": false,
+      "auto_theme": false,
       "theme": "theme_dark"
     }
   });

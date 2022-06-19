@@ -118,7 +118,24 @@ window.onload = async () => {
 
   window.flune_api.on('change_theme', async (event, data)=>{
     document.getElementById('theme').href = await window.flune_api.theme_path();
+    setting = await window.flune_api.get_setting();
   });
+
+  if(setting.auto_theme){
+    setInterval(() => {
+      if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+        document.getElementById('theme').href = '../style/dark_theme.css';
+        reload();
+      }
+      else{
+        document.getElementById('theme').href = '../style/light_theme.css';
+        reload();
+      }
+    }, 10000);
+  }
+  else{
+    document.getElementById('theme').href = await window.flune_api.theme_path();
+  }
 
   each();
 }

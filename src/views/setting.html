@@ -25,6 +25,7 @@
 
                 window.flune_api.save_setting({
                     force_twemoji: document.getElementById("force_twemoji").checked,
+                    auto_theme: document.getElementById("auto_theme").checked,
                     theme: checkValue
                 });
             }
@@ -34,6 +35,7 @@
                 let setting = await window.flune_api.get_setting();
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
+                document.getElementById('auto_theme').checked = setting.auto_theme;
             }
         </script>
     </head>
@@ -43,10 +45,11 @@
         <br/>
         <h2>見た目</h2>
         <form id="theme_select">
-            <label>テーマ:</label><input type="radio" id="theme_dark" name="theme" checked/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
+            <label>テーマ:</label><input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
         </form>
-        <h2>実験的な機能</h2>
         <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+        <h2>実験的な機能</h2>
+        <label for="auto_theme">自動テーマ切り替え:</label><input type="checkbox" id="auto_theme"/>
         <br/><br/><br/><br/>
         <footer>
             <a href="javascript:save()">保存</a>
