@@ -15,6 +15,7 @@ a {
   color: var(--flune-accent-color);
   cursor: pointer;
   text-decoration: none;
+  -webkit-app-region: no-drag;
 }
 
 #tabs {
@@ -123,7 +124,6 @@ a.border {
 
 nav > a {
   transition: all 0.2s;
-  -webkit-app-region: no-drag;
 }
 
 .border:hover {
