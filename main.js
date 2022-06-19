@@ -56,6 +56,10 @@ function nt(url) {
     nt(url);
     win.webContents.send('new_tab_elm', {});
   });
+
+  bv[id].webContents.on('did-fail-load', () => {
+    bv[id].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
+  });
 }
 
 function ot(index) {
@@ -69,11 +73,8 @@ function setTitle(index) {
   bv[index].setBackgroundColor('#fafafa');
   console.debug(open_tab);
   let url = new URL(bv[index].webContents.getURL());
-  if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html"))){
+  if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
     url = "";
-  }
-  else{
-    console.debug(String(new URL("file://" + __dirname + "/src/views/home.html")), String(url));
   }
 
   win.webContents.send('change_title', {
@@ -213,7 +214,7 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 });
 
 electron.ipcMain.handle('theme_path', () => {
-  return '../style/dark_theme.css'
+  return '../style/light_theme.css'
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
