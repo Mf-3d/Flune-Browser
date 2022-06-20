@@ -25,7 +25,7 @@
 
                 window.flune_api.save_setting({
                     force_twemoji: document.getElementById("force_twemoji").checked,
-                    auto_theme: document.getElementById("auto_theme").checked,
+                    // auto_theme: document.getElementById("auto_theme").checked,
                     theme: checkValue
                 });
             }
@@ -35,7 +35,7 @@
                 let setting = await window.flune_api.get_setting();
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
-                document.getElementById('auto_theme').checked = setting.auto_theme;
+                // document.getElementById('auto_theme').checked = setting.auto_theme;
             }
         </script>
     </head>
