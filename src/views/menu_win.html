@@ -24,16 +24,16 @@
     </head>
     <body style="user-select: none; -webkit-app-region: drag;">
         <nav>
-            <a href="javascript:go_back()" class="border">&lt;</a>
-            <a href="javascript:go_forward()" class="border">&gt;</a>
-            <a href="javascript:reload()" class="border">↻</a>
+            <a href="javascript:go_back()" class="border"><i class="fa-solid fa-angle-left"></i></a>
+            <a href="javascript:go_forward()" class="border"><i class="fa-solid fa-angle-right"></i></a>
+            <a href="javascript:reload()" class="border"><i class="fa-solid fa-rotate-right"></i></a>
             <span id="address_box">
                 <input type="text" id="address_bar" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;"/>
                 <a href="javascript:addBookmark()" class="border" id="bookmark">★</a>
                 <a href="javascript:search()" class="border">🔍</a>
             </span>
             <a href="javascript:toggle_setting()" class="border">⚙</a>
-            <a href="javascript:view_history_list()" class="border">📘</a>
+            <a href="javascript:more_button()" class="border"><i class="fa-solid fa-ellipsis-vertical"></i></a>
             <nav id="titlebar_button">
                 <a href="javascript:hide_min()" class="border"><i class="fa-solid fa-minus"></i></a>
                 <a href="javascript:maxmin_min()" class="border"><i class="fa-solid fa-window-maximize"></i></a>

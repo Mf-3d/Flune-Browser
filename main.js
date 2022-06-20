@@ -65,6 +65,20 @@ function nt(url) {
   bv[id].webContents.on('did-fail-load', () => {
     bv[id].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
   });
+
+  bv[id].webContents.on('did-finish-load', () => {
+    let bookmark_list = store.get('bookmark', []);
+  
+    for (let i = 0; i < bookmark_list.length; i++) {
+      if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
+        win.webContents.send('activeBookmark', true);
+        break;
+      }
+      else{
+        win.webContents.send('activeBookmark', false);
+      }
+    }
+  });
 }
 
 function ot(index) {
@@ -80,6 +94,18 @@ function setTitle(index) {
   let url = new URL(bv[index].webContents.getURL());
   if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
     url = "";
+  }
+
+  let bookmark_list = store.get('bookmark', []);
+  
+  for (let i = 0; i < bookmark_list.length; i++) {
+    if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
+      win.webContents.send('activeBookmark', true);
+      break;
+    }
+    else{
+      win.webContents.send('activeBookmark', false);
+    }
   }
 
   win.webContents.send('change_title', {
@@ -131,6 +157,8 @@ function nw() {
         preload: `${__dirname}/preload/preload.js`
       }
     });
+
+    // win.webContents.toggleDevTools();
 
     win.loadFile(`${__dirname}/src/views/menu.html`);
   }
@@ -323,6 +351,48 @@ electron.ipcMain.handle('get_setting', (event, data) => {
       "theme": "theme_dark"
     }
   });
+});
+
+electron.ipcMain.handle('addBookmark', (event, data) => {
+  let bookmark_list = store.get('bookmark', []);
+
+  if(bookmark_list.length >= 1){
+    for (let i = 0; i < bookmark_list.length; i++) {
+      if(bookmark_list[i].url !== bv[open_tab].webContents.getURL()){
+        if(i <= bookmark_list.length){
+          bookmark_list[bookmark_list.length] = {
+            url: bv[open_tab].webContents.getURL()
+          };
+          store.set('bookmark', bookmark_list);
+          break;
+        }
+      }
+      else{
+        console.debug(bookmark_list[i].url, bv[open_tab].webContents.getURL());
+      }
+    }
+  }
+  else{
+    bookmark_list[bookmark_list.length] = {
+      url: bv[open_tab].webContents.getURL()
+    };
+    store.set('bookmark', bookmark_list);
+  }
+});
+
+electron.ipcMain.handle('removeBookmark', (event, data) => {
+  let bookmark_list = store.get('bookmark', []);
+  
+  for (let i = 0; i < bookmark_list.length; i++) {
+    if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
+      bookmark_list.splice(i, 1);
+      store.set('bookmark', bookmark_list);
+      break;
+    }
+    else{
+      console.debug(bookmark_list[i].url, bv[open_tab].webContents.getURL());
+    }
+  }
 });
 
 electron.ipcMain.handle('close', (event, data) => {

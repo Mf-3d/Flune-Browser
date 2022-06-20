@@ -6,19 +6,20 @@
         <link href="../style/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
         <script src="./script/menu.js"></script>
+        <script src="https://kit.fontawesome.com/8930dea95f.js" crossorigin="anonymous"></script>
     </head>
     <body style="user-select: none; -webkit-app-region: drag;">
         <nav>
-            <a href="javascript:go_back()" class="border">&lt;</a>
-            <a href="javascript:go_forward()" class="border">&gt;</a>
-            <a href="javascript:reload()" class="border">↻</a>
+            <a href="javascript:go_back()" class="border"><i class="fa-solid fa-angle-left"></i></a>
+            <a href="javascript:go_forward()" class="border"><i class="fa-solid fa-angle-right"></i></a>
+            <a href="javascript:reload()" class="border"><i class="fa-solid fa-rotate-right"></i></a>
             <span id="address_box">
                 <input type="text" id="address_bar" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;"/>
                 <a href="javascript:addBookmark()" class="border" id="bookmark">★</a>
                 <a href="javascript:search()" class="border">🔍</a>
             </span>
             <a href="javascript:toggle_setting()" class="border">⚙</a>
-            <a href="javascript:view_history_list()" class="border">📘</a>
+            <a href="javascript:more_button()" class="border"><i class="fa-solid fa-ellipsis-vertical"></i></a>
         </nav>
         <div id="tabs" style="-webkit-app-region: no-drag;">
             <span>

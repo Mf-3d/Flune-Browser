@@ -18,6 +18,10 @@ a {
   -webkit-app-region: no-drag;
 }
 
+a:hover {
+  color: var(--flune-accent-color-hover);
+}
+
 #tabs {
   width: 100%;
   display: flex;

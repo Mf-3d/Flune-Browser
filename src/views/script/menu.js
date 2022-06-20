@@ -9,9 +9,11 @@ function getOpenTabIndex() {
 function addBookmark() {
   if(!document.getElementById('bookmark').classList.contains('active')){
     document.getElementById('bookmark').classList.add('active');
+    window.flune_api.addBookmark();
   }
   else{
-    document.getElementById('bookmark').classList.remove('active');
+    document.getElementById('bookmark').classList.remove('active')
+    window.flune_api.removeBookmark();
   }
 }
 
@@ -137,8 +139,18 @@ window.onload = async () => {
     document.getElementById('theme').href = await window.flune_api.theme_path();
   }
 
+
   each();
 }
+
+window.flune_api.on('activeBookmark', async (event, data) => {
+  if(data === true){
+    document.getElementById('bookmark').classList.add('active');
+  }
+  else{
+    document.getElementById('bookmark').classList.remove('active');
+  }
+});
 
 window.flune_api.on('change_url', (event, data)=>{
   document.querySelector("#address_bar").value = data.url;

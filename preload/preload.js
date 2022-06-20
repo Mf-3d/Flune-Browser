@@ -18,6 +18,8 @@ contextBridge.exposeInMainWorld('flune_api', {
     close: async (data) => await ipcRenderer.invoke('close', data),
     hide_win: async (data) => await ipcRenderer.invoke('hide_win', data),
     maxmin_win: async (data) => await ipcRenderer.invoke('maxmin_win', data),
+    removeBookmark: async (data) => await ipcRenderer.invoke('removeBookmark', data),
+    addBookmark: async (data) => await ipcRenderer.invoke('addBookmark', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
