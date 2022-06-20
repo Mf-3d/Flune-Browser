@@ -241,7 +241,6 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index: index
   });
 
-  open_tab = index;
   bv[index].webContents.send('each');
 });
 
