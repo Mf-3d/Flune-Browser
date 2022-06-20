@@ -228,7 +228,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     return;
   }
 
-  if(index === 0 && bv.length !== 0){
+  if(index === 0 || bv.length !== 0){
     index = index;
   }
   else{
