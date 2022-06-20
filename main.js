@@ -58,8 +58,8 @@ function nt(url) {
 
   bv[id].webContents.on('new-window', (event, url) => {
     event.preventDefault();
-    nt(url);
     win.webContents.send('new_tab_elm', {});
+    nt(url);
   });
 
   bv[id].webContents.on('did-fail-load', () => {

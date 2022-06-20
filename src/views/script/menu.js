@@ -87,6 +87,20 @@ window.onload = async () => {
   function each() {
     let el = document.querySelectorAll("#tabs > span > div");
     el.forEach((val, index) => {
+      val.querySelector(".title").onclick = (event) => {
+        if(document.querySelector("#active")){
+          document.querySelector("#active").removeAttribute("id");
+        }
+        
+        val.setAttribute('id','active');
+  
+        window.flune_api.open_tab(index);
+
+        if(setting.force_twemoji){
+          twemoji.parse(document.body);
+        }
+      };
+
       val.querySelector(".close_button").onclick = () => {
         val.remove();
         
@@ -100,20 +114,6 @@ window.onload = async () => {
         }
 
         return;
-      };
-
-      val.onclick = (event) => {
-        if(document.querySelector("#active")){
-          document.querySelector("#active").removeAttribute("id");
-        }
-        
-        val.setAttribute('id','active');
-  
-        window.flune_api.open_tab(index);
-
-        if(setting.force_twemoji){
-          twemoji.parse(document.body);
-        }
       };
     });
   }
