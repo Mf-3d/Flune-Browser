@@ -141,9 +141,10 @@ function ns() {
 }
 
 function nw() {
+  let db_winSize = store.get('window.window_size', [1200, 700]);
   if(isMac){
     win = new electron.BrowserWindow({
-      width: 1200, height: 700, minWidth: 600, minHeight: 400,
+      width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
@@ -164,7 +165,7 @@ function nw() {
   }
   else{
     win = new electron.BrowserWindow({
-      width: 1200, height: 700, minWidth: 600, minHeight: 400,
+      width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
@@ -195,6 +196,10 @@ function nw() {
 
   win.on('resize', () => {
     winSize = win.getSize();
+  });
+
+  win.on('close', () => {
+    store.set('window.window_size', winSize);
   });
 }
 
