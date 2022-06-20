@@ -1,7 +1,7 @@
 # Flune-Browser 2.0.0
 Flune-Browserが生まれ変わりました！
 
-![](./other_data/screenshot-2.0.0-beta6.png)
+![](./other_data/screenshot-2.0.0.png)
 
 
 ---
