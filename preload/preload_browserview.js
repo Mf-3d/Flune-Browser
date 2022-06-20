@@ -30,7 +30,8 @@ let setting = store.get('settings', {
 if(setting.force_twemoji){
     webFrame.executeJavaScript(`
         // context menu
-        window.oncontextmenu = () => {
+        window.oncontextmenu = (event) => {
+            event.preventDefault();
             window.flune_api.context();
         }
     
@@ -40,7 +41,7 @@ if(setting.force_twemoji){
             twemoji_script_tag.crossorigin = "anonymous";
             document.getElementsByTagName("head")[0].appendChild(twemoji_script_tag);
         });
-        
+
         window.addEventListener('load', () => {
             twemoji.parse(document.body);
         });

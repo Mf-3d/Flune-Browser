@@ -38,6 +38,10 @@ function search() {
   document.querySelector("#address_bar").value = "";
 }
 
+function more_button() {
+  window.flune_api.more_button_menu();
+}
+
 window.onload = async () => {
   setting = await window.flune_api.get_setting();
 

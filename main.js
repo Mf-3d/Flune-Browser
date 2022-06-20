@@ -301,6 +301,90 @@ electron.ipcMain.handle('context_nav', (event, data) => {
   context_menu_nav.popup();
 });
 
+electron.ipcMain.handle('more_button_menu', (event, data) => {
+  let more_button_context = new electron.Menu([
+    {
+      label: '新しいタブ',
+      click: () => {
+        nt();
+        win.webContents.send('new_tab_elm');
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'ブックマーク',
+      id: 'bookmark',
+      submenu: [
+        {
+          label: 'ブックマークがありません',
+          enabled: false
+        }
+      ]
+    }
+  ]);
+
+  let newtabItem = new electron.MenuItem({
+    label: '設定',
+    click: () => {
+      if(!setting_win){
+        ns();
+      }
+      else{
+        setting_win.close();
+        setting_win = null;
+      }
+    }
+  });
+
+  more_button_context.append(newtabItem);
+
+  let separetorItem = new electron.MenuItem({
+    type: 'separator'
+  });
+
+  more_button_context.append(separetorItem);
+
+  if(store.get('bookmark', []) !== []){
+    let bookmark_list = store.get('bookmark', []);
+  
+    let menuItem = new electron.MenuItem({
+      label: 'ブックマーク',
+      submenu: []
+    });
+
+    for (let i = 0; i < bookmark_list.length; i++) {
+
+      let bookmarkItem = new electron.MenuItem({
+        label: bookmark_list[i].title,
+        click: () => {
+          bv[open_tab].webContents.loadURL(bookmark_list[i].url);
+        }
+      });
+
+      menuItem.submenu.insert(0, bookmarkItem);
+    }
+
+    more_button_context.append(menuItem);
+  }
+  else{
+    let menuItem = new electron.MenuItem({
+      label: 'ブックマーク',
+      submenu: [
+        {
+          label: 'ブックマークがありません',
+          enabled: false
+        }
+      ]
+    });
+
+    more_button_context.append(menuItem);
+  }
+
+  more_button_context.popup();
+});
+
 electron.ipcMain.handle('reload', (event, data) => {
   bv[open_tab].webContents.reload();
   setTitle(open_tab);
@@ -361,7 +445,8 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
       if(bookmark_list[i].url !== bv[open_tab].webContents.getURL()){
         if(i <= bookmark_list.length){
           bookmark_list[bookmark_list.length] = {
-            url: bv[open_tab].webContents.getURL()
+            url: bv[open_tab].webContents.getURL(),
+            title: bv[open_tab].webContents.getTitle()
           };
           store.set('bookmark', bookmark_list);
           break;
