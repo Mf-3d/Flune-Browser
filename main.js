@@ -278,6 +278,9 @@ electron.app.on("ready", () => {
     if(url === '/style/dark_theme.css'){
       callback({path: `${__dirname}/src/style/dark_theme.css`});
     }
+    if(url === '/settings/background'){
+      callback({path: `${__dirname}/src/views/image/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg`});
+    }
   });
 
   nw();

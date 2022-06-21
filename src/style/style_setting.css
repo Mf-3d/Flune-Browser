@@ -1,11 +1,11 @@
 @charset "utf-8";
 
 body {
-
+    background-image: url('flune://settings/background');
     text-align: left;
     margin-top: 0em;
     margin-left: 1em;
-    background: var(--flune-main-background);
+    color: #FFFFFF;
 }
 
 footer {
