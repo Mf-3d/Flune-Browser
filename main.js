@@ -690,7 +690,22 @@ const template = electron.Menu.buildFromTemplate([
   ...(isMac ? [{
       label: app_name,
       submenu: [
-        {role:'about',      label:`${app_name}について` },
+        {
+          label:`${app_name}について`,
+          click: () => {
+            electron.dialog.showMessageBox(null, {
+              type: 'info',
+              icon: './src/icon.png',
+              title: 'Flune-Browserについて',
+              message: 'Flune-Browser ' + app.getVersion(),
+              detail: `Flune Browser
+                バージョン: ${app.getVersion()}
+                開発者: mf7cli
+                
+                Copyright 2022 mf7cli.`
+            });
+          }
+        },
         {type:'separator'},
         {role:'services',   label:'サービス'},
         {type:'separator'},
