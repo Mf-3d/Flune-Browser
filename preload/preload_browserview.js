@@ -34,10 +34,10 @@ window.flune_api.on('copy_selection', async () => {
     window.flune_api.copy(String(document.getSelection()));
 });
 
-window.oncontextmenu = (event) => {
-    event.preventDefault();
-    window.flune_api.context();
-}
+// window.oncontextmenu = (event) => {
+//     event.preventDefault();
+//     window.flune_api.context();
+// }
 `);
 
 if(setting.force_twemoji){

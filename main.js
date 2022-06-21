@@ -52,6 +52,80 @@ function nt(url) {
 
   open_tab = bv.length - 1;
 
+  bv[id].webContents.on('context-menu', (event, params) => {
+    event.preventDefault();
+    
+    const context_menu = electron.Menu.buildFromTemplate([
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'コピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: 'ペースト',
+        click: () => {
+          if(electron.clipboard.readImage()){
+            electron.webContents.getFocusedWebContents().paste();
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label:'切り取り',
+        role:'cut'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    context_menu.popup();
+  });
+
   bv[id].webContents.on('page-title-updated', () => {
     setTitle(id);
   });
@@ -729,7 +803,10 @@ const template = electron.Menu.buildFromTemplate([
       {role:'redo',  label:'やり直す'},
       {type:'separator'},
       {role:'cut',   label:'切り取り'},
-      {role:'copy',  label:'コピー'},
+      {
+        label:'コピー',
+        role: 'copy'
+      },
       {role:'paste', label:'貼り付け'},
       ...(isMac ? [
           {role:'pasteAndMatchStyle', label:'ペーストしてスタイルを合わせる'},
