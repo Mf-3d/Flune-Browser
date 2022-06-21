@@ -295,7 +295,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   if(bv.length === 1){
     win.removeBrowserView(bv[0]);
     bv[0].webContents.destroy();
-    app.quit();
+    win.close();
     
     return;
   }
@@ -306,7 +306,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   bv.splice(index, 1);
 
   if(bv.length === 0){
-    app.quit();
+    win.close();
     return;
   }
 
