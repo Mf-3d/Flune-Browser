@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('flune_api', {
     addBookmark: async (data) => await ipcRenderer.invoke('addBookmark', data),
     more_button_menu: async (data) => await ipcRenderer.invoke('more_button_menu', data),
 
-    on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
+    on: (channel, callback) => ipcRenderer.on(channel, (event, argv) => callback(event, argv))
   }
 );
 

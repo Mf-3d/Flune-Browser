@@ -161,6 +161,7 @@ function nw() {
     // win.webContents.toggleDevTools();
 
     win.loadFile(`${__dirname}/src/views/menu.html`);
+    // win.loadFile(`${__dirname}/src/views/notification.html`);
   }
   else{
     win = new electron.BrowserWindow({
@@ -200,9 +201,42 @@ function nw() {
   win.on('close', () => {
     store.set('window.window_size', winSize);
   });
+
+  win.on('closed', () => {
+    win = null;
+  });
 }
 
-electron.app.on("ready", nw);
+electron.app.on('window-all-closed', function() {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
+});
+
+electron.app.on('activate', () => {
+  if(win === null){
+    nw();
+  }
+});
+
+electron.app.on("ready", () => {
+  let dockMenu = electron.Menu.buildFromTemplate([
+    {
+      label: '設定',
+      click: () => {
+        ns();
+      }
+    }
+  ]);
+  if (process.platform === 'darwin') {
+    app.dock.setMenu(dockMenu);
+  }
+
+  nw();
+});
+
 
 electron.ipcMain.handle('new_tab', (event, data) => {
   nt();
@@ -304,6 +338,20 @@ electron.ipcMain.handle('context_nav', (event, data) => {
   context_menu_nav.popup();
 });
 
+electron.ipcMain.handle('context_img', (event, data) => {
+  let context_menu_img = new electron.Menu([
+    {
+      label: '画像をコピー',
+      click: () => {
+        nt();
+        electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(data));
+      }
+    }
+  ]);
+
+  context_menu_img.popup();
+});
+
 electron.ipcMain.handle('more_button_menu', (event, data) => {
   let more_button_context = new electron.Menu([
     {
@@ -398,7 +446,7 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
   if (word.slice(0, 4) === 'http') {
     url = `${word}`;
-  } else if(word.slice(0, 3) === 'file') {
+  } else if(word.slice(0, 4) === 'file') {
     url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
@@ -483,8 +531,18 @@ electron.ipcMain.handle('removeBookmark', (event, data) => {
   }
 });
 
+electron.ipcMain.handle('copy', (event, data) => {
+  electron.clipboard.writeText(data);
+});
+
 electron.ipcMain.handle('close', (event, data) => {
-  app.quit();
+  win.close();
+  win = null;
+
+  if(setting_win){
+    setting_win.close();
+    setting_win = null;
+  }
 });
 
 electron.ipcMain.handle('hide_win', (event, data) => {
@@ -513,7 +571,10 @@ const context_menu = electron.Menu.buildFromTemplate([
   },
   {
     label: 'コピー',
-    role: 'copy'
+    accelerator: 'CmdOrCtrl+C',
+    click: () => {
+      bv[open_tab].webContents.send('copy_selection');
+    }
   },
   {
     label: 'ペースト',

@@ -11,10 +11,12 @@ contextBridge.exposeInMainWorld('flune_api', {
     searchURL: async (data) => await ipcRenderer.invoke('searchURL', data),
     reload: async (data) => await ipcRenderer.invoke('reload', data),
     context: async (data) => await ipcRenderer.invoke('context', data),
+    context_img: async (data) => await ipcRenderer.invoke('context_img', data),
     toggle_setting: async (data) => await ipcRenderer.invoke('toggle_setting', data),
     save_setting: async (data) => await ipcRenderer.invoke('save_setting', data),
     get_setting: async (data) => await ipcRenderer.invoke('get_setting', data),
     theme_path: async (data) => await ipcRenderer.invoke('theme_path', data),
+    copy: async (data) => await ipcRenderer.invoke('copy', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
   }
@@ -27,14 +29,19 @@ let setting = store.get('settings', {
     }
 });
 
+webFrame.executeJavaScript(`
+window.flune_api.on('copy_selection', async () => {
+    window.flune_api.copy(String(document.getSelection()));
+});
+
+window.oncontextmenu = (event) => {
+    event.preventDefault();
+    window.flune_api.context();
+}
+`);
+
 if(setting.force_twemoji){
     webFrame.executeJavaScript(`
-        // context menu
-        window.oncontextmenu = (event) => {
-            event.preventDefault();
-            window.flune_api.context();
-        }
-    
         window.addEventListener('DOMContentLoaded', () => {
             let twemoji_script_tag = document.createElement('script');
             twemoji_script_tag.src = "https://twemoji.maxcdn.com/v/latest/twemoji.min.js";
