@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Home - Flune-Browser 2.0.0</title>
-        <link href="../style/style.css" rel="stylesheet"/>
-        <link href="../style/style_home.css" rel="stylesheet"/>
-        <link href="../style/style_setting.css" rel="stylesheet"/>
-        <link href="../style/dark_theme.css" rel="stylesheet" id="default_theme"/>
+        <meta charset="utf-8">
+        <title>設定 - Flune-Browser 2.0.0</title>
+        <link href="flune://style/style.css" rel="stylesheet"/>
+        <link href="flune://style/style_home.css" rel="stylesheet"/>
+        <link href="flune://style/style_setting.css" rel="stylesheet"/>
+        <link href="flune://style/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
         <script>
-            function search() {
-                window.flune_api.searchURL(document.getElementById("search_bar").value);
-                document.querySelector("#search_bar").value = "";
-            }
-
             function save() {
                 let theme_select = document.getElementById('theme_select').theme;
                 let checkValue;
@@ -31,8 +27,13 @@
             }
 
             window.onload = async () => {
-                document.getElementById('theme').href = await window.flune_api.theme_path();
                 let setting = await window.flune_api.get_setting();
+                if(setting.theme === 'theme_light'){
+                    document.getElementById('theme').href = 'flune://style/light_theme.css'
+                }
+                else{
+                    document.getElementById('theme').href = 'flune://style/dark_theme.css'
+                }
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
                 // document.getElementById('auto_theme').checked = setting.auto_theme;

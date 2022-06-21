@@ -118,25 +118,27 @@ function setTitle(index) {
 }
 
 function ns() {
-  setting_win = new electron.BrowserWindow({
-    width: 600, height: 400, minWidth: 600, minHeight: 400,
-    transparent: false,
-    backgroundColor: '#ffffff',
-    title: 'Flune-Browser 2.0.0',
-    // icon: `${__dirname}/src/image/logo.png`,
-    webPreferences: {
-      worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
-      contextIsolation: true,
-      preload: `${__dirname}/preload/preload.js`
-    }
-  });
+  // setting_win = new electron.BrowserWindow({
+  //   width: 600, height: 400, minWidth: 600, minHeight: 400,
+  //   transparent: false,
+  //   backgroundColor: '#ffffff',
+  //   title: 'Flune-Browser 2.0.0',
+  //   // icon: `${__dirname}/src/image/logo.png`,
+  //   webPreferences: {
+  //     worldSafeExecuteJavaScript: true,
+  //     nodeIntegration:false,
+  //     contextIsolation: true,
+  //     preload: `${__dirname}/preload/preload.js`
+  //   }
+  // });
 
-  setting_win.loadFile(`${__dirname}/src/views/setting.html`);
+  // setting_win.loadFile(`${__dirname}/src/views/setting.html`);
 
-  setting_win.on('closed', () => {
-    setting_win = null;
-  });
+  // setting_win.on('closed', () => {
+  //   setting_win = null;
+  // });
+
+  bv[open_tab].webContents.loadURL('flune://setting');
 }
 
 function nw() {
@@ -210,7 +212,7 @@ function nw() {
 electron.app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform != 'darwin') {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
@@ -233,6 +235,43 @@ electron.app.on("ready", () => {
   if (process.platform === 'darwin') {
     app.dock.setMenu(dockMenu);
   }
+
+  electron.protocol.registerFileProtocol('flune', (req, callback) => {
+    console.log('request URL:' + req.url);
+    console.log('URL:' + req.url.slice(7));
+
+    let url = req.url.slice(7);
+
+    if(url === '/test'){
+      electron.shell.openExternal('https://example.com');
+    }
+    if(url === '/setting'){
+      // if(!setting_win){
+      //   ns();
+      // }
+      // else{
+      //   setting_win.close();
+      //   setting_win = null;
+      // }
+
+      callback({path: `${__dirname}/src/views/setting.html`});
+    }
+    if(url === '/style/style.css'){
+      callback({path: `${__dirname}/src/style/style.css`});
+    }
+    if(url === '/style/style_home.css'){
+      callback({path: `${__dirname}/src/style/style_home.css`});
+    }
+    if(url === '/style/style_setting.css'){
+      callback({path: `${__dirname}/src/style/style_setting.css`});
+    }
+    if(url === '/style/light_theme.css'){
+      callback({path: `${__dirname}/src/style/light_theme.css`});
+    }
+    if(url === '/style/dark_theme.css'){
+      callback({path: `${__dirname}/src/style/dark_theme.css`});
+    }
+  });
 
   nw();
 });
@@ -379,13 +418,14 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let newtabItem = new electron.MenuItem({
     label: '設定',
     click: () => {
-      if(!setting_win){
-        ns();
-      }
-      else{
-        setting_win.close();
-        setting_win = null;
-      }
+      // if(!setting_win){
+      //   ns();
+      // }
+      // else{
+      //   setting_win.close();
+      //   setting_win = null;
+      // }
+      ns();
     }
   });
 
@@ -448,6 +488,8 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     url = `${word}`;
   } else if(word.slice(0, 4) === 'file') {
     url = `${word}`;
+  } else if(word.slice(0, 5) === 'flune') {
+    url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
@@ -462,13 +504,14 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 });
 
 electron.ipcMain.handle('toggle_setting', (event, word) => {
-  if(!setting_win){
-    ns();
-  }
-  else{
-    setting_win.close();
-    setting_win = null;
-  }
+  // if(!setting_win){
+  //   ns();
+  // }
+  // else{
+  //   setting_win.close();
+  //   setting_win = null;
+  // }
+  ns();
 });
 
 electron.ipcMain.handle('save_setting', (event, data) => {

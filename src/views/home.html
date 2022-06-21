@@ -14,10 +14,10 @@
 
             window.onload = async () => {
                 document.addEventListener('keydown', (e) => {
-                    if (e.target === document.getElementById('search_bar')) {
+                    if (e.target === document.getElementById('address_bar')) {
                         const word = document.getElementsByTagName('input')[0].value;
                         if (!e.isComposing && e.key === 'Enter' && word != null) {
-                            window.flune_api.searchURL(document.getElementById("search_bar").value);
+                            window.flune_api.searchURL(document.getElementById("address_bar").value);
                         }
                     }
                 });
@@ -31,8 +31,10 @@
             <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
             2.0.0
             <br/>
-            <input type="text" id="search_bar" placeholder="検索するURLを入力"/>
-            <h1 style="display: inline-block; font-size: 3em; user-select: none;" onclick="search()"><a>&gt;</a></h1>
+            <span id="address_box">
+                <input type="text" id="address_bar" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;"/>
+                <a href="javascript:search()" class="border">🔍</a>
+            </span>
             <br/>
             <div id="shortcut">
             </div>

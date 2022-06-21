@@ -1,3 +1,5 @@
+@charset "utf-8";
+
 body {
   background-image: var(--flune-home-background);
   background-size: cover;
@@ -14,7 +16,7 @@ h1 {
   -webkit-text-fill-color: transparent;
 }
 
-input[type="text"] {
+/* input[type="text"] {
   background: var(--flune-home-panel-color);
   border: solid 1px var(--flune-main-border-color);
   backdrop-filter: blur(0px);
@@ -24,7 +26,7 @@ input[type="text"] {
   width: 80%;
   color: var(--flune-main-color);
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
-}
+} */
 
 body > div {
   margin-left: auto;
@@ -54,4 +56,27 @@ body > div {
 #shortcut a img {
   width: 40px;
   border-radius: 10px;
+}
+
+#address_box {
+  width: 50%;
+  font-size: 1.5em;
+  border-radius: 10px;
+  border: solid 1px var(--flune-main-border-color);
+  backdrop-filter: blur(0px);
+  background: var(--flune-home-panel-color);
+}
+
+input[type="text"] {
+  width: 50%;
+  margin: 0.1em;
+  background: none;
+}
+
+#address_box > a {
+  border-radius: 10px;
+}
+
+#address_box > a:hover {
+  background: var(--flune-home-panel-color);
 }
