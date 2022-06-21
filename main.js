@@ -90,7 +90,6 @@ function ot(index) {
 
 function setTitle(index) {
   bv[index].setBackgroundColor('#fafafa');
-  console.debug(open_tab);
   let url = new URL(bv[index].webContents.getURL());
   if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
     url = "";
@@ -228,7 +227,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     return;
   }
 
-  if(index === 0 || bv.length !== 0){
+  if(index === 0 && bv.length !== 0){
     index = index;
   }
   else{
