@@ -68,6 +68,13 @@ function nt(url) {
 
   bv[id].webContents.on('did-finish-load', () => {
     let bookmark_list = store.get('bookmark', []);
+
+    if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
+      electron.nativeTheme.themeSource = 'dark';
+    }
+    else{
+      electron.nativeTheme.themeSource = 'light';
+    }
   
     for (let i = 0; i < bookmark_list.length; i++) {
       if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
