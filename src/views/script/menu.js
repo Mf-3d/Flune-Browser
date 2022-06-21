@@ -96,6 +96,8 @@ window.onload = async () => {
   
         window.flune_api.open_tab(index);
 
+        each();
+
         if(setting.force_twemoji){
           twemoji.parse(document.body);
         }

@@ -23,6 +23,8 @@ const isMac = (process.platform === 'darwin');
 
 function nt(url) {
   let id = bv.length;
+  console.debug('ID:',id);
+
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
     backgroundColor: '#ffffff',
@@ -54,7 +56,7 @@ function nt(url) {
 
   bv[id].webContents.on('context-menu', (event, params) => {
     event.preventDefault();
-    
+
     const context_menu = electron.Menu.buildFromTemplate([
       {
         label: '戻る',
@@ -165,6 +167,8 @@ function nt(url) {
 function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
+
+  console.debug(index);
 
   setTitle(index);
 }
