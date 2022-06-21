@@ -14,7 +14,7 @@ let bv = [];
 let winSize;
 let open_tab = 1;
 
-let app_name = "Flune-Browser 2.0.0";
+let app_name = "Flune-Browser";
 
 let viewY = 51;
 // let viewY = 200;
