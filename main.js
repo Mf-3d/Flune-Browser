@@ -16,7 +16,7 @@ let open_tab = 1;
 
 let app_name = "Flune-Browser";
 
-let viewY = 51;
+let viewY = 50;
 // let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
