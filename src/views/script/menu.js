@@ -57,13 +57,13 @@ window.onload = async () => {
   });
 
   document.querySelector("#new_tab").addEventListener("click", (event) => {
-    if(document.querySelector("#active")){
-      document.querySelector("#active").removeAttribute("id");
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
     }
 
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div id="active"><a class="title">読み込み中…</a><a class="close_button">×</a></div>
+    <div class="active"><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
 
     window.flune_api.new_tab();
@@ -72,13 +72,13 @@ window.onload = async () => {
   });
 
   window.flune_api.on('new_tab_elm', () => {
-    if(document.querySelector("#active")){
-      document.querySelector("#active").removeAttribute("id");
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
     }
   
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div id="active"><a class="title">読み込み中…</a><a class="close_button">×</a></div>
+    <div class="active"><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
   
     each();
@@ -88,11 +88,11 @@ window.onload = async () => {
     let el = document.querySelectorAll("#tabs > span > div");
     el.forEach((val, index) => {
       val.querySelector(".title").onclick = (event) => {
-        if(document.querySelector("#active")){
-          document.querySelector("#active").removeAttribute("id");
+        if(document.querySelector("#tabs > span > div.active")){
+          document.querySelector("#tabs > span > div.active").classList.remove('active');
         }
         
-        val.setAttribute('id','active');
+        val.classList.add('active');
   
         window.flune_api.open_tab(index);
 
@@ -106,6 +106,10 @@ window.onload = async () => {
       };
 
       val.querySelector(".close_button").onclick = () => {
+        if(document.querySelector("#tabs > span > div.active")){
+          document.querySelector("#tabs > span > div.active").classList.remove('active');
+        }
+        
         val.remove();
 
         let open_index;
@@ -125,7 +129,7 @@ window.onload = async () => {
 
         each();
 
-        el[index].setAttribute('id','active');
+        el[index].classList.add('active');
         
 
         if(setting.force_twemoji){
@@ -187,9 +191,18 @@ window.flune_api.on('change_title', (event, data)=>{
 });
 
 window.flune_api.on('active_tab', (event, data)=>{
-  if(document.querySelector("#active")){
-    document.querySelector("#active").removeAttribute("id");
+  if(document.querySelector(".active")){
+    document.querySelector(".active").classList.remove('active');
   }
   
-  document.querySelectorAll("#tabs > span > div")[data.index].setAttribute('id','active');
+  document.querySelectorAll("#tabs > span > div")[data.index].classList.add('active');
+});
+
+window.flune_api.on('update-audible', (event, data) => {
+  if(data.audible){
+    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('audible')[0].classList.add('active');
+  }
+  else{
+    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('audible')[0].classList.remove('active');
+  }
 });

@@ -11,6 +11,7 @@ const store = new Store();
 let win;
 let setting_win;
 let bv = [];
+let timer = [];
 let winSize;
 let open_tab = 1;
 
@@ -128,17 +129,26 @@ function nt(url) {
     context_menu.popup();
   });
 
+  timer[id] = setInterval(() => {
+    if(bv[id]){
+      win.webContents.send('update-audible', {
+        index: id,
+        audible: bv[id].webContents.isCurrentlyAudible()
+      });
+    }
+
+    // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
+  }, 1000);
+
   bv[id].webContents.on('page-title-updated', () => {
     console.debug('ID:', id);
     setTitle(open_tab);
   });
 
-  bv[open_tab].webContents.on('new-window', (event, url) => {
-    event.preventDefault();
+  bv[id].webContents.setWindowOpenHandler((details) => {
     win.webContents.send('new_tab_elm', {});
-    nt(url);
-
-    return;
+    nt(details.url);
+    return { action: 'deny' };
   });
 
   bv[id].webContents.on('did-fail-load', () => {
@@ -264,7 +274,7 @@ function ot(index) {
     win.webContents.send('new_tab_elm', {});
     nt(details.url);
     return { action: 'deny' };
-  })
+  });
 
   bv[index].webContents.on('did-fail-load', () => {
     bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
@@ -495,6 +505,8 @@ electron.ipcMain.handle('new_tab', (event, data) => {
 });
 
 electron.ipcMain.handle('close_tab', (event, index) => {
+  clearInterval(timer[index]);
+  timer.splice(index, 1);
   if(bv.length === 1){
     win.removeBrowserView(bv[0]);
     bv[0].webContents.destroy();
