@@ -133,10 +133,12 @@ function nt(url) {
     setTitle(open_tab);
   });
 
-  bv[id].webContents.on('new-window', (event, url) => {
+  bv[open_tab].webContents.on('new-window', (event, url) => {
     event.preventDefault();
     win.webContents.send('new_tab_elm', {});
     nt(url);
+
+    return;
   });
 
   bv[id].webContents.on('did-fail-load', () => {
@@ -404,6 +406,7 @@ function nw() {
 
   win.on('closed', () => {
     win = null;
+    bv = [];
   });
 }
 
@@ -489,20 +492,17 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   if(bv.length === 1){
     win.removeBrowserView(bv[0]);
     bv[0].webContents.destroy();
+    bv.splice(index, 1);
     win.close();
     
     return;
   }
+
   win.removeBrowserView(bv[index]);
   console.debug(index);
   bv[index].webContents.destroy();
 
   bv.splice(index, 1);
-
-  if(bv.length === 0){
-    win.close();
-    return;
-  }
 
   if(index === 0 && bv.length !== 0){
     index = index;
