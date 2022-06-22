@@ -40,7 +40,7 @@ function nt(url) {
     bv[bv.length - 1].webContents.loadURL(url);
   }
   else{
-    bv[bv.length - 1].webContents.loadFile(__dirname + "/src/views/home.html");
+    bv[bv.length - 1].webContents.loadURL("file://" + __dirname + "/src/views/home.html");
   }
 
   win.addBrowserView(bv[bv.length - 1]);
@@ -129,7 +129,8 @@ function nt(url) {
   });
 
   bv[id].webContents.on('page-title-updated', () => {
-    setTitle(id);
+    console.debug('ID:', id);
+    setTitle(open_tab);
   });
 
   bv[id].webContents.on('new-window', (event, url) => {
@@ -170,10 +171,122 @@ function ot(index) {
 
   console.debug(index);
 
-  setTitle(index);
+  bv[index].webContents.on('context-menu', (event, params) => {
+    event.preventDefault();
+
+    const context_menu = electron.Menu.buildFromTemplate([
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'コピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: 'ペースト',
+        click: () => {
+          if(electron.clipboard.readImage()){
+            electron.webContents.getFocusedWebContents().paste();
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label:'切り取り',
+        role:'cut'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    setTitle(index);
+
+    context_menu.popup();
+  });
+
+  bv[index].webContents.on('page-title-updated', () => {
+    console.debug('ID:', index);
+    setTitle(index);
+  });
+
+  bv[index].webContents.on('new-window', (event, url) => {
+    event.preventDefault();
+    win.webContents.send('new_tab_elm', {});
+    nt(url);
+  });
+
+  bv[index].webContents.on('did-fail-load', () => {
+    bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
+  });
+
+  bv[index].webContents.on('did-finish-load', () => {
+    let bookmark_list = store.get('bookmark', []);
+
+    if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
+      electron.nativeTheme.themeSource = 'dark';
+    }
+    else{
+      electron.nativeTheme.themeSource = 'light';
+    }
+  
+    for (let i = 0; i < bookmark_list.length; i++) {
+      if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
+        win.webContents.send('activeBookmark', true);
+        break;
+      }
+      else{
+        win.webContents.send('activeBookmark', false);
+      }
+    }
+  });
 }
 
 function setTitle(index) {
+  bv[index].webContents.send('each');
+
   bv[index].setBackgroundColor('#fafafa');
   let url = new URL(bv[index].webContents.getURL());
   if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
@@ -397,15 +510,17 @@ electron.ipcMain.handle('close_tab', (event, index) => {
 
   ot(index);
 
+  bv[index].webContents.send('each');
+
   win.webContents.send('active_tab', {
     index: index
   });
-
-  bv[index].webContents.send('each');
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
+
+  bv[index].webContents.send('each');
 });
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {

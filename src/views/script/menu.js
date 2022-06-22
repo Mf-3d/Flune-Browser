@@ -101,15 +101,32 @@ window.onload = async () => {
         if(setting.force_twemoji){
           twemoji.parse(document.body);
         }
+
+        return;
       };
 
       val.querySelector(".close_button").onclick = () => {
         val.remove();
-        
+
+        let open_index;
+
         window.flune_api.close_tab(index);
-        el[index - 1].setAttribute('id','active');
+
+        if(index === 0 && el.length !== 0){
+          open_index = index;
+          index = index + 1;
+        }
+        else{
+          open_index = index - 1;
+          index = index - 1;
+        }
+
+        window.flune_api.open_tab(open_index);
 
         each();
+
+        el[index].setAttribute('id','active');
+        
 
         if(setting.force_twemoji){
           twemoji.parse(document.body);
