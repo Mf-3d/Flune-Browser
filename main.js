@@ -254,11 +254,17 @@ function ot(index) {
     setTitle(index);
   });
 
-  bv[index].webContents.on('new-window', (event, url) => {
-    event.preventDefault();
+  // bv[index].webContents.on('new-window', (event, url) => {
+  //   event.preventDefault();
+  //   win.webContents.send('new_tab_elm', {});
+  //   nt(url);
+  // });
+
+  bv[index].webContents.setWindowOpenHandler((details) => {
     win.webContents.send('new_tab_elm', {});
-    nt(url);
-  });
+    nt(details.url);
+    return { action: 'deny' };
+  })
 
   bv[index].webContents.on('did-fail-load', () => {
     bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
@@ -494,7 +500,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     bv[0].webContents.destroy();
     bv.splice(index, 1);
     win.close();
-    
+
     return;
   }
 
