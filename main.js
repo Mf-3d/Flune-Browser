@@ -454,6 +454,9 @@ electron.app.on("ready", () => {
 
       callback({path: `${__dirname}/src/views/setting.html`});
     }
+    if(url === '/about'){
+      callback({path: `${__dirname}/src/views/about.html`});
+    }
     if(url === '/style/style.css'){
       callback({path: `${__dirname}/src/style/style.css`});
     }
