@@ -129,16 +129,26 @@ function nt(url) {
     context_menu.popup();
   });
 
-  timer[id] = setInterval(() => {
-    if(bv[id]){
+  bv[id].webContents.on('media-started-playing', () => {
+    timer[id] = setInterval(() => {
+      if(bv[id]){
+        win.webContents.send('update-audible', {
+          index: id,
+          audible: bv[id].webContents.isCurrentlyAudible()
+        });
+      }
+  
+      // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
+    }, 1000);
+
+    bv[id].webContents.on('media-paused', () => {
+      clearInterval(timer[id]);
       win.webContents.send('update-audible', {
         index: id,
-        audible: bv[id].webContents.isCurrentlyAudible()
+        audible: false
       });
-    }
-
-    // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
-  }, 1000);
+    });
+  });
 
   bv[id].webContents.on('page-title-updated', () => {
     console.debug('ID:', id);
