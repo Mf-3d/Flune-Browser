@@ -6,8 +6,6 @@ Flune-Browserが生まれ変わりました！
 
 ---
 
-現在Flune-Browser 2.0.0は正式版です。
-
 Flune-Browser 1.x.xは今後更新はされませんがサポートは続く予定です。
 
 ---
