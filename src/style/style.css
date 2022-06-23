@@ -62,11 +62,30 @@ a:hover {
 }
 
 #tabs .title {
+  margin-left: 2em;
   text-align: center;
   overflow-x: hidden;
-  width: calc(100% - 4em);
+  width: calc(100% - 6em);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.loading {
+  position: absolute;
+  left: 0.5em;
+  width: 1em;
+  height: 1.7em;
+  opacity: 0;
+}
+.loading.active {
+  animation:1s ease-in-out infinite rotation;
+  transition: 0.5s;
+  opacity: 1;
+}
+
+@keyframes rotation{
+  0%{ transform:rotate(0);}
+  100%{ transform:rotate(360deg); }
 }
 
 .close_button {

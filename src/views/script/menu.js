@@ -109,7 +109,7 @@ window.onload = async () => {
         if(document.querySelector("#tabs > span > div.active")){
           document.querySelector("#tabs > span > div.active").classList.remove('active');
         }
-        
+
         val.remove();
 
         let open_index;
@@ -204,5 +204,14 @@ window.flune_api.on('update-audible', (event, data) => {
   }
   else{
     document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('audible')[0].classList.remove('active');
+  }
+});
+
+window.flune_api.on('update-loading', (event, data) => {
+  if(data.loading){
+    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('loading')[0].classList.add('active');
+  }
+  else{
+    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('loading')[0].classList.remove('active');
   }
 });

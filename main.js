@@ -129,24 +129,45 @@ function nt(url) {
     context_menu.popup();
   });
 
+  bv[id].webContents.on('did-start-loading', () => {
+    win.webContents.send('update-loading', {
+      index: id,
+      loading: true
+    });
+  });
+
+  bv[id].webContents.on('did-stop-loading', () => {
+    win.webContents.send('update-loading', {
+      index: id,
+      loading: false
+    });
+  });
+
   bv[id].webContents.on('media-started-playing', () => {
-    timer[id] = setInterval(() => {
-      if(bv[id]){
-        win.webContents.send('update-audible', {
-          index: id,
-          audible: bv[id].webContents.isCurrentlyAudible()
-        });
-      }
-  
-      // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
-    }, 1000);
+    if(!timer[id]){
+      timer[id] = setInterval(() => {
+        if(bv[id]){
+          win.webContents.send('update-audible', {
+            index: id,
+            audible: bv[id].webContents.isCurrentlyAudible()
+          });
+        }
+    
+        // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
+      }, 1000);
+
+      console.log('タイマーが生成されました。');
+    }
 
     bv[id].webContents.on('media-paused', () => {
       clearInterval(timer[id]);
+      timer[id] = null;
       win.webContents.send('update-audible', {
         index: id,
         audible: false
       });
+
+      console.log('タイマーが消去されました。');
     });
   });
 
@@ -432,6 +453,9 @@ function nw() {
 
   win.on('closed', () => {
     win = null;
+    bv.forEach((val) => {
+      val.webContents.destroy();
+    });
     bv = [];
   });
 }
