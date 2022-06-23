@@ -226,16 +226,16 @@ function ot(index) {
 
   console.debug(index);
 
-  bv[id].webContents.on('did-start-loading', () => {
+  bv[index].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
-      index: id,
+      index: index,
       loading: true
     });
   });
 
-  bv[id].webContents.on('did-stop-loading', () => {
+  bv[index].webContents.on('did-stop-loading', () => {
     win.webContents.send('update-loading', {
-      index: id,
+      index: index,
       loading: false
     });
   });
