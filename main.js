@@ -169,6 +169,11 @@ function nt(url) {
 
       console.log('タイマーが消去されました。');
     });
+
+    bv[id].webContents.on('destroyed', () => {
+      clearInterval(timer[id]);
+      timer[id] = null;
+    });
   });
 
   bv[id].webContents.on('page-title-updated', () => {
@@ -448,15 +453,15 @@ function nw() {
   });
 
   win.on('close', () => {
+    bv.forEach((val, index) => {
+      bv[index].webContents.destroy();
+      bv.splice(index, 1);
+    });
     store.set('window.window_size', winSize);
   });
 
   win.on('closed', () => {
     win = null;
-    bv.forEach((val) => {
-      val.webContents.destroy();
-    });
-    bv = [];
   });
 }
 
