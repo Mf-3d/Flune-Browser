@@ -20,7 +20,7 @@ process.on('uncaughtException', (err) => {
     detail: `アプリで予期しないエラーが発生しました。
     アプリを終了しますか？\n\n
     (Error):${err.message}`,
-    buttons: ['アプリを終了する', 'アプリを終了せず続ける(非推奨)'],
+    buttons: ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'],
     defaultId: 0
   });
 
