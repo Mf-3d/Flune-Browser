@@ -43,6 +43,7 @@
   "dependencies": {
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.2",
+    "request": "^2.88.2",
     "update-electron-app": "^2.0.1"
   }
 }

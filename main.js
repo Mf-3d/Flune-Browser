@@ -2,6 +2,8 @@ const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
+const fs = require('fs');
+const request = require('request');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -113,11 +115,7 @@ function nt(url) {
       {
         label: 'ペースト',
         click: () => {
-          if(electron.clipboard.readImage()){
-            electron.webContents.getFocusedWebContents().paste();
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
+          electron.webContents.getFocusedWebContents().paste();
         }
       },
       {
@@ -149,7 +147,100 @@ function nt(url) {
       }
     ]);
 
-    context_menu.popup();
+    const context_menu_img = electron.Menu.buildFromTemplate([
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '画像をコピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: '画像を保存',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+      
+            let path = electron.dialog.showSaveDialogSync(null, {
+              title: '画像を保存',
+              properties: ['createDirectory'],
+              filters: [
+                {
+                  name: '画像',
+                  extensions: ['jpg','png','gif','webp']
+                }
+              ]
+            });
+
+            if(path !== undefined){
+              request(
+                  {method: 'GET', url: params.srcURL, encoding: null},
+                  (error, response, body) => {
+                      if(!error && response.statusCode === 200){
+                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
+                          fs.writeFileSync(path, body, 'binary');
+                      }
+                  }
+              );
+            }
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    if(params.mediaType === 'image'){
+      context_menu_img.popup();
+    }
+    else{
+      context_menu.popup();
+    }
   });
 
   bv[id].webContents.on('did-start-loading', () => {
@@ -185,7 +276,6 @@ function nt(url) {
   });
 
   bv[id].webContents.on('destroyed', () => {
-    win.webContents.send('each');
     if(timer[id]){
       clearInterval(timer[id]);
       timer[id] = null;
@@ -350,11 +440,7 @@ function ot(index) {
       {
         label: 'ペースト',
         click: () => {
-          if(electron.clipboard.readImage()){
-            electron.webContents.getFocusedWebContents().paste();
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
+          electron.webContents.getFocusedWebContents().paste();
         }
       },
       {
@@ -386,9 +472,102 @@ function ot(index) {
       }
     ]);
 
+    const context_menu_img = electron.Menu.buildFromTemplate([
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '画像をコピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: '画像を保存',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+      
+            let path = electron.dialog.showSaveDialogSync(null, {
+              title: '画像を保存',
+              properties: ['createDirectory'],
+              filters: [
+                {
+                  name: '画像',
+                  extensions: ['jpg','png','gif','webp']
+                }
+              ]
+            });
+
+            if(path !== undefined){
+              request(
+                  {method: 'GET', url: params.srcURL, encoding: null},
+                  (error, response, body) => {
+                      if(!error && response.statusCode === 200){
+                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
+                          fs.writeFileSync(path, body, 'binary');
+                      }
+                  }
+              );
+            }
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
     setTitle(index);
 
-    context_menu.popup();
+    if(params.mediaType === 'image'){
+      context_menu_img.popup();
+    }
+    else{
+      context_menu.popup();
+    }
   });
 
   // bv[index].webContents.on('new-window', (event, url) => {
