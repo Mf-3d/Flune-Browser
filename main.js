@@ -1,10 +1,33 @@
 const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
+const log = require('electron-log');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
 // });
+
+console.log = log.log;
+console.debug = log.debug;
+
+process.on('uncaughtException', (err) => {
+  log.error(err); // ログファイルへ記録
+  let index = electron.dialog.showMessageBoxSync(null, {
+    type: 'error',
+    icon: './src/icon.png',
+    title: 'Flune-Browserでエラーが発生しました。',
+    message: 'Flune-Browserでエラーが発生しました。',
+    detail: `アプリで予期しないエラーが発生しました。
+    アプリを終了しますか？\n\n
+    (Error):${err.message}`,
+    buttons: ['アプリを終了する', 'アプリを終了せず続ける(非推奨)'],
+    defaultId: 0
+  });
+
+  if(index === 0){
+    app.quit();
+  }
+});
 
 const store = new Store();
 
