@@ -160,14 +160,16 @@ function nt(url) {
     }
 
     bv[id].webContents.on('media-paused', () => {
-      clearInterval(timer[id]);
-      timer[id] = null;
-      win.webContents.send('update-audible', {
-        index: id,
-        audible: false
-      });
-
-      console.log('タイマーが消去されました。');
+      if(timer[id]){
+        clearInterval(timer[id]);
+        timer[id] = null;
+        win.webContents.send('update-audible', {
+          index: id,
+          audible: false
+        });
+  
+        console.log('タイマーが消去されました。');
+      }
     });
 
     bv[id].webContents.on('destroyed', () => {
