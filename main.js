@@ -144,6 +144,7 @@ function nt(url) {
   });
 
   bv[id].webContents.on('media-started-playing', () => {
+    win.webContents.send('each');
     if(!timer[id]){
       timer[id] = setInterval(() => {
         if(bv[id]){
@@ -158,24 +159,28 @@ function nt(url) {
 
       console.log('タイマーが生成されました。');
     }
+  });
 
-    bv[id].webContents.on('media-paused', () => {
-      if(timer[id]){
-        clearInterval(timer[id]);
-        timer[id] = null;
-        win.webContents.send('update-audible', {
-          index: id,
-          audible: false
-        });
-  
-        console.log('タイマーが消去されました。');
-      }
-    });
-
-    bv[id].webContents.on('destroyed', () => {
+  bv[id].webContents.on('destroyed', () => {
+    win.webContents.send('each');
+    if(timer[id]){
       clearInterval(timer[id]);
       timer[id] = null;
-    });
+    }
+  });
+
+  bv[id].webContents.on('media-paused', () => {
+    win.webContents.send('each');
+    if(timer[id]){
+      clearInterval(timer[id]);
+      timer[id] = null;
+      win.webContents.send('update-audible', {
+        index: id,
+        audible: false
+      });
+
+      console.log('タイマーが消去されました。');
+    }
   });
 
   bv[id].webContents.on('page-title-updated', () => {
@@ -220,6 +225,60 @@ function ot(index) {
   win.setTopBrowserView(bv[index]);
 
   console.debug(index);
+
+  bv[id].webContents.on('did-start-loading', () => {
+    win.webContents.send('update-loading', {
+      index: id,
+      loading: true
+    });
+  });
+
+  bv[id].webContents.on('did-stop-loading', () => {
+    win.webContents.send('update-loading', {
+      index: id,
+      loading: false
+    });
+  });
+
+  bv[index].webContents.on('media-started-playing', () => {
+    win.webContents.send('each');
+    if(!timer[index]){
+      timer[index] = setInterval(() => {
+        if(bv[index]){
+          win.webContents.send('update-audible', {
+            index: index,
+            audible: bv[index].webContents.isCurrentlyAudible()
+          });
+        }
+    
+        // console.log('音声が再生されているかどうか:', bv[index].webContents.isCurrentlyAudible());
+      }, 1000);
+
+      console.log('タイマーが生成されました。');
+    }
+  });
+
+  bv[index].webContents.on('destroyed', () => {
+    win.webContents.send('each');
+    if(timer[index]){
+      clearInterval(timer[index]);
+      timer[index] = null;
+    }
+  });
+
+  bv[index].webContents.on('media-paused', () => {
+    win.webContents.send('each');
+    if(timer[index]){
+      clearInterval(timer[index]);
+      timer[index] = null;
+      win.webContents.send('update-audible', {
+        index: index,
+        audible: false
+      });
+
+      console.log('タイマーが消去されました。');
+    }
+  });
 
   bv[index].webContents.on('context-menu', (event, params) => {
     event.preventDefault();
