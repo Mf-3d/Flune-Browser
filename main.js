@@ -206,11 +206,6 @@ function nt(url) {
     }
   });
 
-  bv[id].webContents.on('page-title-updated', () => {
-    console.debug('ID:', id);
-    setTitle(open_tab);
-  });
-
   bv[id].webContents.setWindowOpenHandler((details) => {
     win.webContents.send('new_tab_elm', {});
     nt(details.url);
@@ -241,6 +236,8 @@ function nt(url) {
       }
     }
   });
+
+  ot(id);
 }
 
 function ot(index) {
@@ -300,6 +297,21 @@ function ot(index) {
       });
 
       console.log('タイマーが消去されました。');
+    }
+  });
+
+  bv[index].webContents.on('page-title-updated', () => {
+    if(bv[index]){
+      console.debug('SetTitleに送るindex:', index);
+      setTitle(index);
+    }
+    else if(bv[index - 1]){
+      console.debug('SetTitleに送るindex:', index - 1);
+      setTitle(index - 1);
+    }
+    else{
+      console.debug('SetTitleに送るindex:', index + 1);
+      setTitle(index + 1);
     }
   });
 
@@ -379,11 +391,6 @@ function ot(index) {
     context_menu.popup();
   });
 
-  bv[index].webContents.on('page-title-updated', () => {
-    console.debug('ID:', index);
-    setTitle(index);
-  });
-
   // bv[index].webContents.on('new-window', (event, url) => {
   //   event.preventDefault();
   //   win.webContents.send('new_tab_elm', {});
@@ -423,6 +430,7 @@ function ot(index) {
 }
 
 function setTitle(index) {
+  console.debug('SetTitleで受け取ったindex:', index);
   bv[index].webContents.send('each');
 
   bv[index].setBackgroundColor('#fafafa');
@@ -448,9 +456,11 @@ function setTitle(index) {
     index: index
   });
 
-  win.webContents.send('change_url', {
-    url: new String(url)
-  });
+  if(open_tab === index){
+    win.webContents.send('change_url', {
+      url: new String(url)
+    });
+  }
 }
 
 function ns() {
@@ -652,9 +662,11 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index = index - 1;
   }
 
-  ot(index);
-
   bv[index].webContents.send('each');
+
+  console.debug('close_tabイベントで受け取ったindex:', index);
+
+  ot(index);
 
   win.webContents.send('active_tab', {
     index: index
