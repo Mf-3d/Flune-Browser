@@ -672,7 +672,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.0.0',
+      title: 'Flune-Browser 2.2.0',
       titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
@@ -796,10 +796,10 @@ electron.app.on("ready", () => {
       callback({path: `${__dirname}/src/style/style_setting.css`});
     }
     if(url === '/style/light_theme.css'){
-      callback({path: `${__dirname}/src/style/light_theme.css`});
+      callback({path: `${__dirname}/src/style/theme/light_theme.css`});
     }
     if(url === '/style/dark_theme.css'){
-      callback({path: `${__dirname}/src/style/dark_theme.css`});
+      callback({path: `${__dirname}/src/style/theme/dark_theme.css`});
     }
     if(url === '/settings/background'){
       callback({path: `${__dirname}/src/views/image/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg`});
@@ -883,14 +883,20 @@ electron.ipcMain.handle('theme_path', () => {
   let theme;
   try{
     if(store.get('settings').theme === 'theme_dark'){
-      theme = '../style/dark_theme.css';
+      theme = '../style/theme/dark_theme.css';
     }
     else if(store.get('settings').theme === 'theme_light'){
-      theme = '../style/light_theme.css';
+      theme = '../style/theme/light_theme.css';
+    }
+    else if(store.get('settings').theme === 'elemental_theme_light'){
+      theme = '../style/theme/light_elemental_theme.css';
+    }
+    else{
+      theme = '../style/theme/dark_theme.css';
     }
   }
   catch(e){
-    theme = '../style/dark_theme.css';
+    theme = '../style/theme/dark_theme.css';
   }
   
   return theme;
@@ -1055,7 +1061,6 @@ electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
   win.webContents.send('change_theme');
   bv[open_tab].webContents.reload();
-  setting_win.webContents.reload();
 });
 
 electron.ipcMain.handle('get_setting', (event, data) => {

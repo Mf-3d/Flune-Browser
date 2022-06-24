@@ -1,14 +1,21 @@
 @charset "utf-8";
 
 :root {
+    /* メインカラー */
     --flune-main-background: #252525;
     --flune-main-color: #fafafa;
     --flune-main-border-color: #373737;
+
+    /* アクセントカラー */
     --flune-accent-color-hover: #00ff9d;
     --flune-accent-color: #00ff9d;
     --flune-active-tab-color: #144f48;
     --flune-active-tab-hover-color: #154539;
+
+    /* シャドーカラー */
     --flune-main-shadow-color: #25252594;
+
+    /* その他 */
     --flune-main-hover-color: #2c2c2c;
     --flune-home-background: url("../views/image/dune.jpeg");
     --flune-home-panel-color: #1e1e1e8a;

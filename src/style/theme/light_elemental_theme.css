@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+:root {
+    /* メインカラー */
+    --flune-main-background: #efefef;
+    --flune-main-color: #000000;
+    --flune-main-border-color: #8888883f;
+    /* アクセントカラー */
+    --flune-accent-color-hover: #7aa7cd;
+    --flune-accent-color: #686868;
+    --flune-active-tab-color: #d6d6d6;
+    --flune-active-tab-hover-color: #bbbbbb1e;
+
+    /* シャドーカラー */
+    --flune-main-shadow-color: #bfbfbf55;
+
+    /* その他 */
+    --flune-main-hover-color: #e8e8e8;
+    --flune-home-background: url('../views/image/rectangle_large_type_2_4607778a7a96a659dee00634c228bb80.webp');
+    --flune-home-panel-color: #bbbbbbe3;
+}

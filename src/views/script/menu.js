@@ -153,11 +153,11 @@ window.onload = async () => {
   if(setting.auto_theme){
     setInterval(() => {
       if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-        document.getElementById('theme').href = '../style/dark_theme.css';
+        document.getElementById('theme').href = '../style/theme/dark_theme.css';
         reload();
       }
       else{
-        document.getElementById('theme').href = '../style/light_theme.css';
+        document.getElementById('theme').href = '../style/theme/light_theme.css';
         reload();
       }
     }, 10000);

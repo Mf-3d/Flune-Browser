@@ -1,14 +1,21 @@
 @charset "utf-8";
 
 :root {
+    /* メインカラー */
     --flune-main-background: #ebebeb;
     --flune-main-color: #4e4e4e;
     --flune-main-border-color: #bebebe79;
+
+    /* アクセントカラー */
     --flune-accent-color-hover: #24a573;
     --flune-accent-color: #24a573;
     --flune-active-tab-color: #e3f3ed;
     --flune-active-tab-hover-color: #c6e8dc;
+
+    /* シャドーカラー */
     --flune-main-shadow-color: #d2d2d294;
+
+    /* その他 */
     --flune-main-hover-color: #dddddd;
     --flune-home-background: url("../views/image/sean-oulashin-KMn4VEeEPR8-unsplash.jpeg");
     --flune-home-panel-color: #d2c3b263;
