@@ -33,6 +33,22 @@ let setting = store.get('settings', {
   }
 });
 
+if(process.platform === 'darwin'){
+    webFrame.executeJavaScript(`
+    window.addEventListener('load', () => {
+        document.getElementsByTagName('nav')[0].ondblclick = (event) => {
+            maxmin_min();
+        }
+        
+        document.querySelectorAll('nav > *').forEach((val) => {
+            val.ondblclick = (event) => {
+                event.preventDefault();
+            }
+        });
+    });
+    `);
+}
+
 webFrame.executeJavaScript(`
     // context menu
     window.oncontextmenu = (event) => {

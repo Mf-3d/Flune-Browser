@@ -220,3 +220,15 @@ window.flune_api.on('update-loading', (event, data) => {
     document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('loading')[0].classList.remove('active');
   }
 });
+
+function close() {
+  window.flune_api.close();
+}
+
+function maxmin_min() {
+  window.flune_api.maxmin_win();
+}
+
+function hide_min() {
+  window.flune_api.hide_win();
+}

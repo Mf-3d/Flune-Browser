@@ -924,7 +924,11 @@ function ot(index) {
 
 function setTitle(index) {
   console.debug('SetTitleで受け取ったindex:', index);
-  bv[index].webContents.send('each');
+  if(index > bv.length - 1){
+    index = bv.length - 1;
+  }
+  
+  win.webContents.send('each');
 
   bv[index].setBackgroundColor('#fafafa');
   let url = new URL(bv[index].webContents.getURL());
@@ -1042,6 +1046,7 @@ function nw() {
   win.on('close', () => {
     bv.forEach((val, index) => {
       bv[index].webContents.destroy();
+      bv[index] = null;
       bv.splice(index, 1);
     });
     store.set('window.window_size', winSize);
