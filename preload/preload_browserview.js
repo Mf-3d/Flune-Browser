@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('flune_api', {
   }
 );
 
+
 let setting = store.get('settings', {
     "settings": {
         "force_twemoji": false,
@@ -30,14 +31,23 @@ let setting = store.get('settings', {
 });
 
 webFrame.executeJavaScript(`
-window.flune_api.on('copy_selection', async () => {
-    window.flune_api.copy(String(document.getSelection()));
-});
+    window.flune_api.on('copy_selection', async () => {
+        window.flune_api.copy(String(document.getSelection()));
+    });
 
-// window.oncontextmenu = (event) => {
-//     event.preventDefault();
-//     window.flune_api.context();
-// }
+    // window.oncontextmenu = (event) => {
+    //     event.preventDefault();
+    //     window.flune_api.context();
+    // }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        let glottologist_script_tag = document.createElement('script');
+        glottologist_script_tag.src = "https://unpkg.com/glottologist"
+        document.getElementsByTagName("head")[0].appendChild(glottologist_script_tag);
+    });
+
+    window.addEventListener('load', async () => {
+    });
 `);
 
 if(setting.force_twemoji){

@@ -258,7 +258,6 @@ function nt(url) {
   });
 
   bv[id].webContents.on('media-started-playing', () => {
-    win.webContents.send('each');
     if(!timer[id]){
       timer[id] = setInterval(() => {
         if(bv[id]){
@@ -276,17 +275,16 @@ function nt(url) {
   });
 
   bv[id].webContents.on('destroyed', () => {
-    if(timer[id]){
-      clearInterval(timer[id]);
-      timer[id] = null;
-    }
+    clearInterval(timer[id]);
+    timer[id] = null;
+    console.log('webContentsが破棄されたためタイマーが消去されました。');
   });
 
   bv[id].webContents.on('media-paused', () => {
-    win.webContents.send('each');
     if(timer[id]){
       clearInterval(timer[id]);
       timer[id] = null;
+
       win.webContents.send('update-audible', {
         index: id,
         audible: false
@@ -818,6 +816,7 @@ electron.ipcMain.handle('new_tab', (event, data) => {
 
 electron.ipcMain.handle('close_tab', (event, index) => {
   clearInterval(timer[index]);
+  timer[index] = null;
   timer.splice(index, 1);
   if(bv.length === 1){
     win.removeBrowserView(bv[0]);
