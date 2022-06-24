@@ -927,7 +927,7 @@ function setTitle(index) {
   if(index > bv.length - 1){
     index = bv.length - 1;
   }
-  
+
   win.webContents.send('each');
 
   bv[index].setBackgroundColor('#fafafa');
@@ -1045,8 +1045,8 @@ function nw() {
 
   win.on('close', () => {
     bv.forEach((val, index) => {
-      bv[index].webContents.destroy();
-      bv[index] = null;
+      val.webContents.destroy();
+      val = null;
       bv.splice(index, 1);
     });
     store.set('window.window_size', winSize);
