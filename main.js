@@ -367,7 +367,6 @@ function ot(index) {
   });
 
   bv[index].webContents.on('destroyed', () => {
-    win.webContents.send('each');
     if(timer[index]){
       clearInterval(timer[index]);
       timer[index] = null;
