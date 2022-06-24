@@ -390,16 +390,20 @@ function ot(index) {
 
   bv[index].webContents.on('page-title-updated', () => {
     if(bv[index]){
-      console.debug('SetTitleに送るindex:', index);
+      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
       setTitle(index);
     }
     else if(bv[index - 1]){
-      console.debug('SetTitleに送るindex:', index - 1);
+      console.debug('SetTitleに送るindex:', index - 1, '\n現在のタブ数:', bv.length);
       setTitle(index - 1);
     }
-    else{
-      console.debug('SetTitleに送るindex:', index + 1);
+    else if(bv[index + 1]){
+      console.debug('SetTitleに送るindex:', index + 1, '\n現在のタブ数:', bv.length);
       setTitle(index + 1);
+    }
+    else{
+      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
+      setTitle(index);
     }
   });
 
