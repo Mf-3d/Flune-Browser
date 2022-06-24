@@ -47,6 +47,219 @@ let viewY = 50;
 
 const isMac = (process.platform === 'darwin');
 
+function setContext(id){
+  const context_menu = electron.Menu.buildFromTemplate([
+    {
+      label: '戻る',
+      click: () => {
+        bv[open_tab].webContents.goBack();
+      }
+    },
+    {
+      label: '進む',
+      click: () => {
+        bv[open_tab].webContents.goForward();
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label:'再読み込み',
+      accelerator: 'CmdOrCtrl+R',
+      click: () => {
+        bv[open_tab].webContents.reload();
+      }
+    },
+    {
+      label:'強制的に再読み込み',
+        accelerator: 'CmdOrCtrl+Shift+R',
+        click: () => {
+        bv[open_tab].webContents.reloadIgnoringCache();
+      }
+    },
+    {
+      accelerator: 'F12',
+      click: () => {
+        bv[open_tab].webContents.toggleDevTools();
+      }, label:'開発者ツールを表示'
+    }
+  ]);
+
+  const context_menu_text = electron.Menu.buildFromTemplate([
+    {
+      label: `${params.selectionText}をGoogleで検索`,
+      click: () => {
+        bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: '戻る',
+      click: () => {
+        bv[open_tab].webContents.goBack();
+      }
+    },
+    {
+      label: '進む',
+      click: () => {
+        bv[open_tab].webContents.goForward();
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'コピー',
+      accelerator: 'CmdOrCtrl+C',
+      click: () => {
+        if(params.mediaType === 'image'){
+          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+        } else {
+          electron.clipboard.writeText(params.selectionText, 'clipboard');
+        }
+      }
+    },
+    {
+      label: 'ペースト',
+      click: () => {
+        electron.webContents.getFocusedWebContents().paste();
+      }
+    },
+    {
+      label:'切り取り',
+      role:'cut'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label:'再読み込み',
+      accelerator: 'CmdOrCtrl+R',
+      click: () => {
+        bv[open_tab].webContents.reload();
+      }
+    },
+    {
+      label:'強制的に再読み込み',
+        accelerator: 'CmdOrCtrl+Shift+R',
+        click: () => {
+        bv[open_tab].webContents.reloadIgnoringCache();
+      }
+    },
+    {
+      accelerator: 'F12',
+      click: () => {
+        bv[open_tab].webContents.toggleDevTools();
+      }, label:'開発者ツールを表示'
+    }
+  ]);
+
+  const context_menu_img = electron.Menu.buildFromTemplate([
+    {
+      label: '戻る',
+      click: () => {
+        bv[open_tab].webContents.goBack();
+      }
+    },
+    {
+      label: '進む',
+      click: () => {
+        bv[open_tab].webContents.goForward();
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: '画像をコピー',
+      accelerator: 'CmdOrCtrl+C',
+      click: () => {
+        if(params.mediaType === 'image'){
+          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+        } else {
+          electron.clipboard.writeText(params.selectionText, 'clipboard');
+        }
+      }
+    },
+    {
+      label: '画像を保存',
+      click: () => {
+        if(params.mediaType === 'image'){
+          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+    
+          let path = electron.dialog.showSaveDialogSync(null, {
+            title: '画像を保存',
+            properties: ['createDirectory'],
+            filters: [
+              {
+                name: '画像',
+                extensions: ['jpg','png','gif','webp']
+              }
+            ]
+          });
+
+          if(path !== undefined){
+            request(
+                {method: 'GET', url: params.srcURL, encoding: null},
+                (error, response, body) => {
+                    if(!error && response.statusCode === 200){
+                      console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
+                        fs.writeFileSync(path, body, 'binary');
+                    }
+                }
+            );
+          }
+        } else {
+          electron.clipboard.writeText(params.selectionText, 'clipboard');
+        }
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label:'再読み込み',
+      accelerator: 'CmdOrCtrl+R',
+      click: () => {
+        bv[open_tab].webContents.reload();
+      }
+    },
+    {
+      label:'強制的に再読み込み',
+        accelerator: 'CmdOrCtrl+Shift+R',
+        click: () => {
+        bv[open_tab].webContents.reloadIgnoringCache();
+      }
+    },
+    {
+      accelerator: 'F12',
+      click: () => {
+        bv[open_tab].webContents.toggleDevTools();
+      }, label:'開発者ツールを表示'
+    }
+  ]);
+
+  setTitle(index);
+
+  if(params.mediaType === 'image'){
+    context_menu_img.popup();
+  }
+  else if(params.selectionText !== '' && params.selectionText){
+    context_menu_text.popup();
+  }
+  else{
+    context_menu.popup();
+  }
+}
+
 function nt(url) {
   let id = bv.length;
   console.debug('ID:',id);
@@ -84,6 +297,53 @@ function nt(url) {
     event.preventDefault();
 
     const context_menu = electron.Menu.buildFromTemplate([
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    const context_menu_text = electron.Menu.buildFromTemplate([
+      {
+        label: `${params.selectionText}をGoogleで検索`,
+        click: () => {
+          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
+        }
+      },
+      {
+        type: 'separator'
+      },
       {
         label: '戻る',
         click: () => {
@@ -237,6 +497,9 @@ function nt(url) {
 
     if(params.mediaType === 'image'){
       context_menu_img.popup();
+    }
+    else if(params.selectionText !== '' && params.selectionText){
+      context_menu_text.popup();
     }
     else{
       context_menu.popup();
@@ -426,6 +689,53 @@ function ot(index) {
         type: 'separator'
       },
       {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    const context_menu_text = electron.Menu.buildFromTemplate([
+      {
+        label: `${params.selectionText}をGoogleで検索`,
+        click: () => {
+          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         label: 'コピー',
         accelerator: 'CmdOrCtrl+C',
         click: () => {
@@ -565,6 +875,9 @@ function ot(index) {
 
     if(params.mediaType === 'image'){
       context_menu_img.popup();
+    }
+    else if(params.selectionText !== '' && params.selectionText){
+      context_menu_text.popup();
     }
     else{
       context_menu.popup();
@@ -843,7 +1156,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index = index - 1;
   }
 
-  bv[index].webContents.send('each');
+  win.webContents.send('each');
 
   console.debug('close_tabイベントで受け取ったindex:', index);
 
@@ -857,7 +1170,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
 electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
 
-  bv[index].webContents.send('each');
+  win.webContents.send('each');
 });
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {

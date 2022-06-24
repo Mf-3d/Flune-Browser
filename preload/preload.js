@@ -35,7 +35,8 @@ let setting = store.get('settings', {
 
 webFrame.executeJavaScript(`
     // context menu
-    window.oncontextmenu = () => {
+    window.oncontextmenu = (event) => {
+        event.preventDefault();
         window.flune_api.context_nav();
     }
 

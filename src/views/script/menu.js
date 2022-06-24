@@ -56,6 +56,11 @@ window.onload = async () => {
     }
   });
 
+  document.getElementById('address_bar').oncontextmenu = (event) => {
+    event.preventDefault();
+    window.flune_api.context();
+  }
+
   document.querySelector("#new_tab").addEventListener("click", (event) => {
     if(document.querySelector("#tabs > span > div.active")){
       document.querySelector("#tabs > span > div.active").classList.remove('active');
