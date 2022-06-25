@@ -1069,10 +1069,6 @@ function nw() {
     winSize = win.getSize();
   });
 
-  win.on('ready-to-show', () => {
-    win.show();
-  });
-
   win.on('close', () => {
     bv.forEach((val, index) => {
       val.webContents.destroy();
@@ -1083,6 +1079,7 @@ function nw() {
   });
 
   win.on('closed', () => {
+    bv = [];
     win = null;
   });
 }
@@ -1210,7 +1207,7 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
   event.preventDefault();
-  electron.dialog.showMessageBox(mainWindow, {
+  electron.dialog.showMessageBox(win, {
     title: 'Certificate error',
     message: `Do you trust certificate from "${certificate.issuerName}"?`,
     detail: `URL: ${url}\nError: ${error}`,
@@ -1664,8 +1661,20 @@ const template = electron.Menu.buildFromTemplate([
       },
       {type:'separator'},
       {role:'resetZoom',      label:'実際のサイズ'},
-      {role:'zoomIn',         label:'拡大'},
-      {role:'zoomOut',        label:'縮小'},
+      {
+        label:'拡大',
+        accelerator: 'CmdOrCtrl+Plus',
+        click: () => {
+          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() + 1);
+        }
+      },
+      {
+        label:'縮小',
+        accelerator: 'CmdOrCtrl+-',
+        click: () => {
+          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() - 1);
+        }
+      },
       {type:'separator'},
       {role:'togglefullscreen', label:'フルスクリーン'}
     ]

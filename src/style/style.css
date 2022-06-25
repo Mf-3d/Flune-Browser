@@ -111,7 +111,7 @@ a:hover {
   background: var(--flune-active-tab-color);
 }
 
-nav {
+nav:not(#blank) {
   padding-left: 4em;
 }
 
@@ -177,7 +177,13 @@ nav > a {
   color: var(--flune-accent-color);
 }
 
-nav {
+nav:not(#blank) {
   display: flex;
   padding-top: 0.1em;
+}
+
+#blank {
+  width: 4em;
+  height: 1.2em;
+  display: inline-block;
 }

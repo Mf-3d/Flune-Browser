@@ -36,15 +36,9 @@ let setting = store.get('settings', {
 if(process.platform === 'darwin'){
     webFrame.executeJavaScript(`
     window.addEventListener('load', () => {
-        document.getElementsByTagName('nav')[0].ondblclick = (event) => {
+        document.querySelector('#blank').ondblclick = (event) => {
             maxmin_min();
         }
-        
-        document.querySelectorAll('*').forEach((val) => {
-            val.ondblclick = (event) => {
-                event.preventDefault();
-            }
-        });
     });
     `);
 }
