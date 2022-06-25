@@ -4,10 +4,13 @@ const Store = require('electron-store');
 const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
+const os = require('os');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
 // });
+
+let log_path;
 
 console.log = log.log;
 console.debug = log.debug;
@@ -1002,6 +1005,16 @@ function ns() {
 }
 
 function nw() {
+  if(process.platform === 'darwin'){
+    log_path = os.homedir() + '/Library/Logs/flune-browser/';
+    console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
+  }
+  else if(process.platform === 'win32'){
+    log_path = os.homedir() + '/AppData/Roaming/flune-browser/logs/';
+    console.log('ログの保存場所:', os.homedir() + '/AppData/Roaming/flune-browser/logs/');
+  }
+
+
   let db_winSize = store.get('window.window_size', [1200, 700]);
   if(isMac){
     win = new electron.BrowserWindow({
@@ -1574,6 +1587,13 @@ const template = electron.Menu.buildFromTemplate([
                 
                 Copyright 2022 mf7cli.`
             });
+          }
+        },
+        {type:'separator'},
+        {
+          label: 'ログの保存場所を見る',
+          click: () => {
+            electron.shell.openPath(log_path);
           }
         },
         {type:'separator'},
