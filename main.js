@@ -1665,8 +1665,20 @@ const template = electron.Menu.buildFromTemplate([
       },
       {type:'separator'},
       {role:'resetZoom',      label:'実際のサイズ'},
-      {role:'zoomIn',         label:'拡大'},
-      {role:'zoomOut',        label:'縮小'},
+      {
+        label:'拡大',
+        accelerator: 'CmdOrCtrl+Plus',
+        click: () => {
+          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() + 1);
+        }
+      },
+      {
+        label:'縮小',
+        accelerator: 'CmdOrCtrl+-',
+        click: () => {
+          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() - 1);
+        }
+      },
       {type:'separator'},
       {role:'togglefullscreen', label:'フルスクリーン'}
     ]
