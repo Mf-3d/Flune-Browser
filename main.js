@@ -1069,10 +1069,6 @@ function nw() {
     winSize = win.getSize();
   });
 
-  win.on('ready-to-show', () => {
-    win.show();
-  });
-
   win.on('close', () => {
     bv.forEach((val, index) => {
       val.webContents.destroy();
