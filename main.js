@@ -1083,6 +1083,7 @@ function nw() {
   });
 
   win.on('closed', () => {
+    bv = [];
     win = null;
   });
 }
@@ -1210,7 +1211,7 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
   event.preventDefault();
-  electron.dialog.showMessageBox(mainWindow, {
+  electron.dialog.showMessageBox(win, {
     title: 'Certificate error',
     message: `Do you trust certificate from "${certificate.issuerName}"?`,
     detail: `URL: ${url}\nError: ${error}`,
