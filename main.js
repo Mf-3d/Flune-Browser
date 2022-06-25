@@ -267,6 +267,7 @@ function nt(url) {
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
     backgroundColor: '#ffffff',
+    scrollBounce: true,
     webPreferences: {
       worldSafeExecuteJavaScript: true,
       nodeIntegration:false,
@@ -920,6 +921,17 @@ function ot(index) {
       }
     }
   });
+
+  if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
+    bv[index].setBackgroundColor('#fafafa');
+  }
+  else{
+    bv[index].setBackgroundColor('#252525');
+  }
+
+  if(bv[index].webContents){
+    setTitle(index);
+  }
 }
 
 function setTitle(index) {
@@ -930,8 +942,13 @@ function setTitle(index) {
 
   win.webContents.send('each');
 
-  bv[index].setBackgroundColor('#fafafa');
-  let url = new URL(bv[index].webContents.getURL());
+  let url;
+
+  try{
+    url = new URL(bv[index].webContents.getURL());
+  } catch (e) {
+    url = bv[index].webContents.getURL();
+  }
   if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
     url = "";
   }
@@ -1014,7 +1031,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.0.0',
+      title: 'Flune-Browser 2.2.0',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         worldSafeExecuteJavaScript: true,
@@ -1035,12 +1052,12 @@ function nw() {
     // ...
   });
 
-  electron.session.defaultSession.loadExtension(__dirname + '/Extension/looper-for-youtube').then(({ id }) => {
-    // ...
-  });
-
   win.on('resize', () => {
     winSize = win.getSize();
+  });
+
+  win.on('ready-to-show', () => {
+    win.show();
   });
 
   win.on('close', () => {

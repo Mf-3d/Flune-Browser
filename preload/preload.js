@@ -40,7 +40,7 @@ if(process.platform === 'darwin'){
             maxmin_min();
         }
         
-        document.querySelectorAll('nav > *').forEach((val) => {
+        document.querySelectorAll('*').forEach((val) => {
             val.ondblclick = (event) => {
                 event.preventDefault();
             }
