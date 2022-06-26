@@ -38,6 +38,7 @@ const store = new Store();
 
 let win;
 let setting_win;
+let circle_dock;
 let bv = [];
 let timer = [];
 let winSize;
@@ -598,6 +599,7 @@ function nt(url) {
 function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
+  // win.setTopBrowserView(circle_dock);
 
   console.debug(index);
 
@@ -1004,6 +1006,21 @@ function ns() {
   bv[open_tab].webContents.loadURL('flune://setting');
 }
 
+function toggleCircleDock() {
+  circle_dock = new electron.BrowserView({
+    transparent: true,
+    width: 50,
+    height: 50
+  });
+
+  circle_dock.webContents.loadFile(__dirname + '/src/views/circle_dock.html');
+
+  win.addBrowserView(circle_dock);
+  win.setTopBrowserView(circle_dock);
+  circle_dock.setBounds({x: winSize[0] - 75, y: winSize[1] - 75, width: 75, height: 75});
+  circle_dock.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
+}
+
 function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
@@ -1059,6 +1076,7 @@ function nw() {
   
   winSize = win.getSize();
 
+  // toggleCircleDock();
   nt();
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
@@ -1070,16 +1088,17 @@ function nw() {
   });
 
   win.on('close', () => {
+    store.set('window.window_size', winSize);
+
     bv.forEach((val, index) => {
       val.webContents.destroy();
       val = null;
       bv.splice(index, 1);
+      clearInterval(timer[index]);
     });
-    store.set('window.window_size', winSize);
   });
 
   win.on('closed', () => {
-    bv = [];
     win = null;
   });
 }
@@ -1094,6 +1113,7 @@ electron.app.on('window-all-closed', function() {
 
 electron.app.on('activate', () => {
   if(win === null){
+    bv = [];
     nw();
   }
 });
