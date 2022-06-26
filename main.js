@@ -5,6 +5,7 @@ const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
 const os = require('os');
+const { exec } = require('child_process');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -1613,6 +1614,50 @@ const template = electron.Menu.buildFromTemplate([
             electron.shell.openPath(log_path);
           }
         },
+        // {
+        //   label: '更新を確認する',
+        //   click: () => {
+        //     let check = electron.dialog.showMessageBoxSync(null, {
+        //       type: 'info',
+        //       icon: './src/icon.png',
+        //       title: '更新作業の確認',
+        //       message: '続行してよろしいですか？',
+        //       detail: `
+        //       Flune-Browserに更新がきているかチェックします。
+        //       データが消える可能性もある機能なのでバックアップをお勧めします。
+
+        //       Beta版、Dev版や開発環境で
+        //       この機能を使用しないでください。
+        //       バージョンがダウングレードして
+        //       破損する可能性があるため危険です。
+
+        //       続行すると別のアプリが立ち上がり、
+        //       このアプリは閉じられます。
+        //       よろしいですか？
+        //       `,
+        //       buttons: ['続行', '続行しない'],
+        //       defaultId: 1
+        //     });
+
+        //     if(check === 1){
+        //       if(process.platform === 'darwin'){
+        //         if(!fs.existsSync(__dirname + '/Flune-Browser.app')){
+        //           request('https://github.com/mf-3d/Flune-Updater/releases/tag/v1.0.0', {
+        //             encoding: 'binary'
+        //           }, (error, response, body) => {
+        //             fs.writeFile(__dirname + '/Flune-Updater_1.0.0.zip', body, 'binary', (err) => {
+        //               exec(`unzip ${__dirname}/Flune-Updater_1.0.0.zip`);
+        //             });
+        //           });
+        //         }
+            
+        //         exec(`${__dirname}/Flune-Updater.app/Contents/MacOS/Flune-Updater "${electron.app.getVersion()}" "${__dirname}"`);
+            
+        //         process.exit(1);
+        //       }
+        //     }
+        //   }
+        // },
         {type:'separator'},
         {role:'services',   label:'サービス'},
         {type:'separator'},
