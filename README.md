@@ -1,4 +1,4 @@
-# Flune-Browser 2.1.2
+# Flune-Browser 2.2.0
 **2.1.0には重大なバグが含まれています。**
 
 [Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.1.1)をダウンロードしてください。
