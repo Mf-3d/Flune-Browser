@@ -110,6 +110,7 @@ window.onload = async () => {
         return;
       };
 
+
       val.querySelector(".close_button").onclick = () => {
         if(document.querySelector("#tabs > span > div.active")){
           document.querySelector("#tabs > span > div.active").classList.remove('active');

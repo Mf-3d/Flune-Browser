@@ -5,6 +5,7 @@ const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
 const os = require('os');
+const { exec } = require('child_process');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -38,6 +39,7 @@ const store = new Store();
 
 let win;
 let setting_win;
+let circle_dock;
 let bv = [];
 let timer = [];
 let winSize;
@@ -598,6 +600,7 @@ function nt(url) {
 function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
+  // win.setTopBrowserView(circle_dock);
 
   console.debug(index);
 
@@ -1004,6 +1007,21 @@ function ns() {
   bv[open_tab].webContents.loadURL('flune://setting');
 }
 
+function toggleCircleDock() {
+  circle_dock = new electron.BrowserView({
+    transparent: true,
+    width: 50,
+    height: 50
+  });
+
+  circle_dock.webContents.loadFile(__dirname + '/src/views/circle_dock.html');
+
+  win.addBrowserView(circle_dock);
+  win.setTopBrowserView(circle_dock);
+  circle_dock.setBounds({x: winSize[0] - 75, y: winSize[1] - 75, width: 75, height: 75});
+  circle_dock.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
+}
+
 function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
@@ -1059,6 +1077,7 @@ function nw() {
   
   winSize = win.getSize();
 
+  // toggleCircleDock();
   nt();
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
@@ -1070,16 +1089,17 @@ function nw() {
   });
 
   win.on('close', () => {
+    store.set('window.window_size', winSize);
+
     bv.forEach((val, index) => {
       val.webContents.destroy();
       val = null;
       bv.splice(index, 1);
+      clearInterval(timer[index]);
     });
-    store.set('window.window_size', winSize);
   });
 
   win.on('closed', () => {
-    bv = [];
     win = null;
   });
 }
@@ -1094,6 +1114,7 @@ electron.app.on('window-all-closed', function() {
 
 electron.app.on('activate', () => {
   if(win === null){
+    bv = [];
     nw();
   }
 });
@@ -1593,6 +1614,50 @@ const template = electron.Menu.buildFromTemplate([
             electron.shell.openPath(log_path);
           }
         },
+        // {
+        //   label: '更新を確認する',
+        //   click: () => {
+        //     let check = electron.dialog.showMessageBoxSync(null, {
+        //       type: 'info',
+        //       icon: './src/icon.png',
+        //       title: '更新作業の確認',
+        //       message: '続行してよろしいですか？',
+        //       detail: `
+        //       Flune-Browserに更新がきているかチェックします。
+        //       データが消える可能性もある機能なのでバックアップをお勧めします。
+
+        //       Beta版、Dev版や開発環境で
+        //       この機能を使用しないでください。
+        //       バージョンがダウングレードして
+        //       破損する可能性があるため危険です。
+
+        //       続行すると別のアプリが立ち上がり、
+        //       このアプリは閉じられます。
+        //       よろしいですか？
+        //       `,
+        //       buttons: ['続行', '続行しない'],
+        //       defaultId: 1
+        //     });
+
+        //     if(check === 1){
+        //       if(process.platform === 'darwin'){
+        //         if(!fs.existsSync(__dirname + '/Flune-Browser.app')){
+        //           request('https://github.com/mf-3d/Flune-Updater/releases/tag/v1.0.0', {
+        //             encoding: 'binary'
+        //           }, (error, response, body) => {
+        //             fs.writeFile(__dirname + '/Flune-Updater_1.0.0.zip', body, 'binary', (err) => {
+        //               exec(`unzip ${__dirname}/Flune-Updater_1.0.0.zip`);
+        //             });
+        //           });
+        //         }
+            
+        //         exec(`${__dirname}/Flune-Updater.app/Contents/MacOS/Flune-Updater "${electron.app.getVersion()}" "${__dirname}"`);
+            
+        //         process.exit(1);
+        //       }
+        //     }
+        //   }
+        // },
         {type:'separator'},
         {role:'services',   label:'サービス'},
         {type:'separator'},
