@@ -1,10 +1,6 @@
 # Flune-Browser 2.1.2
 **2.1.0には重大なバグが含まれています。**
 
-![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
-
-(少ない)
-
 [Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.1.1)をダウンロードしてください。
 
 ---
@@ -13,6 +9,9 @@ Flune-Browserが生まれ変わりました！
 
 ![](./other_data/screenshot-2.0.0.png)
 
+![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
+
+ダウンロードしてくださいな。
 
 ---
 
