@@ -1051,8 +1051,6 @@ function nw() {
       }
     });
 
-    // win.webContents.toggleDevTools();
-
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
   }
@@ -1074,11 +1072,15 @@ function nw() {
 
     win.loadFile(`${__dirname}/src/views/menu_win.html`);
   }
-  
+
   winSize = win.getSize();
 
   // toggleCircleDock();
   nt();
+
+  bv[open_tab].webContents.on('did-finish-load', () => {
+    // win.webContents.openDevTools();
+  });
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
     // ...
