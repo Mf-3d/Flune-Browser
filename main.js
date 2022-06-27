@@ -1040,7 +1040,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.2.0',
+      title: 'Flune-Browser 2.3.0',
       titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
@@ -1060,7 +1060,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.2.0',
+      title: 'Flune-Browser 2.3.0',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         worldSafeExecuteJavaScript: true,
