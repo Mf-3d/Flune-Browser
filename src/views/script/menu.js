@@ -190,9 +190,12 @@ window.onload = async () => {
           index = index - 1;
         }
 
-        each();
+        if(document.querySelectorAll('#tabs > span > div').length - 1 > 0){
+          window.flune_api.open_tab(open_index);
+          each();
+        }
 
-        window.flune_api.open_tab(open_index);
+
 
         // document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 

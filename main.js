@@ -272,8 +272,8 @@ function nt(url) {
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
     backgroundColor: '#ffffff',
-    scrollBounce: true,
     webPreferences: {
+      scrollBounce: true,
       worldSafeExecuteJavaScript: true,
       nodeIntegration:false,
       contextIsolation: true,
@@ -916,7 +916,8 @@ function ot(index) {
     return { action: 'deny' };
   });
 
-  bv[index].webContents.on('did-fail-load', () => {
+  bv[index].webContents.on('did-fail-load', (event, errCode) => {
+    if (errCode !== -105) return;
     bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
   });
 
