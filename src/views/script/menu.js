@@ -122,12 +122,12 @@ window.onload = async () => {
       let rect = this.getBoundingClientRect();
       if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
         //マウスカーソルの位置が要素の半分より上
-        this.style.borderLeft = '2px solid blue';
+        this.style.borderLeft = '3px solid blue';
         this.style.borderRight = '';
       } else {
         //マウスカーソルの位置が要素の半分より下
         this.style.borderLeft = '';
-        this.style.borderRight = '2px solid blue';
+        this.style.borderRight = '3px solid blue';
       }
     };
 

@@ -1102,6 +1102,7 @@ function nw() {
     store.set('window.window_size', winSize);
 
     bv.forEach((val, index) => {
+      val.webContents.setAudioMuted(true);
       val.webContents.destroy();
       val = null;
       bv.splice(index, 1);
