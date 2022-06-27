@@ -657,6 +657,14 @@ function ot(index) {
     }
   });
 
+  bv[index].webContents.on('page-favicon-updated', (event, favicons) => {
+    console.debug(favicons[0]);
+    win.webContents.send('change-favicon', {
+      index,
+      favicon: favicons[0]
+    });
+  });
+
   bv[index].webContents.on('page-title-updated', () => {
     if(bv[index]){
       console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);

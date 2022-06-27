@@ -187,3 +187,9 @@ nav:not(#blank) {
   height: 1.2em;
   display: inline-block;
 }
+
+.favicon {
+  height: 1.2em;
+  width: 1.2em;
+  margin-left: 0.5em;
+}

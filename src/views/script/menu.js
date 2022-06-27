@@ -1,4 +1,6 @@
 let setting;
+let faviconCache;
+let timer = [];
 
 function getOpenTabIndex() {
   let el = document.querySelector("#tabs");
@@ -68,7 +70,7 @@ window.onload = async () => {
 
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
 
     window.flune_api.new_tab();
@@ -83,7 +85,7 @@ window.onload = async () => {
   
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
   
     each();
@@ -252,6 +254,19 @@ window.flune_api.on('change_title', (event, data)=>{
   }
 });
 
+window.flune_api.on('change-favicon', (event, data)=>{
+  clearInterval(timer[data.index]);
+  timer[data.index] = setInterval(() => {
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+  }, 500);
+
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+  faviconCache = data.favicon;
+  if(setting.force_twemoji){
+    twemoji.parse(document.body);
+  }
+});
+
 window.flune_api.on('active_tab', (event, data)=>{
   if(document.querySelector("#tabs > span > div.active")){
     document.querySelector("#tabs > span > div.active").classList.remove('active');
@@ -270,10 +285,13 @@ window.flune_api.on('update-audible', (event, data) => {
 });
 
 window.flune_api.on('update-loading', (event, data) => {
-  if(data.loading){
+  if(data.loading === true){
+    faviconCache = document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src;
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
   }
   else{
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache;
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
   }
 });
