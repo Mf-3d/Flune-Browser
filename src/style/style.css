@@ -62,10 +62,10 @@ a:hover {
 }
 
 #tabs .title {
-  margin-left: 2em;
+  margin-left: 1em;
   text-align: center;
   overflow-x: hidden;
-  width: calc(100% - 6em);
+  width: calc(100% - 8em);
   text-overflow: ellipsis;
   white-space: nowrap;
 }

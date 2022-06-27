@@ -594,6 +594,11 @@ function nt(url) {
     }
   });
 
+  win.webContents.send('change-favicon', {
+    index: id,
+    favicon: ''
+  });
+
   ot(id);
 }
 
