@@ -255,13 +255,20 @@ window.flune_api.on('change_title', (event, data)=>{
 });
 
 window.flune_api.on('change-favicon', (event, data)=>{
+  if(!data.favicon){
+    data.favicon = '';
+  }
   clearInterval(timer[data.index]);
   timer[data.index] = setInterval(() => {
+    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.contains('active')){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
+      return;
+    }
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
   }, 500);
 
   document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
-  faviconCache = data.favicon;
+  faviconCache[data.index] = data.favicon;
   if(setting.force_twemoji){
     twemoji.parse(document.body);
   }
@@ -291,7 +298,7 @@ window.flune_api.on('update-loading', (event, data) => {
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
   }
   else{
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache;
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache[data.index];
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
   }
 });
