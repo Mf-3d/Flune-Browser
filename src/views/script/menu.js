@@ -192,7 +192,7 @@ window.onload = async () => {
 
         window.flune_api.open_tab(open_index);
 
-        document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
+        // document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 
         if(setting.force_twemoji){
           twemoji.parse(document.body);
