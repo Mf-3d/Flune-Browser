@@ -157,6 +157,8 @@ window.onload = async () => {
 
       let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
       // window.flune_api.open_tab(_index);
+
+      each();
     };
 
       val.querySelector(".close_button").onclick = () => {
@@ -171,6 +173,12 @@ window.onload = async () => {
 
         window.flune_api.close_tab(_index);
 
+        document.querySelectorAll(`#tabs > span > div`).forEach((val, index) => {
+          if(_index < Number(val.getAttribute('tab_id'))){
+            val.setAttribute('tab_id', Number(val.getAttribute('tab_id')) - 1);
+          }
+        });
+
         if(index === 0){
           open_index = index;
           index = index;
@@ -183,8 +191,8 @@ window.onload = async () => {
         each();
 
         window.flune_api.open_tab(open_index);
-        el[open_index].classList.add('active');
-        
+
+        document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 
         if(setting.force_twemoji){
           twemoji.parse(document.body);
@@ -238,7 +246,7 @@ window.flune_api.on('change_url', (event, data)=>{
 });
 
 window.flune_api.on('change_title', (event, data)=>{
-  document.querySelector("#tabs > span > div[tab_id='"+ data.index + "'] > .title").innerHTML = data.title;
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .title`).innerHTML = data.title;
   if(setting.force_twemoji){
     twemoji.parse(document.body);
   }
@@ -249,24 +257,24 @@ window.flune_api.on('active_tab', (event, data)=>{
     document.querySelector("#tabs > span > div.active").classList.remove('active');
   }
   
-  document.querySelector("#tabs > span > div[tab_id='"+ data.index + "']").classList.add('active');
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).classList.add('active');
 });
 
 window.flune_api.on('update-audible', (event, data) => {
   if(data.audible){
-    document.querySelector("#tabs > span > div[tab_id='"+ data.index + "']").getElementsByClassName('audible')[0].classList.add('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.add('active');
   }
   else{
-    document.querySelector("#tabs > span > div[tab_id='"+ data.index + "']").getElementsByClassName('audible')[0].classList.remove('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.remove('active');
   }
 });
 
 window.flune_api.on('update-loading', (event, data) => {
   if(data.loading){
-    document.querySelector("#tabs > span > div[tab_id='"+ data.index + "']").getElementsByClassName('loading')[0].classList.add('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
   }
   else{
-    document.querySelector("#tabs > span > div[tab_id='"+ data.index + "']").getElementsByClassName('loading')[0].classList.remove('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
   }
 });
 
