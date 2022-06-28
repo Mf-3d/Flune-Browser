@@ -1224,7 +1224,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index = index - 1;
   }
 
-  if(bv.length - 1 <= 0){
+  if(bv.length === 0){
     win.close();
   } 
 

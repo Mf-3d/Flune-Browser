@@ -190,14 +190,14 @@ window.onload = async () => {
           index = index - 1;
         }
 
-        if(document.querySelectorAll('#tabs > span > div').length - 1 >= 1){
+        if(document.querySelectorAll('#tabs > span > div').length === 0){
           window.flune_api.open_tab(open_index);
           each();
         }
 
 
 
-        // document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
+        document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 
         if(setting.force_twemoji){
           twemoji.parse(document.body);
