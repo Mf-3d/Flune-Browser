@@ -625,6 +625,8 @@ function ot(index) {
   bv[index].webContents.on('media-started-playing', () => {
     win.webContents.send('each');
     if(!timer[index]){
+      clearInterval(timer[index]);
+      timer[index] = null;
       timer[index] = setInterval(() => {
         if(bv[index]){
           win.webContents.send('update-audible', {
