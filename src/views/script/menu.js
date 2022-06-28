@@ -190,7 +190,7 @@ window.onload = async () => {
           index = index - 1;
         }
 
-        if(document.querySelectorAll('#tabs > span > div').length === 0){
+        if(document.querySelectorAll('#tabs > span > div').length !== 0){
           window.flune_api.open_tab(open_index);
           each();
         }

@@ -1235,8 +1235,10 @@ electron.ipcMain.handle('close_tab', (event, index) => {
 
     ot(index);
 
+    open_tab = index;
+
     win.webContents.send('active_tab', {
-      index: index
+      index
     });
   }
 });
