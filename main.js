@@ -5,7 +5,6 @@ const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
 const os = require('os');
-const { exec } = require('child_process');
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -917,8 +916,15 @@ function ot(index) {
   });
 
   bv[index].webContents.on('did-fail-load', (event, errCode) => {
-    if (errCode !== -105) return;
-    bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
+    if (errCode === -105){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/server_notfound.html`);
+    } else if(errCode === -106){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
+    } else if(errCode, -118){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
+    } else {
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
+    }
   });
 
   bv[index].webContents.on('did-finish-load', () => {
@@ -1083,7 +1089,6 @@ function nw() {
         preload: `${__dirname}/preload/preload.js`
       }
     });
-
     win.loadFile(`${__dirname}/src/views/menu_win.html`);
   }
 
@@ -1107,13 +1112,15 @@ function nw() {
   win.on('close', () => {
     store.set('window.window_size', winSize);
 
-    bv.forEach((val, index) => {
-      val.webContents.setAudioMuted(true);
-      val.webContents.destroy();
-      val = null;
+    for(let index = 0; index < bv.length - 1; index++){
+      bv[index] = null;
       bv.splice(index, 1);
       clearInterval(timer[index]);
-    });
+    }
+
+    bv = [];
+
+    win.webContents.destroy();
   });
 
   win.on('closed', () => {
@@ -1131,7 +1138,6 @@ electron.app.on('window-all-closed', function() {
 
 electron.app.on('activate', () => {
   if(win === null){
-    bv = [];
     nw();
   }
 });
@@ -1204,14 +1210,6 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   clearInterval(timer[index]);
   timer[index] = null;
   timer.splice(index, 1);
-  if(bv.length === 1){
-    win.removeBrowserView(bv[0]);
-    bv[0].webContents.destroy();
-    bv.splice(index, 1);
-    win.close();
-
-    return;
-  }
 
   win.removeBrowserView(bv[index]);
   console.debug(index);
@@ -1226,15 +1224,21 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index = index - 1;
   }
 
-  win.webContents.send('each');
+  if(bv.length - 1 <= 0){
+    win.close();
+  } 
 
   console.debug('close_tabイベントで受け取ったindex:', index);
 
-  ot(index);
+  if(bv.length - 1 > 0){
+    win.webContents.send('each');
 
-  win.webContents.send('active_tab', {
-    index: index
-  });
+    ot(index);
+
+    win.webContents.send('active_tab', {
+      index: index
+    });
+  }
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
