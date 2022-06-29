@@ -5,6 +5,8 @@ const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
 const os = require('os');
+const xml2js = require("xml2js");
+
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -38,7 +40,7 @@ const store = new Store();
 
 let win;
 let setting_win;
-let circle_dock;
+let suggestView;
 let bv = [];
 let timer = [];
 let winSize;
@@ -266,7 +268,6 @@ function setContext(id){
 
 function nt(url) {
   let id = bv.length;
-  console.debug('ID:',id);
 
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
@@ -292,7 +293,6 @@ function nt(url) {
   bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
 
   win.setTopBrowserView(bv[bv.length - 1]);
-
 
   bv[id].setAutoResize({width: true, height: true});
 
@@ -1029,21 +1029,6 @@ function ns() {
   bv[open_tab].webContents.loadURL('flune://setting');
 }
 
-function toggleCircleDock() {
-  circle_dock = new electron.BrowserView({
-    transparent: true,
-    width: 50,
-    height: 50
-  });
-
-  circle_dock.webContents.loadFile(__dirname + '/src/views/circle_dock.html');
-
-  win.addBrowserView(circle_dock);
-  win.setTopBrowserView(circle_dock);
-  circle_dock.setBounds({x: winSize[0] - 75, y: winSize[1] - 75, width: 75, height: 75});
-  circle_dock.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
-}
-
 function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
@@ -1203,6 +1188,9 @@ electron.app.on("ready", () => {
   nw();
 });
 
+electron.ipcMain.handle('getWinSize', (event, index) => {
+  return winSize;
+});
 
 electron.ipcMain.handle('new_tab', (event, data) => {
   nt();
@@ -1249,6 +1237,8 @@ electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
 
   win.webContents.send('each');
+
+  removeSuggestView();
 });
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
@@ -1437,6 +1427,97 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
   win.webContents.send('change_url', {
     url: bv[open_tab].webContents.getURL()
+  });
+
+  removeSuggestView();
+});
+
+function removeSuggestView() {
+  if(suggestView){
+    win.removeBrowserView(suggestView);
+    suggestView.webContents.destroy();
+    suggestView = null;
+    suggestDisplayed = false;
+  }
+}
+
+let recentSuggest;
+
+electron.ipcMain.handle('getRecentSuggest', async (event, data) => {
+  return recentSuggest;
+});
+
+let suggestDisplayed;
+
+electron.ipcMain.handle('viewSuggest', async (event, data) => {
+  suggestDisplayed = true;
+
+  let result;
+
+  result = [];
+
+  if(!data.word){
+    win.removeBrowserView(suggestView);
+    suggestView.webContents.destroy();
+    suggestView = null;
+  }
+
+  request({
+    url: `https://www.google.com/complete/search?output=toolbar&q=${encodeURI(data.word)}`,
+	  method: 'GET'
+  }, (error, response, body) => {
+    let suggestXml = body;
+
+    if(suggestDisplayed && suggestView){
+      win.removeBrowserView(suggestView);
+      suggestView.webContents.destroy();
+      suggestView = null;
+    }
+
+    xml2js.parseString(suggestXml, function (err, res) {
+      if (err) {
+        console.error(err.message);
+      } else {
+        console.log(res.toplevel.CompleteSuggestion[0].suggestion[0]['$'].data);
+        res.toplevel.CompleteSuggestion.forEach((val, index) => {
+          result[result.length] = val.suggestion[0]['$'].data;
+        });
+      }
+
+      if(result.length === 0) return;
+
+      recentSuggest = {
+        word: data.word,
+        result
+      }
+
+      suggestView = new electron.BrowserView({
+        transparent: true,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+          scrollBounce: true,
+          worldSafeExecuteJavaScript: true,
+          nodeIntegration:false,
+          contextIsolation: true,
+          preload: `${__dirname}/preload/preload_suggest.js`
+        }
+      });
+
+      data.pos[0] = Math.floor(data.pos[0]);
+      data.pos[1] = Math.floor(data.pos[1]);
+
+      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
+      win.addBrowserView(suggestView);
+      suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
+      win.setTopBrowserView(suggestView);
+    
+      // suggestView.webContents.on('blur', () => {
+      //   win.removeBrowserView(suggestView);
+      //   suggestView.webContents.destroy();
+      //   suggestView = null;
+      //   suggestDisplayed = false;
+      // });
+    });
   });
 });
 

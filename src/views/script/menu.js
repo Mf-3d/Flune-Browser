@@ -49,6 +49,14 @@ window.onload = async () => {
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
 
+  document.querySelector("#address_bar").addEventListener('input', async (event) => {
+    console.log([document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]);
+    window.flune_api.viewSuggest({
+      word: document.querySelector("#address_bar").value,
+      pos: [document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]
+    });
+  });
+
   document.addEventListener('keydown', (e) => {
     if (e.target === document.getElementById('address_bar')) {
       const word = document.getElementsByTagName('input')[0].value;

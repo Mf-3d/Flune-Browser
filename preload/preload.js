@@ -21,6 +21,9 @@ contextBridge.exposeInMainWorld('flune_api', {
     removeBookmark: async (data) => await ipcRenderer.invoke('removeBookmark', data),
     addBookmark: async (data) => await ipcRenderer.invoke('addBookmark', data),
     more_button_menu: async (data) => await ipcRenderer.invoke('more_button_menu', data),
+    getSuggest: async (data) => await ipcRenderer.invoke('getSuggest', data),
+    viewSuggest: async (data) => await ipcRenderer.invoke('viewSuggest', data),
+    getWinSize: async (data) => await ipcRenderer.invoke('getWinSize', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv) => callback(event, argv))
   }

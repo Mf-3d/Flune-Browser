@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Suggest - Flune-Browser</title>
+    <script>
+      window.onload = async () => {
+        let ul = document.querySelector('#suggest');
+
+        let suggest_data = await window.flune_api.getRecentSuggest();
+
+        suggest_data.result.forEach((val, index) => {
+          let li = document.createElement('li');
+          li.innerHTML = val;
+          ul.prepend(li);
+
+          li.onclick = () => {
+            window.flune_api.searchURL(val);
+          }
+        });
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
+      
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+        padding: 0;
+        color: #fafafa;
+      }
+      ul {
+        background: #1e1e1e8a;
+        border-radius: 10px;
+        list-style: none;
+        border: solid 1px #373737;
+        margin: 0;
+        padding-left: 0.5em;
+      }
+      li {
+        margin: 0;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="suggest">
+    </ul>
+  </body>
+</html>
