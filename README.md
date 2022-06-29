@@ -1,4 +1,7 @@
 # Flune-Browser 2.3.0
+Flune-Browser 2.3.0 Dev 2022.06.27.1のリリースを間違えて削除してしまいました。
+申し訳ございません。
+
 **2.1.0には重大なバグが含まれています。**
 
 [Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.2.0)以降をダウンロードしてください。
