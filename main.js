@@ -1478,10 +1478,11 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       if (err) {
         console.error(err.message);
       } else {
-        console.log(res.toplevel.CompleteSuggestion[0].suggestion[0]['$'].data);
-        res.toplevel.CompleteSuggestion.forEach((val, index) => {
-          result[result.length] = val.suggestion[0]['$'].data;
-        });
+        if(res.toplevel){
+          res.toplevel.CompleteSuggestion.forEach((val, index) => {
+            result[result.length] = val.suggestion[0]['$'].data;
+          });
+        }
       }
 
       if(result.length === 0) return;
