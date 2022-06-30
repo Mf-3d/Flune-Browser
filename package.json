@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "mf7cli",
   "build": {
-    "appId": "ml.mf7cli.flune",
+    "appId": "tk.mf7cli.flune",
     "productName": "Flune-Browser",
     "files": [
       "!.git",
