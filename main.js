@@ -922,7 +922,7 @@ function ot(index) {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/server_notfound.html`);
     } else if(errCode === -106){
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
-    } else if(errCode, -118){
+    } else if(errCode === -118){
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
     } else {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
