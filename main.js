@@ -671,8 +671,16 @@ function ot(index) {
   open_tab = index;
   win.setTopBrowserView(bv[index]);
   // win.setTopBrowserView(circle_dock);
-
-  console.debug(index);
+  bv[index].webContents.removeAllListeners('did-start-loading');
+  bv[index].webContents.removeAllListeners('did-finish-load');
+  bv[index].webContents.removeAllListeners('page-favicon-updated');
+  bv[index].webContents.removeAllListeners('page-title-updated');
+  bv[index].webContents.removeAllListeners('did-stop-loading');
+  bv[index].webContents.removeAllListeners('destroyed');
+  bv[index].webContents.removeAllListeners('media-started-playing');
+  bv[index].webContents.removeAllListeners('media-paused');
+  bv[index].webContents.removeAllListeners('context-menu');
+  bv[index].webContents.removeAllListeners('did-fail-load');
 
   bv[index].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
@@ -1274,6 +1282,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   timer[index] = null;
   timer.splice(index, 1);
 
+  bv[index].webContents.removeAllListeners();
   win.removeBrowserView(bv[index]);
   console.debug(index);
   bv[index].webContents.destroy();
