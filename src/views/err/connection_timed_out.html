@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>サーバーに接続できませんでした - Flune-Browser 2.2.0</title>
-        <link href="../style/style.css" rel="stylesheet"/>
-        <link href="../style/style_home.css" rel="stylesheet"/>
-        <link href="../style/style_setting.css" rel="stylesheet"/>
-        <link href="../style/theme/dark_theme.css" rel="stylesheet" id="default_theme"/>
+        <title>接続がタイムアウトしました。</title>
+        <link href="../../style/style.css" rel="stylesheet"/>
+        <link href="../../style/style_home.css" rel="stylesheet"/>
+        <link href="../../style/style_setting.css" rel="stylesheet"/>
+        <link href="../../style/theme/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
         <script>
             window.onload = async () => {
-                document.getElementById('theme').href = await window.flune_api.theme_path();
+                document.getElementById('theme').href = '../' + await window.flune_api.theme_path();
             }
         </script>
         <style>
@@ -22,8 +22,8 @@
     <body>
         <div>
             <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
-            2.0.0<br/>
-            <h2>サーバーに接続できませんでした</h2>
+            2.3.0<br/>
+            <h2>接続がタイムアウトしました。</h2>
             インターネット接続をご確認の上、もう一度URLをご確認ください。
             <br/>
             <a href="./home.html">ホームに戻る</a>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>予期しないエラーが発生しました</title>
+        <link href="../../style/style.css" rel="stylesheet"/>
+        <link href="../../style/style_home.css" rel="stylesheet"/>
+        <link href="../../style/style_setting.css" rel="stylesheet"/>
+        <link href="../../style/theme/dark_theme.css" rel="stylesheet" id="default_theme"/>
+        <link href="" rel="stylesheet" id="theme"/>
+        <script>
+            window.onload = async () => {
+                document.getElementById('theme').href = '../' + await window.flune_api.theme_path();
+            }
+        </script>
+        <style>
+            div {
+                margin-top: 7em;
+                padding: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
+            2.3.0<br/>
+            <h2>予期しないエラーが発生しました</h2>
+            エラーが未定義だったため、
+            <br/>
+            このページが表示されました。
+            <br/>
+            <a href="./home.html">ホームに戻る</a>
+        </div>
+    </body>
+</html>

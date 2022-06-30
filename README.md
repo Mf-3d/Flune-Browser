@@ -1,13 +1,16 @@
-# Flune-Browser 2.2.0
+# Flune-Browser 2.3.0
+Flune-Browser 2.3.0 Dev 2022.06.27.1のリリースを間違えて削除してしまいました。
+申し訳ございません。
+
 **2.1.0には重大なバグが含まれています。**
 
-[Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.1.1)をダウンロードしてください。
+[Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.2.0)以降をダウンロードしてください。
 
 ---
 
 Flune-Browserが生まれ変わりました！
 
-![](./other_data/screenshot-2.0.0.png)
+![](./other_data/screenshot-2.3.0-dev-2022.06.29.1.png)
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
 
@@ -22,7 +25,7 @@ Flune-Browser 1.x.xは今後更新はされませんがサポートは続く予�
 ## 最新バージョン
 |Stable|     Beta    |          Dev          |
 |------|-------------|-----------------------|
-|v2.2.0|v2.2.0 Beta 3|v2.0.0 Dev 2022.06.16.3|
+|v2.2.0|v2.2.0 Beta 3|v2.3.0 Dev 2022.06.29.1|
 
 ---
 

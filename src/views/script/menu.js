@@ -1,4 +1,6 @@
 let setting;
+let faviconCache;
+let timer = [];
 
 function getOpenTabIndex() {
   let el = document.querySelector("#tabs");
@@ -47,6 +49,14 @@ window.onload = async () => {
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
 
+  document.querySelector("#address_bar").addEventListener('input', async (event) => {
+    console.log([document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]);
+    window.flune_api.viewSuggest({
+      word: document.querySelector("#address_bar").value,
+      pos: [document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]
+    });
+  });
+
   document.addEventListener('keydown', (e) => {
     if (e.target === document.getElementById('address_bar')) {
       const word = document.getElementsByTagName('input')[0].value;
@@ -68,7 +78,7 @@ window.onload = async () => {
 
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active"><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
 
     window.flune_api.new_tab();
@@ -76,14 +86,14 @@ window.onload = async () => {
     each();
   });
 
-  window.flune_api.on('new_tab_elm', () => {
+  window.flune_api.on('new_tab_elm', (event, data) => {
     if(document.querySelector("#tabs > span > div.active")){
       document.querySelector("#tabs > span > div.active").classList.remove('active');
     }
   
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active"><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
   
     each();
@@ -93,13 +103,14 @@ window.onload = async () => {
     let el = document.querySelectorAll("#tabs > span > div");
     el.forEach((val, index) => {
       val.querySelector(".title").onclick = (event) => {
+        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
         if(document.querySelector("#tabs > span > div.active")){
           document.querySelector("#tabs > span > div.active").classList.remove('active');
         }
         
         val.classList.add('active');
   
-        window.flune_api.open_tab(index);
+        window.flune_api.open_tab(_index);
 
         each();
 
@@ -110,8 +121,58 @@ window.onload = async () => {
         return;
       };
 
+    val.ondragstart = function () {
+      event.dataTransfer.setData('text/plain', event.target.getAttribute('tab_id'));
+    };
+
+    val.ondragover = function () {
+      event.preventDefault();
+      let rect = this.getBoundingClientRect();
+      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+        //マウスカーソルの位置が要素の半分より上
+        this.style.borderLeft = '3px solid blue';
+        this.style.borderRight = '';
+      } else {
+        //マウスカーソルの位置が要素の半分より下
+        this.style.borderLeft = '';
+        this.style.borderRight = '3px solid blue';
+      }
+    };
+
+    val.ondragleave = function () {
+      this.style = '';
+    };
+
+    val.ondrop = function () {
+      event.preventDefault();
+      let id = event.dataTransfer.getData('text/plain');
+      let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
+
+      console.log(elm_drag);
+
+      let rect = this.getBoundingClientRect();
+      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+        //マウスカーソルの位置が要素の半分より上
+        // this.parentNode.insertBefore(elm_drag, this);
+        val.insertAdjacentElement('beforebegin', elm_drag);
+      } else {
+        //マウスカーソルの位置が要素の半分より下
+        // this.parentNode.insertBefore(elm_drag, this.nextSibling);
+        val.insertAdjacentElement('afterend', elm_drag);
+      }
+      
+      document.querySelectorAll('#tabs > span > div').forEach((val, index) => {
+        val.style = '';
+      });
+
+      let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
+      // window.flune_api.open_tab(_index);
+
+      each();
+    };
 
       val.querySelector(".close_button").onclick = () => {
+        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
         if(document.querySelector("#tabs > span > div.active")){
           document.querySelector("#tabs > span > div.active").classList.remove('active');
         }
@@ -120,23 +181,31 @@ window.onload = async () => {
 
         let open_index;
 
-        window.flune_api.close_tab(index);
+        window.flune_api.close_tab(_index);
 
-        if(index === 0 && el.length !== 0){
+        document.querySelectorAll(`#tabs > span > div`).forEach((val, index) => {
+          if(_index < Number(val.getAttribute('tab_id'))){
+            val.setAttribute('tab_id', Number(val.getAttribute('tab_id')) - 1);
+          }
+        });
+
+        if(index === 0){
           open_index = index;
-          index = index + 1;
+          index = index;
         }
         else{
           open_index = index - 1;
           index = index - 1;
         }
 
-        window.flune_api.open_tab(open_index);
+        if(document.querySelectorAll('#tabs > span > div').length !== 0){
+          window.flune_api.open_tab(open_index);
+          each();
+        }
 
-        each();
 
-        el[index].classList.add('active');
-        
+
+        document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 
         if(setting.force_twemoji){
           twemoji.parse(document.body);
@@ -190,35 +259,58 @@ window.flune_api.on('change_url', (event, data)=>{
 });
 
 window.flune_api.on('change_title', (event, data)=>{
-  document.querySelectorAll("#tabs > span > div > .title")[data.index].innerHTML = data.title;
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .title`).innerHTML = data.title;
+  if(setting.force_twemoji){
+    twemoji.parse(document.body);
+  }
+});
+
+window.flune_api.on('change-favicon', (event, data)=>{
+  if(!data.favicon){
+    data.favicon = '';
+  }
+  clearInterval(timer[data.index]);
+  timer[data.index] = setInterval(() => {
+    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.contains('active')){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
+      return;
+    }
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+  }, 500);
+
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+  faviconCache[data.index] = data.favicon;
   if(setting.force_twemoji){
     twemoji.parse(document.body);
   }
 });
 
 window.flune_api.on('active_tab', (event, data)=>{
-  if(document.querySelector(".active")){
-    document.querySelector(".active").classList.remove('active');
+  if(document.querySelector("#tabs > span > div.active")){
+    document.querySelector("#tabs > span > div.active").classList.remove('active');
   }
   
-  document.querySelectorAll("#tabs > span > div")[data.index].classList.add('active');
+  document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).classList.add('active');
 });
 
 window.flune_api.on('update-audible', (event, data) => {
   if(data.audible){
-    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('audible')[0].classList.add('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.add('active');
   }
   else{
-    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('audible')[0].classList.remove('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.remove('active');
   }
 });
 
 window.flune_api.on('update-loading', (event, data) => {
-  if(data.loading){
-    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('loading')[0].classList.add('active');
+  if(data.loading === true){
+    faviconCache = document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src;
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
   }
   else{
-    document.querySelectorAll("#tabs > span > div")[data.index].getElementsByClassName('loading')[0].classList.remove('active');
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache[data.index];
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
   }
 });
 

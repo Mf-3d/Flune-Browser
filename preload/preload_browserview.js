@@ -17,11 +17,15 @@ contextBridge.exposeInMainWorld('flune_api', {
     get_setting: async (data) => await ipcRenderer.invoke('get_setting', data),
     theme_path: async (data) => await ipcRenderer.invoke('theme_path', data),
     copy: async (data) => await ipcRenderer.invoke('copy', data),
+    getWinSize: async (data) => await ipcRenderer.invoke('getWinSize', data),
 
-    on: (channel, callback) => ipcRenderer.on(channel, (event, argv)=>callback(event, argv))
+    on: (channel, callback) => ipcRenderer.on(channel, (event, argv) => {
+        if(channel !== 'なにか'){
+            callback(event, argv);
+        }
+    })
   }
 );
-
 
 let setting = store.get('settings', {
     "settings": {

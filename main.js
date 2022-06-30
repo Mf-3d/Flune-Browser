@@ -5,7 +5,8 @@ const log = require('electron-log');
 const fs = require('fs');
 const request = require('request');
 const os = require('os');
-const { exec } = require('child_process');
+const xml2js = require("xml2js");
+
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -39,7 +40,7 @@ const store = new Store();
 
 let win;
 let setting_win;
-let circle_dock;
+let suggestView;
 let bv = [];
 let timer = [];
 let winSize;
@@ -267,13 +268,12 @@ function setContext(id){
 
 function nt(url) {
   let id = bv.length;
-  console.debug('ID:',id);
 
   bv[bv.length] = new electron.BrowserView({
     transparent: false,
     backgroundColor: '#ffffff',
-    scrollBounce: true,
     webPreferences: {
+      scrollBounce: true,
       worldSafeExecuteJavaScript: true,
       nodeIntegration:false,
       contextIsolation: true,
@@ -293,7 +293,6 @@ function nt(url) {
   bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
 
   win.setTopBrowserView(bv[bv.length - 1]);
-
 
   bv[id].setAutoResize({width: true, height: true});
 
@@ -554,10 +553,14 @@ function nt(url) {
       clearInterval(timer[id]);
       timer[id] = null;
 
-      win.webContents.send('update-audible', {
-        index: id,
-        audible: false
-      });
+      try {
+        win.webContents.send('update-audible', {
+          index: id,
+          audible: false
+        });
+      } catch (e) {
+
+      }
 
       console.log('タイマーが消去されました。');
     }
@@ -594,6 +597,11 @@ function nt(url) {
     }
   });
 
+  win.webContents.send('change-favicon', {
+    index: id,
+    favicon: ''
+  });
+
   ot(id);
 }
 
@@ -621,6 +629,8 @@ function ot(index) {
   bv[index].webContents.on('media-started-playing', () => {
     win.webContents.send('each');
     if(!timer[index]){
+      clearInterval(timer[index]);
+      timer[index] = null;
       timer[index] = setInterval(() => {
         if(bv[index]){
           win.webContents.send('update-audible', {
@@ -644,17 +654,29 @@ function ot(index) {
   });
 
   bv[index].webContents.on('media-paused', () => {
-    win.webContents.send('each');
-    if(timer[index]){
-      clearInterval(timer[index]);
-      timer[index] = null;
-      win.webContents.send('update-audible', {
-        index: index,
-        audible: false
-      });
+    try {
+      win.webContents.send('each');
+      if(timer[index]){
+        clearInterval(timer[index]);
+        timer[index] = null;
+        win.webContents.send('update-audible', {
+          index: index,
+          audible: false
+        });
 
-      console.log('タイマーが消去されました。');
+        console.log('タイマーが消去されました。');
+      }
+    } catch (e) {
+
     }
+  });
+
+  bv[index].webContents.on('page-favicon-updated', (event, favicons) => {
+    console.debug(favicons[0]);
+    win.webContents.send('change-favicon', {
+      index,
+      favicon: favicons[0]
+    });
   });
 
   bv[index].webContents.on('page-title-updated', () => {
@@ -903,8 +925,16 @@ function ot(index) {
     return { action: 'deny' };
   });
 
-  bv[index].webContents.on('did-fail-load', () => {
-    bv[index].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
+  bv[index].webContents.on('did-fail-load', (event, errCode) => {
+    if (errCode === -105){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/server_notfound.html`);
+    } else if(errCode === -106){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
+    } else if(errCode === -118){
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
+    } else {
+      bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
+    }
   });
 
   bv[index].webContents.on('did-finish-load', () => {
@@ -1007,21 +1037,6 @@ function ns() {
   bv[open_tab].webContents.loadURL('flune://setting');
 }
 
-function toggleCircleDock() {
-  circle_dock = new electron.BrowserView({
-    transparent: true,
-    width: 50,
-    height: 50
-  });
-
-  circle_dock.webContents.loadFile(__dirname + '/src/views/circle_dock.html');
-
-  win.addBrowserView(circle_dock);
-  win.setTopBrowserView(circle_dock);
-  circle_dock.setBounds({x: winSize[0] - 75, y: winSize[1] - 75, width: 75, height: 75});
-  circle_dock.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
-}
-
 function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
@@ -1040,7 +1055,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.2.0',
+      title: 'Flune-Browser 2.3.0',
       titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
@@ -1051,8 +1066,6 @@ function nw() {
       }
     });
 
-    // win.webContents.toggleDevTools();
-
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
   }
@@ -1062,7 +1075,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.2.0',
+      title: 'Flune-Browser 2.3.0',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         worldSafeExecuteJavaScript: true,
@@ -1071,14 +1084,17 @@ function nw() {
         preload: `${__dirname}/preload/preload.js`
       }
     });
-
     win.loadFile(`${__dirname}/src/views/menu_win.html`);
   }
-  
+
   winSize = win.getSize();
 
   // toggleCircleDock();
   nt();
+
+  bv[open_tab].webContents.on('did-finish-load', () => {
+    // win.webContents.openDevTools();
+  });
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
     // ...
@@ -1091,12 +1107,15 @@ function nw() {
   win.on('close', () => {
     store.set('window.window_size', winSize);
 
-    bv.forEach((val, index) => {
-      val.webContents.destroy();
-      val = null;
+    for(let index = 0; index < bv.length - 1; index++){
+      bv[index] = null;
       bv.splice(index, 1);
       clearInterval(timer[index]);
-    });
+    }
+
+    bv = [];
+
+    win.webContents.destroy();
   });
 
   win.on('closed', () => {
@@ -1114,7 +1133,6 @@ electron.app.on('window-all-closed', function() {
 
 electron.app.on('activate', () => {
   if(win === null){
-    bv = [];
     nw();
   }
 });
@@ -1178,6 +1196,9 @@ electron.app.on("ready", () => {
   nw();
 });
 
+electron.ipcMain.handle('getWinSize', (event, index) => {
+  return winSize;
+});
 
 electron.ipcMain.handle('new_tab', (event, data) => {
   nt();
@@ -1187,14 +1208,6 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   clearInterval(timer[index]);
   timer[index] = null;
   timer.splice(index, 1);
-  if(bv.length === 1){
-    win.removeBrowserView(bv[0]);
-    bv[0].webContents.destroy();
-    bv.splice(index, 1);
-    win.close();
-
-    return;
-  }
 
   win.removeBrowserView(bv[index]);
   console.debug(index);
@@ -1209,21 +1222,31 @@ electron.ipcMain.handle('close_tab', (event, index) => {
     index = index - 1;
   }
 
-  win.webContents.send('each');
+  if(bv.length === 0){
+    win.close();
+  } 
 
   console.debug('close_tabイベントで受け取ったindex:', index);
 
-  ot(index);
+  if(bv.length - 1 > 0){
+    win.webContents.send('each');
 
-  win.webContents.send('active_tab', {
-    index: index
-  });
+    ot(index);
+
+    open_tab = index;
+
+    win.webContents.send('active_tab', {
+      index
+    });
+  }
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
   ot(index);
 
   win.webContents.send('each');
+
+  removeSuggestView();
 });
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
@@ -1412,6 +1435,98 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
   win.webContents.send('change_url', {
     url: bv[open_tab].webContents.getURL()
+  });
+
+  removeSuggestView();
+});
+
+function removeSuggestView() {
+  if(suggestView){
+    win.removeBrowserView(suggestView);
+    suggestView.webContents.destroy();
+    suggestView = null;
+    suggestDisplayed = false;
+  }
+}
+
+let recentSuggest;
+
+electron.ipcMain.handle('getRecentSuggest', async (event, data) => {
+  return recentSuggest;
+});
+
+let suggestDisplayed;
+
+electron.ipcMain.handle('viewSuggest', async (event, data) => {
+  suggestDisplayed = true;
+
+  let result;
+
+  result = [];
+
+  if(!data.word){
+    win.removeBrowserView(suggestView);
+    suggestView.webContents.destroy();
+    suggestView = null;
+  }
+
+  request({
+    url: `https://www.google.com/complete/search?output=toolbar&q=${encodeURI(data.word)}`,
+	  method: 'GET'
+  }, (error, response, body) => {
+    let suggestXml = body;
+
+    if(suggestDisplayed && suggestView){
+      win.removeBrowserView(suggestView);
+      suggestView.webContents.destroy();
+      suggestView = null;
+    }
+
+    xml2js.parseString(suggestXml, function (err, res) {
+      if (err) {
+        console.error(err.message);
+      } else {
+        if(res.toplevel){
+          res.toplevel.CompleteSuggestion.forEach((val, index) => {
+            result[result.length] = val.suggestion[0]['$'].data;
+          });
+        }
+      }
+
+      if(result.length === 0) return;
+
+      recentSuggest = {
+        word: data.word,
+        result
+      }
+
+      suggestView = new electron.BrowserView({
+        transparent: true,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+          scrollBounce: true,
+          worldSafeExecuteJavaScript: true,
+          nodeIntegration:false,
+          contextIsolation: true,
+          preload: `${__dirname}/preload/preload_suggest.js`
+        }
+      });
+
+      data.pos[0] = Math.floor(data.pos[0]);
+      data.pos[1] = Math.floor(data.pos[1]);
+
+      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
+      win.addBrowserView(suggestView);
+      suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
+      win.setTopBrowserView(suggestView);
+    
+      // suggestView.webContents.on('blur', () => {
+      //   win.removeBrowserView(suggestView);
+      //   suggestView.webContents.destroy();
+      //   suggestView = null;
+      //   suggestDisplayed = false;
+      // });
+    });
   });
 });
 
@@ -1671,6 +1786,17 @@ const template = electron.Menu.buildFromTemplate([
   {
     label: 'ファイル',
     submenu: [
+      {
+        label: '新しいタブ',
+        click: () => {
+          win.webContents.send('new_tab_elm', {});
+          nt();
+        },
+        accelerator: 'CmdOrCtrl+N'
+      },
+      {
+        type: 'separator'
+      },
       isMac ? {role:'close', label:'ウィンドウを閉じる'} : {role:'quit', label:'終了'}
     ]
   },

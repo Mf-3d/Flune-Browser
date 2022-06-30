@@ -62,10 +62,10 @@ a:hover {
 }
 
 #tabs .title {
-  margin-left: 2em;
+  margin-left: 1em;
   text-align: center;
   overflow-x: hidden;
-  width: calc(100% - 6em);
+  width: calc(100% - 8em);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -78,7 +78,7 @@ a:hover {
   opacity: 0;
 }
 .loading.active {
-  animation:1s ease-in-out infinite rotation;
+  animation: 1s ease-in-out infinite rotation;
   transition: 0.5s;
   opacity: 1;
 }
@@ -140,7 +140,7 @@ input[type="text"] {
   padding: 0em;
   background: var(--flune-main-background);
   border: solid 1px var(--flune-main-border-color);
-  width: calc(100% - 15em);
+  width: calc(100% - 5em);
 }
 
 .close_button {
@@ -183,7 +183,13 @@ nav:not(#blank) {
 }
 
 #blank {
-  width: 4em;
+  width: 1em;
   height: 1.2em;
   display: inline-block;
+}
+
+.favicon {
+  height: 1.2em;
+  width: 1.2em;
+  margin-left: 0.5em;
 }
