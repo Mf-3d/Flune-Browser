@@ -667,7 +667,7 @@ function ot(index) {
         console.log('タイマーが消去されました。');
       }
     } catch (e) {
-      
+
     }
   });
 
@@ -1786,6 +1786,17 @@ const template = electron.Menu.buildFromTemplate([
   {
     label: 'ファイル',
     submenu: [
+      {
+        label: '新しいタブ',
+        click: () => {
+          win.webContents.send('new_tab_elm', {});
+          nt();
+        },
+        accelerator: 'CmdOrCtrl+N'
+      },
+      {
+        type: 'separator'
+      },
       isMac ? {role:'close', label:'ウィンドウを閉じる'} : {role:'quit', label:'終了'}
     ]
   },
