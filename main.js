@@ -6,7 +6,7 @@ const fs = require('fs');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
-
+const { TouchBarButton } = electron.TouchBar;
 // require('update-electron-app')({
 //   repo: 'mf-3d/Flune-Browser',
 //   updateInterval: '5 minutes'
@@ -45,6 +45,66 @@ let bv = [];
 let timer = [];
 let winSize;
 let open_tab = 1;
+
+const touchBarItem_reload = new TouchBarButton({
+  label: '↻',
+  click: () => {
+    bv[open_tab].webContents.reload();
+    setTitle(open_tab);
+  }
+});
+
+const touchBarItem_BackForward = new electron.TouchBar.TouchBarSegmentedControl({
+  mode: 'buttons',
+  segments: [
+    {
+      label: '◀︎',
+    },
+    {
+      label: '▶︎'
+    }
+  ],
+  change: (selectedIndex, isSelected) => {
+    if(isSelected){
+      if(selectedIndex === 0){
+        bv[open_tab].webContents.goBack();
+        setTitle(open_tab);
+      }
+      else if(selectedIndex === 1){
+        bv[open_tab].webContents.goForward();
+        setTitle(open_tab);
+      }
+    }
+  }
+});
+
+const touchBar = new electron.TouchBar({
+  items: [
+    // new electron.TouchBar.TouchBarGroup({
+    //   items: new electron.TouchBar({
+    //     items: [
+    //       touchBarItem_back,
+    //       touchBarItem_forward
+    //     ]
+    //   })
+    // }),
+    touchBarItem_BackForward,
+    touchBarItem_reload,
+    new electron.TouchBar.TouchBarButton({
+      label: ' 検索するURLまたは語句を入力        ',
+      click: () => {
+        win.webContents.send('openSearchInput');
+      }
+    }),
+    new electron.TouchBar.TouchBarButton({
+      label: '＋',
+      click: () => {
+        win.webContents.send('new_tab_elm', {});
+        nt();
+      }
+    })
+  ]
+})
 
 let app_name = "Flune-Browser";
 
@@ -287,6 +347,8 @@ function nt(url) {
   else{
     bv[bv.length - 1].webContents.loadURL("file://" + __dirname + "/src/views/home.html");
   }
+
+  bv[bv.length - 1].webContents.setVisualZoomLevelLimits(1, 5);
 
   win.addBrowserView(bv[bv.length - 1]);
 
@@ -1068,6 +1130,8 @@ function nw() {
 
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
+
+    win.setTouchBar(touchBar);
   }
   else{
     win = new electron.BrowserWindow({
@@ -1146,6 +1210,7 @@ electron.app.on("ready", () => {
       }
     }
   ]);
+
   if (process.platform === 'darwin') {
     app.dock.setMenu(dockMenu);
   }

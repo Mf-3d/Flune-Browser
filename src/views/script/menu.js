@@ -45,6 +45,10 @@ function more_button() {
 }
 
 window.onload = async () => {
+  window.flune_api.on('openSearchInput', (event) => {
+    document.getElementById("address_bar").focus();
+  });
+  
   setting = await window.flune_api.get_setting();
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
