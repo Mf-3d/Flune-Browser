@@ -103,6 +103,13 @@ window.onload = async () => {
     each();
   });
 
+  window.flune_api.on('addExtension', (id, manifest, url) => {
+    document.querySelector('#extensionSpace').innerHTML = `
+    ${document.querySelector('#extensionSpace').innerHTML}
+    
+    `;
+  });
+
   function each() {
     let el = document.querySelectorAll("#tabs > span > div");
     el.forEach((val, index) => {
@@ -133,11 +140,11 @@ window.onload = async () => {
       event.preventDefault();
       let rect = this.getBoundingClientRect();
       if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
-        //マウスカーソルの位置が要素の半分より上
+        //マウスカーソルの位置が要素の半分より左
         this.style.borderLeft = '3px solid blue';
         this.style.borderRight = '';
       } else {
-        //マウスカーソルの位置が要素の半分より下
+        //マウスカーソルの位置が要素の半分より右
         this.style.borderLeft = '';
         this.style.borderRight = '3px solid blue';
       }

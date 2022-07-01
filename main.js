@@ -113,219 +113,6 @@ let viewY = 50;
 
 const isMac = (process.platform === 'darwin');
 
-function setContext(id){
-  const context_menu = electron.Menu.buildFromTemplate([
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  const context_menu_text = electron.Menu.buildFromTemplate([
-    {
-      label: `${params.selectionText}をGoogleで検索`,
-      click: () => {
-        bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'コピー',
-      accelerator: 'CmdOrCtrl+C',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      label: 'ペースト',
-      click: () => {
-        electron.webContents.getFocusedWebContents().paste();
-      }
-    },
-    {
-      label:'切り取り',
-      role:'cut'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  const context_menu_img = electron.Menu.buildFromTemplate([
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '画像をコピー',
-      accelerator: 'CmdOrCtrl+C',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      label: '画像を保存',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-    
-          let path = electron.dialog.showSaveDialogSync(null, {
-            title: '画像を保存',
-            properties: ['createDirectory'],
-            filters: [
-              {
-                name: '画像',
-                extensions: ['jpg','png','gif','webp']
-              }
-            ]
-          });
-
-          if(path !== undefined){
-            request(
-                {method: 'GET', url: params.srcURL, encoding: null},
-                (error, response, body) => {
-                    if(!error && response.statusCode === 200){
-                      console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                        fs.writeFileSync(path, body, 'binary');
-                    }
-                }
-            );
-          }
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  setTitle(index);
-
-  if(params.mediaType === 'image'){
-    context_menu_img.popup();
-  }
-  else if(params.selectionText !== '' && params.selectionText){
-    context_menu_text.popup();
-  }
-  else{
-    context_menu.popup();
-  }
-}
-
 function nt(url) {
   let id = bv.length;
 
@@ -359,219 +146,6 @@ function nt(url) {
   bv[id].setAutoResize({width: true, height: true});
 
   open_tab = bv.length - 1;
-
-  bv[id].webContents.on('context-menu', (event, params) => {
-    event.preventDefault();
-
-    const context_menu = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_text = electron.Menu.buildFromTemplate([
-      {
-        label: `${params.selectionText}をGoogleで検索`,
-        click: () => {
-          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'コピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: 'ペースト',
-        click: () => {
-          electron.webContents.getFocusedWebContents().paste();
-        }
-      },
-      {
-        label:'切り取り',
-        role:'cut'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_img = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '画像をコピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: '画像を保存',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-      
-            let path = electron.dialog.showSaveDialogSync(null, {
-              title: '画像を保存',
-              properties: ['createDirectory'],
-              filters: [
-                {
-                  name: '画像',
-                  extensions: ['jpg','png','gif','webp']
-                }
-              ]
-            });
-
-            if(path !== undefined){
-              request(
-                  {method: 'GET', url: params.srcURL, encoding: null},
-                  (error, response, body) => {
-                      if(!error && response.statusCode === 200){
-                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                          fs.writeFileSync(path, body, 'binary');
-                      }
-                  }
-              );
-            }
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    if(params.mediaType === 'image'){
-      context_menu_img.popup();
-    }
-    else if(params.selectionText !== '' && params.selectionText){
-      context_menu_text.popup();
-    }
-    else{
-      context_menu.popup();
-    }
-  });
 
   bv[id].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
@@ -809,6 +383,284 @@ function ot(index) {
       }
     ]);
 
+    const context_menu_link_image = electron.Menu.buildFromTemplate([
+      {
+        label: `新規タブで開く`,
+        click: () => {
+          nt(params.linkURL);
+          win.webContents.send('new_tab_elm', {});
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '画像をコピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: '画像を保存',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+      
+            let path = electron.dialog.showSaveDialogSync(null, {
+              title: '画像を保存',
+              properties: ['createDirectory'],
+              filters: [
+                {
+                  name: '画像',
+                  extensions: ['jpg','png','gif','webp']
+                }
+              ]
+            });
+
+            if(path !== undefined){
+              request(
+                  {method: 'GET', url: params.srcURL, encoding: null},
+                  (error, response, body) => {
+                      if(!error && response.statusCode === 200){
+                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
+                          fs.writeFileSync(path, body, 'binary');
+                      }
+                  }
+              );
+            }
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'コピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: 'ペースト',
+        click: () => {
+          electron.webContents.getFocusedWebContents().paste();
+        }
+      },
+      {
+        label:'切り取り',
+        role:'cut'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    const context_menu_link = electron.Menu.buildFromTemplate([
+      {
+        label: `新規タブで開く`,
+        click: () => {
+          nt(params.linkURL);
+          win.webContents.send('new_tab_elm', {});
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'コピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: 'ペースト',
+        click: () => {
+          electron.webContents.getFocusedWebContents().paste();
+        }
+      },
+      {
+        label:'切り取り',
+        role:'cut'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
+    const context_menu_link_text = electron.Menu.buildFromTemplate([
+      {
+        label: `新規タブで開く`,
+        click: () => {
+          nt(params.linkURL);
+          win.webContents.send('new_tab_elm', {});
+        }
+      },
+      {
+        label: `${params.selectionText}をGoogleで検索`,
+        click: () => {
+          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: '戻る',
+        click: () => {
+          bv[open_tab].webContents.goBack();
+        }
+      },
+      {
+        label: '進む',
+        click: () => {
+          bv[open_tab].webContents.goForward();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'コピー',
+        accelerator: 'CmdOrCtrl+C',
+        click: () => {
+          if(params.mediaType === 'image'){
+            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
+            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
+          } else {
+            electron.clipboard.writeText(params.selectionText, 'clipboard');
+          }
+        }
+      },
+      {
+        label: 'ペースト',
+        click: () => {
+          electron.webContents.getFocusedWebContents().paste();
+        }
+      },
+      {
+        label:'切り取り',
+        role:'cut'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label:'再読み込み',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          bv[open_tab].webContents.reload();
+        }
+      },
+      {
+        label:'強制的に再読み込み',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+          bv[open_tab].webContents.reloadIgnoringCache();
+        }
+      },
+      {
+        accelerator: 'F12',
+        click: () => {
+          bv[open_tab].webContents.toggleDevTools();
+        }, label:'開発者ツールを表示'
+      }
+    ]);
+
     const context_menu_text = electron.Menu.buildFromTemplate([
       {
         label: `${params.selectionText}をGoogleで検索`,
@@ -972,8 +824,17 @@ function ot(index) {
 
     setTitle(index);
 
-    if(params.mediaType === 'image'){
+    if(params.hasImageContents && params.linkURL){
+      context_menu_link_image.popup();
+    }
+    else if(params.linkURL && params.selectionText){
+      context_menu_link_text.popup();
+    }
+    else if(params.mediaType === 'image'){
       context_menu_img.popup();
+    } 
+    else if(params.linkURL){
+      context_menu_link.popup();
     }
     else if(params.selectionText !== '' && params.selectionText){
       context_menu_text.popup();
@@ -1002,8 +863,11 @@ function ot(index) {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
     } else if(errCode === -118){
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
+    } else if(errCode === -3){
+      // なにもしない
     } else {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
+      console.debug(`ページ表示エラー(未定義):${errCode}`)
     }
   });
 
@@ -1168,8 +1032,11 @@ function nw() {
     // win.webContents.openDevTools();
   });
 
-  electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
-    // ...
+  electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
+    // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
+    win.webContent.send('addExtension', {
+      id, manifest, url: `${url}${manifest.action.default_popup}`
+    });
   });
 
   win.on('resize', () => {
