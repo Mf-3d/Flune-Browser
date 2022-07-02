@@ -132,55 +132,55 @@ window.onload = async () => {
         return;
       };
 
-    val.ondragstart = function () {
-      event.dataTransfer.setData('text/plain', event.target.getAttribute('tab_id'));
-    };
+      val.ondragstart = function () {
+        event.dataTransfer.setData('text/plain', event.target.getAttribute('tab_id'));
+      };
 
-    val.ondragover = function () {
-      event.preventDefault();
-      let rect = this.getBoundingClientRect();
-      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
-        //マウスカーソルの位置が要素の半分より左
-        this.style.borderLeft = '3px solid blue';
-        this.style.borderRight = '';
-      } else {
-        //マウスカーソルの位置が要素の半分より右
-        this.style.borderLeft = '';
-        this.style.borderRight = '3px solid blue';
-      }
-    };
+      val.ondragover = function () {
+        event.preventDefault();
+        let rect = this.getBoundingClientRect();
+        if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+          //マウスカーソルの位置が要素の半分より左
+          this.style.borderLeft = '3px solid blue';
+          this.style.borderRight = '';
+        } else {
+          //マウスカーソルの位置が要素の半分より右
+          this.style.borderLeft = '';
+          this.style.borderRight = '3px solid blue';
+        }
+      };
 
-    val.ondragleave = function () {
-      this.style = '';
-    };
+      val.ondragleave = function () {
+        this.style = '';
+      };
 
-    val.ondrop = function () {
-      event.preventDefault();
-      let id = event.dataTransfer.getData('text/plain');
-      let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
+      val.ondrop = function () {
+        event.preventDefault();
+        let id = event.dataTransfer.getData('text/plain');
+        let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
 
-      console.log(elm_drag);
+        console.log(elm_drag);
 
-      let rect = this.getBoundingClientRect();
-      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
-        //マウスカーソルの位置が要素の半分より上
-        // this.parentNode.insertBefore(elm_drag, this);
-        val.insertAdjacentElement('beforebegin', elm_drag);
-      } else {
-        //マウスカーソルの位置が要素の半分より下
-        // this.parentNode.insertBefore(elm_drag, this.nextSibling);
-        val.insertAdjacentElement('afterend', elm_drag);
-      }
-      
-      document.querySelectorAll('#tabs > span > div').forEach((val, index) => {
-        val.style = '';
-      });
+        let rect = this.getBoundingClientRect();
+        if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+          //マウスカーソルの位置が要素の半分より上
+          // this.parentNode.insertBefore(elm_drag, this);
+          val.insertAdjacentElement('beforebegin', elm_drag);
+        } else {
+          //マウスカーソルの位置が要素の半分より下
+          // this.parentNode.insertBefore(elm_drag, this.nextSibling);
+          val.insertAdjacentElement('afterend', elm_drag);
+        }
+        
+        document.querySelectorAll('#tabs > span > div').forEach((val, index) => {
+          val.style = '';
+        });
 
-      let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
-      // window.flune_api.open_tab(_index);
+        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
+        // window.flune_api.open_tab(_index);
 
-      each();
-    };
+        each();
+      };
 
       val.querySelector(".close_button").onclick = () => {
         let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));

@@ -16,9 +16,11 @@ let log_path;
 
 console.log = log.log;
 console.debug = log.debug;
+console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
 process.on('uncaughtException', (err) => {
   log.error(err); // ログファイルへ記録
+  console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
   let index = electron.dialog.showMessageBoxSync(null, {
     type: 'error',
     icon: './src/icon.png',
@@ -174,14 +176,15 @@ function nt(url) {
         // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
       }, 1000);
 
-      console.log('タイマーが生成されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
     }
   });
 
   bv[id].webContents.on('destroyed', () => {
     clearInterval(timer[id]);
     timer[id] = null;
-    console.log('webContentsが破棄されたためタイマーが消去されました。');
+
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
   });
 
   bv[id].webContents.on('media-paused', () => {
@@ -198,18 +201,15 @@ function nt(url) {
 
       }
 
-      console.log('タイマーが消去されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
     }
   });
 
   bv[id].webContents.setWindowOpenHandler((details) => {
     win.webContents.send('new_tab_elm', {});
     nt(details.url);
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 新しいタブがsetWindowOpenHandlerによって生成されました`);
     return { action: 'deny' };
-  });
-
-  bv[id].webContents.on('did-fail-load', () => {
-    bv[id].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
   });
 
   bv[id].webContents.on('did-finish-load', () => {
@@ -255,6 +255,7 @@ function ot(index) {
   bv[index].webContents.removeAllListeners('media-paused');
   bv[index].webContents.removeAllListeners('context-menu');
   bv[index].webContents.removeAllListeners('did-fail-load');
+  console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m タブ${index}のEventListenerを全て削除しました`);
 
   bv[index].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
@@ -286,7 +287,7 @@ function ot(index) {
         // console.log('音声が再生されているかどうか:', bv[index].webContents.isCurrentlyAudible());
       }, 1000);
 
-      console.log('タイマーが生成されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
     }
   });
 
@@ -294,6 +295,7 @@ function ot(index) {
     if(timer[index]){
       clearInterval(timer[index]);
       timer[index] = null;
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
     }
   });
 
@@ -308,7 +310,7 @@ function ot(index) {
           audible: false
         });
 
-        console.log('タイマーが消去されました。');
+        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
       }
     } catch (e) {
 
@@ -325,19 +327,19 @@ function ot(index) {
 
   bv[index].webContents.on('page-title-updated', () => {
     if(bv[index]){
-      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index);
     }
     else if(bv[index - 1]){
-      console.debug('SetTitleに送るindex:', index - 1, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index - 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index - 1);
     }
     else if(bv[index + 1]){
-      console.debug('SetTitleに送るindex:', index + 1, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index + 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index + 1);
     }
     else{
-      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index);
     }
   });
