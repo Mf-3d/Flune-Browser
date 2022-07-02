@@ -516,6 +516,7 @@ function nw() {
 
     for(let index = 0; index < bv.length - 1; index++){
       bv[index].webContents.removeAllListeners();
+      bv[index].webContents.destroy();
       bv[index] = null;
       bv.splice(index, 1);
       clearInterval(timer[index]);
