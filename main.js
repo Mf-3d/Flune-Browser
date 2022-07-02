@@ -414,7 +414,7 @@ function ot(index) {
         click: () => {
           if(params.mediaType === 'image'){
             // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
+            // electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
       
             let path = electron.dialog.showSaveDialogSync(null, {
               title: '画像を保存',
@@ -433,7 +433,7 @@ function ot(index) {
                   (error, response, body) => {
                       if(!error && response.statusCode === 200){
                         console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                          fs.writeFileSync(path, body, 'binary');
+                        fs.writeFileSync(path, body, 'binary');
                       }
                   }
               );
