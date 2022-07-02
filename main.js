@@ -515,6 +515,7 @@ function nw() {
     store.set('window.window_size', winSize);
 
     for(let index = 0; index < bv.length - 1; index++){
+      bv[index].webContents.removeAllListeners();
       bv[index] = null;
       bv.splice(index, 1);
       clearInterval(timer[index]);
