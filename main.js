@@ -1,24 +1,23 @@
+// モジュール読み込み
 const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
-const fs = require('fs');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
+const touchBar = require('./main/touchBar.js');
+const applicationMenu = require('./main/applicationMenu.js');
+const setProtocol = require('./main/protocol');
 
-// require('update-electron-app')({
-//   repo: 'mf-3d/Flune-Browser',
-//   updateInterval: '5 minutes'
-// });
-
-let log_path;
-
+// ログ関連
 console.log = log.log;
 console.debug = log.debug;
+console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
 process.on('uncaughtException', (err) => {
   log.error(err); // ログファイルへ記録
+  console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
   let index = electron.dialog.showMessageBoxSync(null, {
     type: 'error',
     icon: './src/icon.png',
@@ -46,225 +45,10 @@ let timer = [];
 let winSize;
 let open_tab = 1;
 
-let app_name = "Flune-Browser";
-
 let viewY = 50;
 // let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
-
-function setContext(id){
-  const context_menu = electron.Menu.buildFromTemplate([
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  const context_menu_text = electron.Menu.buildFromTemplate([
-    {
-      label: `${params.selectionText}をGoogleで検索`,
-      click: () => {
-        bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'コピー',
-      accelerator: 'CmdOrCtrl+C',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      label: 'ペースト',
-      click: () => {
-        electron.webContents.getFocusedWebContents().paste();
-      }
-    },
-    {
-      label:'切り取り',
-      role:'cut'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  const context_menu_img = electron.Menu.buildFromTemplate([
-    {
-      label: '戻る',
-      click: () => {
-        bv[open_tab].webContents.goBack();
-      }
-    },
-    {
-      label: '進む',
-      click: () => {
-        bv[open_tab].webContents.goForward();
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '画像をコピー',
-      accelerator: 'CmdOrCtrl+C',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-          console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      label: '画像を保存',
-      click: () => {
-        if(params.mediaType === 'image'){
-          // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-          electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-    
-          let path = electron.dialog.showSaveDialogSync(null, {
-            title: '画像を保存',
-            properties: ['createDirectory'],
-            filters: [
-              {
-                name: '画像',
-                extensions: ['jpg','png','gif','webp']
-              }
-            ]
-          });
-
-          if(path !== undefined){
-            request(
-                {method: 'GET', url: params.srcURL, encoding: null},
-                (error, response, body) => {
-                    if(!error && response.statusCode === 200){
-                      console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                        fs.writeFileSync(path, body, 'binary');
-                    }
-                }
-            );
-          }
-        } else {
-          electron.clipboard.writeText(params.selectionText, 'clipboard');
-        }
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }
-    },
-    {
-      label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }
-    },
-    {
-      accelerator: 'F12',
-      click: () => {
-        bv[open_tab].webContents.toggleDevTools();
-      }, label:'開発者ツールを表示'
-    }
-  ]);
-
-  setTitle(index);
-
-  if(params.mediaType === 'image'){
-    context_menu_img.popup();
-  }
-  else if(params.selectionText !== '' && params.selectionText){
-    context_menu_text.popup();
-  }
-  else{
-    context_menu.popup();
-  }
-}
 
 function nt(url) {
   let id = bv.length;
@@ -288,6 +72,8 @@ function nt(url) {
     bv[bv.length - 1].webContents.loadURL("file://" + __dirname + "/src/views/home.html");
   }
 
+  bv[bv.length - 1].webContents.setVisualZoomLevelLimits(1, 5);
+
   win.addBrowserView(bv[bv.length - 1]);
 
   bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
@@ -297,219 +83,6 @@ function nt(url) {
   bv[id].setAutoResize({width: true, height: true});
 
   open_tab = bv.length - 1;
-
-  bv[id].webContents.on('context-menu', (event, params) => {
-    event.preventDefault();
-
-    const context_menu = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_text = electron.Menu.buildFromTemplate([
-      {
-        label: `${params.selectionText}をGoogleで検索`,
-        click: () => {
-          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'コピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: 'ペースト',
-        click: () => {
-          electron.webContents.getFocusedWebContents().paste();
-        }
-      },
-      {
-        label:'切り取り',
-        role:'cut'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_img = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '画像をコピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: '画像を保存',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-      
-            let path = electron.dialog.showSaveDialogSync(null, {
-              title: '画像を保存',
-              properties: ['createDirectory'],
-              filters: [
-                {
-                  name: '画像',
-                  extensions: ['jpg','png','gif','webp']
-                }
-              ]
-            });
-
-            if(path !== undefined){
-              request(
-                  {method: 'GET', url: params.srcURL, encoding: null},
-                  (error, response, body) => {
-                      if(!error && response.statusCode === 200){
-                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                          fs.writeFileSync(path, body, 'binary');
-                      }
-                  }
-              );
-            }
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    if(params.mediaType === 'image'){
-      context_menu_img.popup();
-    }
-    else if(params.selectionText !== '' && params.selectionText){
-      context_menu_text.popup();
-    }
-    else{
-      context_menu.popup();
-    }
-  });
 
   bv[id].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
@@ -538,14 +111,15 @@ function nt(url) {
         // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
       }, 1000);
 
-      console.log('タイマーが生成されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
     }
   });
 
   bv[id].webContents.on('destroyed', () => {
     clearInterval(timer[id]);
     timer[id] = null;
-    console.log('webContentsが破棄されたためタイマーが消去されました。');
+
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
   });
 
   bv[id].webContents.on('media-paused', () => {
@@ -562,18 +136,15 @@ function nt(url) {
 
       }
 
-      console.log('タイマーが消去されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
     }
   });
 
   bv[id].webContents.setWindowOpenHandler((details) => {
     win.webContents.send('new_tab_elm', {});
     nt(details.url);
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 新しいタブがsetWindowOpenHandlerによって生成されました`);
     return { action: 'deny' };
-  });
-
-  bv[id].webContents.on('did-fail-load', () => {
-    bv[id].webContents.loadFile(`${__dirname}/src/views/server_notfound.html`);
   });
 
   bv[id].webContents.on('did-finish-load', () => {
@@ -607,10 +178,21 @@ function nt(url) {
 
 function ot(index) {
   open_tab = index;
+  electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
   win.setTopBrowserView(bv[index]);
   // win.setTopBrowserView(circle_dock);
-
-  console.debug(index);
+  bv[index].webContents.removeAllListeners('did-start-loading');
+  bv[index].webContents.removeAllListeners('did-finish-load');
+  bv[index].webContents.removeAllListeners('page-favicon-updated');
+  bv[index].webContents.removeAllListeners('page-title-updated');
+  bv[index].webContents.removeAllListeners('did-stop-loading');
+  bv[index].webContents.removeAllListeners('destroyed');
+  bv[index].webContents.removeAllListeners('media-started-playing');
+  bv[index].webContents.removeAllListeners('media-paused');
+  bv[index].webContents.removeAllListeners('context-menu');
+  bv[index].webContents.removeAllListeners('did-fail-load');
+  bv[index].webContents.session.removeAllListeners('will-download');
+  console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m タブ${index}のEventListenerを再設定するために全て削除しました`);
 
   bv[index].webContents.on('did-start-loading', () => {
     win.webContents.send('update-loading', {
@@ -642,7 +224,7 @@ function ot(index) {
         // console.log('音声が再生されているかどうか:', bv[index].webContents.isCurrentlyAudible());
       }, 1000);
 
-      console.log('タイマーが生成されました。');
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
     }
   });
 
@@ -650,6 +232,7 @@ function ot(index) {
     if(timer[index]){
       clearInterval(timer[index]);
       timer[index] = null;
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
     }
   });
 
@@ -664,7 +247,7 @@ function ot(index) {
           audible: false
         });
 
-        console.log('タイマーが消去されました。');
+        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
       }
     } catch (e) {
 
@@ -681,19 +264,19 @@ function ot(index) {
 
   bv[index].webContents.on('page-title-updated', () => {
     if(bv[index]){
-      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index);
     }
     else if(bv[index - 1]){
-      console.debug('SetTitleに送るindex:', index - 1, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index - 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index - 1);
     }
     else if(bv[index + 1]){
-      console.debug('SetTitleに送るindex:', index + 1, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index + 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index + 1);
     }
     else{
-      console.debug('SetTitleに送るindex:', index, '\n現在のタブ数:', bv.length);
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index);
     }
   });
@@ -701,209 +284,26 @@ function ot(index) {
   bv[index].webContents.on('context-menu', (event, params) => {
     event.preventDefault();
 
-    const context_menu = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_text = electron.Menu.buildFromTemplate([
-      {
-        label: `${params.selectionText}をGoogleで検索`,
-        click: () => {
-          bv[open_tab].webContents.loadURL('https://www.google.com/search?q=' + params.selectionText);
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'コピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: 'ペースト',
-        click: () => {
-          electron.webContents.getFocusedWebContents().paste();
-        }
-      },
-      {
-        label:'切り取り',
-        role:'cut'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
-
-    const context_menu_img = electron.Menu.buildFromTemplate([
-      {
-        label: '戻る',
-        click: () => {
-          bv[open_tab].webContents.goBack();
-        }
-      },
-      {
-        label: '進む',
-        click: () => {
-          bv[open_tab].webContents.goForward();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: '画像をコピー',
-        accelerator: 'CmdOrCtrl+C',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-            console.debug('クリップボードに画像がコピーされました。\n画像URL:', params.srcURL);
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        label: '画像を保存',
-        click: () => {
-          if(params.mediaType === 'image'){
-            // electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(params.srcURL));
-            electron.webContents.getFocusedWebContents().copyImageAt(params.x, params.y);
-      
-            let path = electron.dialog.showSaveDialogSync(null, {
-              title: '画像を保存',
-              properties: ['createDirectory'],
-              filters: [
-                {
-                  name: '画像',
-                  extensions: ['jpg','png','gif','webp']
-                }
-              ]
-            });
-
-            if(path !== undefined){
-              request(
-                  {method: 'GET', url: params.srcURL, encoding: null},
-                  (error, response, body) => {
-                      if(!error && response.statusCode === 200){
-                        console.debug('画像が保存されました。\n画像URL:', params.srcURL, '\n保存先:', path);
-                          fs.writeFileSync(path, body, 'binary');
-                      }
-                  }
-              );
-            }
-          } else {
-            electron.clipboard.writeText(params.selectionText, 'clipboard');
-          }
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label:'再読み込み',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => {
-          bv[open_tab].webContents.reload();
-        }
-      },
-      {
-        label:'強制的に再読み込み',
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click: () => {
-          bv[open_tab].webContents.reloadIgnoringCache();
-        }
-      },
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      }
-    ]);
+    const context_menu = applicationMenu.context_menu(bv, open_tab, params).context_menu;
+    const context_menu_link_image = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_image;
+    const context_menu_link = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_image;
+    const context_menu_link_text = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_text;
+    const context_menu_text = applicationMenu.context_menu(bv, open_tab, params).context_menu_text;
+    const context_menu_img = applicationMenu.context_menu(bv, open_tab, params).context_menu_img;
 
     setTitle(index);
 
-    if(params.mediaType === 'image'){
+    if(params.hasImageContents && params.linkURL){
+      context_menu_link_image.popup();
+    }
+    else if(params.linkURL && params.selectionText){
+      context_menu_link_text.popup();
+    }
+    else if(params.mediaType === 'image'){
       context_menu_img.popup();
+    } 
+    else if(params.linkURL){
+      context_menu_link.popup();
     }
     else if(params.selectionText !== '' && params.selectionText){
       context_menu_text.popup();
@@ -932,8 +332,11 @@ function ot(index) {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
     } else if(errCode === -118){
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
+    } else if(errCode === -3){
+      // なにもしない
     } else {
       bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
+      console.debug(`ページ表示エラー(未定義):${errCode}`)
     }
   });
 
@@ -956,6 +359,53 @@ function ot(index) {
         win.webContents.send('activeBookmark', false);
       }
     }
+  });
+
+  bv[index].webContents.session.on('will-download', (event, item, webContents) => {
+    win.webContents.send('update-downloading', {
+      name: item.getFilename(),
+      index: index,
+      downloading: true
+    });
+
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed');
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused');
+          win.webContents.send('update-downloading', {
+            name: item.getFilename(),
+            index: index,
+            downloading: false
+          });
+        } else {
+          // console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          win.webContents.send('update-downloading', {
+            name: item.getFilename(),
+            index: index,
+            downloading: true
+          });
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully');
+        win.webContents.send('update-downloading', {
+          name: item.getFilename(),
+          index: index,
+          downloading: false
+        });
+      } else {
+        console.log(`Download failed: ${state}`);
+        win.webContents.send('update-downloading', {
+          name: item.getFilename(),
+          index: index,
+          downloading: false
+        });
+      }
+    });
   });
 
   if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
@@ -1068,6 +518,8 @@ function nw() {
 
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
+
+    win.setTouchBar(touchBar);
   }
   else{
     win = new electron.BrowserWindow({
@@ -1096,8 +548,11 @@ function nw() {
     // win.webContents.openDevTools();
   });
 
-  electron.session.defaultSession.loadExtension(__dirname + '/Extension/return-youtube-dislike').then(({ id }) => {
-    // ...
+  electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
+    // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
+    win.webContent.send('addExtension', {
+      id, manifest, url: `${url}${manifest.action.default_popup}`
+    });
   });
 
   win.on('resize', () => {
@@ -1108,6 +563,8 @@ function nw() {
     store.set('window.window_size', winSize);
 
     for(let index = 0; index < bv.length - 1; index++){
+      bv[index].webContents.removeAllListeners();
+      bv[index].webContents.destroy();
       bv[index] = null;
       bv.splice(index, 1);
       clearInterval(timer[index]);
@@ -1146,52 +603,12 @@ electron.app.on("ready", () => {
       }
     }
   ]);
+
   if (process.platform === 'darwin') {
     app.dock.setMenu(dockMenu);
   }
 
-  electron.protocol.registerFileProtocol('flune', (req, callback) => {
-    console.log('request URL:' + req.url);
-    console.log('URL:' + req.url.slice(7));
-
-    let url = req.url.slice(7);
-
-    if(url === '/test'){
-      electron.shell.openExternal('https://example.com');
-    }
-    if(url === '/setting'){
-      // if(!setting_win){
-      //   ns();
-      // }
-      // else{
-      //   setting_win.close();
-      //   setting_win = null;
-      // }
-
-      callback({path: `${__dirname}/src/views/setting.html`});
-    }
-    if(url === '/about'){
-      callback({path: `${__dirname}/src/views/about.html`});
-    }
-    if(url === '/style/style.css'){
-      callback({path: `${__dirname}/src/style/style.css`});
-    }
-    if(url === '/style/style_home.css'){
-      callback({path: `${__dirname}/src/style/style_home.css`});
-    }
-    if(url === '/style/style_setting.css'){
-      callback({path: `${__dirname}/src/style/style_setting.css`});
-    }
-    if(url === '/style/light_theme.css'){
-      callback({path: `${__dirname}/src/style/theme/light_theme.css`});
-    }
-    if(url === '/style/dark_theme.css'){
-      callback({path: `${__dirname}/src/style/theme/dark_theme.css`});
-    }
-    if(url === '/settings/background'){
-      callback({path: `${__dirname}/src/views/image/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg`});
-    }
-  });
+  setProtocol(__dirname);
 
   nw();
 });
@@ -1209,6 +626,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
   timer[index] = null;
   timer.splice(index, 1);
 
+  bv[index].webContents.removeAllListeners();
   win.removeBrowserView(bv[index]);
   console.debug(index);
   bv[index].webContents.destroy();
@@ -1702,202 +1120,5 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
   }
 ]);
 
-const template = electron.Menu.buildFromTemplate([
-  ...(isMac ? [{
-      label: app_name,
-      submenu: [
-        {
-          label:`${app_name}について`,
-          click: () => {
-            electron.dialog.showMessageBox(null, {
-              type: 'info',
-              icon: './src/icon.png',
-              title: 'Flune-Browserについて',
-              message: 'Flune-Browser ' + app.getVersion(),
-              detail: `Flune Browser
-                バージョン: ${app.getVersion()}
-                開発者: mf7cli
-                
-                Copyright 2022 mf7cli.`
-            });
-          }
-        },
-        {type:'separator'},
-        {
-          label: 'ログの保存場所を見る',
-          click: () => {
-            electron.shell.openPath(log_path);
-          }
-        },
-        // {
-        //   label: '更新を確認する',
-        //   click: () => {
-        //     let check = electron.dialog.showMessageBoxSync(null, {
-        //       type: 'info',
-        //       icon: './src/icon.png',
-        //       title: '更新作業の確認',
-        //       message: '続行してよろしいですか？',
-        //       detail: `
-        //       Flune-Browserに更新がきているかチェックします。
-        //       データが消える可能性もある機能なのでバックアップをお勧めします。
-
-        //       Beta版、Dev版や開発環境で
-        //       この機能を使用しないでください。
-        //       バージョンがダウングレードして
-        //       破損する可能性があるため危険です。
-
-        //       続行すると別のアプリが立ち上がり、
-        //       このアプリは閉じられます。
-        //       よろしいですか？
-        //       `,
-        //       buttons: ['続行', '続行しない'],
-        //       defaultId: 1
-        //     });
-
-        //     if(check === 1){
-        //       if(process.platform === 'darwin'){
-        //         if(!fs.existsSync(__dirname + '/Flune-Browser.app')){
-        //           request('https://github.com/mf-3d/Flune-Updater/releases/tag/v1.0.0', {
-        //             encoding: 'binary'
-        //           }, (error, response, body) => {
-        //             fs.writeFile(__dirname + '/Flune-Updater_1.0.0.zip', body, 'binary', (err) => {
-        //               exec(`unzip ${__dirname}/Flune-Updater_1.0.0.zip`);
-        //             });
-        //           });
-        //         }
-            
-        //         exec(`${__dirname}/Flune-Updater.app/Contents/MacOS/Flune-Updater "${electron.app.getVersion()}" "${__dirname}"`);
-            
-        //         process.exit(1);
-        //       }
-        //     }
-        //   }
-        // },
-        {type:'separator'},
-        {role:'services',   label:'サービス'},
-        {type:'separator'},
-        {role:'hide',       label:`${app_name}を隠す`},
-        {role:'hideothers', label:'ほかを隠す'},
-        {role:'unhide',     label:'すべて表示'},
-        {type:'separator'},
-        {role:'quit',       label:`${app_name}を終了`}
-      ]
-    }] : []),
-  {
-    label: 'ファイル',
-    submenu: [
-      {
-        label: '新しいタブ',
-        click: () => {
-          win.webContents.send('new_tab_elm', {});
-          nt();
-        },
-        accelerator: 'CmdOrCtrl+N'
-      },
-      {
-        type: 'separator'
-      },
-      isMac ? {role:'close', label:'ウィンドウを閉じる'} : {role:'quit', label:'終了'}
-    ]
-  },
-  {
-    label: '編集',
-    submenu: [
-      {role:'undo',  label:'元に戻す'},
-      {role:'redo',  label:'やり直す'},
-      {type:'separator'},
-      {role:'cut',   label:'切り取り'},
-      {
-        label:'コピー',
-        role: 'copy'
-      },
-      {role:'paste', label:'貼り付け'},
-      ...(isMac ? [
-          {role:'pasteAndMatchStyle', label:'ペーストしてスタイルを合わせる'},
-          {role:'delete',    label:'削除'},
-          {role:'selectAll', label:'すべてを選択'},
-          {type:'separator' },
-          {
-            label: 'スピーチ',
-            submenu: [
-              {role:'startSpeaking', label:'読み上げを開始'},
-              {role:'stopSpeaking',  label:'読み上げを停止'}
-            ]
-          }
-        ] : [
-          {role:'delete',    label:'削除'},
-          {type:'separator'},
-          {role:'selectAll', label:'すべてを選択'}
-        ])
-     ]
-  },
-  {
-    label: '表示',
-    submenu: [
-      {label:'再読み込み',
-      accelerator: 'CmdOrCtrl+R',
-      click: () => {
-        bv[open_tab].webContents.reload();
-      }},
-      {label:'強制的に再読み込み',
-        accelerator: 'CmdOrCtrl+Shift+R',
-        click: () => {
-        bv[open_tab].webContents.reloadIgnoringCache();
-      }},
-      {
-        accelerator: 'F12',
-        click: () => {
-          bv[open_tab].webContents.toggleDevTools();
-        }, label:'開発者ツールを表示'
-      },
-      {type:'separator'},
-      {role:'resetZoom',      label:'実際のサイズ'},
-      {
-        label:'拡大',
-        accelerator: 'CmdOrCtrl+Plus',
-        click: () => {
-          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() + 1);
-        }
-      },
-      {
-        label:'縮小',
-        accelerator: 'CmdOrCtrl+-',
-        click: () => {
-          bv[open_tab].webContents.setZoomLevel(bv[open_tab].webContents.getZoomLevel() - 1);
-        }
-      },
-      {type:'separator'},
-      {role:'togglefullscreen', label:'フルスクリーン'}
-    ]
-  },
-  {
-    label: 'ウィンドウ',
-    submenu: [
-      {role:'minimize', label:'最小化'},
-      {role:'zoom',     label:'ズーム'},
-      ...(isMac ? [
-           {type:'separator'} ,
-           {role:'front',  label:'ウィンドウを手前に表示'},
-           {type:'separator'},
-           {role:'window', label:'ウィンドウ'}
-         ] : [
-           {role:'close',  label:'閉じる'}
-         ])
-    ]
-  },
-  {
-    label:'ヘルプ',
-    submenu: [
-      {label:`${app_name} ヘルプ`, click: () => {
-        electron.shell.openExternal('https://twitter.com/made_in_apple_')
-      }},
-      ...(isMac ? [ ] : [
-        {type:'separator'},
-        {role:'about',  label:`${app.name}について` }
-      ])
-    ]
-  }
-]);
-
 // メニューを適用する
-electron.Menu.setApplicationMenu(template);
+electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));

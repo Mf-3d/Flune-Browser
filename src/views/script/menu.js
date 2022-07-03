@@ -45,6 +45,10 @@ function more_button() {
 }
 
 window.onload = async () => {
+  window.flune_api.on('openSearchInput', (event) => {
+    document.getElementById("address_bar").focus();
+  });
+  
   setting = await window.flune_api.get_setting();
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
@@ -78,7 +82,7 @@ window.onload = async () => {
 
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="downloading"><i class="fa-solid fa-download"></i></a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
 
     window.flune_api.new_tab();
@@ -93,10 +97,17 @@ window.onload = async () => {
   
     document.querySelector("#tabs > span").innerHTML = `
     ${document.querySelector("#tabs > span").innerHTML}
-    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
+    <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="downloading"><i class="fa-solid fa-download"></i></a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
   
     each();
+  });
+
+  window.flune_api.on('addExtension', (id, manifest, url) => {
+    document.querySelector('#extensionSpace').innerHTML = `
+    ${document.querySelector('#extensionSpace').innerHTML}
+    
+    `;
   });
 
   function each() {
@@ -121,55 +132,55 @@ window.onload = async () => {
         return;
       };
 
-    val.ondragstart = function () {
-      event.dataTransfer.setData('text/plain', event.target.getAttribute('tab_id'));
-    };
+      val.ondragstart = function () {
+        event.dataTransfer.setData('text/plain', event.target.getAttribute('tab_id'));
+      };
 
-    val.ondragover = function () {
-      event.preventDefault();
-      let rect = this.getBoundingClientRect();
-      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
-        //マウスカーソルの位置が要素の半分より上
-        this.style.borderLeft = '3px solid blue';
-        this.style.borderRight = '';
-      } else {
-        //マウスカーソルの位置が要素の半分より下
-        this.style.borderLeft = '';
-        this.style.borderRight = '3px solid blue';
-      }
-    };
+      val.ondragover = function () {
+        event.preventDefault();
+        let rect = this.getBoundingClientRect();
+        if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+          //マウスカーソルの位置が要素の半分より左
+          this.style.borderLeft = '3px solid blue';
+          this.style.borderRight = '';
+        } else {
+          //マウスカーソルの位置が要素の半分より右
+          this.style.borderLeft = '';
+          this.style.borderRight = '3px solid blue';
+        }
+      };
 
-    val.ondragleave = function () {
-      this.style = '';
-    };
+      val.ondragleave = function () {
+        this.style = '';
+      };
 
-    val.ondrop = function () {
-      event.preventDefault();
-      let id = event.dataTransfer.getData('text/plain');
-      let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
+      val.ondrop = function () {
+        event.preventDefault();
+        let id = event.dataTransfer.getData('text/plain');
+        let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
 
-      console.log(elm_drag);
+        console.log(elm_drag);
 
-      let rect = this.getBoundingClientRect();
-      if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
-        //マウスカーソルの位置が要素の半分より上
-        // this.parentNode.insertBefore(elm_drag, this);
-        val.insertAdjacentElement('beforebegin', elm_drag);
-      } else {
-        //マウスカーソルの位置が要素の半分より下
-        // this.parentNode.insertBefore(elm_drag, this.nextSibling);
-        val.insertAdjacentElement('afterend', elm_drag);
-      }
-      
-      document.querySelectorAll('#tabs > span > div').forEach((val, index) => {
-        val.style = '';
-      });
+        let rect = this.getBoundingClientRect();
+        if ((event.clientX - rect.left) < (this.clientWidth / 2)) {
+          //マウスカーソルの位置が要素の半分より上
+          // this.parentNode.insertBefore(elm_drag, this);
+          val.insertAdjacentElement('beforebegin', elm_drag);
+        } else {
+          //マウスカーソルの位置が要素の半分より下
+          // this.parentNode.insertBefore(elm_drag, this.nextSibling);
+          val.insertAdjacentElement('afterend', elm_drag);
+        }
+        
+        document.querySelectorAll('#tabs > span > div').forEach((val, index) => {
+          val.style = '';
+        });
 
-      let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
-      // window.flune_api.open_tab(_index);
+        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
+        // window.flune_api.open_tab(_index);
 
-      each();
-    };
+        each();
+      };
 
       val.querySelector(".close_button").onclick = () => {
         let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
@@ -299,6 +310,23 @@ window.flune_api.on('update-audible', (event, data) => {
   }
   else{
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.remove('active');
+  }
+});
+
+window.flune_api.on('update-downloading', (event, data) => {
+  if(data.downloading){
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('active');
+  }
+  else{
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('active');
+    
+    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.contains('audibleActive')){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('audibleActive');
+    }
+  }
+
+  if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.contains('active')){
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('audibleActive');
   }
 });
 
