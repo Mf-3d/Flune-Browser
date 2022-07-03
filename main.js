@@ -3,7 +3,6 @@ const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
-const fs = require('fs');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");

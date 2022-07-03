@@ -1,5 +1,6 @@
 const electron = require('electron');
 const request = require('request');
+const fs = require('fs');
 
 const isMac = (process.platform === 'darwin');
 
