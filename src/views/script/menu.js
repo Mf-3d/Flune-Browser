@@ -319,6 +319,14 @@ window.flune_api.on('update-downloading', (event, data) => {
   }
   else{
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('active');
+    
+    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.contains('audibleActive')){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('audibleActive');
+    }
+  }
+
+  if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.contains('active')){
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('audibleActive');
   }
 });
 

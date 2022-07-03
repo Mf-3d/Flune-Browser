@@ -392,7 +392,6 @@ function ot(index) {
     item.once('done', (event, state) => {
       if (state === 'completed') {
         console.log('Download successfully');
-
         win.webContents.send('update-downloading', {
           name: item.getFilename(),
           index: index,
@@ -400,6 +399,11 @@ function ot(index) {
         });
       } else {
         console.log(`Download failed: ${state}`);
+        win.webContents.send('update-downloading', {
+          name: item.getFilename(),
+          index: index,
+          downloading: false
+        });
       }
     });
   });
