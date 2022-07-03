@@ -103,6 +103,34 @@ window.onload = async () => {
     each();
   });
 
+  window.flune_api.on('remove_tab_elm', (event, data) => {
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).remove();
+
+    document.querySelectorAll(`#tabs > span > div`).forEach((val, index) => {
+      if(index > data.index){
+        val.setAttribute('tab_id', Number(val.getAttribute('tab_id')) - 1);
+      }
+    });
+
+    if(data.index === 0){
+      open_index = data.index;
+    }
+    else{
+      open_index = data.index - 1;
+    }
+
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
+    }
+
+    document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
+
+    if(document.querySelectorAll('#tabs > span > div').length !== 0){
+      window.flune_api.open_tab(open_index);
+      each();
+    }
+  });
+
   window.flune_api.on('addExtension', (id, manifest, url) => {
     document.querySelector('#extensionSpace').innerHTML = `
     ${document.querySelector('#extensionSpace').innerHTML}

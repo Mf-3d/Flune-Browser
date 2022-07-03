@@ -42,7 +42,6 @@
     "electron-builder": "^23.0.3"
   },
   "dependencies": {
-    "chalk-animation": "^2.0.2",
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.2",
     "keytar": "^7.9.0",

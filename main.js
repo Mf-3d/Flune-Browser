@@ -397,6 +397,12 @@ function ot(index) {
           index: index,
           downloading: false
         });
+
+        console.debug(bv[index].webContents.getURL());
+        if(bv[index].webContents.getURL() === ''){
+          win.webContents.send('remove_tab_elm', {index});
+          close_tab(index);
+        }
       } else {
         console.log(`Download failed: ${state}`);
         win.webContents.send('update-downloading', {
@@ -404,6 +410,12 @@ function ot(index) {
           index: index,
           downloading: false
         });
+
+        console.debug(bv[index].webContents.getURL());
+        if(bv[index].webContents.getURL() === ''){
+          win.webContents.send('remove_tab_elm', {index});
+          close_tab(index);
+        }
       }
     });
   });
@@ -621,7 +633,7 @@ electron.ipcMain.handle('new_tab', (event, data) => {
   nt();
 });
 
-electron.ipcMain.handle('close_tab', (event, index) => {
+function close_tab(index) {
   clearInterval(timer[index]);
   timer[index] = null;
   timer.splice(index, 1);
@@ -657,6 +669,10 @@ electron.ipcMain.handle('close_tab', (event, index) => {
       index
     });
   }
+}
+
+electron.ipcMain.handle('close_tab', (event, index) => {
+  close_tab(index);
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
