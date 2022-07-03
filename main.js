@@ -46,6 +46,7 @@ let winSize;
 let open_tab = 1;
 
 let viewY = 50;
+// let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
 
@@ -190,6 +191,7 @@ function ot(index) {
   bv[index].webContents.removeAllListeners('media-paused');
   bv[index].webContents.removeAllListeners('context-menu');
   bv[index].webContents.removeAllListeners('did-fail-load');
+  bv[index].webContents.session.removeAllListeners('will-download');
   console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m タブ${index}のEventListenerを再設定するために全て削除しました`);
 
   bv[index].webContents.on('did-start-loading', () => {
@@ -359,6 +361,49 @@ function ot(index) {
     }
   });
 
+  bv[index].webContents.session.on('will-download', (event, item, webContents) => {
+    win.webContents.send('update-downloading', {
+      name: item.getFilename(),
+      index: index,
+      downloading: true
+    });
+
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed');
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused');
+          win.webContents.send('update-downloading', {
+            name: item.getFilename(),
+            index: index,
+            downloading: false
+          });
+        } else {
+          // console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          win.webContents.send('update-downloading', {
+            name: item.getFilename(),
+            index: index,
+            downloading: true
+          });
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully');
+
+        win.webContents.send('update-downloading', {
+          name: item.getFilename(),
+          index: index,
+          downloading: false
+        });
+      } else {
+        console.log(`Download failed: ${state}`);
+      }
+    });
+  });
+
   if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
     bv[index].setBackgroundColor('#fafafa');
   }
@@ -503,27 +548,6 @@ function nw() {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
     win.webContent.send('addExtension', {
       id, manifest, url: `${url}${manifest.action.default_popup}`
-    });
-  });
-
-  electron.session.defaultSession.on('will-download', (event, item, webContents) => {
-    item.on('updated', (event, state) => {
-      if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed');
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          console.log('Download is paused');
-        } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`);
-        }
-      }
-    })
-    item.once('done', (event, state) => {
-      if (state === 'completed') {
-        console.log('Download successfully');
-      } else {
-        console.log(`Download failed: ${state}`);
-      }
     });
   });
 
