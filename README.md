@@ -1,4 +1,4 @@
-# Flune-Browser 2.3.0
+# Flune-Browser 2.4.0
 Flune-Browser 2.3.0 Dev 2022.06.27.1のリリースを間違えて削除してしまいました。
 申し訳ございません。
 
