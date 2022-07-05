@@ -9,6 +9,7 @@ const xml2js = require("xml2js");
 const touchBar = require('./main/touchBar.js');
 const applicationMenu = require('./main/applicationMenu.js');
 const setProtocol = require('./main/protocol');
+const appSync = require('./main/sync');
 
 // ログ関連
 console.log = log.log;
@@ -36,6 +37,7 @@ process.on('uncaughtException', (err) => {
 });
 
 const store = new Store();
+const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 let win;
 let setting_win;
@@ -623,6 +625,15 @@ electron.app.on("ready", () => {
   setProtocol(__dirname);
 
   nw();
+
+  try{
+    if(browserSync.compare().status !== 0){
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+    }
+  } catch(e) {
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+  }
+
 });
 
 electron.ipcMain.handle('getWinSize', (event, index) => {
