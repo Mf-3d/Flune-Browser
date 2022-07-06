@@ -185,7 +185,7 @@ window.onload = async () => {
       val.ondrop = function () {
         event.preventDefault();
         let id = event.dataTransfer.getData('text/plain');
-        let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
+        let elm_drag = document.querySelector(`#tabs > span > div[tab_id="${id}"]`);
 
         console.log(elm_drag);
 
@@ -204,9 +204,7 @@ window.onload = async () => {
           val.style = '';
         });
 
-        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
-        // window.flune_api.open_tab(_index);
-
+        event.dataTransfer.clearData('text/plain');
         each();
       };
 
