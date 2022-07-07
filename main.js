@@ -202,6 +202,11 @@ function ot(index) {
       loading: true
     });
 
+    win.webContents.send('change-favicon', {
+      index,
+      favicon: ''
+    });
+
     if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
       bv[index].setBackgroundColor('#fafafa');
     }
