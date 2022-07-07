@@ -38,6 +38,7 @@ function toggle_setting() {
 function search() {
   window.flune_api.searchURL(document.querySelector("#address_bar").value);
   document.querySelector("#address_bar").value = "";
+  document.getElementById('address_bar').blur();
 }
 
 function more_button() {
@@ -62,11 +63,9 @@ window.onload = async () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.target === document.getElementById('address_bar')) {
-      const word = document.getElementsByTagName('input')[0].value;
-      if (!e.isComposing && e.key === 'Enter' && word != null) {
-        search();
-      }
+    if (e.target === document.getElementById('address_bar') && e.key === 'Enter') {
+      search();
+      document.getElementById('address_bar').blur();
     }
   });
 
@@ -129,13 +128,6 @@ window.onload = async () => {
       window.flune_api.open_tab(open_index);
       each();
     }
-  });
-
-  window.flune_api.on('addExtension', (id, manifest, url) => {
-    document.querySelector('#extensionSpace').innerHTML = `
-    ${document.querySelector('#extensionSpace').innerHTML}
-    
-    `;
   });
 
   function each() {

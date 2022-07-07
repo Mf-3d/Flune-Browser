@@ -264,6 +264,7 @@ function ot(index) {
   });
 
   bv[index].webContents.on('page-favicon-updated', (event, favicons) => {
+    bv[index].setBackgroundColor('#ffffff');
     console.debug(favicons[0]);
     win.webContents.send('change-favicon', {
       index,
@@ -272,6 +273,7 @@ function ot(index) {
   });
 
   bv[index].webContents.on('page-title-updated', () => {
+    bv[index].setBackgroundColor('#ffffff');
     if(bv[index]){
       console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
       setTitle(index);
