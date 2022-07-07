@@ -201,6 +201,13 @@ function ot(index) {
       index: index,
       loading: true
     });
+
+    if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
+      bv[index].setBackgroundColor('#fafafa');
+    }
+    else{
+      bv[index].setBackgroundColor('#252525');
+    }
   });
 
   bv[index].webContents.on('did-stop-loading', () => {
@@ -343,6 +350,7 @@ function ot(index) {
   });
 
   bv[index].webContents.on('did-finish-load', () => {
+    bv[index].setBackgroundColor('#ffffff');
     let bookmark_list = store.get('bookmark', []);
 
     if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
@@ -421,13 +429,6 @@ function ot(index) {
       }
     });
   });
-
-  if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
-    bv[index].setBackgroundColor('#fafafa');
-  }
-  else{
-    bv[index].setBackgroundColor('#252525');
-  }
 
   if(bv[index].webContents){
     setTitle(index);
@@ -771,6 +772,11 @@ electron.ipcMain.handle('context_img', (event, data) => {
   context_menu_img.popup();
 });
 
+electron.ipcMain.handle('login', (event, data) => {
+  console.log(data);
+  // browserSync = new appSync(data.submit_id[0], data.submit_id[1]);
+});
+
 electron.ipcMain.handle('more_button_menu', (event, data) => {
   let more_button_context = new electron.Menu([
     {
@@ -778,6 +784,15 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       click: () => {
         nt();
         win.webContents.send('new_tab_elm');
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'mf7cli-BBSアカウントでログイン',
+      click: () => {
+        
       }
     },
     {
@@ -815,6 +830,32 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
     type: 'separator'
   });
 
+  more_button_context.append(separetorItem);
+
+  let loginMenuItem =new electron.MenuItem({
+    label: 'mf7cli-BBSアカウントでログイン',
+    click: () => {
+      let login_win = new electron.BrowserWindow({
+        width: 200,
+        height: 200,
+        minWidth: 200,
+        minHeight: 200,
+        webPreferences: {
+          scrollBounce: true,
+          preload: `${__dirname}/preload/preload_login.js`
+        }
+      });
+
+      login_win.setBounds({
+        width: 600,
+        height: 800
+      });
+
+      login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
+    }
+  });
+
+  more_button_context.append(loginMenuItem);
   more_button_context.append(separetorItem);
 
   if(store.get('bookmark', []) !== []){
