@@ -1,11 +1,15 @@
 const electron = require('electron');
 const request = require('request');
 const fs = require('fs');
+const {nt, nw} = require('../main');
+const { tab } = require('../main');
+
+console.log(__dirname.split('/').splice(-1, 1));
 
 const isMac = (process.platform === 'darwin');
 
 module.exports = {
-  context_menu: (bv, open_tab, params) => {
+  context_menu: (bv, open_tab, params, win) => {
     return {
       context_menu: electron.Menu.buildFromTemplate([
         {
@@ -48,7 +52,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            nt(params.linkURL);
+            tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -171,7 +175,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            nt(params.linkURL);
+            tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -244,7 +248,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            nt(params.linkURL);
+            tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -482,7 +486,7 @@ module.exports = {
   },
   application_menu: (app, win, bv, open_tab) => {
     app.name = 'Flune-Browser';
-    return electron.Menu.buildFromTemplate([
+    let appMenu = electron.Menu.buildFromTemplate([
       ...(isMac ? [{
         label: app.name,
         submenu: [
@@ -565,7 +569,7 @@ module.exports = {
             label: '新しいタブ',
             click: () => {
               win.webContents.send('new_tab_elm', {});
-              nt();
+              tab.nt();
             },
             accelerator: 'CmdOrCtrl+N'
           },
@@ -679,11 +683,7 @@ module.exports = {
         ]
       }
     ]);
-  },
-  get applicationMenu() {
-    return this._applicationMenu;
-  },
-  set applicationMenu(value) {
-    this._applicationMenu = value;
-  },
+    electron.Menu.setApplicationMenu(appMenu);
+    return appMenu;
+  }
 }
