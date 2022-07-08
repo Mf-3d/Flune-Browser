@@ -52,7 +52,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            tab.nt(params.linkURL);
+            require('../main').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -569,7 +569,7 @@ module.exports = {
             label: '新しいタブ',
             click: () => {
               win.webContents.send('new_tab_elm', {});
-              tab.nt();
+              require('../main').tab.nt();
             },
             accelerator: 'CmdOrCtrl+N'
           },

@@ -11,7 +11,7 @@ const applicationMenu = require('./main/applicationMenu.js');
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
-let tab; 
+let tab;
 
 // ログ関連
 console.log = log.log;
@@ -133,6 +133,11 @@ function nw() {
   winSize = win.getSize();
 
   tab = new Tab(win, winSize, __dirname);
+
+  module.exports = {
+    tab
+  }
+  
   // toggleCircleDock();
   // nt();
   tab.nt();
@@ -725,5 +730,5 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
 // tab.js
 
 module.exports = {
-  tab
+  tab: tab
 }
