@@ -38,6 +38,7 @@ function toggle_setting() {
 function search() {
   window.flune_api.searchURL(document.querySelector("#address_bar").value);
   document.querySelector("#address_bar").value = "";
+  document.getElementById('address_bar').blur();
 }
 
 function more_button() {
@@ -62,11 +63,9 @@ window.onload = async () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.target === document.getElementById('address_bar')) {
-      const word = document.getElementsByTagName('input')[0].value;
-      if (!e.isComposing && e.key === 'Enter' && word != null) {
-        search();
-      }
+    if (e.target === document.getElementById('address_bar') && e.key === 'Enter') {
+      search();
+      document.getElementById('address_bar').blur();
     }
   });
 
@@ -103,11 +102,32 @@ window.onload = async () => {
     each();
   });
 
-  window.flune_api.on('addExtension', (id, manifest, url) => {
-    document.querySelector('#extensionSpace').innerHTML = `
-    ${document.querySelector('#extensionSpace').innerHTML}
-    
-    `;
+  window.flune_api.on('remove_tab_elm', (event, data) => {
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).remove();
+
+    document.querySelectorAll(`#tabs > span > div`).forEach((val, index) => {
+      if(index > data.index){
+        val.setAttribute('tab_id', Number(val.getAttribute('tab_id')) - 1);
+      }
+    });
+
+    if(data.index === 0){
+      open_index = data.index;
+    }
+    else{
+      open_index = data.index - 1;
+    }
+
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
+    }
+
+    document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
+
+    if(document.querySelectorAll('#tabs > span > div').length !== 0){
+      window.flune_api.open_tab(open_index);
+      each();
+    }
   });
 
   function each() {
@@ -157,7 +177,7 @@ window.onload = async () => {
       val.ondrop = function () {
         event.preventDefault();
         let id = event.dataTransfer.getData('text/plain');
-        let elm_drag = document.querySelector('#tabs > span > div[tab_id="' + id + '"]')
+        let elm_drag = document.querySelector(`#tabs > span > div[tab_id="${id}"]`);
 
         console.log(elm_drag);
 
@@ -176,9 +196,7 @@ window.onload = async () => {
           val.style = '';
         });
 
-        let _index = Number(document.querySelectorAll("#tabs > span > div")[index].getAttribute('tab_id'));
-        // window.flune_api.open_tab(_index);
-
+        event.dataTransfer.clearData('text/plain');
         each();
       };
 

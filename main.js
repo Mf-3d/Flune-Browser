@@ -9,6 +9,9 @@ const xml2js = require("xml2js");
 const touchBar = require('./main/touchBar.js');
 const applicationMenu = require('./main/applicationMenu.js');
 const setProtocol = require('./main/protocol');
+const appSync = require('./main/sync');
+const Tab = require('./main/tab');
+let tab;
 
 // ログ関連
 console.log = log.log;
@@ -36,6 +39,7 @@ process.on('uncaughtException', (err) => {
 });
 
 const store = new Store();
+const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 let win;
 let setting_win;
@@ -49,419 +53,6 @@ let viewY = 50;
 // let viewY = 200;
 
 const isMac = (process.platform === 'darwin');
-
-function nt(url) {
-  let id = bv.length;
-
-  bv[bv.length] = new electron.BrowserView({
-    transparent: false,
-    backgroundColor: '#ffffff',
-    webPreferences: {
-      scrollBounce: true,
-      worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
-      contextIsolation: true,
-      preload: `${__dirname}/preload/preload_browserview.js`
-    }
-  });
- 
-  if(url){
-    bv[bv.length - 1].webContents.loadURL(url);
-  }
-  else{
-    bv[bv.length - 1].webContents.loadURL("file://" + __dirname + "/src/views/home.html");
-  }
-
-  bv[bv.length - 1].webContents.setVisualZoomLevelLimits(1, 5);
-
-  win.addBrowserView(bv[bv.length - 1]);
-
-  bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
-
-  win.setTopBrowserView(bv[bv.length - 1]);
-
-  bv[id].setAutoResize({width: true, height: true});
-
-  open_tab = bv.length - 1;
-
-  bv[id].webContents.on('did-start-loading', () => {
-    win.webContents.send('update-loading', {
-      index: id,
-      loading: true
-    });
-  });
-
-  bv[id].webContents.on('did-stop-loading', () => {
-    win.webContents.send('update-loading', {
-      index: id,
-      loading: false
-    });
-  });
-
-  bv[id].webContents.on('media-started-playing', () => {
-    if(!timer[id]){
-      timer[id] = setInterval(() => {
-        if(bv[id]){
-          win.webContents.send('update-audible', {
-            index: id,
-            audible: bv[id].webContents.isCurrentlyAudible()
-          });
-        }
-    
-        // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
-      }, 1000);
-
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
-    }
-  });
-
-  bv[id].webContents.on('destroyed', () => {
-    clearInterval(timer[id]);
-    timer[id] = null;
-
-    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
-  });
-
-  bv[id].webContents.on('media-paused', () => {
-    if(timer[id]){
-      clearInterval(timer[id]);
-      timer[id] = null;
-
-      try {
-        win.webContents.send('update-audible', {
-          index: id,
-          audible: false
-        });
-      } catch (e) {
-
-      }
-
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
-    }
-  });
-
-  bv[id].webContents.setWindowOpenHandler((details) => {
-    win.webContents.send('new_tab_elm', {});
-    nt(details.url);
-    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 新しいタブがsetWindowOpenHandlerによって生成されました`);
-    return { action: 'deny' };
-  });
-
-  bv[id].webContents.on('did-finish-load', () => {
-    let bookmark_list = store.get('bookmark', []);
-
-    if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
-      electron.nativeTheme.themeSource = 'dark';
-    }
-    else{
-      electron.nativeTheme.themeSource = 'light';
-    }
-  
-    for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
-        win.webContents.send('activeBookmark', true);
-        break;
-      }
-      else{
-        win.webContents.send('activeBookmark', false);
-      }
-    }
-  });
-
-  win.webContents.send('change-favicon', {
-    index: id,
-    favicon: ''
-  });
-
-  ot(id);
-}
-
-function ot(index) {
-  open_tab = index;
-  electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
-  win.setTopBrowserView(bv[index]);
-  // win.setTopBrowserView(circle_dock);
-  bv[index].webContents.removeAllListeners('did-start-loading');
-  bv[index].webContents.removeAllListeners('did-finish-load');
-  bv[index].webContents.removeAllListeners('page-favicon-updated');
-  bv[index].webContents.removeAllListeners('page-title-updated');
-  bv[index].webContents.removeAllListeners('did-stop-loading');
-  bv[index].webContents.removeAllListeners('destroyed');
-  bv[index].webContents.removeAllListeners('media-started-playing');
-  bv[index].webContents.removeAllListeners('media-paused');
-  bv[index].webContents.removeAllListeners('context-menu');
-  bv[index].webContents.removeAllListeners('did-fail-load');
-  bv[index].webContents.session.removeAllListeners('will-download');
-  console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m タブ${index}のEventListenerを再設定するために全て削除しました`);
-
-  bv[index].webContents.on('did-start-loading', () => {
-    win.webContents.send('update-loading', {
-      index: index,
-      loading: true
-    });
-  });
-
-  bv[index].webContents.on('did-stop-loading', () => {
-    win.webContents.send('update-loading', {
-      index: index,
-      loading: false
-    });
-  });
-
-  bv[index].webContents.on('media-started-playing', () => {
-    win.webContents.send('each');
-    if(!timer[index]){
-      clearInterval(timer[index]);
-      timer[index] = null;
-      timer[index] = setInterval(() => {
-        if(bv[index]){
-          win.webContents.send('update-audible', {
-            index: index,
-            audible: bv[index].webContents.isCurrentlyAudible()
-          });
-        }
-    
-        // console.log('音声が再生されているかどうか:', bv[index].webContents.isCurrentlyAudible());
-      }, 1000);
-
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
-    }
-  });
-
-  bv[index].webContents.on('destroyed', () => {
-    if(timer[index]){
-      clearInterval(timer[index]);
-      timer[index] = null;
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
-    }
-  });
-
-  bv[index].webContents.on('media-paused', () => {
-    try {
-      win.webContents.send('each');
-      if(timer[index]){
-        clearInterval(timer[index]);
-        timer[index] = null;
-        win.webContents.send('update-audible', {
-          index: index,
-          audible: false
-        });
-
-        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
-      }
-    } catch (e) {
-
-    }
-  });
-
-  bv[index].webContents.on('page-favicon-updated', (event, favicons) => {
-    console.debug(favicons[0]);
-    win.webContents.send('change-favicon', {
-      index,
-      favicon: favicons[0]
-    });
-  });
-
-  bv[index].webContents.on('page-title-updated', () => {
-    if(bv[index]){
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
-      setTitle(index);
-    }
-    else if(bv[index - 1]){
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index - 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
-      setTitle(index - 1);
-    }
-    else if(bv[index + 1]){
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index + 1}の更新を要求しました 現在のタブ数: ${bv.length}`);
-      setTitle(index + 1);
-    }
-    else{
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m setTitleに${index}の更新を要求しました 現在のタブ数: ${bv.length}`);
-      setTitle(index);
-    }
-  });
-
-  bv[index].webContents.on('context-menu', (event, params) => {
-    event.preventDefault();
-
-    const context_menu = applicationMenu.context_menu(bv, open_tab, params).context_menu;
-    const context_menu_link_image = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_image;
-    const context_menu_link = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_image;
-    const context_menu_link_text = applicationMenu.context_menu(bv, open_tab, params).context_menu_link_text;
-    const context_menu_text = applicationMenu.context_menu(bv, open_tab, params).context_menu_text;
-    const context_menu_img = applicationMenu.context_menu(bv, open_tab, params).context_menu_img;
-
-    setTitle(index);
-
-    if(params.hasImageContents && params.linkURL){
-      context_menu_link_image.popup();
-    }
-    else if(params.linkURL && params.selectionText){
-      context_menu_link_text.popup();
-    }
-    else if(params.mediaType === 'image'){
-      context_menu_img.popup();
-    } 
-    else if(params.linkURL){
-      context_menu_link.popup();
-    }
-    else if(params.selectionText !== '' && params.selectionText){
-      context_menu_text.popup();
-    }
-    else{
-      context_menu.popup();
-    }
-  });
-
-  // bv[index].webContents.on('new-window', (event, url) => {
-  //   event.preventDefault();
-  //   win.webContents.send('new_tab_elm', {});
-  //   nt(url);
-  // });
-
-  bv[index].webContents.setWindowOpenHandler((details) => {
-    win.webContents.send('new_tab_elm', {});
-    nt(details.url);
-    return { action: 'deny' };
-  });
-
-  bv[index].webContents.on('did-fail-load', (event, errCode) => {
-    if (errCode === -105){
-      bv[index].webContents.loadFile(`${__dirname}/src/views/err/server_notfound.html`);
-    } else if(errCode === -106){
-      bv[index].webContents.loadFile(`${__dirname}/src/views/err/internet_disconnected.html`);
-    } else if(errCode === -118){
-      bv[index].webContents.loadFile(`${__dirname}/src/views/err/connection_timed_out.html`);
-    } else if(errCode === -3){
-      // なにもしない
-    } else {
-      bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
-      console.debug(`ページ表示エラー(未定義):${errCode}`)
-    }
-  });
-
-  bv[index].webContents.on('did-finish-load', () => {
-    let bookmark_list = store.get('bookmark', []);
-
-    if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
-      electron.nativeTheme.themeSource = 'dark';
-    }
-    else{
-      electron.nativeTheme.themeSource = 'light';
-    }
-  
-    for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
-        win.webContents.send('activeBookmark', true);
-        break;
-      }
-      else{
-        win.webContents.send('activeBookmark', false);
-      }
-    }
-  });
-
-  bv[index].webContents.session.on('will-download', (event, item, webContents) => {
-    win.webContents.send('update-downloading', {
-      name: item.getFilename(),
-      index: index,
-      downloading: true
-    });
-
-    item.on('updated', (event, state) => {
-      if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed');
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          console.log('Download is paused');
-          win.webContents.send('update-downloading', {
-            name: item.getFilename(),
-            index: index,
-            downloading: false
-          });
-        } else {
-          // console.log(`Received bytes: ${item.getReceivedBytes()}`);
-          win.webContents.send('update-downloading', {
-            name: item.getFilename(),
-            index: index,
-            downloading: true
-          });
-        }
-      }
-    })
-    item.once('done', (event, state) => {
-      if (state === 'completed') {
-        console.log('Download successfully');
-        win.webContents.send('update-downloading', {
-          name: item.getFilename(),
-          index: index,
-          downloading: false
-        });
-      } else {
-        console.log(`Download failed: ${state}`);
-        win.webContents.send('update-downloading', {
-          name: item.getFilename(),
-          index: index,
-          downloading: false
-        });
-      }
-    });
-  });
-
-  if(store.get('settings.theme', 'theme_dark') === 'theme_light'){
-    bv[index].setBackgroundColor('#fafafa');
-  }
-  else{
-    bv[index].setBackgroundColor('#252525');
-  }
-
-  if(bv[index].webContents){
-    setTitle(index);
-  }
-}
-
-function setTitle(index) {
-  console.debug('SetTitleで受け取ったindex:', index);
-  if(index > bv.length - 1){
-    index = bv.length - 1;
-  }
-
-  win.webContents.send('each');
-
-  let url;
-
-  try{
-    url = new URL(bv[index].webContents.getURL());
-  } catch (e) {
-    url = bv[index].webContents.getURL();
-  }
-  if(String(url) === String(new URL("file://" + __dirname + "/src/views/home.html")) || String(url) === String(new URL("file://" + __dirname + "/src/views/server_notfound.html"))){
-    url = "";
-  }
-
-  let bookmark_list = store.get('bookmark', []);
-  
-  for (let i = 0; i < bookmark_list.length; i++) {
-    if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
-      win.webContents.send('activeBookmark', true);
-      break;
-    }
-    else{
-      win.webContents.send('activeBookmark', false);
-    }
-  }
-
-  win.webContents.send('change_title', {
-    title: bv[index].webContents.getTitle(),
-    index: index
-  });
-
-  if(open_tab === index){
-    win.webContents.send('change_url', {
-      url: new String(url)
-    });
-  }
-}
 
 function ns() {
   // setting_win = new electron.BrowserWindow({
@@ -484,7 +75,7 @@ function ns() {
   //   setting_win = null;
   // });
 
-  bv[open_tab].webContents.loadURL('flune://setting');
+  tab.loadURL('flune://setting');
 }
 
 function nw() {
@@ -505,7 +96,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.3.0',
+      title: 'Flune-Browser 2.4.0',
       titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
@@ -527,7 +118,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.3.0',
+      title: 'Flune-Browser 2.4.0',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         worldSafeExecuteJavaScript: true,
@@ -541,12 +132,15 @@ function nw() {
 
   winSize = win.getSize();
 
-  // toggleCircleDock();
-  nt();
+  tab = new Tab(win, winSize, __dirname);
 
-  bv[open_tab].webContents.on('did-finish-load', () => {
-    // win.webContents.openDevTools();
-  });
+  module.exports = {
+    tab
+  }
+  
+  // toggleCircleDock();
+  // nt();
+  tab.nt();
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
@@ -561,16 +155,6 @@ function nw() {
 
   win.on('close', () => {
     store.set('window.window_size', winSize);
-
-    for(let index = 0; index < bv.length - 1; index++){
-      bv[index].webContents.removeAllListeners();
-      bv[index].webContents.destroy();
-      bv[index] = null;
-      bv.splice(index, 1);
-      clearInterval(timer[index]);
-    }
-
-    bv = [];
 
     win.webContents.destroy();
   });
@@ -611,6 +195,15 @@ electron.app.on("ready", () => {
   setProtocol(__dirname);
 
   nw();
+
+  try{
+    if(browserSync.compare().status !== 0){
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+    }
+  } catch(e) {
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+  }
+
 });
 
 electron.ipcMain.handle('getWinSize', (event, index) => {
@@ -618,49 +211,16 @@ electron.ipcMain.handle('getWinSize', (event, index) => {
 });
 
 electron.ipcMain.handle('new_tab', (event, data) => {
-  nt();
+  tab.nt();
 });
 
 electron.ipcMain.handle('close_tab', (event, index) => {
-  clearInterval(timer[index]);
-  timer[index] = null;
-  timer.splice(index, 1);
-
-  bv[index].webContents.removeAllListeners();
-  win.removeBrowserView(bv[index]);
-  console.debug(index);
-  bv[index].webContents.destroy();
-
-  bv.splice(index, 1);
-
-  if(index === 0 && bv.length !== 0){
-    index = index;
-  }
-  else{
-    index = index - 1;
-  }
-
-  if(bv.length === 0){
-    win.close();
-  } 
-
-  console.debug('close_tabイベントで受け取ったindex:', index);
-
-  if(bv.length - 1 > 0){
-    win.webContents.send('each');
-
-    ot(index);
-
-    open_tab = index;
-
-    win.webContents.send('active_tab', {
-      index
-    });
-  }
+  // close_tab(index);
+  tab.deleteTab(index);
 });
 
 electron.ipcMain.handle('open_tab', (event, index) => {
-  ot(index);
+  tab.ot(index);
 
   win.webContents.send('each');
 
@@ -713,13 +273,15 @@ electron.ipcMain.handle('theme_path', () => {
 });
 
 electron.ipcMain.handle('go_back', (event, data) => {
-  bv[open_tab].webContents.goBack();
-  setTitle(open_tab);
+  // bv[open_tab].webContents.goBack();
+  tab.goBack();
+  tab.setTitle();
 });
 
 electron.ipcMain.handle('go_forward', (event, data) => {
-  bv[open_tab].webContents.goForward();
-  setTitle(open_tab);
+  // bv[open_tab].webContents.goForward();
+  tab.goForward();
+  tab.setTitle();
 });
 
 electron.ipcMain.handle('context', (event, data) => {
@@ -735,7 +297,7 @@ electron.ipcMain.handle('context_img', (event, data) => {
     {
       label: '画像をコピー',
       click: () => {
-        nt();
+        tab.nt();
         electron.clipboard.writeImage(electron.nativeImage.createFromDataURL(data));
       }
     }
@@ -744,13 +306,27 @@ electron.ipcMain.handle('context_img', (event, data) => {
   context_menu_img.popup();
 });
 
+electron.ipcMain.handle('login', (event, data) => {
+  console.log(data);
+  // browserSync = new appSync(data.submit_id[0], data.submit_id[1]);
+});
+
 electron.ipcMain.handle('more_button_menu', (event, data) => {
   let more_button_context = new electron.Menu([
     {
       label: '新しいタブ',
       click: () => {
-        nt();
+        tab.nt();
         win.webContents.send('new_tab_elm');
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'mf7cli-BBSアカウントでログイン',
+      click: () => {
+        
       }
     },
     {
@@ -790,6 +366,32 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
   more_button_context.append(separetorItem);
 
+  let loginMenuItem =new electron.MenuItem({
+    label: 'mf7cli-BBSアカウントでログイン',
+    click: () => {
+      let login_win = new electron.BrowserWindow({
+        width: 200,
+        height: 200,
+        minWidth: 200,
+        minHeight: 200,
+        webPreferences: {
+          scrollBounce: true,
+          preload: `${__dirname}/preload/preload_login.js`
+        }
+      });
+
+      login_win.setBounds({
+        width: 600,
+        height: 800
+      });
+
+      login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
+    }
+  });
+
+  more_button_context.append(loginMenuItem);
+  more_button_context.append(separetorItem);
+
   if(store.get('bookmark', []) !== []){
     let bookmark_list = store.get('bookmark', []);
   
@@ -803,7 +405,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       let bookmarkItem = new electron.MenuItem({
         label: bookmark_list[i].title,
         click: () => {
-          bv[open_tab].webContents.loadURL(bookmark_list[i].url);
+          tab.loadURL(bookmark_list[i].url);
         }
       });
 
@@ -830,8 +432,10 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 });
 
 electron.ipcMain.handle('reload', (event, data) => {
-  bv[open_tab].webContents.reload();
-  setTitle(open_tab);
+  // bv[open_tab].webContents.reload();
+  // setTitle(open_tab);
+  tab.setTitle(open_tab);
+  tab.reload();
 });
 
 electron.ipcMain.handle('searchURL', (event, word) => {
@@ -849,11 +453,12 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     url = "https://www.google.com/search?q=" + word;
   }
 
-  bv[open_tab].webContents.loadURL(url);
+  // bv[open_tab].webContents.loadURL(url);
+  tab.loadURL(url);
 
-  win.webContents.send('change_url', {
-    url: bv[open_tab].webContents.getURL()
-  });
+  // win.webContents.send('change_url', {
+  //   url: bv[open_tab].webContents.getURL()
+  // });
 
   removeSuggestView();
 });
@@ -962,7 +567,7 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
   win.webContents.send('change_theme');
-  bv[open_tab].webContents.reload();
+  tab.reload();
 });
 
 electron.ipcMain.handle('get_setting', (event, data) => {
@@ -980,24 +585,24 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
 
   if(bookmark_list.length >= 1){
     for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url !== bv[open_tab].webContents.getURL()){
+      if(bookmark_list[i].url !== tab.bv[open_tab].webContents.getURL()){
         if(i <= bookmark_list.length){
           bookmark_list[bookmark_list.length] = {
-            url: bv[open_tab].webContents.getURL(),
-            title: bv[open_tab].webContents.getTitle()
+            url: tab.bv[open_tab].webContents.getURL(),
+            title: tab.bv[open_tab].webContents.getTitle()
           };
           store.set('bookmark', bookmark_list);
           break;
         }
       }
       else{
-        console.debug(bookmark_list[i].url, bv[open_tab].webContents.getURL());
+        console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
       }
     }
   }
   else{
     bookmark_list[bookmark_list.length] = {
-      url: bv[open_tab].webContents.getURL()
+      url: tab.bv[open_tab].webContents.getURL()
     };
     store.set('bookmark', bookmark_list);
   }
@@ -1007,13 +612,13 @@ electron.ipcMain.handle('removeBookmark', (event, data) => {
   let bookmark_list = store.get('bookmark', []);
   
   for (let i = 0; i < bookmark_list.length; i++) {
-    if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
+    if(bookmark_list[i].url === tab.bv[open_tab].webContents.getURL()){
       bookmark_list.splice(i, 1);
       store.set('bookmark', bookmark_list);
       break;
     }
     else{
-      console.debug(bookmark_list[i].url, bv[open_tab].webContents.getURL());
+      console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
     }
   }
 });
@@ -1044,13 +649,13 @@ const context_menu = electron.Menu.buildFromTemplate([
   {
     label: '戻る',
     click: () => {
-      bv[open_tab].webContents.goBack();
+      tab.goBack();
     }
   },
   {
     label: '進む',
     click: () => {
-      bv[open_tab].webContents.goForward();
+      tab.goForward();
     }
   },
   {
@@ -1060,7 +665,7 @@ const context_menu = electron.Menu.buildFromTemplate([
     label: 'コピー',
     accelerator: 'CmdOrCtrl+C',
     click: () => {
-      bv[open_tab].webContents.send('copy_selection');
+      tab.bv[tab.open_tab].webContents.send('copy_selection');
     }
   },
   {
@@ -1078,20 +683,20 @@ const context_menu = electron.Menu.buildFromTemplate([
     label:'再読み込み',
     accelerator: 'CmdOrCtrl+R',
     click: () => {
-      bv[open_tab].webContents.reload();
+      tab.bv[tab.open_tab].webContents.reload();
     }
   },
   {
     label:'強制的に再読み込み',
       accelerator: 'CmdOrCtrl+Shift+R',
       click: () => {
-      bv[open_tab].webContents.reloadIgnoringCache();
+        tab.bv[tab.open_tab].webContents.reloadIgnoringCache();
     }
   },
   {
     accelerator: 'F12',
     click: () => {
-      bv[open_tab].webContents.toggleDevTools();
+      tab.bv[tab.open_tab].webContents.toggleDevTools();
     }, label:'開発者ツールを表示'
   }
 ]);
@@ -1109,16 +714,21 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
   {
     label: '設定',
     click: () => {
-      if(!setting_win){
-        ns();
-      }
-      else{
-        setting_win.close();
-        setting_win = null;
-      }
+      // if(!setting_win){
+      //   ns();
+      // }
+      // else{
+      //   setting_win.close();
+      //   setting_win = null;
+      // }
+      ns();
     }
   }
 ]);
 
 // メニューを適用する
-electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
+// tab.js
+
+module.exports = {
+  tab: tab
+}

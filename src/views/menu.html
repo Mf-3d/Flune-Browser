@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Flune-Browser 2.3.0</title>
+        <title>Flune-Browser 2.4.0</title>
         <link href="../style/style.css" rel="stylesheet"/>
         <link href="../style/theme/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
@@ -10,9 +10,12 @@
     </head>
     <body style="user-select: none; -webkit-app-region: drag;">
         <nav>
-            <a href="javascript:go_back()" class="border"><i class="fa-solid fa-angle-left"></i></a>
-            <a href="javascript:go_forward()" class="border"><i class="fa-solid fa-angle-right"></i></a>
-            <a href="javascript:reload()" class="border"><i class="fa-solid fa-rotate-right"></i></a>
+            <a href="javascript:go_back()" id="n_back" class="border"></a>
+            <!-- <i class="fa-solid fa-angle-left"></i> -->
+            <a href="javascript:go_forward()" id="n_forward" class="border"></a>
+            <!-- <i class="fa-solid fa-angle-right"></i> -->
+            <a href="javascript:reload()" id="n_reload" class="border"></a>
+            <!-- <i class="fa-solid fa-rotate-right"></i> -->
             <span id="address_box">
                 <input type="text" id="address_bar" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;"/>
                 <a href="javascript:addBookmark()" class="border" id="bookmark">★</a>

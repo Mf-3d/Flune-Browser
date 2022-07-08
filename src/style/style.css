@@ -148,8 +148,8 @@ input[type="text"] {
 }
 
 nav > a.border {
-  padding-right: 0.5em;
-  padding-left: 0.5em;
+  padding-right: 0.7em;
+  padding-left: 0.7em;
   font-size: 0.8em;
 }
 
@@ -207,4 +207,27 @@ nav:not(#blank) {
 
 .downloading.audibleActive {
   right: 0em;
+}
+
+#n_forward {
+  background-image: url('../views/image/navigation/forward.png');
+  background-size: 0.5em 0.75em;
+  background-repeat: no-repeat;
+  background-position: 0.5em 0.4em;
+}
+
+#n_back {
+  background-image: url('../views/image/navigation/back.png');
+  background-size: 0.5em 0.75em;
+  background-repeat: no-repeat;
+  background-position: 0.5em 0.4em;
+}
+
+#n_reload {
+  background-image: url('../views/image/navigation/reload.png');
+  background-size: 0.8em 0.8em;
+  background-repeat: no-repeat;
+  background-position: 0.3em 0.4em;
+  margin-right: 1em;
+  /* padding-right: 0.75em; */
 }

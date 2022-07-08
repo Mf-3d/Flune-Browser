@@ -1,6 +1,6 @@
 {
   "name": "flune-browser",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Hello.",
   "main": "main.js",
   "scripts": {
@@ -42,9 +42,9 @@
     "electron-builder": "^23.0.3"
   },
   "dependencies": {
-    "chalk-animation": "^2.0.2",
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.2",
+    "eslint": "^8.19.0",
     "keytar": "^7.9.0",
     "request": "^2.88.2",
     "uuid": "^8.3.2",
