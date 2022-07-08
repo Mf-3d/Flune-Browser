@@ -137,7 +137,7 @@ function nw() {
   module.exports = {
     tab
   }
-  
+
   // toggleCircleDock();
   // nt();
   tab.nt();
@@ -154,12 +154,14 @@ function nw() {
   });
 
   win.on('close', () => {
+    tab.deleteTabAll();
     store.set('window.window_size', winSize);
 
     win.webContents.destroy();
   });
 
   win.on('closed', () => {
+    tab.deleteTabAll();
     win = null;
   });
 }
