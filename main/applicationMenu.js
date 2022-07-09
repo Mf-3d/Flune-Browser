@@ -412,6 +412,14 @@ module.exports = {
           type: 'separator'
         },
         {
+          label: '画像を新規タブで開く',
+          click: () => {
+            if(params.srcURL){
+              tab.nt(params.srcURL);
+            }
+          }
+        },
+        {
           label: '画像をコピー',
           accelerator: 'CmdOrCtrl+C',
           click: () => {
