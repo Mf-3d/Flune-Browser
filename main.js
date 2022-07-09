@@ -160,6 +160,7 @@ function nw() {
     store.set('window.window_size', winSize);
 
     win.webContents.destroy();
+    suggestView = null;
   });
 
   win.on('closed', () => {
@@ -197,6 +198,18 @@ electron.app.on("ready", () => {
   }
 
   setProtocol(__dirname);
+
+  suggestView = new electron.BrowserView({
+    transparent: true,
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      scrollBounce: false,
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload_suggest.js`
+    }
+  });
 
   nw();
 
@@ -471,8 +484,6 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 function removeSuggestView() {
   if(suggestView){
     win.removeBrowserView(suggestView);
-    suggestView.webContents.destroy();
-    suggestView = null;
     suggestDisplayed = false;
   }
 }
@@ -492,10 +503,9 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
 
   result = [];
 
-  if(!data.word){
+  if(data.word.trim() === ''){
     win.removeBrowserView(suggestView);
-    suggestView.webContents.destroy();
-    suggestView = null;
+    return;
   }
 
   request({
@@ -504,11 +514,11 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
   }, (error, response, body) => {
     let suggestXml = body;
 
-    if(suggestDisplayed && suggestView){
-      win.removeBrowserView(suggestView);
-      suggestView.webContents.destroy();
-      suggestView = null;
-    }
+    // if(suggestDisplayed && suggestView){
+    //   win.removeBrowserView(suggestView);
+    //   suggestView.webContents.destroy();
+    //   suggestView = null;
+    // }
 
     xml2js.parseString(suggestXml, function (err, res) {
       if (err) {
@@ -528,23 +538,11 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
         result
       }
 
-      suggestView = new electron.BrowserView({
-        transparent: true,
-        backgroundColor: '#ffffff',
-        webPreferences: {
-          scrollBounce: true,
-          worldSafeExecuteJavaScript: true,
-          nodeIntegration:false,
-          contextIsolation: true,
-          preload: `${__dirname}/preload/preload_suggest.js`
-        }
-      });
-
       data.pos[0] = Math.floor(data.pos[0]);
       data.pos[1] = Math.floor(data.pos[1]);
 
-      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       win.addBrowserView(suggestView);
+      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
       win.setTopBrowserView(suggestView);
     

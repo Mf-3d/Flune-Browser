@@ -173,6 +173,7 @@ module.exports = class {
     bv[index].webContents.session.removeAllListeners('will-download');
     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m タブ${index}のEventListenerを再設定するために全て削除しました`);
     try {
+      if(!win) return;
       bv[index].webContents.on('did-start-loading', () => {
         win.webContents.send('update-loading', {
           index: index,
