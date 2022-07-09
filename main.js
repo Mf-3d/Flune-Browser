@@ -135,7 +135,9 @@ function nw() {
   tab = new Tab(win, winSize, __dirname);
 
   module.exports = {
-    tab
+    tab: tab,
+    win: win,
+    dirname: __dirname
   }
 
   // toggleCircleDock();
@@ -732,5 +734,7 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
 // tab.js
 
 module.exports = {
-  tab: tab
+  tab: tab,
+  win: win,
+  dirname: __dirname
 }

@@ -1,11 +1,6 @@
 const electron = require('electron');
 const request = require('request');
 const fs = require('fs');
-const {nt, nw} = require('../main');
-const { tab } = require('../main');
-
-console.log(__dirname.split('/').splice(-1, 1));
-
 const isMac = (process.platform === 'darwin');
 
 module.exports = {
@@ -46,6 +41,14 @@ module.exports = {
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
           }, label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ]),
       context_menu_link_image: electron.Menu.buildFromTemplate([
@@ -169,13 +172,21 @@ module.exports = {
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
           }, label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${require('../main').tab.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ]),
       context_menu_link: electron.Menu.buildFromTemplate([
         {
           label: `新規タブで開く`,
           click: () => {
-            tab.nt(params.linkURL);
+            require('../main').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -242,13 +253,21 @@ module.exports = {
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
           }, label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ]),
       context_menu_link_text: electron.Menu.buildFromTemplate([
         {
           label: `新規タブで開く`,
           click: () => {
-            tab.nt(params.linkURL);
+            require('../main').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -321,6 +340,14 @@ module.exports = {
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
           }, label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ]),
       context_menu_text: electron.Menu.buildFromTemplate([
@@ -393,6 +420,14 @@ module.exports = {
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
           }, label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ]),
       context_menu_img: electron.Menu.buildFromTemplate([
@@ -415,7 +450,8 @@ module.exports = {
           label: '画像を新規タブで開く',
           click: () => {
             if(params.srcURL){
-              tab.nt(params.srcURL);
+              require('../main').tab.nt(params.srcURL, true);
+              require('../main').tab.ot(open_tab + 1);
             }
           }
         },
@@ -478,7 +514,7 @@ module.exports = {
         },
         {
           label:'強制的に再読み込み',
-            accelerator: 'CmdOrCtrl+Shift+R',
+          accelerator: 'CmdOrCtrl+Shift+R',
             click: () => {
             bv[open_tab].webContents.reloadIgnoringCache();
           }
@@ -487,13 +523,23 @@ module.exports = {
           accelerator: 'F12',
           click: () => {
             bv[open_tab].webContents.toggleDevTools();
-          }, label:'開発者ツールを表示'
+          }, 
+          label:'開発者ツールを表示'
+        },
+        {
+          label: 'ソースコードを表示',
+          click: () => {
+            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            win.webContents.send('new_tab_elm', {});
+            require('../main').tab.ot(open_tab + 1);
+          }
         }
       ])
     }
   },
   application_menu: (app, win, bv, open_tab) => {
     app.name = 'Flune-Browser';
+
     let appMenu = electron.Menu.buildFromTemplate([
       ...(isMac ? [{
         label: app.name,

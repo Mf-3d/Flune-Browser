@@ -21,7 +21,10 @@ module.exports = class {
   }
 
   
-  nt(url) {
+  nt(url, setHtmlTitle) {
+    if(setHtmlTitle === true){
+      win.webContents.send('new_tab_elm', {});
+    }
     let id = bv.length;
 
     bv[bv.length] = new electron.BrowserView({
@@ -38,6 +41,7 @@ module.exports = class {
   
     if(url){
       bv[bv.length - 1].webContents.loadURL(url);
+      this.setTitle(id);
     }
     else{
       bv[bv.length - 1].webContents.loadURL("file://" + __dirname + "/src/views/home.html");
@@ -119,6 +123,8 @@ module.exports = class {
     });
 
     bv[id].webContents.on('did-finish-load', () => {
+      this.setTitle(id);
+
       let bookmark_list = store.get('bookmark', []);
 
       if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
@@ -412,9 +418,7 @@ module.exports = class {
         });
       });
     
-      if(bv[index].webContents){
-        this.setTitle(index);
-      }
+      this.setTitle(index);
 
       this.bv = bv;
     } catch(e) {
@@ -491,9 +495,19 @@ module.exports = class {
         win.webContents.send('activeBookmark', false);
       }
     }
+
+    let title = bv[index].webContents.getTitle();
+
+    if(title.trim() === '' || !title){
+      title = new String(url);
+    }
+
+    if(title.trim() === '' || !title){
+      title = '　';
+    }
   
     win.webContents.send('change_title', {
-      title: bv[index].webContents.getTitle(),
+      title: title,
       index: index
     });
   
@@ -550,5 +564,13 @@ module.exports = class {
     }
 
     bv = [];
+  }
+
+  getURL(index) {
+    if(typeof index === 'number'){
+      return bv[index].webContents.getURL();
+    } else {
+      return bv[open_tab].webContents.getURL();
+    }
   }
 }
