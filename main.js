@@ -263,7 +263,8 @@ electron.ipcMain.handle('theme_path', () => {
       theme = '../style/theme/light_theme.css';
     }
     else if(store.get('settings').theme === 'elemental_theme_light'){
-      theme = '../style/theme/light_elemental_theme.css';
+      theme = '../style/theme/light_theme.css';
+      store.set('settings.theme', 'theme_light');
     }
     else{
       theme = '../style/theme/dark_theme.css';
