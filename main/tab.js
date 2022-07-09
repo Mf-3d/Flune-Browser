@@ -580,4 +580,12 @@ module.exports = class {
       return bv[open_tab].webContents.getURL();
     }
   }
+
+  getTitle(index) {
+    if(typeof index === 'number'){
+      return bv[index].webContents.getTitle();
+    } else {
+      return bv[open_tab].webContents.getTitle();
+    }
+  }
 }

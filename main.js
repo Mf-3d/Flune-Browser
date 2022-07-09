@@ -146,9 +146,6 @@ function nw() {
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
-    win.webContent.send('addExtension', {
-      id, manifest, url: `${url}${manifest.action.default_popup}`
-    });
   });
 
   win.on('resize', () => {
@@ -269,13 +266,13 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 electron.ipcMain.handle('theme_path', () => {
   let theme;
   try{
-    if(store.get('settings').theme === 'theme_dark'){
+    if(store.get('settings.theme') === 'theme_dark'){
       theme = '../style/theme/dark_theme.css';
     }
-    else if(store.get('settings').theme === 'theme_light'){
+    else if(store.get('settings.theme') === 'theme_light'){
       theme = '../style/theme/light_theme.css';
     }
-    else if(store.get('settings').theme === 'elemental_theme_light'){
+    else if(store.get('settings.theme') === 'elemental_theme_light'){
       theme = '../style/theme/light_theme.css';
       store.set('settings.theme', 'theme_light');
     }
@@ -588,24 +585,25 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
 
   if(bookmark_list.length >= 1){
     for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url !== tab.bv[open_tab].webContents.getURL()){
+      if(bookmark_list[i].url !== tab.getURL()){
         if(i <= bookmark_list.length){
           bookmark_list[bookmark_list.length] = {
-            url: tab.bv[open_tab].webContents.getURL(),
-            title: tab.bv[open_tab].webContents.getTitle()
+            url: tab.getURL(),
+            title: tab.getTitle()
           };
           store.set('bookmark', bookmark_list);
           break;
         }
       }
       else{
-        console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
+        console.debug(bookmark_list[i].url, tab.getURL());
       }
     }
   }
   else{
     bookmark_list[bookmark_list.length] = {
-      url: tab.bv[open_tab].webContents.getURL()
+      url: tab.getURL(),
+      title: tab.getTitle()
     };
     store.set('bookmark', bookmark_list);
   }
@@ -615,13 +613,13 @@ electron.ipcMain.handle('removeBookmark', (event, data) => {
   let bookmark_list = store.get('bookmark', []);
   
   for (let i = 0; i < bookmark_list.length; i++) {
-    if(bookmark_list[i].url === tab.bv[open_tab].webContents.getURL()){
+    if(bookmark_list[i].url === tab.getURL()){
       bookmark_list.splice(i, 1);
       store.set('bookmark', bookmark_list);
       break;
     }
     else{
-      console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
+      console.debug(bookmark_list[i].url, tab.getURL());
     }
   }
 });

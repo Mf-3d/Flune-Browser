@@ -1,10 +1,12 @@
 @charset "utf-8";
 
+/* Flune-Browserのデフォルトテーマです。 */
+/* 対応バージョン: Flune-Browser 2.4.0 Beta 2〜 */
+
 :root {
     /* メインカラー */
     --flune-main-background: #ebebeb;
     --flune-main-color: #4e4e4e;
-    --flune-main-border-color: #bebebe79;
 
     /* アクセントカラー */
     --flune-accent-color-hover: #24a573;
@@ -15,8 +17,15 @@
     /* シャドーカラー */
     --flune-main-shadow-color: #d2d2d294;
 
-    /* その他 */
-    --flune-main-hover-color: #dddddd;
+    /* ホーム画面系 */
     --flune-home-background: url("../views/image/sean-oulashin-KMn4VEeEPR8-unsplash.jpeg");
     --flune-home-panel-color: #d2c3b263;
+
+    /* ボーダー関連 */
+    /* --flune-main-border-radiusはFlune-Browser 2.4.0 Beta 2から追加されました。 */
+    --flune-main-border-color: #bebebe79;
+    --flune-main-border-radius: 5px;
+
+    /* その他 */
+    --flune-main-hover-color: #dddddd;
 }

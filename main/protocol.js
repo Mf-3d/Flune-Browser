@@ -39,6 +39,9 @@ module.exports = (dirname) => {
     if(url === '/style/dark_theme.css'){
       callback({path: `${dirname}/src/style/theme/dark_theme.css`});
     }
+    if(url === '/style/light_theme_stylish.css'){
+      callback({path: `${dirname}/src/style/theme/light_theme_stylish.css`});
+    }
     if(url === '/settings/background'){
       callback({path: `${dirname}/src/views/image/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg`});
     }
