@@ -197,6 +197,8 @@ module.exports = class {
           index: index,
           loading: false
         });
+
+        this.setTitle(index);
       });
     
       
@@ -335,6 +337,8 @@ module.exports = class {
           bv[index].webContents.loadFile(`${__dirname}/src/views/err/unknown_err.html`);
           console.debug(`ページ表示エラー(未定義):${errCode}`)
         }
+
+        this.setTitle(index);
       });
     
       bv[index].webContents.on('did-finish-load', () => {
@@ -357,6 +361,8 @@ module.exports = class {
             win.webContents.send('activeBookmark', false);
           }
         }
+
+        this.setTitle(index);
       });
     
       bv[index].webContents.session.on('will-download', (event, item, webContents) => {
