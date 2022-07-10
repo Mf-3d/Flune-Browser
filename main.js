@@ -7,19 +7,20 @@ const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
 const touchBar = require('./main/touchBar.js');
-const applicationMenu = require('./main/applicationMenu.js');
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
-let tab;
 
 // ログ関連
 console.log = log.log;
 console.debug = log.debug;
 console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
+// 例外エラー
+// (こいつ地味にうざい)
 process.on('uncaughtException', (err) => {
-  log.error(err); // ログファイルへ記録
+  log.error(err);
+
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
   let index = electron.dialog.showMessageBoxSync(null, {
     type: 'error',
@@ -38,43 +39,24 @@ process.on('uncaughtException', (err) => {
   }
 });
 
+// config
 const store = new Store();
+
+// FluneSync
 const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
+// 変数
 let win;
 let setting_win;
 let suggestView;
-let bv = [];
-let timer = [];
 let winSize;
 let open_tab = 1;
+let tab;
 
-let viewY = 50;
-// let viewY = 200;
-
+// 一応使ってるやつ
 const isMac = (process.platform === 'darwin');
 
 function ns() {
-  // setting_win = new electron.BrowserWindow({
-  //   width: 600, height: 400, minWidth: 600, minHeight: 400,
-  //   transparent: false,
-  //   backgroundColor: '#ffffff',
-  //   title: 'Flune-Browser 2.0.0',
-  //   // icon: `${__dirname}/src/image/logo.png`,
-  //   webPreferences: {
-  //     worldSafeExecuteJavaScript: true,
-  //     nodeIntegration:false,
-  //     contextIsolation: true,
-  //     preload: `${__dirname}/preload/preload.js`
-  //   }
-  // });
-
-  // setting_win.loadFile(`${__dirname}/src/views/setting.html`);
-
-  // setting_win.on('closed', () => {
-  //   setting_win = null;
-  // });
-
   tab.loadURL('flune://setting');
 }
 
@@ -90,6 +72,7 @@ function nw() {
 
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
+
   if(isMac){
     win = new electron.BrowserWindow({
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
@@ -245,12 +228,12 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
   event.preventDefault();
   electron.dialog.showMessageBox(win, {
     title: 'Certificate error',
-    message: `Do you trust certificate from "${certificate.issuerName}"?`,
+    message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
     detail: `URL: ${url}\nError: ${error}`,
     type: 'warning',
     buttons: [
-      'Yes',
-      'No'
+      'はい',
+      'いいえ'
     ],
     cancelId: 1
   }, function(response) {
