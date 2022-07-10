@@ -73,6 +73,7 @@ function nw() {
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
 
+  // もっと効率が良い方法があるのでねぇ...
   if(isMac){
     win = new electron.BrowserWindow({
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
@@ -379,8 +380,8 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       });
 
       login_win.setBounds({
-        width: 600,
-        height: 800
+        width: 500,
+        height: 700
       });
 
       login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);

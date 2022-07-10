@@ -59,90 +59,11 @@ module.exports = class {
 
     open_tab = bv.length - 1;
 
-    bv[id].webContents.on('did-start-loading', () => {
-      win.webContents.send('update-loading', {
-        index: id,
-        loading: true
-      });
-    });
-
-    bv[id].webContents.on('did-stop-loading', () => {
-      win.webContents.send('update-loading', {
-        index: id,
-        loading: false
-      });
-    });
-
-    bv[id].webContents.on('media-started-playing', () => {
-      if(!timer[id]){
-        timer[id] = setInterval(() => {
-          if(bv[id]){
-            win.webContents.send('update-audible', {
-              index: id,
-              audible: bv[id].webContents.isCurrentlyAudible()
-            });
-          }
-      
-          // console.log('音声が再生されているかどうか:', bv[id].webContents.isCurrentlyAudible());
-        }, 1000);
-
-        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 更新用タイマーが生成されました`);
-      }
-    });
-
-    bv[id].webContents.on('destroyed', () => {
-      clearInterval(timer[id]);
-      timer[id] = null;
-
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m webContentsが破棄されたため更新用タイマーが消去されました`);
-    });
-
-    bv[id].webContents.on('media-paused', () => {
-      if(timer[id]){
-        clearInterval(timer[id]);
-        timer[id] = null;
-
-        try {
-          win.webContents.send('update-audible', {
-            index: id,
-            audible: false
-          });
-        } catch (e) {
-
-        }
-
-        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m メディア再生が停止したため更新用タイマーが消去されました`);
-      }
-    });
-
     bv[id].webContents.setWindowOpenHandler((details) => {
       win.webContents.send('new_tab_elm', {});
       nt(details.url);
       console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 新しいタブがsetWindowOpenHandlerによって生成されました`);
       return { action: 'deny' };
-    });
-
-    bv[id].webContents.on('did-finish-load', () => {
-      this.setTitle(id);
-
-      let bookmark_list = store.get('bookmark', []);
-
-      if(store.get('settings.theme', 'theme_dark') === 'theme_dark'){
-        electron.nativeTheme.themeSource = 'dark';
-      }
-      else{
-        electron.nativeTheme.themeSource = 'light';
-      }
-    
-      for (let i = 0; i < bookmark_list.length; i++) {
-        if(bookmark_list[i].url === bv[open_tab].webContents.getURL()){
-          win.webContents.send('activeBookmark', true);
-          break;
-        }
-        else{
-          win.webContents.send('activeBookmark', false);
-        }
-      }
     });
 
     win.webContents.send('change-favicon', {
