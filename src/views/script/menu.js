@@ -98,6 +98,8 @@ window.onload = async () => {
     ${document.querySelector("#tabs > span").innerHTML}
     <div class="active" tab_id="${document.querySelectorAll("#tabs > span > div").length}" draggable="true"><img src="" class="favicon"/><a class="loading"><i class="fa-solid fa-circle-notch"></i><a class="title">読み込み中…</a><a class="downloading"><i class="fa-solid fa-download"></i></a><a class="audible"><i class="fa-solid fa-volume-high"></i></a><a class="close_button">×</a></div>
     `;
+
+    window.flune_api.open_tab(document.querySelectorAll("#tabs > span > div").length - 1);
   
     each();
   });

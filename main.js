@@ -7,19 +7,20 @@ const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
 const touchBar = require('./main/touchBar.js');
-const applicationMenu = require('./main/applicationMenu.js');
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
-let tab;
 
 // ログ関連
 console.log = log.log;
 console.debug = log.debug;
 console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
+// 例外エラー
+// (こいつ地味にうざい)
 process.on('uncaughtException', (err) => {
-  log.error(err); // ログファイルへ記録
+  log.error(err);
+
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
   let index = electron.dialog.showMessageBoxSync(null, {
     type: 'error',
@@ -38,43 +39,25 @@ process.on('uncaughtException', (err) => {
   }
 });
 
+// config
 const store = new Store();
+
+// FluneSync
 const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
+// 変数
 let win;
 let setting_win;
+let login_win;
 let suggestView;
-let bv = [];
-let timer = [];
 let winSize;
 let open_tab = 1;
+let tab;
 
-let viewY = 50;
-// let viewY = 200;
-
+// 一応使ってるやつ
 const isMac = (process.platform === 'darwin');
 
 function ns() {
-  // setting_win = new electron.BrowserWindow({
-  //   width: 600, height: 400, minWidth: 600, minHeight: 400,
-  //   transparent: false,
-  //   backgroundColor: '#ffffff',
-  //   title: 'Flune-Browser 2.0.0',
-  //   // icon: `${__dirname}/src/image/logo.png`,
-  //   webPreferences: {
-  //     worldSafeExecuteJavaScript: true,
-  //     nodeIntegration:false,
-  //     contextIsolation: true,
-  //     preload: `${__dirname}/preload/preload.js`
-  //   }
-  // });
-
-  // setting_win.loadFile(`${__dirname}/src/views/setting.html`);
-
-  // setting_win.on('closed', () => {
-  //   setting_win = null;
-  // });
-
   tab.loadURL('flune://setting');
 }
 
@@ -90,6 +73,8 @@ function nw() {
 
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
+
+  // もっと効率が良い方法があるのでねぇ...
   if(isMac){
     win = new electron.BrowserWindow({
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
@@ -135,18 +120,17 @@ function nw() {
   tab = new Tab(win, winSize, __dirname);
 
   module.exports = {
-    tab
+    tab: tab,
+    win: win,
+    dirname: __dirname
   }
-  
+
   // toggleCircleDock();
   // nt();
   tab.nt();
 
   electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
-    win.webContent.send('addExtension', {
-      id, manifest, url: `${url}${manifest.action.default_popup}`
-    });
   });
 
   win.on('resize', () => {
@@ -154,12 +138,15 @@ function nw() {
   });
 
   win.on('close', () => {
+    tab.deleteTabAll();
     store.set('window.window_size', winSize);
 
     win.webContents.destroy();
+    suggestView = null;
   });
 
   win.on('closed', () => {
+    tab.deleteTabAll();
     win = null;
   });
 }
@@ -193,6 +180,18 @@ electron.app.on("ready", () => {
   }
 
   setProtocol(__dirname);
+
+  suggestView = new electron.BrowserView({
+    transparent: true,
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      scrollBounce: false,
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload_suggest.js`
+    }
+  });
 
   nw();
 
@@ -231,12 +230,12 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
   event.preventDefault();
   electron.dialog.showMessageBox(win, {
     title: 'Certificate error',
-    message: `Do you trust certificate from "${certificate.issuerName}"?`,
+    message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
     detail: `URL: ${url}\nError: ${error}`,
     type: 'warning',
     buttons: [
-      'Yes',
-      'No'
+      'はい',
+      'いいえ'
     ],
     cancelId: 1
   }, function(response) {
@@ -252,14 +251,15 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 electron.ipcMain.handle('theme_path', () => {
   let theme;
   try{
-    if(store.get('settings').theme === 'theme_dark'){
+    if(store.get('settings.theme') === 'theme_dark'){
       theme = '../style/theme/dark_theme.css';
     }
-    else if(store.get('settings').theme === 'theme_light'){
+    else if(store.get('settings.theme') === 'theme_light'){
       theme = '../style/theme/light_theme.css';
     }
-    else if(store.get('settings').theme === 'elemental_theme_light'){
-      theme = '../style/theme/light_elemental_theme.css';
+    else if(store.get('settings.theme') === 'elemental_theme_light'){
+      theme = '../style/theme/light_theme.css';
+      store.set('settings.theme', 'theme_light');
     }
     else{
       theme = '../style/theme/dark_theme.css';
@@ -306,9 +306,17 @@ electron.ipcMain.handle('context_img', (event, data) => {
   context_menu_img.popup();
 });
 
-electron.ipcMain.handle('login', (event, data) => {
-  console.log(data);
-  // browserSync = new appSync(data.submit_id[0], data.submit_id[1]);
+electron.ipcMain.handle('login', async (event, data) => {
+  console.log(await new appSync(data[0], data[1]).compare());
+  if(new appSync(data[0], data[1]).compare() === {}) return;
+  if(new appSync(data[0], data[1]).compare().status === 0){
+    console.log(new appSync(data[0], data[1]).compare())
+    browserSync = new appSync(data[0], data[1]);
+    login_win.close();
+    login_win = null;
+  } else {
+    login_win.webContents.send('loginError', new appSync(data[0], data[1]).compare().message);
+  }
 });
 
 electron.ipcMain.handle('more_button_menu', (event, data) => {
@@ -369,7 +377,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let loginMenuItem =new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
-      let login_win = new electron.BrowserWindow({
+      login_win = new electron.BrowserWindow({
         width: 200,
         height: 200,
         minWidth: 200,
@@ -381,12 +389,15 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       });
 
       login_win.setBounds({
-        width: 600,
-        height: 800
+        width: 500,
+        height: 700
       });
 
       login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
-    }
+
+      login_win.webContents.openDevTools();
+    },
+    enabled: false
   });
 
   more_button_context.append(loginMenuItem);
@@ -466,8 +477,6 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 function removeSuggestView() {
   if(suggestView){
     win.removeBrowserView(suggestView);
-    suggestView.webContents.destroy();
-    suggestView = null;
     suggestDisplayed = false;
   }
 }
@@ -487,10 +496,9 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
 
   result = [];
 
-  if(!data.word){
+  if(data.word.trim() === ''){
     win.removeBrowserView(suggestView);
-    suggestView.webContents.destroy();
-    suggestView = null;
+    return;
   }
 
   request({
@@ -499,11 +507,11 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
   }, (error, response, body) => {
     let suggestXml = body;
 
-    if(suggestDisplayed && suggestView){
-      win.removeBrowserView(suggestView);
-      suggestView.webContents.destroy();
-      suggestView = null;
-    }
+    // if(suggestDisplayed && suggestView){
+    //   win.removeBrowserView(suggestView);
+    //   suggestView.webContents.destroy();
+    //   suggestView = null;
+    // }
 
     xml2js.parseString(suggestXml, function (err, res) {
       if (err) {
@@ -523,23 +531,11 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
         result
       }
 
-      suggestView = new electron.BrowserView({
-        transparent: true,
-        backgroundColor: '#ffffff',
-        webPreferences: {
-          scrollBounce: true,
-          worldSafeExecuteJavaScript: true,
-          nodeIntegration:false,
-          contextIsolation: true,
-          preload: `${__dirname}/preload/preload_suggest.js`
-        }
-      });
-
       data.pos[0] = Math.floor(data.pos[0]);
       data.pos[1] = Math.floor(data.pos[1]);
 
-      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       win.addBrowserView(suggestView);
+      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
       win.setTopBrowserView(suggestView);
     
@@ -585,24 +581,25 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
 
   if(bookmark_list.length >= 1){
     for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url !== tab.bv[open_tab].webContents.getURL()){
+      if(bookmark_list[i].url !== tab.getURL()){
         if(i <= bookmark_list.length){
           bookmark_list[bookmark_list.length] = {
-            url: tab.bv[open_tab].webContents.getURL(),
-            title: tab.bv[open_tab].webContents.getTitle()
+            url: tab.getURL(),
+            title: tab.getTitle()
           };
           store.set('bookmark', bookmark_list);
           break;
         }
       }
       else{
-        console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
+        console.debug(bookmark_list[i].url, tab.getURL());
       }
     }
   }
   else{
     bookmark_list[bookmark_list.length] = {
-      url: tab.bv[open_tab].webContents.getURL()
+      url: tab.getURL(),
+      title: tab.getTitle()
     };
     store.set('bookmark', bookmark_list);
   }
@@ -612,13 +609,13 @@ electron.ipcMain.handle('removeBookmark', (event, data) => {
   let bookmark_list = store.get('bookmark', []);
   
   for (let i = 0; i < bookmark_list.length; i++) {
-    if(bookmark_list[i].url === tab.bv[open_tab].webContents.getURL()){
+    if(bookmark_list[i].url === tab.getURL()){
       bookmark_list.splice(i, 1);
       store.set('bookmark', bookmark_list);
       break;
     }
     else{
-      console.debug(bookmark_list[i].url, tab.bv[open_tab].webContents.getURL());
+      console.debug(bookmark_list[i].url, tab.getURL());
     }
   }
 });
@@ -730,5 +727,7 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
 // tab.js
 
 module.exports = {
-  tab: tab
+  tab: tab,
+  win: win,
+  dirname: __dirname
 }

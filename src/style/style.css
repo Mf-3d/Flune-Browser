@@ -27,7 +27,7 @@ a:hover {
   width: 100%;
   display: flex;
   /* background: linear-gradient(70deg, #41d0bd, #00ff9d); */
-  border-radius: 5px;
+  border-radius: var(--flune-main-border-radius);
   position: relative;
   top: 3px;
   padding: 1px;
@@ -42,7 +42,7 @@ a:hover {
   display: inline-block;
   position: relative;
   background: var(--flune-main-background);
-  border-radius: 5px;
+  border-radius: var(--flune-main-border-radius);
   padding: 1px;
   margin: 1px;
   width: 100%;
@@ -121,7 +121,7 @@ input[type="text"] {
   border: none;
   color: var(--flune-main-color);
   font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
-  background: var(--flune-main-background);
+  background: #fff0;
   padding: 0;
   margin: 0;
   margin-top: 0em;
@@ -136,9 +136,9 @@ input[type="text"] {
 #address_box {
   /* display: inline-block; */
   font-size: 0.7em;
-  border-radius: 5px;
+  border-radius: var(--flune-main-border-radius);
   padding: 0em;
-  background: var(--flune-main-background);
+  background: #fff0;
   border: solid 1px var(--flune-main-border-color);
   width: calc(100% - 5em);
 }
