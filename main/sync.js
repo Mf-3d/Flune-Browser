@@ -8,17 +8,19 @@ module.exports = class {
     this.account.setting = setting;
   }
 
-  compare() {
+  async compare() {
     if(!this.account.user || !this.account.password) return;
     let status = {};
-    request({
+
+    request.post({
       url: 'https://bbs.mf7cli.potp.me/api/v1/compare',
-      method: 'POST',
-      form: {
+      formData: {
         submit_id: [this.account.user, this.account.password]
       }
-    }, (error, response, body) => {
-      status = body;
+    }, (error, response) => {
+      if(error) throw error;
+    
+      status = response.body;
     });
 
     return status;

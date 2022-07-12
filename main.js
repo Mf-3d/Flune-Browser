@@ -48,6 +48,7 @@ const browserSync = new appSync(store.get('syncAccount.user', null), store.get('
 // 変数
 let win;
 let setting_win;
+let login_win;
 let suggestView;
 let winSize;
 let open_tab = 1;
@@ -305,9 +306,17 @@ electron.ipcMain.handle('context_img', (event, data) => {
   context_menu_img.popup();
 });
 
-electron.ipcMain.handle('login', (event, data) => {
-  console.log(data);
-  // browserSync = new appSync(data.submit_id[0], data.submit_id[1]);
+electron.ipcMain.handle('login', async (event, data) => {
+  console.log(await new appSync(data[0], data[1]).compare());
+  if(new appSync(data[0], data[1]).compare() === {}) return;
+  if(new appSync(data[0], data[1]).compare().status === 0){
+    console.log(new appSync(data[0], data[1]).compare())
+    browserSync = new appSync(data[0], data[1]);
+    login_win.close();
+    login_win = null;
+  } else {
+    login_win.webContents.send('loginError', new appSync(data[0], data[1]).compare().message);
+  }
 });
 
 electron.ipcMain.handle('more_button_menu', (event, data) => {
@@ -368,7 +377,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let loginMenuItem =new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
-      let login_win = new electron.BrowserWindow({
+      login_win = new electron.BrowserWindow({
         width: 200,
         height: 200,
         minWidth: 200,
@@ -385,7 +394,10 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       });
 
       login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
-    }
+
+      login_win.webContents.openDevTools();
+    },
+    enabled: false
   });
 
   more_button_context.append(loginMenuItem);

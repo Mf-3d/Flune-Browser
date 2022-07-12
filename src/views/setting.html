@@ -8,6 +8,57 @@
         <link href="flune://style/style_setting.css" rel="stylesheet"/>
         <link href="flune://style/dark_theme.css" rel="stylesheet" id="default_theme"/>
         <link href="" rel="stylesheet" id="theme"/>
+        <style>
+            body {
+                background: #252525;
+            }
+            /*ベース*/
+            section.typeA{
+                display: flex;
+                flex-wrap: wrap;
+            }
+            section.typeA::after {
+                content: '';
+                width: 100%;
+                height: 3px;
+                order: -1;
+                display: block;
+                background: #1ebfa4b3;
+            }
+            section.typeA .tabLabel {	/* タブ */
+                margin-right: 3px;
+                padding: 3px 12px;
+                flex: 1;
+                order: -1;
+                border-radius: 3px 3px 0 0;
+                background: #414746b3;
+                transition: .5s ;
+                cursor: pointer;
+            }
+            section.typeA .tabLabel:nth-last-of-type(1){ margin-right: 0; }
+            section.typeA > input {		/* ラジオボタン非表示 */
+                display: none;
+            }
+            section.typeA .content {	/* 本文 */
+                width: 100%;
+                height: 0;
+                overflow: hidden;
+                opacity: 0;
+            }
+            /*アクティブ設定*/
+            section.typeA > input:checked + .tabLabel {
+                color: #fff;
+                background: #1ebfa4b3;
+            }
+            section.typeA > input:checked + .tabLabel + .content {
+                padding: 15px;
+                height: auto;
+                overflow: auto;
+                background: #252525;
+                transition: .5s opacity;
+                opacity: 1;
+            }
+        </style>
         <script>
             function save() {
                 let theme_select = document.getElementById('theme_select').theme;
@@ -42,17 +93,29 @@
     </head>
     <body>
         <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
-        2.3.0
+        2.4.0
         <br/>
-        <h2>見た目</h2>
-        <form id="theme_select">
-            <label>テーマ:</label><input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
-            <br/>
-            <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
-        </form>
-        <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
-        <h2>実験的な機能</h2>
-        <!-- <label for="auto_theme">自動テーマ切り替え:</label><input type="checkbox" id="auto_theme"/> -->
+        <section class="typeA">
+            <input id="TAB-A01" type="radio" name="TAB-A" checked="checked">
+            <label class="tabLabel" for="TAB-A01">見た目</label>
+            <div class="content">
+                <form id="theme_select">
+                    <label>テーマ:</label><input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
+                    <br/>
+                    <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
+                </form>
+                <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+            </div>
+            <input id="TAB-A02" type="radio" name="TAB-A" disabled>
+            <label class="tabLabel" for="TAB-A02">(Coming soon...)</label>
+            <div class="content">
+            </div>
+            <input id="TAB-A03" type="radio" name="TAB-A">
+            <label class="tabLabel" for="TAB-A03">実験的な機能</label>
+            <div class="content">
+                現在はありません。
+            </div>
+        </section>
         <br/><br/><br/><br/>
         <footer>
             <a href="javascript:save()">保存</a>

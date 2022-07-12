@@ -15,14 +15,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="https://bbs.mf7cli.potp.me/style/style.css">
     <script>
-      function submit() {
-        event.preventDefault();
-        window.flune_api.login(document.forms);
-      }
-    </script>
-    <script>
       window.onload = () => {
         document.body.classList.remove("preload");
+
+        flune_login_api.on((event, message) => {
+          document.getElementById('status').innerHTML = `ログインできませんでした: ${message}`;
+        });
+        async function login() {
+          if(!document.getElementById('submit_id').value || !document.getElementById('submit_password').value){ 
+            document.getElementById('status').innerHTML = 'IDとパスワードを入力してください。';
+            return;
+          }
+
+          document.getElementById('status').innerHTML = '';
+          await window.flune_login_api.login([document.getElementById('submit_id').value, document.getElementById('submit_password').value]);
+        }
+
+        document.getElementById('submit').onclick = login;
       }
     </script>
   </head>
@@ -75,13 +84,15 @@
         <a href="/">Home</a>
         <h2>login</h2>
         <ul>
+          <span id="status"></span>
+          <br/><br/>
           Flune-Browserを同期するにはmf7cli-BBSアカウントにログインしてください。
           <form id="login_form" name="login_form">
             <input type="text" min="5" placeholder="IDを入力してください。" id="submit_id" name="submit_id"/>
             <br/>
             <input type="password" min="8" placeholder="パスワードを入力してください。" id="submit_password" name="submit_id"/>
             <br/>
-            <input type="button" onclick="submit()" value="送信"/>
+            <input type="button" id="submit" value="送信"/>
           </form>
           まだアカウントをお持ちではないですか？<a href="https://bbs.mf7cli.potp.me/register">Register</a>
           <br/>
