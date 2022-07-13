@@ -99,12 +99,19 @@
             <input id="TAB-A01" type="radio" name="TAB-A" checked="checked">
             <label class="tabLabel" for="TAB-A01">見た目</label>
             <div class="content">
-                <form id="theme_select">
-                    <label>テーマ:</label><input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
-                    <br/>
-                    <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
-                </form>
-                <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+                <table>
+                    <tr>
+                        <th>テーマ</th>
+                        <td>
+                            <form id="theme_select">
+                                <input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
+                                <br/>
+                                <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr><th><label for="force_twemoji">強制Twimoji変換</label></th><td><input type="checkbox" id="force_twemoji"/></td></tr>
+                </table>
             </div>
             <input id="TAB-A02" type="radio" name="TAB-A" disabled>
             <label class="tabLabel" for="TAB-A02">(Coming soon...)</label>
