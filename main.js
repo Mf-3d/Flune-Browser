@@ -415,9 +415,31 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
       let bookmarkItem = new electron.MenuItem({
         label: bookmark_list[i].title,
-        click: () => {
-          tab.loadURL(bookmark_list[i].url);
-        }
+        submenu: [
+          {
+            label: '開く',
+            click: () => {
+              tab.loadURL(bookmark_list[i].url);
+            }
+          },
+          {
+            label: '新しいタブで開く',
+            click: () => {
+              tab.nt(bookmark_list[i].url);
+              win.webContents.send('new_tab_elm', {});
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: '削除',
+            click: () => {
+              bookmark_list.splice(i, 1);
+              store.set('bookmark', bookmark_list);
+            }
+          }
+        ]
       });
 
       menuItem.submenu.insert(0, bookmarkItem);
@@ -559,13 +581,18 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       win.setTopBrowserView(suggestView);
     
       // suggestView.webContents.on('blur', () => {
-      //   win.removeBrowserView(suggestView);
-      //   suggestView.webContents.destroy();
-      //   suggestView = null;
-      //   suggestDisplayed = false;
+        // win.removeBrowserView(suggestView);
+        // suggestView.webContents.destroy();
+        // suggestView = null;
+        // suggestDisplayed = false;
       // });
     });
   });
+});
+
+electron.ipcMain.handle('closeSuggest', (event, data) => {
+  win.removeBrowserView(suggestView);
+  suggestDisplayed = false;
 });
 
 electron.ipcMain.handle('toggle_setting', (event, word) => {
