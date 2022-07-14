@@ -461,7 +461,26 @@ electron.ipcMain.handle('searchURL', (event, word) => {
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
-    url = "https://www.google.com/search?q=" + word;
+    let setting = store.get('settings', {
+      "settings": {
+        "force_twemoji": false,
+        "auto_theme": false,
+        "theme": "theme_dark",
+        "search_engine": "google"
+      }
+    });
+    if(setting.search_engine === 'google'){
+      url = `https://www.google.com/search?q=${word}`;
+    } else if(setting.search_engine === 'yahoo_japan'){
+      url = `https://search.yahoo.co.jp/search?p=${word}`;
+    } else if((setting.search_engine === 'ddg')){
+      url = `https://duckduckgo.com/?q=${word}`;
+    } else if(setting.search_engine === 'frea_search'){
+      url = `https://freasearch.org/search?q=${word}`;
+    } else {
+      url = `https://www.google.com/search?q=${word}`;
+    }
+    
   }
 
   // bv[open_tab].webContents.loadURL(url);
@@ -563,7 +582,7 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
   win.webContents.send('change_theme');
-  tab.reload();
+  // tab.reload();
 });
 
 electron.ipcMain.handle('get_setting', (event, data) => {
@@ -571,7 +590,8 @@ electron.ipcMain.handle('get_setting', (event, data) => {
     "settings": {
       "force_twemoji": false,
       "auto_theme": false,
-      "theme": "theme_dark"
+      "theme": "theme_dark",
+      "search_engine": "google"
     }
   });
 });

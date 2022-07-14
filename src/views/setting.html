@@ -11,6 +11,7 @@
         <style>
             body {
                 background: #252525;
+                user-select: none;
             }
             /*ベース*/
             section.typeA{
@@ -58,6 +59,12 @@
                 transition: .5s opacity;
                 opacity: 1;
             }
+            select, input[type="text"] {
+                border: solid 1px #3d3d3d;
+                border-radius: 5px;
+                background: #252525;
+                color: #fff;
+            }
         </style>
         <script>
             function save() {
@@ -73,7 +80,8 @@
                 window.flune_api.save_setting({
                     force_twemoji: document.getElementById("force_twemoji").checked,
                     // auto_theme: document.getElementById("auto_theme").checked,
-                    theme: checkValue
+                    theme: checkValue,
+                    search_engine: document.getElementById('search_engine').value
                 });
             }
 
@@ -87,6 +95,11 @@
                 }
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
+                if(setting.search_engine){
+                    document.getElementById('search_engine').value = setting.search_engine;
+                } else {
+                    document.getElementById('search_engine').value = 'google';
+                }
                 // document.getElementById('auto_theme').checked = setting.auto_theme;
             }
         </script>
@@ -110,12 +123,41 @@
                             </form>
                         </td>
                     </tr>
-                    <tr><th><label for="force_twemoji">強制Twimoji変換</label></th><td><input type="checkbox" id="force_twemoji"/></td></tr>
+                    <tr><th><label>強制Twimoji変換</label></th><td><input type="checkbox" id="force_twemoji"/><label for="force_twemoji" class="label"></label></td></tr>
                 </table>
             </div>
-            <input id="TAB-A02" type="radio" name="TAB-A" disabled>
-            <label class="tabLabel" for="TAB-A02">(Coming soon...)</label>
+            <input id="TAB-A02" type="radio" name="TAB-A">
+            <label class="tabLabel" for="TAB-A02">動作</label>
             <div class="content">
+                <table>
+                    <tr>
+                        <th>検索エンジン</th>
+                        <td>
+                            <select id="search_engine">
+                                <option value="google">
+                                    Google
+                                </option>
+                                <option value="yahoo_japan">
+                                    Yahoo! JAPAN
+                                </option>
+                                <option value="ddg">
+                                    DuckDuckGo
+                                </option>
+                                <option value="frea_search">
+                                    Frea Search
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="save-to">保存先</label></th>
+                        <td><input type="text" name="save-to" id="save-to" style="min-width: 20em;"/></td>
+                    </tr>
+                    <tr>
+                        <th><label for="download-check">ダウンロード前に各ファイルの保存場所を確認する</label></th>
+                        <td><input type="checkbox" name="download-check" id="download-check"/></td>
+                    </tr>
+                </table>
             </div>
             <input id="TAB-A03" type="radio" name="TAB-A">
             <label class="tabLabel" for="TAB-A03">実験的な機能</label>
@@ -125,7 +167,7 @@
         </section>
         <br/><br/><br/><br/>
         <footer>
-            <a href="javascript:save()">保存</a>
+            <a onclick="save()">保存</a>
         </footer>
     </body>
 </html>
