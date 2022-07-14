@@ -95,7 +95,7 @@ function nw() {
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
-    win.setTouchBar(touchBar);
+    // win.setTouchBar(touchBar);
   }
   else{
     win = new electron.BrowserWindow({
