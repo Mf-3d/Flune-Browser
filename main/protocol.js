@@ -1,5 +1,10 @@
 const electron = require('electron');
 
+/** 
+ * Protocol settings.
+ * @author mf7cli
+ * @param {string} dirname
+ */
 module.exports = (dirname) => {
   electron.protocol.registerFileProtocol('flune', (req, callback) => {
     console.log('request URL:' + req.url);

@@ -4,14 +4,26 @@ const applicationMenu = require('./applicationMenu.js');
 const Store = require('electron-store');
 const store = new Store();
 
+/** @type {electron.BrowserWindow} */
 let win;
+
+/** @type {electron.BrowserView[]} */
 let bv = [];
 let viewY = 50;
 let open_tab = 1;
 let timer = [];
 let winSize;
 
+/**
+ * Tab manager.
+ * @author mf7cli
+ */
 module.exports = class {
+  /** 
+   * @param {electron.BrowserWindow} mainWindow
+   * @param {number[]} windowSize
+   * @param {string} dirname
+   */
   constructor(mainWindow, windowSize, dirname) {
     win = mainWindow;
     winSize = windowSize;
@@ -20,7 +32,10 @@ module.exports = class {
     this.open_tab = 0;
   }
 
-  
+  /** 
+   * @param {string | undefined} url
+   * @param {boolean | undefined} setHtmlTitle
+   */
   nt(url, setHtmlTitle) {
     if(setHtmlTitle === true){
       win.webContents.send('new_tab_elm', {});
@@ -75,6 +90,9 @@ module.exports = class {
     this.bv = bv;
   }
 
+  /** 
+   * @param {number} index
+   */
   ot(index) {
     this.open_tab = index;
     open_tab = index;
@@ -354,6 +372,9 @@ module.exports = class {
     }
   }
 
+  /**
+   * @param {number} index
+   */
   deleteTab(index) {
     clearInterval(timer[index]);
     timer[index] = null;

@@ -32,6 +32,9 @@ const touchBarItem_BackForward = new electron.TouchBar.TouchBarSegmentedControl(
   }
 });
 
+/** 
+ * @deprecated This feature has already been removed.
+ */
 const touchBar = new electron.TouchBar({
   items: [
     // new electron.TouchBar.TouchBarGroup({

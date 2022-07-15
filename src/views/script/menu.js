@@ -2,6 +2,9 @@ let setting;
 let faviconCache;
 let timer = [];
 
+/**
+ * @return {number}
+ */
 function getOpenTabIndex() {
   let el = document.querySelector("#tabs");
   el = [].slice.call(el);

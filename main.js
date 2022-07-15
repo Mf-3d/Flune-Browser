@@ -1,12 +1,10 @@
 // モジュール読み込み
-const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
-const touchBar = require('./main/touchBar.js');
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
@@ -35,7 +33,7 @@ process.on('uncaughtException', (err) => {
   });
 
   if(index === 0){
-    app.quit();
+    electron.app.quit();
   }
 });
 
@@ -65,10 +63,12 @@ function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
     console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
-  }
-  else if(process.platform === 'win32'){
+  } else if(process.platform === 'win32'){
     log_path = os.homedir() + '/AppData/Roaming/flune-browser/logs/';
     console.log('ログの保存場所:', os.homedir() + '/AppData/Roaming/flune-browser/logs/');
+  } else{
+    log_path = '/';
+    console.log('ログの保存場所を取得できませんでした。')
   }
 
 
@@ -96,6 +96,8 @@ function nw() {
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
     // win.setTouchBar(touchBar);
+
+    win.webContents.on('context-menu', () => {})
   }
   else{
     win = new electron.BrowserWindow({
@@ -137,7 +139,7 @@ function nw() {
     if(permission === 'media' && details.mediaTypes.includes('audio')){
       let dialog = electron.dialog.showMessageBoxSync(null, {
         title: 'Webサイトがマイクへのアクセスを要求しています',
-        message: `Webサイトがマイクへのアクセスを要求しています。`,
+        message: `Webサイトがマイクへのアクセスを要求しています`,
         detail: 'アクセスを許可しますか？',
         type: 'question',
         buttons: [
@@ -157,7 +159,7 @@ function nw() {
     if(permission === 'media' && details.mediaTypes.includes('video')){
       let dialog = electron.dialog.showMessageBoxSync(null, {
         title: 'Webサイトがカメラへのアクセスを要求しています',
-        message: `Webサイトがカメラへのアクセスを要求しています。`,
+        message: `Webサイトがカメラへのアクセスを要求しています`,
         detail: 'アクセスを許可しますか？',
         type: 'question',
         buttons: [
@@ -216,8 +218,8 @@ function nw() {
 electron.app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
+  if (!isMac) {
+    electron.app.quit();
   }
 });
 
@@ -238,7 +240,7 @@ electron.app.on("ready", () => {
   ]);
 
   if (process.platform === 'darwin') {
-    app.dock.setMenu(dockMenu);
+    electron.app.dock.setMenu(dockMenu);
   }
 
   setProtocol(__dirname);
@@ -291,7 +293,7 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
   event.preventDefault();
   electron.dialog.showMessageBox(win, {
-    title: 'Certificate error',
+    title: '証明書エラー',
     message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
     detail: `URL: ${url}\nError: ${error}`,
     type: 'warning',
