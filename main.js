@@ -133,6 +133,68 @@ function nw() {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
   });
 
+  electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
+    if(permission === 'media' && details.mediaTypes.includes('audio')){
+      let dialog = electron.dialog.showMessageBoxSync(null, {
+        title: 'Webサイトがマイクへのアクセスを要求しています',
+        message: `Webサイトがマイクへのアクセスを要求しています。`,
+        detail: 'アクセスを許可しますか？',
+        type: 'question',
+        buttons: [
+          'はい',
+          'いいえ'
+        ],
+        cancelId: 1
+      });
+
+      if(dialog === 1) {
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }
+
+    if(permission === 'media' && details.mediaTypes.includes('video')){
+      let dialog = electron.dialog.showMessageBoxSync(null, {
+        title: 'Webサイトがカメラへのアクセスを要求しています',
+        message: `Webサイトがカメラへのアクセスを要求しています。`,
+        detail: 'アクセスを許可しますか？',
+        type: 'question',
+        buttons: [
+          'はい',
+          'いいえ'
+        ],
+        cancelId: 1
+      });
+
+      if(dialog === 1) {
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }
+
+    if(permission === 'notifications'){
+      let dialog = electron.dialog.showMessageBoxSync(null, {
+        title: 'Webサイトが通知の送信を要求しています',
+        message: `Webサイトが通知の送信を要求しています。`,
+        detail: '送信を許可しますか？',
+        type: 'question',
+        buttons: [
+          'はい',
+          'いいえ'
+        ],
+        cancelId: 1
+      });
+
+      if(dialog === 1) {
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }
+  });
+
   win.on('resize', () => {
     winSize = win.getSize();
   });
