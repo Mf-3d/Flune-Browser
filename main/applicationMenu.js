@@ -10,7 +10,7 @@ const isMac = (process.platform === 'darwin');
 module.exports = {
   /**
    * You can retrieve context menus.
-   * @param {[electron.BrowserView]} bv BrowserView
+   * @param {electron.BrowserView[]} bv BrowserView
    * @param {number} open_tab Number of open tabs.
    * @param {electron.ContextMenuParams} params Context menu params
    * @param {electron.BrowserWindow} win BrowserWindow

@@ -66,7 +66,7 @@ module.exports = class {
 
     win.addBrowserView(bv[bv.length - 1]);
 
-    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
+    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: win.getSize()[0], height: win.getSize()[1] - viewY});
 
     win.setTopBrowserView(bv[bv.length - 1]);
 
@@ -472,7 +472,7 @@ module.exports = class {
   }
 
   goForward() {
-    bv[open_tab].webContents.goBack();
+    bv[open_tab].webContents.goForward();
   }
 
   reload() {
