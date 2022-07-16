@@ -544,6 +544,8 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     url = `${word}`;
   } else if(word.slice(0, 5) === 'flune') {
     url = `${word}`;
+  } else if(word.slice(0, 5) === 'about') {
+    url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
