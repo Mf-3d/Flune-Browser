@@ -742,6 +742,7 @@ module.exports = {
       },
       {
         label: 'ヘルプ',
+        role: 'help',
         submenu: [
           {
             label: `${app.name} ヘルプ`, click: () => {

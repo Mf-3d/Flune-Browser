@@ -5,27 +5,27 @@
 
 :root {
   /* メインカラー */
-  --flune-main-background: #d0d0d0;
-  --flune-main-color: #4e4e4e;
+  --flune-main-background: #cacaca;
+  --flune-main-color: #313131;
 
   /* アクセントカラー */
-  --flune-accent-color-hover: #2e3c4f;
-  --flune-accent-color: #09253b;
-  --flune-active-tab-color: #ebebeb;
-  --flune-active-tab-hover-color: #dddddd;
+  --flune-accent-color-hover: #5e5e5e;
+  --flune-accent-color: #565656;
+  --flune-active-tab-color: #e2e2e2;
+  --flune-active-tab-hover-color: #e6e6e6;
 
   /* シャドーカラー */
   --flune-main-shadow-color: #d2d2d200;
 
   /* ホーム画面系 */
-  --flune-home-background: url("../views/image/sean-oulashin-KMn4VEeEPR8-unsplash.jpeg");
-  --flune-home-panel-color: #d2c3b263;
+  --flune-home-background: url("../../other_data/cca86928-fdfc-44d7-ae71-418de83f7639.jpeg");
+  --flune-home-panel-color: #b7b7b763;
 
   /* ボーダー関連 */
   /* --flune-main-border-radiusはFlune-Browser 2.4.0 Beta 2から追加されました。 */
-  --flune-main-border-color: #b9b9b979;
-  --flune-main-border-radius: 20px;
+  --flune-main-border-color: #b3b3b379;
+  --flune-main-border-radius: 5px;
 
   /* その他 */
-  --flune-main-hover-color: #dddddd;
+  --flune-main-hover-color: #dadada;
 }
