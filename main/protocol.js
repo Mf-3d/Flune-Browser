@@ -50,5 +50,8 @@ module.exports = (dirname) => {
     if(url === '/settings/background'){
       callback({path: `${dirname}/src/views/image/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg`});
     }
+    if(url === '/sidebar'){
+      callback({path: `${dirname}/src/views/sidebar.html`});
+    }
   });
 }

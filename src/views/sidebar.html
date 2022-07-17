@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Suggest - Flune-Browser</title>
+    <script>
+      window.onload = async () => {
+        let ul = document.querySelector('#notifications');
+
+        flune_sidebar_api.on('info', /** @param {[string, string[]]} message */(event, message) => {
+          let li = document.createElement('li');
+          li.innerHTML = `
+          ${message[0]}
+          <br/><br/>
+          `;
+          li.id = `temp_info`
+
+          ul.prepend(li);
+
+          let id = document.getElementsByTagName('li').length - 1;
+          for (let index = 0; index < message[1].length; index++) {
+            let button = document.createElement('a');
+
+            button.onclick = () => {
+              flune_sidebar_api.return([id, index]);
+              li.remove();
+              if(document.getElementsByTagName('li').length <= 0) flune_sidebar_api.closeSidebar();
+            }
+
+            button.innerHTML = message[1][index];
+            document.getElementById('temp_info').append(button);
+          }
+
+          document.getElementById('temp_info').id = '';
+        });
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
+      
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+        padding: 0;
+        color: #fafafa;
+        background: #25252574;
+      }
+      ul {
+        border-radius: 5px;
+        list-style: none;
+        border: solid 1px #7a7a7a6c;
+        margin: 0;
+        padding: 0;
+      }
+      li {
+        font-size: 0.7em;
+        padding-top: 0.15em;
+        padding-bottom: 1em;
+        margin: 0;
+        user-select: none;
+        padding-left: 0.5em;
+        transition: all 0.5s;
+      }
+      li:hover {
+        background: #3a3a3a46;
+      }
+      li a {
+        border: solid 1px #7a7a7a6c;
+        border-radius: 5px;
+        background: #63636374;
+        transition: all 0.5s;
+      }
+      li a:hover {
+        background: #8bfef874;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>通知</h2>
+    <ul id="notifications">
+    </ul>
+  </body>
+</html>

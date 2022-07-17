@@ -9,10 +9,12 @@ let win;
 
 /** @type {electron.BrowserView[]} */
 let bv = [];
+
 let viewY = 50;
 let open_tab = 1;
 let timer = [];
 let winSize;
+let favicon = [];
 
 /**
  * Tab manager.
@@ -53,6 +55,8 @@ module.exports = class {
         preload: `${__dirname}/preload/preload_browserview.js`
       }
     });
+
+    favicon[id] = '';
   
     if(url){
       bv[bv.length - 1].webContents.loadURL(url);
@@ -198,6 +202,8 @@ module.exports = class {
           index,
           favicon: favicons[0]
         });
+
+        favicon[index] = favicons[0];
       });
     
       bv[index].webContents.on('page-title-updated', () => {
@@ -379,6 +385,8 @@ module.exports = class {
     clearInterval(timer[index]);
     timer[index] = null;
     timer.splice(index, 1);
+
+    favicon.splice(index, 1);
   
     bv[index].webContents.removeAllListeners();
     win.removeBrowserView(bv[index]);

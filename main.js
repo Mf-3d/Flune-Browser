@@ -8,6 +8,8 @@ const xml2js = require("xml2js");
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
+const message = require('./main/message');
+/** @type {message} */let Notification;
 
 // ログ関連
 console.log = log.log;
@@ -20,21 +22,12 @@ process.on('uncaughtException', (err) => {
   log.error(err);
 
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
-  let index = electron.dialog.showMessageBoxSync(null, {
-    type: 'error',
-    icon: './src/icon.png',
-    title: 'Flune-Browserでエラーが発生しました。',
-    message: 'Flune-Browserでエラーが発生しました。',
-    detail: `アプリで予期しないエラーが発生しました。
-    アプリを終了しますか？\n\n
-    (Error):${err.message}`,
-    buttons: ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'],
-    defaultId: 0
-  });
 
-  if(index === 0){
-    electron.app.quit();
-  }
+  Notification.show('アプリで予期しないエラーが発生しました。<br/>アプリを終了しますか？', 'info', ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'], (event, value) => {
+    if(value === 0){
+      electron.app.quit();
+    }
+  });
 });
 
 // config
@@ -137,65 +130,37 @@ function nw() {
 
   electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if(permission === 'media' && details.mediaTypes.includes('audio')){
-      let dialog = electron.dialog.showMessageBoxSync(null, {
-        title: 'Webサイトがマイクへのアクセスを要求しています',
-        message: `Webサイトがマイクへのアクセスを要求しています`,
-        detail: 'アクセスを許可しますか？',
-        type: 'question',
-        buttons: [
-          'はい',
-          'いいえ'
-        ],
-        cancelId: 1
+      Notification.show('Webサイトがマイクへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
       });
-
-      if(dialog === 1) {
-        callback(false);
-      } else {
-        callback(true);
-      }
     }
 
     if(permission === 'media' && details.mediaTypes.includes('video')){
-      let dialog = electron.dialog.showMessageBoxSync(null, {
-        title: 'Webサイトがカメラへのアクセスを要求しています',
-        message: `Webサイトがカメラへのアクセスを要求しています`,
-        detail: 'アクセスを許可しますか？',
-        type: 'question',
-        buttons: [
-          'はい',
-          'いいえ'
-        ],
-        cancelId: 1
+      Notification.show('Webサイトがカメラへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
       });
-
-      if(dialog === 1) {
-        callback(false);
-      } else {
-        callback(true);
-      }
     }
 
     if(permission === 'notifications'){
-      let dialog = electron.dialog.showMessageBoxSync(null, {
-        title: 'Webサイトが通知の送信を要求しています',
-        message: `Webサイトが通知の送信を要求しています。`,
-        detail: '送信を許可しますか？',
-        type: 'question',
-        buttons: [
-          'はい',
-          'いいえ'
-        ],
-        cancelId: 1
+      Notification.show('Webサイトが通知の送信を要求しています。<br/>送信を許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
       });
-
-      if(dialog === 1) {
-        callback(false);
-      } else {
-        callback(true);
-      }
     }
   });
+
+  Notification = new message(win);
 
   win.on('resize', () => {
     winSize = win.getSize();
@@ -645,13 +610,6 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
       win.setTopBrowserView(suggestView);
-    
-      // suggestView.webContents.on('blur', () => {
-        // win.removeBrowserView(suggestView);
-        // suggestView.webContents.destroy();
-        // suggestView = null;
-        // suggestDisplayed = false;
-      // });
     });
   });
 });
