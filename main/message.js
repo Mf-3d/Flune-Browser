@@ -37,31 +37,33 @@ module.exports  = class {
 
     messageBox.webContents.loadURL('flune://sidebar');
 
-    electron.ipcMain.handle('return', (event, [index, value]) => {
-      if(notice_callback.length <= 0){
-        win.removeBrowserView(messageBox);
-        clearInterval(timer);
-      }
+    try {
+      electron.ipcMain.handle('return', (event, [index, value]) => {
+        if(notice_callback.length <= 0){
+          win.removeBrowserView(messageBox);
+          clearInterval(timer);
+        }
+  
+        for (let i = index; i < timer.length; i--) {
+          try{
+            notice_callback[i](event, value);
+            break;
+          } catch(e){}
+        }
+        
+        notice_callback.splice(index, 1);
+        if(notice_callback.length <= 0){
+          win.removeBrowserView(messageBox);
+          clearInterval(timer);
+        }
+      });
 
-      for (let i = index; i < timer.length; i--) {
-        try{
-          notice_callback[i](event, value);
-          break;
-        } catch(e){}
-      }
-      
-      notice_callback.splice(index, 1);
-      if(notice_callback.length <= 0){
+      electron.ipcMain.handle('closeSidebar', (event) => {
         win.removeBrowserView(messageBox);
+        notice_callback = [];
         clearInterval(timer);
-      }
-    });
-
-    electron.ipcMain.handle('closeSidebar', (event) => {
-      win.removeBrowserView(messageBox);
-      notice_callback = [];
-      clearInterval(timer);
-    });
+      });
+    } catch (e) {}
   }
 
   /** 

@@ -38,6 +38,10 @@ function toggle_setting() {
   window.flune_api.toggle_setting();
 }
 
+function move_home() {
+  window.flune_api.move_home();
+}
+
 function search() {
   window.flune_api.searchURL(document.querySelector("#address_bar").value);
   document.querySelector("#address_bar").value = "";
@@ -54,6 +58,14 @@ window.onload = async () => {
   });
   
   setting = await window.flune_api.get_setting();
+
+  if(setting['use-home-button']) {
+    document.getElementById('home-button').innerHTML = '<i class="fa-solid fa-house"></i>';
+    document.getElementById('home-button').href = 'javascript:move_home()';
+  } else {
+    document.getElementById('home-button').innerHTML = '';
+    document.getElementById('home-button').href = '';
+  }
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
 

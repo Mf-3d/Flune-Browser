@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('flune_api', {
     getSuggest: async (data) => await ipcRenderer.invoke('getSuggest', data),
     viewSuggest: async (data) => await ipcRenderer.invoke('viewSuggest', data),
     getWinSize: async (data) => await ipcRenderer.invoke('getWinSize', data),
+    move_home: async (data) => await ipcRenderer.invoke('move_home', data),
 
     on: (channel, callback) => ipcRenderer.on(channel, (event, argv) => callback(event, argv))
   }

@@ -43,6 +43,7 @@ let login_win;
 let suggestView;
 let winSize;
 let open_tab = 1;
+/** @type {Tab} */
 let tab;
 
 // 一応使ってるやつ
@@ -768,6 +769,10 @@ const context_menu = electron.Menu.buildFromTemplate([
     }, label:'開発者ツールを表示'
   }
 ]);
+
+electron.ipcMain.handle('move_home', (event, data) => {
+  tab.loadURL(`file://${__dirname}/src/views/home.html`);
+});
 
 const context_menu_nav = electron.Menu.buildFromTemplate([
   {

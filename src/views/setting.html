@@ -81,7 +81,8 @@
                     force_twemoji: document.getElementById("force_twemoji").checked,
                     // auto_theme: document.getElementById("auto_theme").checked,
                     theme: checkValue,
-                    search_engine: document.getElementById('search_engine').value
+                    search_engine: document.getElementById('search_engine').value,
+                    'use-home-button': document.getElementById('use-home-button').checked
                 });
             }
 
@@ -100,6 +101,8 @@
                 } else {
                     document.getElementById('search_engine').value = 'google';
                 }
+
+                document.getElementById('use-home-button').checked = setting['use-home-button'];
                 // document.getElementById('auto_theme').checked = setting.auto_theme;
             }
         </script>
@@ -150,7 +153,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="use-home-button">ホームボタンを表示する</label></th>
+                        <th><label for="use-home-button">ホームボタンを表示する (再起動必須)</label></th>
                         <td>
                             <input type="checkbox" name="use-home-button" id="use-home-button"/>
                         </td>
@@ -167,8 +170,8 @@
                 <br/><br/><br/>
                 <table>
                     <tr>
-                        <th><label for="use-dev-open-closed-tab">閉じたタブを開く</label></th>
-                        <td><input type="checkbox" name="use-dev-open-closed-tab" id="use-dev-open-closed-tab"/></td>
+                        <th><label for="use-open-closed-tab">閉じたタブを開く</label></th>
+                        <td><input type="checkbox" name="use-open-closed-tab" id="use-open-closed-tab"/></td>
                     </tr>
                 </table>
             </div>
