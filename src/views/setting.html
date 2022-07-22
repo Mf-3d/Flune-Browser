@@ -11,6 +11,7 @@
         <style>
             body {
                 background: #252525;
+                user-select: none;
             }
             /*ベース*/
             section.typeA{
@@ -58,6 +59,12 @@
                 transition: .5s opacity;
                 opacity: 1;
             }
+            select, input[type="text"] {
+                border: solid 1px #3d3d3d;
+                border-radius: 5px;
+                background: #252525;
+                color: #fff;
+            }
         </style>
         <script>
             function save() {
@@ -73,7 +80,9 @@
                 window.flune_api.save_setting({
                     force_twemoji: document.getElementById("force_twemoji").checked,
                     // auto_theme: document.getElementById("auto_theme").checked,
-                    theme: checkValue
+                    theme: checkValue,
+                    search_engine: document.getElementById('search_engine').value,
+                    'use-home-button': document.getElementById('use-home-button').checked
                 });
             }
 
@@ -87,6 +96,13 @@
                 }
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
+                if(setting.search_engine){
+                    document.getElementById('search_engine').value = setting.search_engine;
+                } else {
+                    document.getElementById('search_engine').value = 'google';
+                }
+
+                document.getElementById('use-home-button').checked = setting['use-home-button'];
                 // document.getElementById('auto_theme').checked = setting.auto_theme;
             }
         </script>
@@ -99,26 +115,70 @@
             <input id="TAB-A01" type="radio" name="TAB-A" checked="checked">
             <label class="tabLabel" for="TAB-A01">見た目</label>
             <div class="content">
-                <form id="theme_select">
-                    <label>テーマ:</label><input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
-                    <br/>
-                    <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
-                </form>
-                <label for="force_twemoji">強制Twimoji変換:</label><input type="checkbox" id="force_twemoji"/>
+                <table>
+                    <tr>
+                        <th>テーマ</th>
+                        <td>
+                            <form id="theme_select">
+                                <input type="radio" id="theme_dark" name="theme"/><label for="theme_dark">Dark</label><input type="radio" id="theme_light" name="theme"/><label for="theme_light">Light</label>
+                                <br/>
+                                <input type="radio" disabled id="elemental_theme_light" name="theme"/><label for="elemental_theme_light">Elemental Light (削除済み)</label>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr><th><label>強制Twimoji変換</label></th><td><input type="checkbox" id="force_twemoji"/><label for="force_twemoji" class="label"></label></td></tr>
+                </table>
             </div>
-            <input id="TAB-A02" type="radio" name="TAB-A" disabled>
-            <label class="tabLabel" for="TAB-A02">(Coming soon...)</label>
+            <input id="TAB-A02" type="radio" name="TAB-A">
+            <label class="tabLabel" for="TAB-A02">動作</label>
             <div class="content">
+                <table>
+                    <tr>
+                        <th>検索エンジン</th>
+                        <td>
+                            <select id="search_engine">
+                                <option value="google">
+                                    Google
+                                </option>
+                                <option value="yahoo_japan">
+                                    Yahoo! JAPAN
+                                </option>
+                                <option value="ddg">
+                                    DuckDuckGo
+                                </option>
+                                <option value="frea_search">
+                                    Frea Search
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="use-home-button">ホームボタンを表示する (再起動必須)</label></th>
+                        <td>
+                            <input type="checkbox" name="use-home-button" id="use-home-button"/>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <input id="TAB-A03" type="radio" name="TAB-A">
             <label class="tabLabel" for="TAB-A03">実験的な機能</label>
             <div class="content">
-                現在はありません。
+                <h2>注意</h2>
+                ここにある設定項目は実験的な機能であり、
+                <br/>
+                <span style="color: #ff8f82">一般利用には適していない</span>ことにご注意ください。
+                <br/><br/><br/>
+                <table>
+                    <tr>
+                        <th><label for="use-open-closed-tab">閉じたタブを開く</label></th>
+                        <td><input type="checkbox" name="use-open-closed-tab" id="use-open-closed-tab"/></td>
+                    </tr>
+                </table>
             </div>
         </section>
         <br/><br/><br/><br/>
         <footer>
-            <a href="javascript:save()">保存</a>
+            <a onclick="save()">保存</a>
         </footer>
     </body>
 </html>

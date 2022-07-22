@@ -210,24 +210,56 @@ nav:not(#blank) {
 }
 
 #n_forward {
-  background-image: url('../views/image/navigation/forward.png');
-  background-size: 0.5em 0.75em;
+  /* background-image: url('../views/image/navigation/forward.svg'); */
+  background-size: 1em 1em;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.4em;
+  background-position: 0.5em 0.5em;
+  fill: var(--flune-accent-color);
+  padding-left: 0.2em;
+  padding-right: 0.2em;
 }
 
 #n_back {
-  background-image: url('../views/image/navigation/back.png');
-  background-size: 0.5em 0.75em;
+  /* background-image: url('../views/image/navigation/back.svg'); */
+  background-size: 1em 1em;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.4em;
+  background-position: 0.5em 0.5em;
+  fill: var(--flune-accent-color);
+  padding-left: 0.2em;
+  padding-right: 0.2em;
 }
 
 #n_reload {
-  background-image: url('../views/image/navigation/reload.png');
+  /* background-image: url('../views/image/navigation/reload.svg'); */
   background-size: 0.8em 0.8em;
   background-repeat: no-repeat;
   background-position: 0.3em 0.4em;
-  margin-right: 1em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
   /* padding-right: 0.75em; */
+}
+
+#n_forward path {
+  fill: var(--flune-accent-color);
+  stroke: var(--flune-accent-color);
+}
+
+#n_back path {
+  fill: var(--flune-accent-color);
+  stroke: var(--flune-accent-color);
+}
+
+#n_reload path {
+  fill: var(--flune-accent-color);
+  stroke: var(--flune-accent-color);
+}
+
+#home-button {
+  /* background-image: url('../views/image/navigation/reload.svg'); */
+  margin-right: 1em;
+  margin-left: 0em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  /* padding-right: 0.75em; */
+  font-size: 0.7em;
 }

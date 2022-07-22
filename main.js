@@ -1,15 +1,15 @@
 // モジュール読み込み
-const { app } = require("electron");
 const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
-const touchBar = require('./main/touchBar.js');
 const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
+const message = require('./main/message');
+/** @type {message} */let Notification;
 
 // ログ関連
 console.log = log.log;
@@ -22,21 +22,12 @@ process.on('uncaughtException', (err) => {
   log.error(err);
 
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
-  let index = electron.dialog.showMessageBoxSync(null, {
-    type: 'error',
-    icon: './src/icon.png',
-    title: 'Flune-Browserでエラーが発生しました。',
-    message: 'Flune-Browserでエラーが発生しました。',
-    detail: `アプリで予期しないエラーが発生しました。
-    アプリを終了しますか？\n\n
-    (Error):${err.message}`,
-    buttons: ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'],
-    defaultId: 0
-  });
 
-  if(index === 0){
-    app.quit();
-  }
+  Notification.show('アプリで予期しないエラーが発生しました。<br/>アプリを終了しますか？', 'info', ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'], (event, value) => {
+    if(value === 0){
+      electron.app.quit();
+    }
+  });
 });
 
 // config
@@ -52,6 +43,7 @@ let login_win;
 let suggestView;
 let winSize;
 let open_tab = 1;
+/** @type {Tab} */
 let tab;
 
 // 一応使ってるやつ
@@ -65,10 +57,12 @@ function nw() {
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
     console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
-  }
-  else if(process.platform === 'win32'){
+  } else if(process.platform === 'win32'){
     log_path = os.homedir() + '/AppData/Roaming/flune-browser/logs/';
     console.log('ログの保存場所:', os.homedir() + '/AppData/Roaming/flune-browser/logs/');
+  } else{
+    log_path = '/';
+    console.log('ログの保存場所を取得できませんでした。')
   }
 
 
@@ -95,7 +89,9 @@ function nw() {
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
-    win.setTouchBar(touchBar);
+    // win.setTouchBar(touchBar);
+
+    win.webContents.on('context-menu', () => {})
   }
   else{
     win = new electron.BrowserWindow({
@@ -133,6 +129,40 @@ function nw() {
     // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
   });
 
+  electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
+    if(permission === 'media' && details.mediaTypes.includes('audio')){
+      Notification.show('Webサイトがマイクへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
+      });
+    }
+
+    if(permission === 'media' && details.mediaTypes.includes('video')){
+      Notification.show('Webサイトがカメラへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
+      });
+    }
+
+    if(permission === 'notifications'){
+      Notification.show('Webサイトが通知の送信を要求しています。<br/>送信を許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+        if(value === 0){
+          callback(true);
+        } else {
+          callback(false);
+        }
+      });
+    }
+  });
+
+  Notification = new message(win);
+
   win.on('resize', () => {
     winSize = win.getSize();
   });
@@ -154,8 +184,8 @@ function nw() {
 electron.app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
+  if (!isMac) {
+    electron.app.quit();
   }
 });
 
@@ -176,7 +206,7 @@ electron.app.on("ready", () => {
   ]);
 
   if (process.platform === 'darwin') {
-    app.dock.setMenu(dockMenu);
+    electron.app.dock.setMenu(dockMenu);
   }
 
   setProtocol(__dirname);
@@ -229,7 +259,7 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
   event.preventDefault();
   electron.dialog.showMessageBox(win, {
-    title: 'Certificate error',
+    title: '証明書エラー',
     message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
     detail: `URL: ${url}\nError: ${error}`,
     type: 'warning',
@@ -415,9 +445,31 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
       let bookmarkItem = new electron.MenuItem({
         label: bookmark_list[i].title,
-        click: () => {
-          tab.loadURL(bookmark_list[i].url);
-        }
+        submenu: [
+          {
+            label: '開く',
+            click: () => {
+              tab.loadURL(bookmark_list[i].url);
+            }
+          },
+          {
+            label: '新しいタブで開く',
+            click: () => {
+              tab.nt(bookmark_list[i].url);
+              win.webContents.send('new_tab_elm', {});
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: '削除',
+            click: () => {
+              bookmark_list.splice(i, 1);
+              store.set('bookmark', bookmark_list);
+            }
+          }
+        ]
       });
 
       menuItem.submenu.insert(0, bookmarkItem);
@@ -458,10 +510,31 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     url = `${word}`;
   } else if(word.slice(0, 5) === 'flune') {
     url = `${word}`;
+  } else if(word.slice(0, 5) === 'about') {
+    url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
   } else {
-    url = "https://www.google.com/search?q=" + word;
+    let setting = store.get('settings', {
+      "settings": {
+        "force_twemoji": false,
+        "auto_theme": false,
+        "theme": "theme_dark",
+        "search_engine": "google"
+      }
+    });
+    if(setting.search_engine === 'google'){
+      url = `https://www.google.com/search?q=${word}`;
+    } else if(setting.search_engine === 'yahoo_japan'){
+      url = `https://search.yahoo.co.jp/search?p=${word}`;
+    } else if((setting.search_engine === 'ddg')){
+      url = `https://duckduckgo.com/?q=${word}`;
+    } else if(setting.search_engine === 'frea_search'){
+      url = `https://freasearch.org/search?q=${word}`;
+    } else {
+      url = `https://www.google.com/search?q=${word}`;
+    }
+    
   }
 
   // bv[open_tab].webContents.loadURL(url);
@@ -538,15 +611,13 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
       win.setTopBrowserView(suggestView);
-    
-      // suggestView.webContents.on('blur', () => {
-      //   win.removeBrowserView(suggestView);
-      //   suggestView.webContents.destroy();
-      //   suggestView = null;
-      //   suggestDisplayed = false;
-      // });
     });
   });
+});
+
+electron.ipcMain.handle('closeSuggest', (event, data) => {
+  win.removeBrowserView(suggestView);
+  suggestDisplayed = false;
 });
 
 electron.ipcMain.handle('toggle_setting', (event, word) => {
@@ -563,7 +634,7 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
   win.webContents.send('change_theme');
-  tab.reload();
+  // tab.reload();
 });
 
 electron.ipcMain.handle('get_setting', (event, data) => {
@@ -571,7 +642,8 @@ electron.ipcMain.handle('get_setting', (event, data) => {
     "settings": {
       "force_twemoji": false,
       "auto_theme": false,
-      "theme": "theme_dark"
+      "theme": "theme_dark",
+      "search_engine": "google"
     }
   });
 });
@@ -697,6 +769,10 @@ const context_menu = electron.Menu.buildFromTemplate([
     }, label:'開発者ツールを表示'
   }
 ]);
+
+electron.ipcMain.handle('move_home', (event, data) => {
+  tab.loadURL(`file://${__dirname}/src/views/home.html`);
+});
 
 const context_menu_nav = electron.Menu.buildFromTemplate([
   {

@@ -4,14 +4,28 @@ const applicationMenu = require('./applicationMenu.js');
 const Store = require('electron-store');
 const store = new Store();
 
+/** @type {electron.BrowserWindow} */
 let win;
+
+/** @type {electron.BrowserView[]} */
 let bv = [];
+
 let viewY = 50;
 let open_tab = 1;
 let timer = [];
 let winSize;
+let favicon = [];
 
+/**
+ * Tab manager.
+ * @author mf7cli
+ */
 module.exports = class {
+  /** 
+   * @param {electron.BrowserWindow} mainWindow
+   * @param {number[]} windowSize
+   * @param {string} dirname
+   */
   constructor(mainWindow, windowSize, dirname) {
     win = mainWindow;
     winSize = windowSize;
@@ -20,7 +34,10 @@ module.exports = class {
     this.open_tab = 0;
   }
 
-  
+  /** 
+   * @param {string | undefined} url
+   * @param {boolean | undefined} setHtmlTitle
+   */
   nt(url, setHtmlTitle) {
     if(setHtmlTitle === true){
       win.webContents.send('new_tab_elm', {});
@@ -38,6 +55,8 @@ module.exports = class {
         preload: `${__dirname}/preload/preload_browserview.js`
       }
     });
+
+    favicon[id] = '';
   
     if(url){
       bv[bv.length - 1].webContents.loadURL(url);
@@ -51,7 +70,7 @@ module.exports = class {
 
     win.addBrowserView(bv[bv.length - 1]);
 
-    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: winSize[0], height: winSize[1]-viewY});
+    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: win.getSize()[0], height: win.getSize()[1] - viewY});
 
     win.setTopBrowserView(bv[bv.length - 1]);
 
@@ -75,6 +94,9 @@ module.exports = class {
     this.bv = bv;
   }
 
+  /** 
+   * @param {number} index
+   */
   ot(index) {
     this.open_tab = index;
     open_tab = index;
@@ -180,6 +202,8 @@ module.exports = class {
           index,
           favicon: favicons[0]
         });
+
+        favicon[index] = favicons[0];
       });
     
       bv[index].webContents.on('page-title-updated', () => {
@@ -354,10 +378,15 @@ module.exports = class {
     }
   }
 
+  /**
+   * @param {number} index
+   */
   deleteTab(index) {
     clearInterval(timer[index]);
     timer[index] = null;
     timer.splice(index, 1);
+
+    favicon.splice(index, 1);
   
     bv[index].webContents.removeAllListeners();
     win.removeBrowserView(bv[index]);
@@ -451,7 +480,7 @@ module.exports = class {
   }
 
   goForward() {
-    bv[open_tab].webContents.goBack();
+    bv[open_tab].webContents.goForward();
   }
 
   reload() {

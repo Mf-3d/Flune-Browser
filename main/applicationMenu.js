@@ -3,7 +3,18 @@ const request = require('request');
 const fs = require('fs');
 const isMac = (process.platform === 'darwin');
 
+/**
+ * You can retrieve context menus and application menus.
+ * @author mf7cli
+ */
 module.exports = {
+  /**
+   * You can retrieve context menus.
+   * @param {electron.BrowserView[]} bv BrowserView
+   * @param {number} open_tab Number of open tabs.
+   * @param {electron.ContextMenuParams} params Context menu params
+   * @param {electron.BrowserWindow} win BrowserWindow
+   */
   context_menu: (bv, open_tab, params, win) => {
     return {
       context_menu: electron.Menu.buildFromTemplate([
@@ -537,6 +548,13 @@ module.exports = {
       ])
     }
   },
+  /**
+   * You can retrieve application menus.
+   * @param {electron.app} app Electron app
+   * @param {electron.BrowserWindow} win BrowserWindow
+   * @param {[electron.BrowserView]} bv BrowserView
+   * @param {number} open_tab Number of open tabs.
+   */
   application_menu: (app, win, bv, open_tab) => {
     app.name = 'Flune-Browser';
 
@@ -724,6 +742,7 @@ module.exports = {
       },
       {
         label: 'ヘルプ',
+        role: 'help',
         submenu: [
           {
             label: `${app.name} ヘルプ`, click: () => {
