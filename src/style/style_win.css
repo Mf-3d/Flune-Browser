@@ -1,11 +1,11 @@
 @charset "utf-8";
 
 nav {
-  padding-left: 1em;
+  /* padding-left: 1em; */
 }
 
 #address_box {
-  width: calc(100% - 25em);
+  width: calc(100% - 18em);
 }
 
 #titlebar_button {
