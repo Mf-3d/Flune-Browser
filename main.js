@@ -54,6 +54,18 @@ function ns() {
 }
 
 function nw() {
+  suggestView = new electron.BrowserView({
+    transparent: true,
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      scrollBounce: false,
+      worldSafeExecuteJavaScript: true,
+      nodeIntegration:false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload_suggest.js`
+    }
+  });
+
   if(process.platform === 'darwin'){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
     console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
@@ -75,7 +87,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.4.0',
+      title: `Flune-Browser ${electron.app.getVersion()}`,
       titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
@@ -99,7 +111,7 @@ function nw() {
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
-      title: 'Flune-Browser 2.4.0',
+      title: `Flune-Browser ${electron.app.getVersion()}`,
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         worldSafeExecuteJavaScript: true,
@@ -210,18 +222,6 @@ electron.app.on("ready", () => {
   }
 
   setProtocol(__dirname);
-
-  suggestView = new electron.BrowserView({
-    transparent: true,
-    backgroundColor: '#ffffff',
-    webPreferences: {
-      scrollBounce: false,
-      worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
-      contextIsolation: true,
-      preload: `${__dirname}/preload/preload_suggest.js`
-    }
-  });
 
   nw();
 
