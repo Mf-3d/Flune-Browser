@@ -98,6 +98,8 @@ module.exports = class {
    * @param {number} index
    */
   ot(index) {
+    if(!bv[index]) return;
+    win.webContents.send('open_tab_elm', index);
     this.open_tab = index;
     open_tab = index;
     electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));

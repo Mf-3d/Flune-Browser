@@ -9,7 +9,7 @@ const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
-/** @type {message} */let Notification;
+/** @type {message} */ let Notification;
 
 // ログ関連
 console.log = log.log;
@@ -17,7 +17,6 @@ console.debug = log.debug;
 console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
 // 例外エラー
-// (こいつ地味にうざい)
 process.on('uncaughtException', (err) => {
   log.error(err);
 
@@ -80,7 +79,6 @@ function nw() {
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
 
-  // もっと効率が良い方法があるのでねぇ...
   if(isMac){
     win = new electron.BrowserWindow({
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,

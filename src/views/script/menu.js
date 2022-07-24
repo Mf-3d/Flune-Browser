@@ -104,6 +104,14 @@ window.onload = async () => {
     each();
   });
 
+  window.flune_api.on('open_tab_elm', (event, data) => {
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
+    }
+
+    document.querySelectorAll("#tabs > span > div")[data].classList.add('active');
+  });
+
   window.flune_api.on('new_tab_elm', (event, data) => {
     if(document.querySelector("#tabs > span > div.active")){
       document.querySelector("#tabs > span > div.active").classList.remove('active');
