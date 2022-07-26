@@ -9,7 +9,10 @@ const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
+const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
 /** @type {message} */ let Notification;
+
+setupTitlebar();
 
 // ログ関連
 console.log = log.log;
@@ -65,7 +68,7 @@ function nw() {
     }
   });
 
-  if(process.platform === 'darwin'){
+  if(isMac){
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
     console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
   } else if(process.platform === 'win32'){
@@ -79,47 +82,37 @@ function nw() {
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
 
-  if(isMac){
-    win = new electron.BrowserWindow({
+  /** @type {electron.BrowserWindowConstructorOptions} */ let winOption = {
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
       frame: false,
       transparent: false,
       backgroundColor: '#ffffff',
       title: `Flune-Browser ${electron.app.getVersion()}`,
-      titleBarStyle: 'hidden',
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
-        worldSafeExecuteJavaScript: true,
         nodeIntegration:false,
         contextIsolation: true,
         preload: `${__dirname}/preload/preload.js`
       }
-    });
+    };
+  if(isMac){
+    winOption.titleBarStyle = 'hidden';
+    win = new electron.BrowserWindow(winOption);
 
     win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
     // win.setTouchBar(touchBar);
-
-    win.webContents.on('context-menu', () => {})
+    
+    attachTitlebarToWindow(win);
   }
   else{
-    win = new electron.BrowserWindow({
-      width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
-      frame: false,
-      transparent: false,
-      backgroundColor: '#ffffff',
-      title: `Flune-Browser ${electron.app.getVersion()}`,
-      // icon: `${__dirname}/src/image/logo.png`,
-      webPreferences: {
-        worldSafeExecuteJavaScript: true,
-        nodeIntegration:false,
-        contextIsolation: true,
-        preload: `${__dirname}/preload/preload.js`
-      }
-    });
+    win = new electron.BrowserWindow(winOption);
     win.loadFile(`${__dirname}/src/views/menu_win.html`);
+    attachTitlebarToWindow(win);
   }
+
+  
 
   winSize = win.getSize();
 
