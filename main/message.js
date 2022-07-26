@@ -29,10 +29,10 @@ module.exports  = class {
 
     messageBox.setAutoResize({width: true, height: true});
     messageBox.setBounds({
-      x: 0,
-      y: 0,
-      width: 100,
-      height: win.getSize()[1]
+      x: this.win.getSize()[0] - 300,
+      y: 50,
+      width: 300,
+      height: this.win.getSize()[1] - 50
     });
 
     messageBox.webContents.loadURL('flune://sidebar');
@@ -62,6 +62,15 @@ module.exports  = class {
         win.removeBrowserView(messageBox);
         notice_callback = [];
         clearInterval(timer);
+      });
+
+      win.on('resize', (event) => {
+        messageBox.setBounds({
+          x: this.win.getSize()[0] - 300,
+          y: 50,
+          width: 300,
+          height: this.win.getSize()[1] - 50
+        });
       });
     } catch (e) {}
   }

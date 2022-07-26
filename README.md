@@ -1,12 +1,4 @@
 # Flune-Browser 2.5.0
-Flune-Browser 2.3.0 Dev 2022.06.27.1のリリースを間違えて削除してしまいました。
-申し訳ございません。
-
-**2.1.0には重大なバグが含まれています。**
-
-[Flune-Browser 2.2.0](https://github.com/mf-3d/flune-browser/releases/v2.2.0)以降(推奨: 最新バージョン)をダウンロードしてください。
-
----
 
 Flune-Browserが生まれ変わりました！
 
@@ -23,6 +15,8 @@ Flune-Browser 1.x.xは今後更新はされませんがサポートは続く予�
 |----------|-----------------|----------------------------|----------------------|
 |2.4.1 -   | macOS / Windows |macOS 10.11 - / Windows 7 - | Arm64 / Intel        |
 |- 2.4.0   | macOS / Windows |macOS 10.11 - / Windows 7 - | Intel                |
+
+(Windows 7、Windows 8.1などはサポート対象外ですが一応Chromeのサポート対象内です)
 
 ## 最新バージョン
 |リリースチャネル |  Stable  |     Beta    |          Dev          |
