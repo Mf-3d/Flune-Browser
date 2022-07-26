@@ -12,8 +12,6 @@ const message = require('./main/message');
 const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
 /** @type {message} */ let Notification;
 
-setupTitlebar();
-
 // ログ関連
 console.log = log.log;
 console.debug = log.debug;
@@ -39,7 +37,7 @@ const store = new Store();
 const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 // 変数
-let win;
+/** @type {electron.BrowserWindow} */let win;
 let setting_win;
 let login_win;
 let suggestView;
@@ -103,16 +101,11 @@ function nw() {
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
     // win.setTouchBar(touchBar);
-    
-    attachTitlebarToWindow(win);
   }
-  else{
+  else {
     win = new electron.BrowserWindow(winOption);
     win.loadFile(`${__dirname}/src/views/menu_win.html`);
-    attachTitlebarToWindow(win);
   }
-
-  
 
   winSize = win.getSize();
 
