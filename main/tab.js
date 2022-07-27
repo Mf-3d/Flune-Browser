@@ -80,7 +80,7 @@ module.exports = class {
 
     bv[id].webContents.setWindowOpenHandler((details) => {
       win.webContents.send('new_tab_elm', {});
-      nt(details.url);
+      this.nt(details.url);
       console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m 新しいタブがsetWindowOpenHandlerによって生成されました`);
       return { action: 'deny' };
     });

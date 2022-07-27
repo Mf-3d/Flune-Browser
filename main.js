@@ -9,7 +9,6 @@ const setProtocol = require('./main/protocol');
 const appSync = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
-const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
 /** @type {message} */ let Notification;
 
 // ログ関連
