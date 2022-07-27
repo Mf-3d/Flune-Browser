@@ -1,13 +1,14 @@
 {
   "name": "flune-browser",
   "version": "2.5.0",
-  "description": "Hello.",
+  "description": "Welcome to the next stage.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx electron .",
     "build:mac": "npx electron-builder --mac --x64",
     "build:mac_arm": "npx electron-builder --mac --arm64",
+    "build:mac_universal": "npx electron-builder --mac --universal",
     "build:win": "npx electron-builder --win --x64 --dir",
     "build:all": "npm run build:win && npm run build:mac && npm run build:mac_arm"
   },
@@ -43,7 +44,6 @@
     "electron-builder": "^23.1.0"
   },
   "dependencies": {
-    "custom-electron-titlebar": "^4.1.0",
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.2",
     "eslint": "^8.19.0",

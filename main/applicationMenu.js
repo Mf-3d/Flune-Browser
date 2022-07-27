@@ -578,6 +578,14 @@ module.exports = {
               });
             }
           },
+          {
+            label: '設定',
+            click: () => {
+              win.webContents.send('new_tab_elm', {});
+              require('../main').tab.nt('flune://setting');
+            },
+            accelerator: 'CmdOrCtrl+,'
+          },
           { type: 'separator' },
           {
             label: 'ログの保存場所を見る',
