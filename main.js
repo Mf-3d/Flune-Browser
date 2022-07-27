@@ -269,7 +269,7 @@ electron.ipcMain.handle('theme_path', () => {
       theme = '../style/theme/dark_theme.css';
     }
     else if(store.get('settings.theme') === 'theme_light'){
-      theme = '../style/theme/light_theme.css';
+      theme = '../style/theme/light_theme_stylish.css';
     }
     else if(store.get('settings.theme') === 'elemental_theme_light'){
       theme = '../style/theme/light_theme.css';
@@ -502,7 +502,6 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     let setting = store.get('settings', {
       "settings": {
         "force_twemoji": false,
-        "auto_theme": false,
         "theme": "theme_dark",
         "search_engine": "google"
       }

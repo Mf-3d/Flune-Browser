@@ -1,25 +1,25 @@
 @charset "utf-8";
 
 /* Flune-Browser公式のStylishテーマです。 */
-/* 対応バージョン: Flune-Browser 2.4.0 Beta 2〜 */
+/* CSSバージョン：0 */
 
 :root {
   /* メインカラー */
-  --flune-main-background: #cacaca;
-  --flune-main-color: #313131;
+  --flune-main-background: url("../../other_data/cca86928-fdfc-44d7-ae71-418de83f7639.jpeg");
+  --flune-main-color: #dadada;
 
   /* アクセントカラー */
-  --flune-accent-color-hover: #5e5e5e;
-  --flune-accent-color: #565656;
-  --flune-active-tab-color: #e2e2e2;
-  --flune-active-tab-hover-color: #e6e6e6;
+  --flune-accent-color-hover: #a7a7a7;
+  --flune-accent-color: #939393;
+  --flune-active-tab-color: #ededed29;
+  --flune-active-tab-hover-color: #e6e6e640;
 
   /* シャドーカラー */
   --flune-main-shadow-color: #d2d2d200;
 
   /* ホーム画面系 */
-  --flune-home-background: url("../../other_data/cca86928-fdfc-44d7-ae71-418de83f7639.jpeg");
-  --flune-home-panel-color: #b7b7b763;
+  --flune-home-background: url("../../other_data/john-towner-3Kv48NS4WUU-unsplash.jpeg");
+  --flune-home-panel-color: #ededed29;
 
   /* ボーダー関連 */
   /* --flune-main-border-radiusはFlune-Browser 2.4.0 Beta 2から追加されました。 */
@@ -28,4 +28,5 @@
 
   /* その他 */
   --flune-main-hover-color: #dadada;
+  --flune-nav-search-background: #ededed29;
 }
