@@ -1,4 +1,4 @@
-// const request = require('sync-request');
+const request = require('request');
 
 module.exports = class {
   constructor(user, password, setting) {
@@ -8,31 +8,46 @@ module.exports = class {
     this.account.setting = setting;
   }
 
-  compare() {
-    // if(!this.account.user || !this.account.password) return;
+  async compare() {
+    if(!this.account.user || !this.account.password) return;
+    const rqt = (url) => {
+      return new Promise((resolve, reject)=> {
+        request(url, {
+          method: 'POST',
+          form: {
+            submit_id: [this.account.user, this.account.password]
+          }
+        }, (error, response, body)=> {
+          resolve(body);
+        });
+      });
+    }
 
-    // let res = request('POST', 'https://bbs.mf7cli.potp.me/api/v1/compare', {
-    //   json: {
-    //     submit_id: [this.account.user, this.account.password]
-    //   }
-    // });
-
-    // return res.getBody('utf8');
+    let body = await rqt('https://bbs.mf7cli.potp.me/api/v1/compare');
+    return body;
   }
 
   addData(path, data) {
-    // if(!this.account.user || !this.account.password) return;
-    // let res = request('POST', 'https://bbs.mf7cli.potp.me/api/v1/user/data/add', {
-    //   json: {
-    //     submit_id: [this.account.user, this.account.password],
-    //     data: {
-    //       name: path,
-    //       data
-    //     }
-    //   }
-    // });
+    if(!this.account.user || !this.account.password) return;
+    const rqt = (url) => {
+      return new Promise((resolve, reject)=> {
+        request(url, {
+          method: 'POST',
+          form: {
+            submit_id: [this.account.user, this.account.password],
+            data: {
+              name: path,
+              data
+            }
+          }
+        }, (error, response, body)=> {
+          resolve(body);
+        });
+      });
+    }
 
-    // return res.getBody('utf8');
+    let body = await rqt('https://bbs.mf7cli.potp.me/api/v1/user/data/add');
+    return body;
   }
 
   deleteData(path, data) {

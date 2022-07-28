@@ -34,7 +34,7 @@ process.on('uncaughtException', (err) => {
 const store = new Store();
 
 // FluneSync
-// const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
+let browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 // 変数
 /** @type {electron.BrowserWindow} */let win;
@@ -209,15 +209,19 @@ electron.app.on("ready", () => {
 
   nw();
 
-  // try{
-  //   if(browserSync.compare().status === 0){
-  //     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
-  //   } else {
-  //     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
-  //   }
-  // } catch(e) {
-  //   console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
-  // }
+  try{
+    (async () => {
+      let compareData = JSON.parse(await browserSync.compare());
+      if(compareData.status === 0){
+        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
+      } else {
+        console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+      }
+    })();
+    
+  } catch(e) {
+    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+  }
 
 });
 
@@ -323,15 +327,19 @@ electron.ipcMain.handle('context_img', (event, data) => {
 });
 
 electron.ipcMain.handle('login', async (event, data) => {
-  console.log(new appSync(data[0], data[1]).compare());
-  if(new appSync(data[0], data[1]).compare() === {}) return;
-  if(new appSync(data[0], data[1]).compare().status === 0){
-    console.log(new appSync(data[0], data[1]).compare())
+  let compareData = JSON.parse(await new appSync(data[0], data[1]).compare());
+  console.log(compareData);
+  // if(loginData === {}) return;
+  if(compareData.status === 0){
+    console.log(compareData);
     browserSync = new appSync(data[0], data[1]);
     login_win.close();
     login_win = null;
+    store.set('syncAccount.user', data[0]);
+    store.set('syncAccount.password', data[1]);
   } else {
-    login_win.webContents.send('loginError', new appSync(data[0], data[1]).compare().message);
+    login_win.webContents.send('loginError', compareData.message);
+    console.log('右', compareData);
   }
 });
 
@@ -413,7 +421,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
       login_win.webContents.openDevTools();
     },
-    enabled: false
+    // enabled: false
   });
 
   more_button_context.append(loginMenuItem);
