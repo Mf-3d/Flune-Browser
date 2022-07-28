@@ -7,6 +7,9 @@ let messageBox;
 let notice_callback = [];
 let timer;
 
+/** 
+ * Notification manager.
+ */
 module.exports  = class {
   /** 
    * @param {electron.BrowserWindow} win BrowserWindow

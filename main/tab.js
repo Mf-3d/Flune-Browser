@@ -49,7 +49,6 @@ module.exports = class {
       backgroundColor: '#ffffff',
       webPreferences: {
         scrollBounce: true,
-        worldSafeExecuteJavaScript: true,
         nodeIntegration:false,
         contextIsolation: true,
         preload: `${__dirname}/preload/preload_browserview.js`

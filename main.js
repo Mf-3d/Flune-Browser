@@ -14,6 +14,7 @@ const message = require('./main/message');
 // ログ関連
 console.log = log.log;
 console.debug = log.debug;
+
 console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m Flune-Browserを起動中です...`);
 
 // 例外エラー
@@ -209,7 +210,9 @@ electron.app.on("ready", () => {
   nw();
 
   try{
-    if(browserSync.compare().status !== 0){
+    if(browserSync.compare().status === 0){
+      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
+    } else {
       console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
     }
   } catch(e) {
@@ -320,7 +323,7 @@ electron.ipcMain.handle('context_img', (event, data) => {
 });
 
 electron.ipcMain.handle('login', async (event, data) => {
-  console.log(await new appSync(data[0], data[1]).compare());
+  console.log(new appSync(data[0], data[1]).compare());
   if(new appSync(data[0], data[1]).compare() === {}) return;
   if(new appSync(data[0], data[1]).compare().status === 0){
     console.log(new appSync(data[0], data[1]).compare())
