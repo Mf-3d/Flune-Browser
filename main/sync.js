@@ -27,7 +27,7 @@ module.exports = class {
     return body;
   }
 
-  addData(path, data) {
+  async addData(path, data) {
     if(!this.account.user || !this.account.password) return;
     const rqt = (url) => {
       return new Promise((resolve, reject)=> {
