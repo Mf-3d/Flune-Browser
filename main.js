@@ -339,7 +339,6 @@ electron.ipcMain.handle('login', async (event, data) => {
     store.set('syncAccount.password', data[1]);
   } else {
     login_win.webContents.send('loginError', compareData.message);
-    console.log('右', compareData);
   }
 });
 
@@ -418,8 +417,6 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       });
 
       login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
-
-      login_win.webContents.openDevTools();
     },
     // enabled: false
   });
