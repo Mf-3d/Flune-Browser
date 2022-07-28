@@ -34,7 +34,7 @@ process.on('uncaughtException', (err) => {
 const store = new Store();
 
 // FluneSync
-const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
+// const browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 // 変数
 /** @type {electron.BrowserWindow} */let win;
@@ -209,15 +209,15 @@ electron.app.on("ready", () => {
 
   nw();
 
-  try{
-    if(browserSync.compare().status === 0){
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
-    } else {
-      console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
-    }
-  } catch(e) {
-    console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
-  }
+  // try{
+  //   if(browserSync.compare().status === 0){
+  //     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
+  //   } else {
+  //     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+  //   }
+  // } catch(e) {
+  //   console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
+  // }
 
 });
 
