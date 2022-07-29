@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 /* Flune-Browserのデフォルトテーマです。 */
-/* 対応バージョン: Flune-Browser 2.4.0 Beta 2〜 */
+/* CSSバージョン：0 */
 
 :root {
     /* メインカラー */
@@ -28,4 +28,5 @@
 
     /* その他 */
     --flune-main-hover-color: #2c2c2c;
+    --flune-nav-search-background: #00000000;
 }

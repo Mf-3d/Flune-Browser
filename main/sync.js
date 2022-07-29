@@ -10,76 +10,80 @@ module.exports = class {
 
   async compare() {
     if(!this.account.user || !this.account.password) return;
-    let status = {};
+    const rqt = (url) => {
+      return new Promise((resolve, reject)=> {
+        request(url, {
+          method: 'POST',
+          form: {
+            submit_id: [this.account.user, this.account.password]
+          }
+        }, (error, response, body)=> {
+          resolve(body);
+        });
+      });
+    }
 
-    request.post({
-      url: 'https://bbs.mf7cli.potp.me/api/v1/compare',
-      formData: {
-        submit_id: [this.account.user, this.account.password]
-      }
-    }, (error, response) => {
-      if(error) throw error;
-    
-      status = response.body;
-    });
-
-    return status;
+    let body = await rqt('https://bbs.mf7cli.potp.me/api/v1/compare');
+    return body;
   }
 
-  addData(path, data) {
+  async addData(path, data) {
     if(!this.account.user || !this.account.password) return;
-    let status = {};
-    request({
-      url: 'https://bbs.mf7cli.potp.me/api/v1/user/data/add',
-      method: 'POST',
-      form: {
-        submit_id: [this.account.user, this.account.password],
-        data: {
-          name: path,
-          data
-        }
-      }
-    }, (error, response, body) => {
-      status = body;
-    });
+    const rqt = (url) => {
+      return new Promise((resolve, reject)=> {
+        request(url, {
+          method: 'POST',
+          form: {
+            submit_id: [this.account.user, this.account.password],
+            data: {
+              name: path,
+              data
+            }
+          }
+        }, (error, response, body)=> {
+          resolve(body);
+        });
+      });
+    }
 
-    return status;
+    let body = await rqt('https://bbs.mf7cli.potp.me/api/v1/user/data/add');
+    return body;
   }
 
   deleteData(path, data) {
-    if(!this.account.user || !this.account.password) return;
-    let status = {};
-    request({
-      url: 'https://bbs.mf7cli.potp.me/api/v1/user/data/delete',
-      method: 'POST',
-      form: {
-        submit_id: [this.account.user, this.account.password],
-        data: {
-          name: path
-        }
-      }
-    }, (error, response, body) => {
-      status = body;
-    });
+    // if(!this.account.user || !this.account.password) return;
+    // let status = {};
+    // request({
+    //   url: 'https://bbs.mf7cli.potp.me/api/v1/user/data/delete',
+    //   method: 'POST',
+    //   form: {
+    //     submit_id: [this.account.user, this.account.password],
+    //     data: {
+    //       name: path
+    //     }
+    //   }
+    // }, (error, response, body) => {
+    //   status = body;
+    // });
 
-    return status;
+    // return status;
   }
 
   getData(path) {
-    let status = {};
-    request({
-      url: 'https://bbs.mf7cli.potp.me/api/v1/user/data/get',
-      method: 'POST',
-      form: {
-        submit_id: [this.account.user, this.account.password],
-        data: {
-          name: path
-        }
-      }
-    }, (error, response, body) => {
-      status = body;
-    });
+  //   let status = {};
+  //   request({
+  //     url: 'https://bbs.mf7cli.potp.me/api/v1/user/data/get',
+  //     method: 'POST',
+  //     form: {
+  //       submit_id: [this.account.user, this.account.password],
+  //       data: {
+  //         name: path
+  //       }
+  //     }
+  //   }, (error, response, body) => {
+  //     status = body;
+  //   });
 
-    return status;
+  //   return status;
   }
 }

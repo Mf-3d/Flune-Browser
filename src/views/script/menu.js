@@ -62,9 +62,11 @@ window.onload = async () => {
   if(setting['use-home-button']) {
     document.getElementById('home-button').innerHTML = '<i class="fa-solid fa-house"></i>';
     document.getElementById('home-button').href = 'javascript:move_home()';
+    document.getElementById('home-button').classList.add('border');
   } else {
     document.getElementById('home-button').innerHTML = '';
-    document.getElementById('home-button').href = '';
+    document.getElementById('home-button').href = 'javascript:void(0)';
+    document.getElementById('home-button').classList.remove('border');
   }
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
@@ -102,6 +104,14 @@ window.onload = async () => {
     window.flune_api.new_tab();
 
     each();
+  });
+
+  window.flune_api.on('open_tab_elm', (event, data) => {
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
+    }
+
+    document.querySelectorAll("#tabs > span > div")[data].classList.add('active');
   });
 
   window.flune_api.on('new_tab_elm', (event, data) => {

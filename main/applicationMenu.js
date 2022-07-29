@@ -578,6 +578,14 @@ module.exports = {
               });
             }
           },
+          {
+            label: '設定',
+            click: () => {
+              win.webContents.send('new_tab_elm', {});
+              require('../main').tab.nt('flune://setting');
+            },
+            accelerator: 'CmdOrCtrl+,'
+          },
           { type: 'separator' },
           {
             label: 'ログの保存場所を見る',
@@ -643,7 +651,21 @@ module.exports = {
               win.webContents.send('new_tab_elm', {});
               require('../main').tab.nt();
             },
-            accelerator: 'CmdOrCtrl+N'
+            accelerator: 'CmdOrCtrl+T'
+          },
+          {
+            label: '開いているタブの前のタブを開く',
+            accelerator: 'CmdOrCtrl+Alt+Left',
+            click: () => {
+              require('../main').tab.ot(open_tab - 1);
+            }
+          },
+          {
+            label: '開いているタブの次のタブを開く',
+            accelerator: 'CmdOrCtrl+Alt+Right',
+            click: () => {
+              require('../main').tab.ot(open_tab + 1);
+            }
           },
           {
             type: 'separator'
@@ -746,7 +768,11 @@ module.exports = {
         submenu: [
           {
             label: `${app.name} ヘルプ`, click: () => {
-              electron.shell.openExternal('https://twitter.com/made_in_apple_');
+              electron.dialog.showMessageBox(null, {
+                message: '現在ヘルプはご利用できません。',
+                detail: '使用方法などは@made_in_apple_(Twitter)までお越しください。'
+              })
+              // electron.shell.openExternal('https://twitter.com/made_in_apple_');
             }
           },
           ...(isMac ? [] : [
