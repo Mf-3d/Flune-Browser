@@ -248,24 +248,33 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 
 electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
   event.preventDefault();
-  electron.dialog.showMessageBox(win, {
-    title: '証明書エラー',
-    message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
-    detail: `URL: ${url}\nError: ${error}`,
-    type: 'warning',
-    buttons: [
-      'はい',
-      'いいえ'
-    ],
-    cancelId: 1
-  }, function(response) {
-    if (response === 0) {
+  Notification.show(`「${certificate.issuerName}」からの証明書を信頼しますか？`, 'info', ['はい', 'いいえ'], (event, result) => {
+    if(result === 0){
       callback(true);
-    }
-    else {
+    } else {
       callback(false);
     }
   });
+
+  
+  // electron.dialog.showMessageBox(win, {
+  //   title: '証明書エラー',
+  //   message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
+  //   detail: `URL: ${url}\nError: ${error}`,
+  //   type: 'warning',
+  //   buttons: [
+  //     'はい',
+  //     'いいえ'
+  //   ],
+  //   cancelId: 1
+  // }, function(response) {
+  //   if (response === 0) {
+  //     callback(true);
+  //   }
+  //   else {
+  //     callback(false);
+  //   }
+  // });
 });
 
 electron.ipcMain.handle('theme_path', () => {

@@ -62,9 +62,11 @@ window.onload = async () => {
   if(setting['use-home-button']) {
     document.getElementById('home-button').innerHTML = '<i class="fa-solid fa-house"></i>';
     document.getElementById('home-button').href = 'javascript:move_home()';
+    document.getElementById('home-button').classList.add('border');
   } else {
     document.getElementById('home-button').innerHTML = '';
-    document.getElementById('home-button').href = '';
+    document.getElementById('home-button').href = 'javascript:void(0)';
+    document.getElementById('home-button').classList.remove('border');
   }
 
   document.getElementById('theme').href = await window.flune_api.theme_path();
