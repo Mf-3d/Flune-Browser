@@ -1,11 +1,15 @@
 @charset "utf-8";
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-image: var(--flune-home-background);
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
-  margin-top: 10em;
+  margin-top: 10%;
   color: var(--flune-main-color);
   text-shadow: #4c7a6a79 1px 1px 10px;
 }
@@ -35,7 +39,7 @@ body > div {
   background: var(--flune-home-panel-color);
   border: solid 1px var(--flune-main-border-color);
   border-radius: 10px;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(5px);
   box-shadow: 5px 5px 20px 5px #48484827;
 }
 

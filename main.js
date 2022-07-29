@@ -6,7 +6,7 @@ const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
 const setProtocol = require('./main/protocol');
-const appSync = require('./main/sync');
+const { appSync, getHash } = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
 /** @type {message} */ let Notification;
@@ -336,16 +336,19 @@ electron.ipcMain.handle('context_img', (event, data) => {
 });
 
 electron.ipcMain.handle('login', async (event, data) => {
-  let compareData = JSON.parse(await new appSync(data[0], data[1]).compare());
+  let compareData = JSON.parse(await getHash({
+    user: data[0],
+    password: data[1]
+  }));
   console.log(compareData);
   // if(loginData === {}) return;
   if(compareData.status === 0){
     console.log(compareData);
-    browserSync = new appSync(data[0], data[1]);
+    browserSync = new appSync(data[0], compareData.hash);
     login_win.close();
     login_win = null;
     store.set('syncAccount.user', data[0]);
-    store.set('syncAccount.password', data[1]);
+    store.set('syncAccount.password', compareData.hash);
   } else {
     login_win.webContents.send('loginError', compareData.message);
   }

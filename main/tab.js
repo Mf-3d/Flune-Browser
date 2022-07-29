@@ -68,10 +68,8 @@ module.exports = class {
     bv[bv.length - 1].webContents.setVisualZoomLevelLimits(1, 5);
 
     win.addBrowserView(bv[bv.length - 1]);
-
-    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: win.getSize()[0], height: win.getSize()[1] - viewY});
-
     win.setTopBrowserView(bv[bv.length - 1]);
+    bv[bv.length - 1].setBounds({x: 0, y: viewY, width: win.getSize()[0], height: win.getSize()[1] - viewY});
 
     bv[id].setAutoResize({width: true, height: true});
 
@@ -98,10 +96,11 @@ module.exports = class {
    */
   ot(index) {
     if(!bv[index]) return;
+    // これつけないと起動した時のタブが操作されてしまう（？）
+    electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
     win.webContents.send('open_tab_elm', index);
     this.open_tab = index;
     open_tab = index;
-    electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
     win.setTopBrowserView(bv[index]);
     // win.setTopBrowserView(circle_dock);
     bv[index].webContents.removeAllListeners('did-start-loading');
