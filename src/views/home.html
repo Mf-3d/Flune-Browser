@@ -5,6 +5,7 @@
         <link href="../style/style.css" rel="stylesheet"/>
         <link href="../style/style_home.css" rel="stylesheet"/>
         <link href="../style/theme/dark_theme.css" rel="stylesheet" id="default_theme"/>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
         <link href="" rel="stylesheet" id="theme"/>
         <script>
             function search() {
@@ -13,6 +14,8 @@
             }
 
             window.onload = async () => {
+                twemoji.parse(document.body);
+
                 document.addEventListener('keydown', (e) => {
                     if (e.target === document.getElementById('address_bar')) {
                         const word = document.getElementsByTagName('input')[0].value;
