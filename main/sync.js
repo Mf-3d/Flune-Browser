@@ -91,7 +91,7 @@ module.exports = {
       return body;
     }
 
-    getData(path) {
+    async getData(path) {
     if(!this.account.user || !this.account.password) return;
       const rqt = (url) => {
         return new Promise((resolve, reject)=> {

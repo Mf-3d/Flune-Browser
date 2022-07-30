@@ -15,14 +15,11 @@ nav {
 }
 
 #titlebar_button > a {
-  background: var(--flune-main-color);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--flune-main-color);
+  border-radius: 0px;
 }
 
 #titlebar_button > a:hover {
-  
-  background: var(--flune-accent-color);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: rgba(124, 124, 124, 0.534);
+  /* background: var(--flune-accent-color); */
 }
