@@ -26,7 +26,7 @@ module.exports  = class {
         worldSafeExecuteJavaScript: true,
         nodeIntegration:false,
         contextIsolation: true,
-        preload: `${__dirname}/preload/preload_sidebar.js`
+        preload: `${__dirname}/../preload/preload_sidebar.js`
       }
     });
 
