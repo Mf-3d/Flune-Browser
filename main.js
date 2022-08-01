@@ -18,13 +18,13 @@ RPC.register('1002944142701252680');
 const client = new RPC.Client({ transport: 'ipc' });
 
 client.on('ready', () => {
-    client.setActivity({
-      smallImageKey: 'icon',
-      // smallImageText: '',
-      details: 'Webを探索中…'
-    });
-
-    console.log('started!');
+  let startTimestamp = new Date();
+  client.setActivity({
+    smallImageKey: 'icon',
+    // smallImageText: '',
+    details: 'Webを探索中…',
+    startTimestamp
+  });
 });
 
 client.login({clientId:'1002944142701252680'});
