@@ -430,23 +430,25 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let loginMenuItem =new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
-      login_win = new electron.BrowserWindow({
-        width: 200,
-        height: 200,
-        minWidth: 200,
-        minHeight: 200,
-        webPreferences: {
-          scrollBounce: true,
-          preload: `${__dirname}/preload/preload_login.js`
-        }
-      });
+      win.webContents.send('new_tab_elm', {});
+      tab.nt('https://bbs.mf7cli.potp.me/login?callback=flune://login&appName=Flune-Browser');
+      // login_win = new electron.BrowserWindow({
+      //   width: 200,
+      //   height: 200,
+      //   minWidth: 200,
+      //   minHeight: 200,
+      //   webPreferences: {
+      //     scrollBounce: true,
+      //     preload: `${__dirname}/preload/preload_login.js`
+      //   }
+      // });
 
-      login_win.setBounds({
-        width: 500,
-        height: 700
-      });
+      // login_win.setBounds({
+      //   width: 500,
+      //   height: 700
+      // });
 
-      login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
+      // login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
     },
     // enabled: false
   });
