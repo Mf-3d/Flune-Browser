@@ -1,7 +1,7 @@
 # Flune-Browser Packs
 
 ## 注意
-- モジュールはFlune-Browserに導入されているものしか使えません。
+- npmモジュールはFlune-Browserに導入されているものしか使えません。
 - 拡張機能、テーマとは別の機能です。
 
 ## Packsの追加方法
