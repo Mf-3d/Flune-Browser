@@ -5,29 +5,16 @@ const log = require('electron-log');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
-// const RPC = require('discord-rpc');
+const packLoader = require('./main/packLoader');
+
+packLoader.init();
+packLoader.load();
 
 const setProtocol = require('./main/protocol');
 const { appSync, getHash } = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
 /** @type {message} */ let Notification;
-
-// RPC.register('1002944142701252680');
-
-// const client = new RPC.Client({ transport: 'ipc' });
-
-// client.on('ready', () => {
-//   let startTimestamp = new Date();
-//   client.setActivity({
-//     smallImageKey: 'icon',
-//     // smallImageText: '',
-//     details: 'Webを探索中…',
-//     startTimestamp
-//   });
-// });
-
-// client.login({clientId:'1002944142701252680'});
 
 // ログ関連
 console.log = log.log;
