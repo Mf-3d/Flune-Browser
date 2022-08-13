@@ -87,9 +87,6 @@ window.onload = async () => {
     }
   });
 
-  document.getElementById('address_bar').onblur = () => {
-    window.flune_api.closeSuggest();
-  }
   document.getElementById('address_bar').oncontextmenu = (event) => {
     event.preventDefault();
     window.flune_api.context();
