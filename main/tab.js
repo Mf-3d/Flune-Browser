@@ -144,7 +144,15 @@ module.exports = class {
 
         this.setTitle(index);
       });
+
+      let userAgent = bv[index].webContents.getUserAgent()
+        .replace('flune-browser', 'Chrome')
+        .replace(/Electron\/[0-9 | .]/, '')
+        .replace(`Chrome/${electron.app.getVersion()}`, '');
     
+      bv[index].webContents.setUserAgent(userAgent);
+
+      console.log(`UA: ${userAgent}`);
       
       bv[index].webContents.on('media-started-playing', () => {
         win.webContents.send('each');
