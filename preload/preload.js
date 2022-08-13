@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('flune_api', {
     more_button_menu: async (data) => await ipcRenderer.invoke('more_button_menu', data),
     getSuggest: async (data) => await ipcRenderer.invoke('getSuggest', data),
     viewSuggest: async (data) => await ipcRenderer.invoke('viewSuggest', data),
+    closeSuggest: async (data) => await ipcRenderer.invoke('closeSuggest', data),
     getWinSize: async (data) => await ipcRenderer.invoke('getWinSize', data),
     move_home: async (data) => await ipcRenderer.invoke('move_home', data),
 
