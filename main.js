@@ -546,14 +546,8 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     
   }
 
-  // bv[open_tab].webContents.loadURL(url);
-  tab.loadURL(url);
-
-  // win.webContents.send('change_url', {
-  //   url: bv[open_tab].webContents.getURL()
-  // });
-
   removeSuggestView();
+  tab.loadURL(url);
 });
 
 function removeSuggestView() {

@@ -72,7 +72,6 @@ window.onload = async () => {
   document.getElementById('theme').href = await window.flune_api.theme_path();
 
   document.querySelector("#address_bar").addEventListener('input', async (event) => {
-    console.log([document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]);
     window.flune_api.viewSuggest({
       word: document.querySelector("#address_bar").value,
       pos: [document.querySelector("#address_bar").getBoundingClientRect().left, document.querySelector("#address_bar").getBoundingClientRect().bottom]
