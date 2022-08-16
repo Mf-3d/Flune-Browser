@@ -77,33 +77,79 @@
                     }
                 }
 
+                if(document.getElementById('setting-auto-save').checked) {
+                    document.querySelectorAll('.content td input').forEach((val) => {
+                        val.onchange = () => {
+                            save();
+                        }
+                    });
+
+                    document.querySelectorAll('.content td select').forEach((val) => {
+                        val.onchange = () => {
+                            save();
+                        }
+                    });
+                } else {
+                    document.querySelectorAll('.content td input').forEach((val) => {
+                        val.onchange = () => {}
+                    });
+
+                    document.querySelectorAll('.content td select').forEach((val) => {
+                        val.onchange = () => {}
+                    });
+                }
+
                 window.flune_api.save_setting({
                     force_twemoji: document.getElementById("force_twemoji").checked,
                     // auto_theme: document.getElementById("auto_theme").checked,
                     theme: checkValue,
                     search_engine: document.getElementById('search_engine').value,
-                    'use-home-button': document.getElementById('use-home-button').checked
+                    'use-home-button': document.getElementById('use-home-button').checked,
+                    'setting-auto-save': document.getElementById('setting-auto-save').checked
                 });
             }
 
             window.onload = async () => {
                 let setting = await window.flune_api.get_setting();
+                
                 if(setting.theme === 'theme_light'){
                     document.getElementById('theme').href = 'flune://style/light_theme.css'
                 }
                 else{
                     document.getElementById('theme').href = 'flune://style/dark_theme.css'
                 }
+
                 document.getElementById(setting.theme).checked = true;
                 document.getElementById('force_twemoji').checked = setting.force_twemoji;
+
                 if(setting.search_engine){
                     document.getElementById('search_engine').value = setting.search_engine;
                 } else {
                     document.getElementById('search_engine').value = 'google';
                 }
 
+                if(setting['setting-auto-save']){
+                    document.getElementById('setting-auto-save').checked = setting['setting-auto-save'];
+                } else {
+                    document.getElementById('setting-auto-save').checked = false;
+                }
+
                 document.getElementById('use-home-button').checked = setting['use-home-button'];
                 // document.getElementById('auto_theme').checked = setting.auto_theme;
+
+                if (setting['setting-auto-save']) {
+                    document.querySelectorAll('.content td input').forEach((val) => {
+                        val.onchange = () => {
+                            save();
+                        }
+                    });
+
+                    document.querySelectorAll('.content td select').forEach((val) => {
+                        val.onchange = () => {
+                            save();
+                        }
+                    });
+                }
             }
         </script>
     </head>
@@ -126,7 +172,14 @@
                             </form>
                         </td>
                     </tr>
-                    <tr><th><label>強制Twimoji変換</label></th><td><input type="checkbox" id="force_twemoji"/><label for="force_twemoji" class="label"></label></td></tr>
+                    <tr>
+                        <th>
+                            <label for="force_twemoji">強制Twimoji変換</label>
+                        </th>
+                        <td>
+                            <input type="checkbox" id="force_twemoji"/>
+                        </td>
+                    </tr>
                 </table>
             </div>
             <input id="TAB-A02" type="radio" name="TAB-A">
@@ -158,6 +211,12 @@
                             <input type="checkbox" name="use-home-button" id="use-home-button"/>
                         </td>
                     </tr>
+                    <tr>
+                        <th><label for="setting-auto-save">設定を自動保存する</label></th>
+                        <td>
+                            <input type="checkbox" name="setting-auto-save" id="setting-auto-save"/>
+                        </td>
+                    </tr>
                 </table>
             </div>
             <input id="TAB-A03" type="radio" name="TAB-A">
@@ -178,7 +237,7 @@
         </section>
         <br/><br/><br/><br/>
         <footer>
-            <a onclick="save()">保存</a>
+            <a onclick="save()" id="save-button">保存</a>
         </footer>
     </body>
 </html>

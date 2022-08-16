@@ -15,14 +15,15 @@ nav {
 }
 
 #titlebar_button > a {
-  background: var(--flune-main-color);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--flune-main-color);
+  border-radius: 0px;
 }
 
 #titlebar_button > a:hover {
-  
-  background: var(--flune-accent-color);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: #7c7c7c2f;
+  /* background: var(--flune-accent-color); */
+}
+
+#titlebar_button > a:nth-child(3):hover {
+  background: #ff00008f;
 }

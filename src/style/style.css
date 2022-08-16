@@ -263,3 +263,10 @@ nav:not(#blank) {
   /* padding-right: 0.75em; */
   font-size: 0.7em;
 }
+
+img.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+}

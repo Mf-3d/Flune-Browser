@@ -5,8 +5,13 @@ const log = require('electron-log');
 const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
+const packLoader = require('./main/packLoader');
+
+packLoader.init();
+packLoader.load();
+
 const setProtocol = require('./main/protocol');
-const appSync = require('./main/sync');
+const { appSync, getHash } = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
 /** @type {message} */ let Notification;
@@ -336,16 +341,19 @@ electron.ipcMain.handle('context_img', (event, data) => {
 });
 
 electron.ipcMain.handle('login', async (event, data) => {
-  let compareData = JSON.parse(await new appSync(data[0], data[1]).compare());
+  let compareData = JSON.parse(await getHash({
+    user: data[0],
+    password: data[1]
+  }));
   console.log(compareData);
   // if(loginData === {}) return;
   if(compareData.status === 0){
     console.log(compareData);
-    browserSync = new appSync(data[0], data[1]);
+    browserSync = new appSync(data[0], compareData.hash);
     login_win.close();
     login_win = null;
     store.set('syncAccount.user', data[0]);
-    store.set('syncAccount.password', data[1]);
+    store.set('syncAccount.password', compareData.hash);
   } else {
     login_win.webContents.send('loginError', compareData.message);
   }
@@ -409,23 +417,25 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let loginMenuItem =new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
-      login_win = new electron.BrowserWindow({
-        width: 200,
-        height: 200,
-        minWidth: 200,
-        minHeight: 200,
-        webPreferences: {
-          scrollBounce: true,
-          preload: `${__dirname}/preload/preload_login.js`
-        }
-      });
+      win.webContents.send('new_tab_elm', {});
+      tab.nt('https://bbs.mf7cli.potp.me/login?callback=flune://login&appName=Flune-Browser');
+      // login_win = new electron.BrowserWindow({
+      //   width: 200,
+      //   height: 200,
+      //   minWidth: 200,
+      //   minHeight: 200,
+      //   webPreferences: {
+      //     scrollBounce: true,
+      //     preload: `${__dirname}/preload/preload_login.js`
+      //   }
+      // });
 
-      login_win.setBounds({
-        width: 500,
-        height: 700
-      });
+      // login_win.setBounds({
+      //   width: 500,
+      //   height: 700
+      // });
 
-      login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
+      // login_win.webContents.loadFile(`${__dirname}/src/views/login.html`);
     },
     // enabled: false
   });
@@ -536,14 +546,8 @@ electron.ipcMain.handle('searchURL', (event, word) => {
     
   }
 
-  // bv[open_tab].webContents.loadURL(url);
-  tab.loadURL(url);
-
-  // win.webContents.send('change_url', {
-  //   url: bv[open_tab].webContents.getURL()
-  // });
-
   removeSuggestView();
+  tab.loadURL(url);
 });
 
 function removeSuggestView() {
