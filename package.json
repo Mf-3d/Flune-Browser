@@ -27,7 +27,8 @@
       "package.json",
       "preload",
       "Extension",
-      "main"
+      "main",
+      "packs"
     ],
     "asar": false,
     "mac": {
