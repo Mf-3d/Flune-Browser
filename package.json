@@ -1,6 +1,6 @@
 {
   "name": "flune-browser",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Welcome to the next stage.",
   "main": "main.js",
   "scripts": {
@@ -28,7 +28,8 @@
       "preload",
       "Extension",
       "main",
-      "packs"
+      "packs",
+      "lib"
     ],
     "asar": false,
     "mac": {
