@@ -9,6 +9,7 @@ body {
   font-family: 'Noto Sans JP', sans-serif;
   margin-top: 0.1em;
   font-size: 0.9em;
+  filter: blur(--flune-main-blur);
 }
 
 a {
@@ -51,6 +52,7 @@ a:hover {
   overflow-x: hidden;
   font-size: 0.7em;
   transition: all 0.1s ease;
+  backdrop-filter: blur(--flune-main-blur);
 }
 
 #tabs > span > div:hover {
