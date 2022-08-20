@@ -127,9 +127,9 @@ function nw() {
   // nt();
   tab.nt();
 
-  electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
-    // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
-  });
+  // electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
+  //   // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
+  // });
 
   electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if(permission === 'media' && details.mediaTypes.includes('audio')){
