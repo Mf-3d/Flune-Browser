@@ -91,7 +91,6 @@ function nw() {
       transparent: false,
       backgroundColor: '#ffffff',
       title: `Flune-Browser ${electron.app.getVersion()}`,
-      show: false,
       // icon: `${__dirname}/src/image/logo.png`,
       webPreferences: {
         nodeIntegration:false,

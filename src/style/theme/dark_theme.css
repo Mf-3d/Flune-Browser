@@ -18,7 +18,7 @@
     --flune-main-shadow-color: #25252594;
 
     /* ホーム画面系 */
-    --flune-home-background: url("../views/image/dune.jpeg");
+    --flune-home-background: url("../image/dune.jpeg");
     --flune-home-panel-color: #1e1e1e8a;
 
     /* ボーダー関連 */
