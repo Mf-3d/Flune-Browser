@@ -11,13 +11,11 @@ Flune-Browserが生まれ変わりました！
 
 Flune-Browser 1.x.xは今後更新はされませんがサポートは続く予定です。
 ## 必須環境
-| バージョン        |       OS       |         OSバージョン         |   アーキテクチャ(macOS)    |
-|-----------------|-----------------|----------------------------|-------------------------|
-|2.5.0 Beta 1 -   | macOS / Windows |macOS 10.11 - / Windows 7 - | Universal / Intel        |
-|2.4.1 -          | macOS / Windows |macOS 10.11 - / Windows 7 - | Arm64 / Intel           |
-|- 2.4.0          | macOS / Windows |macOS 10.11 - / Windows 7 - | Intel                   |
-
-(Windows 7、Windows 8.1などはFlune-Browserはサポート対象外ですが一応Chromeのサポート対象内です)
+| バージョン        |       OS       |         OSバージョン          |   アーキテクチャ(macOS)    |
+|-----------------|-----------------|-----------------------------|-------------------------|
+|2.5.0 Beta 1 -   | macOS / Windows |macOS 10.11 - / Windows 10 - | Universal / Intel       |
+|2.4.1 -          | macOS / Windows |macOS 10.11 - / Windows 10 - | Arm64 / Intel           |
+|- 2.4.0          | macOS / Windows |macOS 10.11 - / Windows 10 - | Intel                   |
 
 ## 最新バージョン
 |リリースチャネル |  Stable  |     Beta    |          Dev          |
