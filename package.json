@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "electron": "^19.0.12",
-    "electron-builder": "^23.1.0"
+    "electron-builder": "^23.3.3"
   },
   "dependencies": {
     "discord-rpc": "^4.0.1",
