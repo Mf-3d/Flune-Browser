@@ -9,7 +9,7 @@
     "build:mac": "npx electron-builder --mac --x64",
     "build:mac_arm": "npx electron-builder --mac --arm64",
     "build:mac_universal": "npx electron-builder --mac --universal",
-    "build:win": "npx electron-builder --win --x64 --dir",
+    "build:win": "npx electron-builder --win --x64",
     "build:all": "npm run build:win && npm run build:mac && npm run build:mac_universal"
   },
   "keywords": [],
