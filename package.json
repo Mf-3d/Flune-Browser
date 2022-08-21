@@ -17,6 +17,12 @@
   "build": {
     "appId": "tk.mf7cli.flune",
     "productName": "Flune-Browser",
+    "publish": {
+      "provider": "github",
+      "owner": "Mf-3d",
+      "repo": "Flune-Browser",
+      "releaseType": "release"
+    },
     "files": [
       "!.git",
       "!.dist",
