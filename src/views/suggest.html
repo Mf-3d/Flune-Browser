@@ -22,18 +22,42 @@
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
       
+      
+      ul::-webkit-scrollbar{
+        width: 10px;
+        height: 10px;
+        max-width: 5vmax;
+        max-height: 5vmax;
+      }
+      ul::-webkit-scrollbar-button{
+        display: none;
+      }
+      ul::-webkit-scrollbar-thumb{
+        background-color: #a0f1e73d;
+        border-radius: 5px;
+        border: 1px solid #efefef88;
+      }
+      ul::-webkit-scrollbar-corner{
+        background-color: #eeec;
+      }
+      ul::-webkit-scrollbar-thumb:hover{
+        background-color: #cccc;
+      }
+      ul::-webkit-scrollbar-thumb:active{
+        background-color: #aaac;
+      }
       body {
         font-family: 'Noto Sans JP', sans-serif;
         padding: 0;
         color: #fafafa;
+        overflow: hidden;
       }
       ul {
-        background: #25252574;
-        border-radius: 5px;
         list-style: none;
-        border: solid 1px #7a7a7a6c;
         margin: 0;
         padding: 0;
+        height: 100%;
+        overflow-y: auto;
       }
       li {
         font-size: 0.7em;
@@ -46,10 +70,50 @@
       li:hover {
         background: #3a3a3a46;
       }
+
+      div {
+        background: #25252574;
+        border-radius: 5px;
+        border: solid 1px #7a7a7a6c;
+        overflow: hidden;
+        margin-bottom: 0.2em;
+      }
+
+      div:nth-child(1) {
+        height: 50px;
+      }
+
+      div:nth-child(2) {
+        height: 160px;
+      }
+
+      #superSuggest {
+        overflow-y: hidden;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      #superSuggest > li {
+        display: inline-block;
+        width: 50px;
+        height: 40px;
+      }
+
+      #superSuggest > li img {
+        width: 40px;
+        height: 40px;
+      }
     </style>
   </head>
   <body>
-    <ul id="suggest">
-    </ul>
+    <div>
+      <ul id="superSuggest">
+        <li>a</li>
+      </ul>
+      <br/>
+    </div>
+    <div>
+      <ul id="suggest">
+      </ul>
+    </div>
   </body>
 </html>

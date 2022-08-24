@@ -68,11 +68,37 @@ if(setting.force_twemoji){
         });
     `);
     
-    webFrame.insertCSS(`img.emoji {
+    webFrame.insertCSS(`
+    img.emoji {
         height: 1em;
         width: 1em;
         margin: 0 .05em 0 .1em;
         vertical-align: -0.1em;
-    }`);
+    }
+
+    ::-webkit-scrollbar{
+        width: 10px;
+        height: 10px;
+        max-width: 5vmax;
+        max-height: 5vmax;
+    }
+    ::-webkit-scrollbar-button{
+        display: none;
+    }
+    ::-webkit-scrollbar-thumb{
+        background-color: #a0f1e73d;
+        border-radius: 5px;
+        border: 1px solid #efefef88;
+    }
+    ::-webkit-scrollbar-corner{
+        background-color: #eeec;
+    }
+    ::-webkit-scrollbar-thumb:hover{
+        background-color: #cccc;
+    }
+    ::-webkit-scrollbar-thumb:active{
+        background-color: #aaac;
+    }
+    `);
 }
 
