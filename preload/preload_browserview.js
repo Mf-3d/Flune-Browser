@@ -86,18 +86,18 @@ if(setting.force_twemoji){
         display: none;
     }
     ::-webkit-scrollbar-thumb{
-        background-color: #a0f1e73d;
+        background-color: #8080803d;
         border-radius: 5px;
-        border: 1px solid #efefef88;
+        border: 1px solid #25252588;
     }
     ::-webkit-scrollbar-corner{
-        background-color: #eeec;
+        background-color: #6464643d;
     }
     ::-webkit-scrollbar-thumb:hover{
-        background-color: #cccc;
+        background-color: #b8b8b83d;
     }
     ::-webkit-scrollbar-thumb:active{
-        background-color: #aaac;
+        background-color: #4545453d;
     }
     `);
 }
