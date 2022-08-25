@@ -65,7 +65,7 @@ function nw() {
     webPreferences: {
       scrollBounce: false,
       worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
+      sandbox: false,
       contextIsolation: true,
       preload: `${__dirname}/preload/preload_suggest.js`
     }
@@ -95,7 +95,8 @@ function nw() {
       webPreferences: {
         nodeIntegration:false,
         contextIsolation: true,
-        preload: `${__dirname}/preload/preload.js`
+        preload: `${__dirname}/preload/preload.js`,
+        sandbox: false
       }
     };
   if(isMac){

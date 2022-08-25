@@ -51,6 +51,7 @@ module.exports = class {
         scrollBounce: true,
         nodeIntegration:false,
         contextIsolation: true,
+        sandbox: false,
         preload: `${__dirname}/preload/preload_browserview.js`
       }
     });
