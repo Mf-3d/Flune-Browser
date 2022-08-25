@@ -417,17 +417,20 @@ module.exports = class {
   
     console.debug('close_tabイベントで受け取ったindex:', index);
   
-    if(bv.length - 1 > 0){
+    open_tab = index;
+    
+    if(bv.length > 1){
       win.webContents.send('each');
   
       this.ot(index);
   
-      open_tab = index;
   
       win.webContents.send('active_tab', {
         index
       });
     }
+
+    electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
   }
   
   setTitle(index) {
