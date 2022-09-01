@@ -148,7 +148,9 @@ module.exports = class {
 
       let userAgent = bv[index].webContents.getUserAgent()
         .replace('Flune-Browser', 'Chrome')
+        .replace(/flune-browser\/[0-9].[0-9].[0-9]/, '')
         .replace(/Electron\/[0-9 | .]/, '')
+        .replace(' 0.1.0 ', ' ')
         .replace(`Chrome/${electron.app.getVersion()}`, '');
     
       bv[index].webContents.setUserAgent(userAgent);
