@@ -1,7 +1,7 @@
 {
   "name": "flune-browser",
   "version": "2.6.0",
-  "description": "Welcome to the next stage.",
+  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
