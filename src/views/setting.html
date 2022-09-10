@@ -105,7 +105,8 @@
                     theme: checkValue,
                     search_engine: document.getElementById('search_engine').value,
                     'use-home-button': document.getElementById('use-home-button').checked,
-                    'setting-auto-save': document.getElementById('setting-auto-save').checked
+                    'setting-auto-save': document.getElementById('setting-auto-save').checked,
+                    'use-history': document.getElementById('use-history').checked
                 });
             }
 
@@ -149,6 +150,12 @@
                             save();
                         }
                     });
+                }
+
+                if (setting['use-history']) {
+                    document.getElementById('use-history').checked = setting['use-history'];
+                } else {
+                    document.getElementById('use-history').checked = false;
                 }
             }
         </script>
@@ -229,8 +236,8 @@
                 <br/><br/><br/>
                 <table>
                     <tr>
-                        <th><label for="use-open-closed-tab">閉じたタブを開く</label></th>
-                        <td><input type="checkbox" name="use-open-closed-tab" id="use-open-closed-tab"/></td>
+                        <th><label for="use-history">履歴</label></th>
+                        <td><input type="checkbox" name="use-history" id="use-history"/></td>
                     </tr>
                 </table>
             </div>

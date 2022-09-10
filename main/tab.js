@@ -3,6 +3,7 @@ const { app } = require('electron');
 const applicationMenu = require('./applicationMenu.js');
 const Store = require('electron-store');
 const store = new Store();
+const history = require('./history');
 
 /** @type {electron.BrowserWindow} */
 let win;
@@ -299,6 +300,8 @@ module.exports = class {
       });
     
       bv[index].webContents.on('did-finish-load', () => {
+        if (!bv[index].webContents.canGoForward()) history.addHistory(bv[index].webContents.getURL(), {}, open_tab);
+
         bv[index].setBackgroundColor('#ffffff');
         let bookmark_list = store.get('bookmark', []);
     
@@ -393,6 +396,7 @@ module.exports = class {
    * @param {number} index
    */
   deleteTab(index) {
+    history.deleteHistoryTab(index);
     clearInterval(timer[index]);
     timer[index] = null;
     timer.splice(index, 1);
@@ -491,10 +495,12 @@ module.exports = class {
 
   goBack() {
     bv[open_tab].webContents.goBack();
+    history.changeActiveHistory(history.getActiveHistory(open_tab) - 1, open_tab);
   }
 
   goForward() {
     bv[open_tab].webContents.goForward();
+    history.changeActiveHistory(history.getActiveHistory(open_tab) + 1, open_tab);
   }
 
   reload() {
@@ -502,6 +508,7 @@ module.exports = class {
   }
 
   loadURL(url) {
+    history.addHistory(url, {}, open_tab);
     bv[open_tab].webContents.loadURL(url);
 
     win.webContents.send('change_url', {
@@ -511,6 +518,7 @@ module.exports = class {
 
   deleteTabAll() {
     for(let index = 0; index < bv.length; index++){
+      history.deleteHistoryTab(index);
       clearInterval(timer[index]);
       timer[index] = null;
       timer.splice(index, 1);
