@@ -43,23 +43,12 @@ body > div {
   box-shadow: 5px 5px 20px 5px #48484827;
 }
 
-#shortcut {
+#links {
   text-align: center;
-  display: flex;
   padding: 2em;
   margin-left: auto;
   margin-right: auto;
   width: 60%;
-}
-
-#shortcut a {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#shortcut a img {
-  width: 40px;
-  border-radius: 10px;
 }
 
 #address_box {

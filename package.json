@@ -1,7 +1,7 @@
 {
   "name": "flune-browser",
-  "version": "2.5.1",
-  "description": "Welcome to the next stage.",
+  "version": "2.6.0",
+  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
     "build:mac": "npx electron-builder --mac --x64",
     "build:mac_arm": "npx electron-builder --mac --arm64",
     "build:mac_universal": "npx electron-builder --mac --universal",
-    "build:win": "npx electron-builder --win --x64 --dir",
+    "build:win": "npx electron-builder --win --x64",
     "build:all": "npm run build:win && npm run build:mac && npm run build:mac_universal"
   },
   "keywords": [],
@@ -17,6 +17,12 @@
   "build": {
     "appId": "tk.mf7cli.flune",
     "productName": "Flune-Browser",
+    "publish": {
+      "provider": "github",
+      "owner": "Mf-3d",
+      "repo": "Flune-Browser",
+      "releaseType": "release"
+    },
     "files": [
       "!.git",
       "!.dist",
@@ -42,8 +48,8 @@
     }
   },
   "devDependencies": {
-    "electron": "^19.0.12",
-    "electron-builder": "^23.1.0"
+    "electron": "^20.1.0",
+    "electron-builder": "^23.3.3"
   },
   "dependencies": {
     "discord-rpc": "^4.0.1",

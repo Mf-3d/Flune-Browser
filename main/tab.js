@@ -3,6 +3,7 @@ const { app } = require('electron');
 const applicationMenu = require('./applicationMenu.js');
 const Store = require('electron-store');
 const store = new Store();
+const history = require('./history');
 
 /** @type {electron.BrowserWindow} */
 let win;
@@ -51,6 +52,7 @@ module.exports = class {
         scrollBounce: true,
         nodeIntegration:false,
         contextIsolation: true,
+        sandbox: false,
         preload: `${__dirname}/preload/preload_browserview.js`
       }
     });
@@ -146,8 +148,10 @@ module.exports = class {
       });
 
       let userAgent = bv[index].webContents.getUserAgent()
-        .replace('flune-browser', 'Chrome')
+        .replace('Flune-Browser', 'Chrome')
+        .replace(/flune-browser\/[0-9].[0-9].[0-9]/, '')
         .replace(/Electron\/[0-9 | .]/, '')
+        .replace(' 0.1.0 ', ' ')
         .replace(`Chrome/${electron.app.getVersion()}`, '');
     
       bv[index].webContents.setUserAgent(userAgent);
@@ -296,6 +300,8 @@ module.exports = class {
       });
     
       bv[index].webContents.on('did-finish-load', () => {
+        if (!bv[index].webContents.canGoForward()) history.addHistory(bv[index].webContents.getURL(), {}, open_tab);
+
         bv[index].setBackgroundColor('#ffffff');
         let bookmark_list = store.get('bookmark', []);
     
@@ -390,6 +396,7 @@ module.exports = class {
    * @param {number} index
    */
   deleteTab(index) {
+    history.deleteHistoryTab(index);
     clearInterval(timer[index]);
     timer[index] = null;
     timer.splice(index, 1);
@@ -416,17 +423,20 @@ module.exports = class {
   
     console.debug('close_tabイベントで受け取ったindex:', index);
   
-    if(bv.length - 1 > 0){
+    open_tab = index;
+    
+    if(bv.length > 1){
       win.webContents.send('each');
   
       this.ot(index);
   
-      open_tab = index;
   
       win.webContents.send('active_tab', {
         index
       });
     }
+
+    electron.Menu.setApplicationMenu(applicationMenu.application_menu(app, win, bv, open_tab));
   }
   
   setTitle(index) {
@@ -485,10 +495,12 @@ module.exports = class {
 
   goBack() {
     bv[open_tab].webContents.goBack();
+    history.changeActiveHistory(history.getActiveHistory(open_tab) - 1, open_tab);
   }
 
   goForward() {
     bv[open_tab].webContents.goForward();
+    history.changeActiveHistory(history.getActiveHistory(open_tab) + 1, open_tab);
   }
 
   reload() {
@@ -496,6 +508,7 @@ module.exports = class {
   }
 
   loadURL(url) {
+    history.addHistory(url, {}, open_tab);
     bv[open_tab].webContents.loadURL(url);
 
     win.webContents.send('change_url', {
@@ -505,6 +518,7 @@ module.exports = class {
 
   deleteTabAll() {
     for(let index = 0; index < bv.length; index++){
+      history.deleteHistoryTab(index);
       clearInterval(timer[index]);
       timer[index] = null;
       timer.splice(index, 1);

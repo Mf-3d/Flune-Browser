@@ -2,6 +2,7 @@ const electron = require('electron');
 const urlParser = require('../lib/urlParser');
 const Store = require('electron-store');
 const store = new Store();
+
 /** 
  * Protocol settings.
  * @author mf7cli

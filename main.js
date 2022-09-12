@@ -65,7 +65,7 @@ function nw() {
     webPreferences: {
       scrollBounce: false,
       worldSafeExecuteJavaScript: true,
-      nodeIntegration:false,
+      sandbox: false,
       contextIsolation: true,
       preload: `${__dirname}/preload/preload_suggest.js`
     }
@@ -95,7 +95,8 @@ function nw() {
       webPreferences: {
         nodeIntegration:false,
         contextIsolation: true,
-        preload: `${__dirname}/preload/preload.js`
+        preload: `${__dirname}/preload/preload.js`,
+        sandbox: false
       }
     };
   if(isMac){
@@ -126,9 +127,9 @@ function nw() {
   // nt();
   tab.nt();
 
-  electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
-    // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
-  });
+  // electron.session.defaultSession.loadExtension(__dirname + '/Extension/gebbhagfogifgggkldgodflihgfeippi').then(({ id, manifest, url }) => {
+  //   // win.webContents.loadURL('chrome-extension://gebbhagfogifgggkldgodflihgfeippi/popup.html');
+  // });
 
   electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if(permission === 'media' && details.mediaTypes.includes('audio')){
@@ -644,7 +645,6 @@ electron.ipcMain.handle('get_setting', (event, data) => {
   return store.get('settings', {
     "settings": {
       "force_twemoji": false,
-      "auto_theme": false,
       "theme": "theme_dark",
       "search_engine": "google"
     }
