@@ -44,7 +44,7 @@ let browserSync = new appSync(store.get('syncAccount.user', null), store.get('sy
 // 変数
 /** @type {electron.BrowserWindow} */let win;
 let setting_win;
-let login_win;
+let loginWin;
 let suggestView;
 let winSize;
 let open_tab = 1;
@@ -351,12 +351,12 @@ electron.ipcMain.handle('login', async (event, data) => {
   if(compareData.status === 0){
     console.log(compareData);
     browserSync = new appSync(data[0], compareData.hash);
-    login_win.close();
-    login_win = null;
+    loginWin.close();
+    loginWin = null;
     store.set('syncAccount.user', data[0]);
     store.set('syncAccount.password', compareData.hash);
   } else {
-    login_win.webContents.send('loginError', compareData.message);
+    loginWin.webContents.send('loginError', compareData.message);
   }
 });
 
