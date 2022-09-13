@@ -43,6 +43,7 @@ module.exports = class {
     if(setHtmlTitle === true){
       win.webContents.send('new_tab_elm', {});
     }
+    
     let id = bv.length;
 
     bv[bv.length] = new electron.BrowserView({
@@ -150,7 +151,7 @@ module.exports = class {
       let userAgent = bv[index].webContents.getUserAgent()
         .replace('Flune-Browser', 'Chrome')
         .replace(/flune-browser\/[0-9].[0-9].[0-9]/, '')
-        .replace(/Electron\/[0-9 | .]/, '')
+        .replace(/Electron\/[0-9][0-9].[0-9].[0-9]/, '')
         .replace(' 0.1.0 ', ' ')
         .replace(`Chrome/${electron.app.getVersion()}`, '');
     

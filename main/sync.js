@@ -19,6 +19,7 @@ module.exports = {
     let body = await rqt('https://bbs.mf7cli.potp.me/api/v1/getHash');
     return body;
   },
+  
   appSync: class {
     constructor(user, password, setting) {
       this.account = {};
