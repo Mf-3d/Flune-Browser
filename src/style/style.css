@@ -151,11 +151,11 @@ input[type="text"] {
   margin-left: 1em;
 }
 
-nav > a.border {
+nav > a.nav-button {
   font-size: 0.8em;
 }
 
-a.border {
+a.nav-button {
   padding-right: 0.7em;
   padding-left: 0.7em;
   transition: all 0.5s;
@@ -165,7 +165,7 @@ nav > a {
   transition: all 0.2s;
 }
 
-.border:hover {
+.nav-button:hover {
   background: var(--flune-main-hover-color);
   border-radius: 2px;
 }

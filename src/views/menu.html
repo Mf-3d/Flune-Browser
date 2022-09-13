@@ -10,7 +10,7 @@
     </head>
     <body style="user-select: none; -webkit-app-region: drag;">
         <nav>
-            <a href="javascript:go_back()" id="n_back" class="border">
+            <a href="javascript:go_back()" id="n_back" class="nav-button">
                 <svg width="0.7em" height="0.6em" viewBox="0 0 148 178" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M18 88L130 18" stroke="url(#paint0_linear_3_19)" stroke-width="35" stroke-linecap="round"/>
                     <path d="M130 160L18 88" stroke="url(#paint1_linear_3_19)" stroke-width="35" stroke-linecap="round"/>
@@ -28,7 +28,7 @@
                 </svg>
             </a>
             <!-- <i class="fa-solid fa-angle-left"></i> -->
-            <a href="javascript:go_forward()" id="n_forward" class="border">
+            <a href="javascript:go_forward()" id="n_forward" class="nav-button">
                 <svg width="0.7em" height="0.6em" viewBox="0 0 148 178" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M130 88L18 18" stroke="url(#paint0_linear_3_19)" stroke-width="35" stroke-linecap="round"/>
                     <path d="M18 160L130 88" stroke="url(#paint1_linear_3_19)" stroke-width="35" stroke-linecap="round"/>
@@ -46,7 +46,7 @@
                 </svg>
             </a>
             <!-- <i class="fa-solid fa-angle-right"></i> -->
-            <a href="javascript:reload()" id="n_reload" class="border">
+            <a href="javascript:reload()" id="n_reload" class="nav-button">
                 <svg width="0.8em" height="0.8em" viewBox="0 0 141 154" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M128 63L113 13" stroke="url(#paint0_linear_2_11)" stroke-width="25" stroke-linecap="round"/>
                     <path d="M84 69L125 63" stroke="url(#paint1_linear_2_11)" stroke-width="30" stroke-linecap="round"/>
@@ -68,15 +68,15 @@
                     </defs>
                 </svg>
             </a>
-            <a id="home-button" class="border"><i class="fa-solid fa-house"></i></a>
+            <a id="home-button" class="nav-button"><i class="fa-solid fa-house"></i></a>
             <!-- <i class="fa-solid fa-rotate-right"></i> -->
             <span id="address_box">
                 <input type="text" id="address_bar" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;"/>
-                <a href="javascript:addBookmark()" class="border" id="bookmark">★</a>
-                <a href="javascript:search()" class="border">🔍</a>
+                <a href="javascript:addBookmark()" class="nav-button" id="bookmark">★</a>
+                <a href="javascript:search()" class="nav-button">🔍</a>
             </span>
-            <a href="javascript:toggle_setting()" class="border">⚙</a>
-            <a href="javascript:more_button()" class="border"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+            <a href="javascript:toggle_setting()" class="nav-button">⚙</a>
+            <a href="javascript:more_button()" class="nav-button"><i class="fa-solid fa-ellipsis-vertical"></i></a>
             <nav id="blank"></nav>
         </nav>
         <div id="tabs" style="-webkit-app-region: no-drag;">
@@ -96,7 +96,7 @@
                     <a class="close_button">×</a>
                 </div>
             </span>
-            <a id="new_tab" class="border" style="margin-left: 0.5em;">+</a>
+            <a id="new_tab" class="nav-button" style="margin-left: 0.5em;">+</a>
         </div>
     </body>
 </html>
