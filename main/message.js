@@ -7,6 +7,12 @@ let messageBox;
 let notice_callback = [];
 let timer;
 
+let sidebarDisplayed = false;
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /** 
  * Notification manager.
  */
@@ -58,14 +64,17 @@ module.exports  = class {
         notice_callback.splice(index, 1);
         if(notice_callback.length <= 0){
           win.removeBrowserView(messageBox);
+
           clearInterval(timer);
         }
       });
 
       electron.ipcMain.handle('closeSidebar', (event) => {
         win.removeBrowserView(messageBox);
+        
         notice_callback = [];
         clearInterval(timer);
+        sidebarDisplayed = false;
       });
 
       win.on('resize', (event) => {
@@ -96,10 +105,12 @@ module.exports  = class {
     if(!button) button = ['OK', 'Cancel'];
 
     this.win.addBrowserView(messageBox);
+
     timer = setInterval(() => {
-      if(this.win.isDestroyed() || messageBox.webContents.isDestroyed()) return;
+      if(!this.win || !messageBox || !sidebarDisplayed) return;
       this.win.setTopBrowserView(messageBox);
     }, 3000);
+
 
     messageBox.setBounds({
       x: this.win.getSize()[0] - 300,
@@ -116,5 +127,6 @@ module.exports  = class {
     notice_callback[notice_callback.length] = callback;
     
     messageBox.webContents.send(type, [message, button]);
+    sidebarDisplayed = true;
   }
 }
