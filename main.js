@@ -395,22 +395,6 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
     }
   ]);
 
-  let newtabItem = new electron.MenuItem({
-    label: '設定',
-    click: () => {
-      // if(!setting_win){
-      //   ns();
-      // }
-      // else{
-      //   setting_win.close();
-      //   setting_win = null;
-      // }
-      ns();
-    }
-  });
-
-  more_button_context.append(newtabItem);
-
   let separetorItem = new electron.MenuItem({
     type: 'separator'
   });
