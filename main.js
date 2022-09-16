@@ -84,8 +84,9 @@ function nw() {
 
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
-
-  /** @type {electron.BrowserWindowConstructorOptions} */ let winOption = {
+  
+  /** @type {electron.BrowserWindowConstructorOptions} */ 
+  let winOption = {
       width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
       frame: false,
       transparent: false,
@@ -229,6 +230,7 @@ electron.app.on("ready", () => {
     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
   }
 
+  if (!electron.net.isOnline()) Notification.show('ネットが接続されていません。\n一部の機能が動かない場合があります。', 'warning');
 });
 
 electron.ipcMain.handle('getWinSize', (event, index) => {
@@ -790,20 +792,10 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
   {
     label: '設定',
     click: () => {
-      // if(!setting_win){
-      //   ns();
-      // }
-      // else{
-      //   setting_win.close();
-      //   setting_win = null;
-      // }
       ns();
     }
   }
 ]);
-
-// メニューを適用する
-// tab.js
 
 module.exports = {
   tab: tab,

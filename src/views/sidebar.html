@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Suggest - Flune-Browser</title>
+    <title>Sidebar - Flune-Browser</title>
     <script>
       window.onload = async () => {
         let ul = document.querySelector('#notifications');
@@ -37,6 +37,10 @@
         function sleep(ms) {
           return new Promise(resolve => setTimeout(resolve, ms));
         }
+
+        flune_sidebar_api.on('closeSidebar', async () => {
+          closeSidebar();
+        });
 
         async function closeSidebar() {
           document.body.classList.add('fadeout');
