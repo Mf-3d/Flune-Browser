@@ -98,7 +98,7 @@ function nw() {
       contextIsolation: true,
       preload: `${__dirname}/preload/preload.js`,
       sandbox: false
-    }
+    },
   };
   if (isMac) {
     winOption.titleBarStyle = 'hidden';
@@ -632,7 +632,8 @@ electron.ipcMain.handle('get_setting', (event, data) => {
     "settings": {
       "force_twemoji": false,
       "theme": "theme_dark",
-      "search_engine": "google"
+      "search_engine": "google",
+      "use-home-button": false
     }
   });
 });
