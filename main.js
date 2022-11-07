@@ -29,7 +29,7 @@ process.on('uncaughtException', (err) => {
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
 
   Notification.show('アプリで予期しないエラーが発生しました。<br/>アプリを終了しますか？', 'info', ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'], (event, value) => {
-    if(value === 0){
+    if (value === 0) {
       electron.app.quit();
     }
   });
@@ -71,36 +71,36 @@ function nw() {
     }
   });
 
-  if(isMac){
+  if (isMac) {
     log_path = os.homedir() + '/Library/Logs/flune-browser/';
     console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
-  } else if(process.platform === 'win32'){
+  } else if (process.platform === 'win32') {
     log_path = os.homedir() + '/AppData/Roaming/flune-browser/logs/';
     console.log('ログの保存場所:', os.homedir() + '/AppData/Roaming/flune-browser/logs/');
-  } else{
+  } else {
     log_path = '/';
     console.log('ログの保存場所を取得できませんでした。')
   }
 
 
   let db_winSize = store.get('window.window_size', [1200, 700]);
-  
-  /** @type {electron.BrowserWindowConstructorOptions} */ 
+
+  /** @type {electron.BrowserWindowConstructorOptions} */
   let winOption = {
-      width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
-      frame: false,
-      transparent: false,
-      backgroundColor: '#ffffff',
-      title: `Flune-Browser ${electron.app.getVersion()}`,
-      // icon: `${__dirname}/src/image/logo.png`,
-      webPreferences: {
-        nodeIntegration:false,
-        contextIsolation: true,
-        preload: `${__dirname}/preload/preload.js`,
-        sandbox: false
-      }
-    };
-  if(isMac){
+    width: db_winSize[0], height: db_winSize[1], minWidth: 600, minHeight: 400,
+    frame: false,
+    transparent: false,
+    backgroundColor: '#ffffff',
+    title: `Flune-Browser ${electron.app.getVersion()}`,
+    // icon: `${__dirname}/src/image/logo.png`,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload.js`,
+      sandbox: false
+    }
+  };
+  if (isMac) {
     winOption.titleBarStyle = 'hidden';
     win = new electron.BrowserWindow(winOption);
 
@@ -133,9 +133,9 @@ function nw() {
   // });
 
   electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
-    if(permission === 'media' && details.mediaTypes.includes('audio')){
+    if (permission === 'media' && details.mediaTypes.includes('audio')) {
       Notification.show('Webサイトがマイクへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
-        if(value === 0){
+        if (value === 0) {
           callback(true);
         } else {
           callback(false);
@@ -143,9 +143,9 @@ function nw() {
       });
     }
 
-    if(permission === 'media' && details.mediaTypes.includes('video')){
+    if (permission === 'media' && details.mediaTypes.includes('video')) {
       Notification.show('Webサイトがカメラへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
-        if(value === 0){
+        if (value === 0) {
           callback(true);
         } else {
           callback(false);
@@ -153,9 +153,9 @@ function nw() {
       });
     }
 
-    if(permission === 'notifications'){
+    if (permission === 'notifications') {
       Notification.show('Webサイトが通知の送信を要求しています。<br/>送信を許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
-        if(value === 0){
+        if (value === 0) {
           callback(true);
         } else {
           callback(false);
@@ -184,7 +184,7 @@ function nw() {
   });
 }
 
-electron.app.on('window-all-closed', function() {
+electron.app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (!isMac) {
@@ -193,7 +193,7 @@ electron.app.on('window-all-closed', function() {
 });
 
 electron.app.on('activate', () => {
-  if(win === null){
+  if (win === null) {
     nw();
   }
 });
@@ -216,17 +216,17 @@ electron.app.on("ready", () => {
 
   nw();
 
-  try{
+  try {
     (async () => {
       let compareData = JSON.parse(await browserSync.compare());
-      if(compareData.status === 0){
+      if (compareData.status === 0) {
         console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしました`);
       } else {
         console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
       }
     })();
-    
-  } catch(e) {
+
+  } catch (e) {
     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
   }
 
@@ -254,17 +254,17 @@ electron.ipcMain.handle('open_tab', (event, index) => {
   removeSuggestView();
 });
 
-electron.app.on('certificate-error', function(event, webContents, url, error, certificate, callback) {
+electron.app.on('certificate-error', function (event, webContents, url, error, certificate, callback) {
   event.preventDefault();
   Notification.show(`「${certificate.issuerName}」からの証明書を信頼しますか？`, 'info', ['はい', 'いいえ'], (event, result) => {
-    if(result === 0){
+    if (result === 0) {
       callback(true);
     } else {
       callback(false);
     }
   });
 
-  
+
   // electron.dialog.showMessageBox(win, {
   //   title: '証明書エラー',
   //   message: `「${certificate.issuerName}」からの証明書を信頼しますか？`,
@@ -287,25 +287,25 @@ electron.app.on('certificate-error', function(event, webContents, url, error, ce
 
 electron.ipcMain.handle('theme_path', () => {
   let theme;
-  try{
-    if(store.get('settings.theme') === 'theme_dark'){
+  try {
+    if (store.get('settings.theme') === 'theme_dark') {
       theme = '../style/theme/dark_theme.css';
     }
-    else if(store.get('settings.theme') === 'theme_light'){
+    else if (store.get('settings.theme') === 'theme_light') {
       theme = '../style/theme/light_theme.css';
     }
-    else if(store.get('settings.theme') === 'elemental_theme_light'){
+    else if (store.get('settings.theme') === 'elemental_theme_light') {
       theme = '../style/theme/light_theme.css';
       store.set('settings.theme', 'theme_light');
     }
-    else{
+    else {
       theme = '../style/theme/dark_theme.css';
     }
   }
-  catch(e){
+  catch (e) {
     theme = '../style/theme/dark_theme.css';
   }
-  
+
   return theme;
 });
 
@@ -350,7 +350,7 @@ electron.ipcMain.handle('login', async (event, data) => {
   }));
   console.log(compareData);
   // if(loginData === {}) return;
-  if(compareData.status === 0){
+  if (compareData.status === 0) {
     console.log(compareData);
     browserSync = new appSync(data[0], compareData.hash);
     loginWin.close();
@@ -377,7 +377,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
     {
       label: 'mf7cli-BBSアカウントでログイン',
       click: () => {
-        
+
       }
     },
     {
@@ -401,7 +401,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
   more_button_context.append(separetorItem);
 
-  let loginMenuItem =new electron.MenuItem({
+  let loginMenuItem = new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
       win.webContents.send('new_tab_elm', {});
@@ -430,9 +430,9 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   more_button_context.append(loginMenuItem);
   more_button_context.append(separetorItem);
 
-  if(store.get('bookmark', []) !== []){
+  if (store.get('bookmark', []) !== []) {
     let bookmark_list = store.get('bookmark', []);
-  
+
     let menuItem = new electron.MenuItem({
       label: 'ブックマーク',
       submenu: []
@@ -474,7 +474,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
 
     more_button_context.append(menuItem);
   }
-  else{
+  else {
     let menuItem = new electron.MenuItem({
       label: 'ブックマーク',
       submenu: [
@@ -503,11 +503,11 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
   if (word.slice(0, 4) === 'http') {
     url = `${word}`;
-  } else if(word.slice(0, 4) === 'file') {
+  } else if (word.slice(0, 4) === 'file') {
     url = `${word}`;
-  } else if(word.slice(0, 5) === 'flune') {
+  } else if (word.slice(0, 5) === 'flune') {
     url = `${word}`;
-  } else if(word.slice(0, 5) === 'about') {
+  } else if (word.slice(0, 5) === 'about') {
     url = `${word}`;
   } else if (word.match(/\S+\.\S+/)) {
     url = `http://${word}`;
@@ -519,18 +519,18 @@ electron.ipcMain.handle('searchURL', (event, word) => {
         "search_engine": "google"
       }
     });
-    if(setting.search_engine === 'google'){
+    if (setting.search_engine === 'google') {
       url = `https://www.google.com/search?q=${word}`;
-    } else if(setting.search_engine === 'yahoo_japan'){
+    } else if (setting.search_engine === 'yahoo_japan') {
       url = `https://search.yahoo.co.jp/search?p=${word}`;
-    } else if((setting.search_engine === 'ddg')){
+    } else if ((setting.search_engine === 'ddg')) {
       url = `https://duckduckgo.com/?q=${word}`;
-    } else if(setting.search_engine === 'frea_search'){
+    } else if (setting.search_engine === 'frea_search') {
       url = `https://freasearch.org/search?q=${word}`;
     } else {
       url = `https://www.google.com/search?q=${word}`;
     }
-    
+
   }
 
   removeSuggestView();
@@ -538,7 +538,7 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 });
 
 function removeSuggestView() {
-  if(suggestView){
+  if (suggestView) {
     win.removeBrowserView(suggestView);
     suggestDisplayed = false;
   }
@@ -559,14 +559,14 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
 
   result = [];
 
-  if(data.word.trim() === ''){
+  if (data.word.trim() === '') {
     win.removeBrowserView(suggestView);
     return;
   }
 
   request({
     url: `https://www.google.com/complete/search?output=toolbar&q=${encodeURI(data.word)}`,
-	  method: 'GET'
+    method: 'GET'
   }, (error, response, body) => {
     let suggestXml = body;
 
@@ -580,14 +580,14 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       if (err) {
         console.error(err.message);
       } else {
-        if(res.toplevel){
+        if (res.toplevel) {
           res.toplevel.CompleteSuggestion.forEach((val, index) => {
             result[result.length] = val.suggestion[0]['$'].data;
           });
         }
       }
 
-      if(result.length === 0) return;
+      if (result.length === 0) return;
 
       recentSuggest = {
         word: data.word,
@@ -599,7 +599,7 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
 
       win.addBrowserView(suggestView);
       suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
-      suggestView.setBounds({x: data.pos[0], y: data.pos[1], width: 500, height: 260});
+      suggestView.setBounds({ x: data.pos[0], y: data.pos[1], width: 500, height: 260 });
       win.setTopBrowserView(suggestView);
     });
   });
@@ -640,10 +640,10 @@ electron.ipcMain.handle('get_setting', (event, data) => {
 electron.ipcMain.handle('addBookmark', (event, data) => {
   let bookmark_list = store.get('bookmark', []);
 
-  if(bookmark_list.length >= 1){
+  if (bookmark_list.length >= 1) {
     for (let i = 0; i < bookmark_list.length; i++) {
-      if(bookmark_list[i].url !== tab.getURL()){
-        if(i <= bookmark_list.length){
+      if (bookmark_list[i].url !== tab.getURL()) {
+        if (i <= bookmark_list.length) {
           bookmark_list[bookmark_list.length] = {
             url: tab.getURL(),
             title: tab.getTitle()
@@ -652,12 +652,12 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
           break;
         }
       }
-      else{
+      else {
         console.debug(bookmark_list[i].url, tab.getURL());
       }
     }
   }
-  else{
+  else {
     bookmark_list[bookmark_list.length] = {
       url: tab.getURL(),
       title: tab.getTitle()
@@ -668,14 +668,14 @@ electron.ipcMain.handle('addBookmark', (event, data) => {
 
 electron.ipcMain.handle('removeBookmark', (event, data) => {
   let bookmark_list = store.get('bookmark', []);
-  
+
   for (let i = 0; i < bookmark_list.length; i++) {
-    if(bookmark_list[i].url === tab.getURL()){
+    if (bookmark_list[i].url === tab.getURL()) {
       bookmark_list.splice(i, 1);
       store.set('bookmark', bookmark_list);
       break;
     }
-    else{
+    else {
       console.debug(bookmark_list[i].url, tab.getURL());
     }
   }
@@ -689,7 +689,7 @@ electron.ipcMain.handle('close', (event, data) => {
   win.close();
   win = null;
 
-  if(setting_win){
+  if (setting_win) {
     setting_win.close();
     setting_win = null;
   }
@@ -731,31 +731,31 @@ const context_menu = electron.Menu.buildFromTemplate([
     role: 'paste'
   },
   {
-    label:'切り取り',
-    role:'cut'
+    label: '切り取り',
+    role: 'cut'
   },
   {
     type: 'separator'
   },
   {
-    label:'再読み込み',
+    label: '再読み込み',
     accelerator: 'CmdOrCtrl+R',
     click: () => {
       tab.bv[tab.open_tab].webContents.reload();
     }
   },
   {
-    label:'強制的に再読み込み',
-      accelerator: 'CmdOrCtrl+Shift+R',
-      click: () => {
-        tab.bv[tab.open_tab].webContents.reloadIgnoringCache();
+    label: '強制的に再読み込み',
+    accelerator: 'CmdOrCtrl+Shift+R',
+    click: () => {
+      tab.bv[tab.open_tab].webContents.reloadIgnoringCache();
     }
   },
   {
     accelerator: 'F12',
     click: () => {
       tab.bv[tab.open_tab].webContents.toggleDevTools();
-    }, label:'開発者ツールを表示'
+    }, label: '開発者ツールを表示'
   }
 ]);
 
