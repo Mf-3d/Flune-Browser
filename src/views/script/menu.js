@@ -297,95 +297,97 @@ window.onload = async () => {
     document.getElementById('theme').href = await window.flune_api.theme_path();
   }
 
+  window.flune_api.on('activeBookmark', async (event, data) => {
+    if(data === true){
+      document.getElementById('bookmark').classList.add('active');
+    }
+    else{
+      document.getElementById('bookmark').classList.remove('active');
+    }
+  });
+  
+  window.flune_api.on('change_url', (event, data)=>{
+    document.querySelector("#address_bar").value = data.url;
+  });
+  
+  window.flune_api.on('change_title', (event, data)=>{
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .title`).innerHTML = data.title;
+    if(setting.force_twemoji){
+      twemoji.parse(document.body);
+    }
+  });
+  
+  window.flune_api.on('change-favicon', (event, data)=>{
+    if(!data.favicon){
+      data.favicon = '';
+    }
+    clearInterval(timer[data.index]);
+    timer[data.index] = setInterval(() => {
+      if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.contains('active')){
+        document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
+        return;
+      }
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+    }, 500);
+  
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
+    faviconCache[data.index] = data.favicon;
+    if(setting.force_twemoji){
+      twemoji.parse(document.body);
+    }
+  });
+  
+  window.flune_api.on('active_tab', (event, data)=>{
+    if(document.querySelector("#tabs > span > div.active")){
+      document.querySelector("#tabs > span > div.active").classList.remove('active');
+    }
+    
+    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).classList.add('active');
+  });
+  
+  window.flune_api.on('update-audible', (event, data) => {
+    if(data.audible){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.add('active');
+    }
+    else{
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.remove('active');
+    }
+  });
+  
+  window.flune_api.on('update-downloading', (event, data) => {
+    if(data.downloading){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('active');
+    }
+    else{
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('active');
+      
+      if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.contains('audibleActive')){
+        document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('audibleActive');
+      }
+    }
+  
+    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.contains('active')){
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('audibleActive');
+    }
+  });
+  
+  window.flune_api.on('update-loading', (event, data) => {
+    if(data.loading === true){
+      faviconCache = document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src;
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
+    }
+    else{
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache[data.index];
+      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
+    }
+  });
+
 
   each();
 }
 
-window.flune_api.on('activeBookmark', async (event, data) => {
-  if(data === true){
-    document.getElementById('bookmark').classList.add('active');
-  }
-  else{
-    document.getElementById('bookmark').classList.remove('active');
-  }
-});
 
-window.flune_api.on('change_url', (event, data)=>{
-  document.querySelector("#address_bar").value = data.url;
-});
-
-window.flune_api.on('change_title', (event, data)=>{
-  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .title`).innerHTML = data.title;
-  if(setting.force_twemoji){
-    twemoji.parse(document.body);
-  }
-});
-
-window.flune_api.on('change-favicon', (event, data)=>{
-  if(!data.favicon){
-    data.favicon = '';
-  }
-  clearInterval(timer[data.index]);
-  timer[data.index] = setInterval(() => {
-    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.contains('active')){
-      document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
-      return;
-    }
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
-  }, 500);
-
-  document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
-  faviconCache[data.index] = data.favicon;
-  if(setting.force_twemoji){
-    twemoji.parse(document.body);
-  }
-});
-
-window.flune_api.on('active_tab', (event, data)=>{
-  if(document.querySelector("#tabs > span > div.active")){
-    document.querySelector("#tabs > span > div.active").classList.remove('active');
-  }
-  
-  document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).classList.add('active');
-});
-
-window.flune_api.on('update-audible', (event, data) => {
-  if(data.audible){
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.add('active');
-  }
-  else{
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.remove('active');
-  }
-});
-
-window.flune_api.on('update-downloading', (event, data) => {
-  if(data.downloading){
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('active');
-  }
-  else{
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('active');
-    
-    if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.contains('audibleActive')){
-      document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.add('audibleActive');
-    }
-  }
-
-  if(document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('audible')[0].classList.contains('active')){
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('downloading')[0].classList.remove('audibleActive');
-  }
-});
-
-window.flune_api.on('update-loading', (event, data) => {
-  if(data.loading === true){
-    faviconCache = document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src;
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = '';
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.add('active');
-  }
-  else{
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = faviconCache[data.index];
-    document.querySelector(`#tabs > span > div[tab_id="${data.index}"]`).getElementsByClassName('loading')[0].classList.remove('active');
-  }
-});
 
 function close() {
   window.flune_api.close();
