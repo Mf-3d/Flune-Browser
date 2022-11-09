@@ -79,7 +79,7 @@ window.onload = async () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.target === document.getElementById('address_bar') && e.key === 'Enter') {
+    if (e.target === document.getElementById('address_bar') && e.key === 'Enter' && !e.isComposing) {
       search();
       document.getElementById('address_bar').blur();
       window.flune_api.closeSuggest();

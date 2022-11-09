@@ -105,7 +105,7 @@ module.exports = class {
     this.open_tab = index;
     open_tab = index;
     win.setTopBrowserView(bv[index]);
-    // win.setTopBrowserView(circle_dock);
+    
     bv[index].webContents.removeAllListeners('did-start-loading');
     bv[index].webContents.removeAllListeners('did-finish-load');
     bv[index].webContents.removeAllListeners('page-favicon-updated');
@@ -122,7 +122,7 @@ module.exports = class {
       if(!win) return;
       bv[index].webContents.on('did-start-loading', () => {
         win.webContents.send('update-loading', {
-          index: index,
+          index,
           loading: true
         });
   
@@ -141,7 +141,7 @@ module.exports = class {
   
       bv[index].webContents.on('did-stop-loading', () => {
         win.webContents.send('update-loading', {
-          index: index,
+          index,
           loading: false
         });
 
