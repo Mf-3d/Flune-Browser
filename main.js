@@ -3,7 +3,6 @@ const electron = require("electron");
 const Store = require('electron-store');
 const log = require('electron-log');
 const request = require('request');
-const os = require('os');
 const xml2js = require("xml2js");
 const packLoader = require('./main/packLoader');
 const global = require("./main/global");
@@ -40,7 +39,7 @@ process.on('uncaughtException', (err) => {
 const store = new Store();
 
 // FluneSync
-let browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
+let browserSync;
 
 // 変数
 let setting_win;
@@ -59,30 +58,6 @@ function ns() {
 }
 
 function nw() {
-  suggestView = new electron.BrowserView({
-    transparent: true,
-    backgroundColor: '#ffffff',
-    webPreferences: {
-      scrollBounce: false,
-      worldSafeExecuteJavaScript: true,
-      sandbox: false,
-      contextIsolation: true,
-      preload: `${__dirname}/preload/preload_suggest.js`
-    }
-  });
-
-  if (isMac) {
-    log_path = os.homedir() + '/Library/Logs/flune-browser/';
-    console.log('ログの保存場所:', os.homedir() + '/Library/Logs/flune-browser/');
-  } else if (process.platform === 'win32') {
-    log_path = os.homedir() + '/AppData/Roaming/flune-browser/logs/';
-    console.log('ログの保存場所:', os.homedir() + '/AppData/Roaming/flune-browser/logs/');
-  } else {
-    log_path = '/';
-    console.log('ログの保存場所を取得できませんでした。')
-  }
-
-
   let db_winSize = store.get('window.window_size', [1200, 700]);
 
   /** @type {electron.BrowserWindowConstructorOptions} */
@@ -179,6 +154,20 @@ function nw() {
     tab.deleteTabAll();
     global.win = null;
   });
+
+  suggestView = new electron.BrowserView({
+    transparent: true,
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      scrollBounce: false,
+      worldSafeExecuteJavaScript: true,
+      sandbox: false,
+      contextIsolation: true,
+      preload: `${__dirname}/preload/preload_suggest.js`
+    }
+  });
+
+  browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null))
 }
 
 electron.app.on('window-all-closed', function () {
