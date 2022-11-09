@@ -6,6 +6,7 @@ const request = require('request');
 const os = require('os');
 const xml2js = require("xml2js");
 const packLoader = require('./main/packLoader');
+const global = require("./main/global");
 
 packLoader.init();
 packLoader.load();
@@ -42,7 +43,6 @@ const store = new Store();
 let browserSync = new appSync(store.get('syncAccount.user', null), store.get('syncAccount.password', null));
 
 // 変数
-/** @type {electron.BrowserWindow} */let win;
 let setting_win;
 let loginWin;
 let suggestView;
@@ -102,27 +102,24 @@ function nw() {
   };
   if (isMac) {
     winOption.titleBarStyle = 'hidden';
-    win = new electron.BrowserWindow(winOption);
+    global.win = new electron.BrowserWindow(winOption);
 
-    win.loadFile(`${__dirname}/src/views/menu.html`);
+    global.win.loadFile(`${__dirname}/src/views/menu.html`);
     // win.loadFile(`${__dirname}/src/views/notification.html`);
 
     // win.setTouchBar(touchBar);
   }
   else {
-    win = new electron.BrowserWindow(winOption);
-    win.loadFile(`${__dirname}/src/views/menu_win.html`);
+    global.win = new electron.BrowserWindow(winOption);
+    global.win.loadFile(`${__dirname}/src/views/menu_win.html`);
   }
 
-  winSize = win.getSize();
+  winSize = global.win.getSize();
 
-  tab = new Tab(win, winSize, __dirname);
+  tab = new Tab(global.win, winSize, __dirname);
 
-  module.exports = {
-    tab: tab,
-    win: win,
-    dirname: __dirname
-  }
+  global.tab = tab;
+  global.win = global.win;
 
   // toggleCircleDock();
   // nt();
@@ -164,23 +161,23 @@ function nw() {
     }
   });
 
-  Notification = new message(win);
+  Notification = new message(global.win);
 
-  win.on('resize', () => {
-    winSize = win.getSize();
+  global.win.on('resize', () => {
+    winSize = global.win.getSize();
   });
 
-  win.on('close', () => {
+  global.win.on('close', () => {
     tab.deleteTabAll();
     store.set('window.window_size', winSize);
 
-    win.webContents.destroy();
+    global.win.webContents.destroy();
     suggestView = null;
   });
 
-  win.on('closed', () => {
+  global.win.on('closed', () => {
     tab.deleteTabAll();
-    win = null;
+    global.win = null;
   });
 }
 
@@ -193,7 +190,7 @@ electron.app.on('window-all-closed', function () {
 });
 
 electron.app.on('activate', () => {
-  if (win === null) {
+  if (global.win === null) {
     nw();
   }
 });
@@ -249,7 +246,7 @@ electron.ipcMain.handle('close_tab', (event, index) => {
 electron.ipcMain.handle('open_tab', (event, index) => {
   tab.ot(index);
 
-  win.webContents.send('each');
+  global.win.webContents.send('each');
 
   removeSuggestView();
 });
@@ -368,7 +365,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
       label: '新しいタブ',
       click: () => {
         tab.nt();
-        win.webContents.send('new_tab_elm');
+        global.win.webContents.send('new_tab_elm');
       }
     },
     {
@@ -404,7 +401,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
   let loginMenuItem = new electron.MenuItem({
     label: 'mf7cli-BBSアカウントでログイン',
     click: () => {
-      win.webContents.send('new_tab_elm', {});
+      global.win.webContents.send('new_tab_elm', {});
       tab.nt('https://bbs.mf7cli.potp.me/login?callback=flune://login&appName=Flune-Browser');
       // login_win = new electron.BrowserWindow({
       //   width: 200,
@@ -453,7 +450,7 @@ electron.ipcMain.handle('more_button_menu', (event, data) => {
             label: '新しいタブで開く',
             click: () => {
               tab.nt(bookmark_list[i].url);
-              win.webContents.send('new_tab_elm', {});
+              global.win.webContents.send('new_tab_elm', {});
             }
           },
           {
@@ -539,7 +536,7 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 
 function removeSuggestView() {
   if (suggestView) {
-    win.removeBrowserView(suggestView);
+    global.win.removeBrowserView(suggestView);
     suggestDisplayed = false;
   }
 }
@@ -560,7 +557,7 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
   result = [];
 
   if (data.word.trim() === '') {
-    win.removeBrowserView(suggestView);
+    global.win.removeBrowserView(suggestView);
     return;
   }
 
@@ -597,16 +594,16 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       data.pos[0] = Math.floor(data.pos[0]);
       data.pos[1] = Math.floor(data.pos[1]);
 
-      win.addBrowserView(suggestView);
+      global.win.addBrowserView(suggestView);
       suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
       suggestView.setBounds({ x: data.pos[0], y: data.pos[1], width: 500, height: 260 });
-      win.setTopBrowserView(suggestView);
+      global.win.setTopBrowserView(suggestView);
     });
   });
 });
 
 electron.ipcMain.handle('closeSuggest', (event, data) => {
-  win.removeBrowserView(suggestView);
+  global.win.removeBrowserView(suggestView);
   suggestDisplayed = false;
 });
 
@@ -623,7 +620,7 @@ electron.ipcMain.handle('toggle_setting', (event, word) => {
 
 electron.ipcMain.handle('save_setting', (event, data) => {
   store.set('settings', data);
-  win.webContents.send('change_theme');
+  global.win.webContents.send('change_theme');
   // tab.reload();
 });
 
@@ -687,8 +684,8 @@ electron.ipcMain.handle('copy', (event, data) => {
 });
 
 electron.ipcMain.handle('close', (event, data) => {
-  win.close();
-  win = null;
+  global.win.close();
+  global.win = null;
 
   if (setting_win) {
     setting_win.close();
@@ -697,11 +694,11 @@ electron.ipcMain.handle('close', (event, data) => {
 });
 
 electron.ipcMain.handle('hide_win', (event, data) => {
-  win.minimize();
+  global.win.minimize();
 });
 
 electron.ipcMain.handle('maxmin_win', (event, data) => {
-  win.isMaximized() ? win.unmaximize() : win.maximize();
+  global.win.isMaximized() ? global.win.unmaximize() : global.win.maximize();
 });
 
 const context_menu = electron.Menu.buildFromTemplate([
@@ -782,8 +779,5 @@ const context_menu_nav = electron.Menu.buildFromTemplate([
   }
 ]);
 
-module.exports = {
-  tab: tab,
-  win: win,
-  dirname: __dirname
-}
+global.tab = tab;
+global.win = global.win;

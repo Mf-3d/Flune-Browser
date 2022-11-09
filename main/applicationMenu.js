@@ -57,9 +57,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            require('./global').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ]),
@@ -67,7 +67,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            require('../main').tab.nt(params.linkURL);
+            require('./global').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -189,9 +189,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${require('../main').tab.getURL()}`);
+            require('./global').tab.nt(`view-source:${require('./global').tab.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ]),
@@ -199,7 +199,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            require('../main').tab.nt(params.linkURL);
+            require('./global').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -271,9 +271,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            require('./global').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ]),
@@ -281,7 +281,7 @@ module.exports = {
         {
           label: `新規タブで開く`,
           click: () => {
-            require('../main').tab.nt(params.linkURL);
+            require('./global').tab.nt(params.linkURL);
             win.webContents.send('new_tab_elm', {});
           }
         },
@@ -359,9 +359,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            require('./global').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ]),
@@ -440,9 +440,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            require('./global').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ]),
@@ -466,8 +466,8 @@ module.exports = {
           label: '画像を新規タブで開く',
           click: () => {
             if(params.srcURL){
-              require('../main').tab.nt(params.srcURL, true);
-              require('../main').tab.ot(open_tab + 1);
+              require('./global').tab.nt(params.srcURL, true);
+              require('./global').tab.ot(open_tab + 1);
             }
           }
         },
@@ -546,9 +546,9 @@ module.exports = {
           label: 'ソースコードを表示',
           accelerator: 'CmdOrCtrl+U',
           click: () => {
-            require('../main').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
+            require('./global').tab.nt(`view-source:${bv[open_tab].webContents.getURL()}`);
             win.webContents.send('new_tab_elm', {});
-            require('../main').tab.ot(open_tab + 1);
+            require('./global').tab.ot(open_tab + 1);
           }
         }
       ])
@@ -588,7 +588,7 @@ module.exports = {
             label: '設定',
             click: () => {
               win.webContents.send('new_tab_elm', {});
-              require('../main').tab.nt('flune://setting');
+              require('./global').tab.nt('flune://setting');
             },
             accelerator: 'CmdOrCtrl+,'
           },
@@ -655,7 +655,7 @@ module.exports = {
             label: '新しいタブ',
             click: () => {
               win.webContents.send('new_tab_elm', {});
-              require('../main').tab.nt();
+              require('./global').tab.nt();
             },
             accelerator: 'CmdOrCtrl+T'
           },
@@ -663,14 +663,14 @@ module.exports = {
             label: '開いているタブの前のタブを開く',
             accelerator: 'CmdOrCtrl+Alt+Left',
             click: () => {
-              require('../main').tab.ot(open_tab - 1);
+              require('./global').tab.ot(open_tab - 1);
             }
           },
           {
             label: '開いているタブの次のタブを開く',
             accelerator: 'CmdOrCtrl+Alt+Right',
             click: () => {
-              require('../main').tab.ot(open_tab + 1);
+              require('./global').tab.ot(open_tab + 1);
             }
           },
           {
