@@ -1,5 +1,6 @@
 const electron = require('electron');
 const request = require('request');
+const global = require('./global');
 const fs = require('fs');
 const isMac = (process.platform === 'darwin');
 
@@ -732,6 +733,13 @@ module.exports = {
             click: () => {
               bv[open_tab].webContents.toggleDevTools();
             }, label: '開発者ツールを表示'
+          },
+          { type: 'separator' },
+          {
+            label: 'サイドバーを表示/非表示にする',
+            click: () => {
+              global.Notification.display();
+            }
           },
           { type: 'separator' },
           { role: 'resetZoom', label: '実際のサイズ' },

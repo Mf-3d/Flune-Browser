@@ -1,5 +1,5 @@
 const electron = require('electron');
-const global = require("./main/global");
+const global = require("./global");
 
 /** @type {function[]} */
 let notice_callback = [];
@@ -16,10 +16,10 @@ function sleep(ms) {
  */
 module.exports  = class {
   /** 
-   * @param {electron.BrowserWindow} win BrowserWindow
+   * @param {electron.BrowserWindow} win
    */
   constructor(win) {
-    /** @type {electron.BrowserWindow} win */
+    /** @type {electron.BrowserWindow} */
     this.win = win;
 
     global.messageBox = new electron.BrowserView({
@@ -125,6 +125,27 @@ module.exports  = class {
     notice_callback[notice_callback.length] = callback;
     
     global.messageBox.webContents.send(type, [message, button]);
+    sidebarDisplayed = true;
+  }
+
+  display () {
+    if (sidebarDisplayed) {
+      global.win.removeBrowserView(global.messageBox);
+      sidebarDisplayed = false;
+
+      return;
+    }
+
+    global.messageBox.setBounds({
+      x: this.win.getSize()[0] - 300,
+      y: 50,
+      width: 300,
+      height: this.win.getSize()[1] - 50
+    });
+
+    global.win.addBrowserView(global.messageBox);
+    global.win.setTopBrowserView(global.messageBox);
+    
     sidebarDisplayed = true;
   }
 }

@@ -14,7 +14,6 @@ const setProtocol = require('./main/protocol');
 const { appSync, getHash } = require('./main/sync');
 const Tab = require('./main/tab');
 const message = require('./main/message');
-/** @type {message} */ let Notification;
 
 // ログ関連
 console.log = log.log;
@@ -28,7 +27,7 @@ process.on('uncaughtException', (err) => {
 
   console.log('\x1b[41m\x1b[37mAn error has occurred.\x1b[0m');
 
-  Notification.show('アプリで予期しないエラーが発生しました。<br/>アプリを終了しますか？', 'info', ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'], (event, value) => {
+  global.Notification.show('アプリで予期しないエラーが発生しました。<br/>アプリを終了しますか？', 'info', ['アプリを終了する', 'アプリを終了せずに続ける(非推奨)'], (event, value) => {
     if (value === 0) {
       electron.app.quit();
     }
@@ -106,7 +105,7 @@ function nw() {
 
   electron.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if (permission === 'media' && details.mediaTypes.includes('audio')) {
-      Notification.show('Webサイトがマイクへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+      global.Notification.show('Webサイトがマイクへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
         if (value === 0) {
           callback(true);
         } else {
@@ -116,7 +115,7 @@ function nw() {
     }
 
     if (permission === 'media' && details.mediaTypes.includes('video')) {
-      Notification.show('Webサイトがカメラへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+      global.Notification.show('Webサイトがカメラへのアクセスを要求しています。<br/>アクセスを許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
         if (value === 0) {
           callback(true);
         } else {
@@ -126,7 +125,7 @@ function nw() {
     }
 
     if (permission === 'notifications') {
-      Notification.show('Webサイトが通知の送信を要求しています。<br/>送信を許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
+      global.Notification.show('Webサイトが通知の送信を要求しています。<br/>送信を許可しますか？', 'info', ['はい', 'いいえ'], (event, value) => {
         if (value === 0) {
           callback(true);
         } else {
@@ -136,7 +135,7 @@ function nw() {
     }
   });
 
-  Notification = new message(global.win);
+  global.Notification = new message(global.win);
 
   global.win.on('resize', () => {
     winSize = global.win.getSize();
@@ -216,7 +215,7 @@ electron.app.on("ready", () => {
     console.log(`\x1b[48;2;58;106;194m\x1b[38;2;255;255;255m INFO \x1b[0m ブラウザ同期にログインしていません`);
   }
 
-  if (!electron.net.isOnline()) Notification.show('ネットが接続されていません。\n一部の機能が動かない場合があります。', 'warning');
+  if (!electron.net.isOnline()) global.Notification.show('ネットが接続されていません。\n一部の機能が動かない場合があります。', 'warning');
 });
 
 electron.ipcMain.handle('getWinSize', (event, index) => {
@@ -242,7 +241,7 @@ electron.ipcMain.handle('open_tab', (event, index) => {
 
 electron.app.on('certificate-error', function (event, webContents, url, error, certificate, callback) {
   event.preventDefault();
-  Notification.show(`「${certificate.issuerName}」からの証明書を信頼しますか？`, 'info', ['はい', 'いいえ'], (event, result) => {
+  global.Notification.show(`「${certificate.issuerName}」からの証明書を信頼しますか？`, 'info', ['はい', 'いいえ'], (event, result) => {
     if (result === 0) {
       callback(true);
     } else {
