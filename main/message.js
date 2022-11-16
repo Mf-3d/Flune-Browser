@@ -1,7 +1,5 @@
 const electron = require('electron');
-
-/** @type {electron.BrowserView} */
-let messageBox;
+const global = require("./main/global");
 
 /** @type {function[]} */
 let notice_callback = [];
@@ -24,7 +22,7 @@ module.exports  = class {
     /** @type {electron.BrowserWindow} win */
     this.win = win;
 
-    messageBox = new electron.BrowserView({
+    global.messageBox = new electron.BrowserView({
       transparent: true,
       backgroundColor: '#ffffff',
       webPreferences: {
@@ -37,20 +35,20 @@ module.exports  = class {
       }
     });
 
-    messageBox.setAutoResize({width: true, height: true});
-    messageBox.setBounds({
+    global.messageBox.setAutoResize({width: true, height: true});
+    global.messageBox.setBounds({
       x: this.win.getSize()[0] - 300,
       y: 50,
       width: 300,
       height: this.win.getSize()[1] - 50
     });
 
-    messageBox.webContents.loadURL('flune://sidebar');
+    global.messageBox.webContents.loadURL('flune://sidebar');
 
     try {
       electron.ipcMain.handle('return', (event, [index, value]) => {
         if(notice_callback.length <= 0){
-          win.removeBrowserView(messageBox);
+          win.removeBrowserView(global.messageBox);
           clearInterval(timer);
         }
   
@@ -63,14 +61,14 @@ module.exports  = class {
         
         notice_callback.splice(index, 1);
         if(notice_callback.length <= 0){
-          win.removeBrowserView(messageBox);
+          win.removeBrowserView(global.messageBox);
 
           clearInterval(timer);
         }
       });
 
       electron.ipcMain.handle('closeSidebar', (event) => {
-        win.removeBrowserView(messageBox);
+        win.removeBrowserView(global.messageBox);
         
         notice_callback = [];
         clearInterval(timer);
@@ -78,7 +76,7 @@ module.exports  = class {
       });
 
       win.on('resize', (event) => {
-        messageBox.setBounds({
+        global.messageBox.setBounds({
           x: this.win.getSize()[0] - 300,
           y: 50,
           width: 300,
@@ -104,15 +102,15 @@ module.exports  = class {
 
     if(!button) button = ['OK', 'Cancel'];
 
-    this.win.addBrowserView(messageBox);
+    this.win.addBrowserView(global.messageBox);
 
     timer = setInterval(() => {
-      if(!this.win || !messageBox || !sidebarDisplayed) return;
-      this.win.setTopBrowserView(messageBox);
+      if(!this.win || !global.messageBox || !sidebarDisplayed) return;
+      this.win.setTopBrowserView(global.messageBox);
     }, 3000);
 
 
-    messageBox.setBounds({
+    global.messageBox.setBounds({
       x: this.win.getSize()[0] - 300,
       y: 50,
       width: 300,
@@ -126,7 +124,7 @@ module.exports  = class {
 
     notice_callback[notice_callback.length] = callback;
     
-    messageBox.webContents.send(type, [message, button]);
+    global.messageBox.webContents.send(type, [message, button]);
     sidebarDisplayed = true;
   }
 }

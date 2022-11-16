@@ -1,4 +1,5 @@
 module.exports = {
   tab: null,
-  win: null
+  win: null,
+  messageBox: null
 }
