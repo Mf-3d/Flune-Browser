@@ -43,7 +43,6 @@ let browserSync;
 // 変数
 let setting_win;
 let loginWin;
-let suggestView;
 let winSize;
 let open_tab = 1;
 /** @type {Tab} */
@@ -146,7 +145,7 @@ function nw() {
     store.set('window.window_size', winSize);
 
     global.win.webContents.destroy();
-    suggestView = null;
+    global.suggestView = null;
   });
 
   global.win.on('closed', () => {
@@ -154,7 +153,7 @@ function nw() {
     global.win = null;
   });
 
-  suggestView = new electron.BrowserView({
+  global.suggestView = new electron.BrowserView({
     transparent: true,
     backgroundColor: '#ffffff',
     webPreferences: {
@@ -523,9 +522,9 @@ electron.ipcMain.handle('searchURL', (event, word) => {
 });
 
 function removeSuggestView() {
-  if (suggestView) {
-    global.win.removeBrowserView(suggestView);
-    suggestDisplayed = false;
+  if (global.suggestView) {
+    global.win.removeBrowserView(global.suggestView);
+    global.suggestDisplayed = false;
   }
 }
 
@@ -535,17 +534,16 @@ electron.ipcMain.handle('getRecentSuggest', async (event, data) => {
   return recentSuggest;
 });
 
-let suggestDisplayed;
 
 electron.ipcMain.handle('viewSuggest', async (event, data) => {
-  suggestDisplayed = true;
+  global.suggestDisplayed = true;
 
   let result;
 
   result = [];
 
   if (data.word.trim() === '') {
-    global.win.removeBrowserView(suggestView);
+    global.win.removeBrowserView(global.suggestView);
     return;
   }
 
@@ -582,17 +580,17 @@ electron.ipcMain.handle('viewSuggest', async (event, data) => {
       data.pos[0] = Math.floor(data.pos[0]);
       data.pos[1] = Math.floor(data.pos[1]);
 
-      global.win.addBrowserView(suggestView);
-      suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
-      suggestView.setBounds({ x: data.pos[0], y: data.pos[1], width: 500, height: 260 });
-      global.win.setTopBrowserView(suggestView);
+      global.win.addBrowserView(global.suggestView);
+      global.suggestView.webContents.loadFile(`${__dirname}/src/views/suggest.html`);
+      global.suggestView.setBounds({ x: data.pos[0], y: data.pos[1], width: 500, height: 260 });
+      global.win.setTopBrowserView(global.suggestView);
     });
   });
 });
 
 electron.ipcMain.handle('closeSuggest', (event, data) => {
-  global.win.removeBrowserView(suggestView);
-  suggestDisplayed = false;
+  global.win.removeBrowserView(global.suggestView);
+  global.suggestDisplayed = false;
 });
 
 electron.ipcMain.handle('toggle_setting', (event, word) => {

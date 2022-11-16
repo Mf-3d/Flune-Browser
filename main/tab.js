@@ -4,6 +4,7 @@ const applicationMenu = require('./applicationMenu.js');
 const Store = require('electron-store');
 const store = new Store();
 const history = require('./history');
+const global = require("./global");
 
 /** @type {electron.BrowserWindow} */
 let win;
@@ -121,6 +122,9 @@ module.exports = class {
     try {
       if(!win) return;
       bv[index].webContents.on('did-start-loading', () => {
+        global.win.removeBrowserView(global.suggestView);
+        global.suggestDisplayed = false;
+
         win.webContents.send('update-loading', {
           index,
           loading: true

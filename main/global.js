@@ -2,5 +2,7 @@ module.exports = {
   tab: null,
   win: null,
   messageBox: null,
-  Notification: null
+  Notification: null,
+  suggestDisplayed: false,
+  suggestView: null
 }
