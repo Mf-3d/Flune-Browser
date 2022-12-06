@@ -42,9 +42,7 @@ a:hover {
 #tabs > span > div {
   display: inline-block;
   position: relative;
-  background: var(--flune-main-background);
   border-radius: var(--flune-main-border-radius);
-  padding: 1px;
   margin: 1px;
   width: 100%;
   box-shadow: var(--flune-main-shadow-color) 1px 1px 5px 2.5px;
@@ -55,12 +53,50 @@ a:hover {
   backdrop-filter: blur(--flune-main-blur);
 }
 
-#tabs > span > div:hover {
-  background: var(--flune-main-hover-color);
+#tabs > span > div::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  transition: 0.5s;
+  background: linear-gradient(var(--flune-main-background), var(--flune-main-background));
 }
 
-#tabs > span > div.active:hover {
+#tabs > span > div::after {
+  content:"";
+  width:100%;
+  height:100%;
+  position:absolute;
+  z-index:-2;
+  left: 0;
+  background: var(--flune-active-tab-color);
+}
+
+#tabs > span > div.active::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  transition: 0.5s;
+  background: var(--flune-active-tab-color);
+}
+
+#tabs > span > div.active::after {
+  content:"";
+  width:100%;
+  height:100%;
+  position:absolute;
+  z-index:-2;
+  left: 0;
   background: var(--flune-active-tab-hover-color);
+}
+
+#tabs > span > div:hover::before {
+  opacity: 0;
 }
 
 #tabs .title {
@@ -109,9 +145,9 @@ a:hover {
   opacity: 1;
 }
 
-#tabs > span > div.active {
+/* #tabs > span > div.active {
   background: var(--flune-active-tab-color);
-}
+} */
 
 nav:not(#blank):not(#titlebar_button) {
   padding-left: 4em;
@@ -188,6 +224,9 @@ nav:not(#blank) {
   width: 1em;
   height: 1.2em;
   display: inline-block;
+  border-radius: 5px;
+  transition: all 0.5s;
+  border: solid 0px blue;
 }
 
 .favicon {

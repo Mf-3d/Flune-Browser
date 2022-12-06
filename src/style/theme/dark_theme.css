@@ -11,8 +11,8 @@
     /* アクセントカラー */
     --flune-accent-color-hover: #89f4cb;
     --flune-accent-color: #75e3b8;
-    --flune-active-tab-color: #303e3c;
-    --flune-active-tab-hover-color: #28433d;
+    --flune-active-tab-color: linear-gradient(#2c4b45, #303e3c);
+    --flune-active-tab-hover-color: linear-gradient(#285b51, #28433d);
 
     /* シャドーカラー */
     --flune-main-shadow-color: #2e2e2e94;
