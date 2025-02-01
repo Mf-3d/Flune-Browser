@@ -221,4 +221,11 @@ export class TabManager {
 
     tab.entity.webContents.navigationHistory.goForward();
   }
+
+  close () {
+    this.tabs.forEach((tab) => {
+      if (!tab) return;
+      tab.entity.webContents.close();
+    });
+  }
 }
