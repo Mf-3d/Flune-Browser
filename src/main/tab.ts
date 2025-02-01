@@ -54,6 +54,11 @@ export class TabManager {
     });
   }
 
+  // IDからタブを取得
+  getTabById (id: string): Tab | undefined {
+    return this.tabs.find(tab => (tab.id === id));
+  }
+
   // 新規タブ
   newTab (url?: string, active: boolean = true): Tab {
     if (!url) url = HOME_URL;
@@ -101,7 +106,7 @@ export class TabManager {
 
   // タブをアクティブ化
   activateTab (id: string): Tab | undefined {
-    const activeTab = this.tabs.find(tab => (tab.id === id));
+    const activeTab = this.getTabById(id);
 
     if (!activeTab) {
       console.error("Could not set tab as active: Tab does not exist.");
@@ -144,7 +149,7 @@ export class TabManager {
       return;
     }
 
-    const tab = this.tabs.find(tab => (tab.id === id));
+    const tab = this.getTabById(id);
 
     if (!tab) {
       console.error("Could not reload tab: Tab does not exist.");
@@ -161,7 +166,7 @@ export class TabManager {
       return;
     }
 
-    const tab = this.tabs.find(tab => (tab.id === id));
+    const tab = this.getTabById(id);
 
     if (!tab) {
       console.error("Could not go back: Tab does not exist.");
@@ -178,7 +183,7 @@ export class TabManager {
       return;
     }
 
-    const tab = this.tabs.find(tab => (tab.id === id));
+    const tab = this.getTabById(id);
 
     if (!tab) {
       console.error("Could not go forward: Tab does not exist.");
