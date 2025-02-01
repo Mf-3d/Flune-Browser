@@ -76,9 +76,10 @@ export class TabManager {
       });
     });
 
+    let title: string = entity.webContents.getTitle();
     let newTab: Tab = {
       id: crypto.randomUUID(),
-      title: entity.webContents.getTitle(),
+      title: title ? title : url,
       entity,
       active
     };
