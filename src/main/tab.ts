@@ -13,8 +13,10 @@ export type Tab = {
   active: boolean;
 }
 
+// 内部ページのパス
 const HOME_URL = path.join("file://", __dirname, "..", "renderer", "browser", "home.html");
 
+// タブ管理
 export class TabManager {
   private base: Base;
   tabs: Tab[] = [];
@@ -29,7 +31,7 @@ export class TabManager {
     x: 0,
     y: 0
   };
-  activeCurrent?: string;
+  activeCurrent?: string; // 現在有効化されているタブのID
 
   constructor (base: Base, bounds?: {width: number; height: number; x: number; y: number}) {
     this.base = base;
@@ -42,6 +44,7 @@ export class TabManager {
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height];
     });
 
+    // IPCチャンネル
     ipcMain.handle("tab.switch", (event, id) => {
       this.activateTab(id);
     });
@@ -51,12 +54,15 @@ export class TabManager {
     });
   }
 
+  // 新規タブ
   newTab (url?: string, active: boolean = true): Tab {
     if (!url) url = HOME_URL;
 
+    // ビューを作成
     let entity = new WebContentsView();
     entity.setBounds(this.bounds);
     entity.webContents.loadURL(url);
+    
     this.base.win.on('resize', () => {
       if (!this.base || !entity) return;
 
@@ -77,7 +83,7 @@ export class TabManager {
       active
     };
 
-    this.tabs?.push(newTab);
+    this.tabs?.push(newTab); // 配列に追加
     this.base.win.contentView.addChildView(newTab.entity);
 
     const tabInfo = {
@@ -86,13 +92,13 @@ export class TabManager {
       active: newTab.active
     }
     this.base.send("tab.new", tabInfo);
-    console.debug(tabInfo);
 
     if (active) this.activateTab(newTab.id);
 
     return newTab;
   }
 
+  // タブをアクティブ化
   activateTab (id: string): Tab | undefined {
     const activeTab = this.tabs.find(tab => (tab.id === id));
 
@@ -101,6 +107,7 @@ export class TabManager {
       return;
     }
 
+    // タブをアクティブ化
     this.tabs = this.tabs.map(tab => ({
       ...tab,
       active: tab.id === id
@@ -119,6 +126,7 @@ export class TabManager {
     return activeTab;
   }
 
+  // タブを移動
   moveTab (fromIndex: number, toIndex: number) {
     if (fromIndex < 0 || fromIndex >= this.tabs.length || toIndex < 0 || toIndex >= this.tabs.length) {
       console.error("Invalid indices");
@@ -129,6 +137,7 @@ export class TabManager {
     this.tabs.splice(toIndex, 0, movedTab);
   }
 
+  // 再読み込みする
   reloadTab (id: string | undefined = this.activeCurrent, ignoringCache: boolean = false) {
     if (!id) {
       console.error("Could not reload tab: Tab ID not specified or active tab does not exist.");
@@ -145,6 +154,7 @@ export class TabManager {
     ignoringCache ? tab.entity.webContents.reloadIgnoringCache : tab.entity.webContents.reload();
   }
 
+  // 前に戻る
   goBack (id: string | undefined = this.activeCurrent) {
     if (!id) {
       console.error("Could not go back: Tab ID not specified or active tab does not exist.");
@@ -161,6 +171,7 @@ export class TabManager {
     tab.entity.webContents.navigationHistory.goBack();
   }
 
+  // 次に進む
   goForward (id: string | undefined = this.activeCurrent) {
     if (!id) {
       console.error("Could not go forward: Tab ID not specified or active tab does not exist.");

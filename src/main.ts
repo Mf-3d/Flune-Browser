@@ -6,14 +6,14 @@ import { Base } from "./main/base-window";
 
 let base: Base | null | undefined;
 
-// new window
+// 新規ウィンドウ
 function nw() {
   base = new Base();
   base.nav.webContents.once("did-finish-load", () => {
     base?.tabManager.newTab("https://www.youtube.com");
   });
 
-  // IPC
+  // IPCチャンネル
   ipcMain.handle("tab.reload", (event, ignoringCache) => {
     base?.tabManager.reloadTab(undefined, ignoringCache);
   });
