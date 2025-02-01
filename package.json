@@ -1,65 +1,44 @@
 {
   "name": "flune-browser",
-  "version": "2.6.0",
-  "description": "",
-  "main": "main.js",
+  "version": "3.0.0",
+  "description": "Newer and more challenging than anyone else.",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx electron .",
-    "build:mac": "npx electron-builder --mac --x64",
-    "build:mac_arm": "npx electron-builder --mac --arm64",
-    "build:mac_universal": "npx electron-builder --mac --universal",
-    "build:win": "npx electron-builder --win --x64",
-    "build:all": "npm run build:win && npm run build:mac && npm run build:mac_universal",
-    "build": "npx electron-builder"
+    "test": "npm run build & npx electron .",
+    "build": "npx tsc"
   },
-  "keywords": [],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mf-3d/flune-browser.git"
+  },
   "author": "mf7cli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mf-3d/flune-browser/issues"
+  },
+  "homepage": "https://github.com/mf-3d/flune-browser#readme",
+  "dependencies": {
+    "electron": "^34.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
   "build": {
-    "appId": "tk.mf7cli.flune",
+    "appId": "io.github.mf-3d.flune-browser",
     "productName": "Flune-Browser",
-    "publish": {
-      "provider": "github",
-      "owner": "Mf-3d",
-      "repo": "Flune-Browser",
-      "releaseType": "release"
+    "directories": {
+      "output": "dist"
     },
     "files": [
-      "!.git",
-      "!.dist",
-      "node_modules",
-      "src",
-      "main.js",
-      "package-lock.json",
-      "package.json",
-      "preload",
-      "Extension",
-      "main",
-      "packs",
-      "lib"
+      "build/**/*"
     ],
-    "asar": false,
-    "mac": {
-      "target": "dmg",
-      "icon": "src/icon.png"
-    },
     "win": {
-      "target": "nsis",
-      "icon": "src/icon.png"
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
     }
-  },
-  "devDependencies": {
-    "electron": "^21.2.2",
-    "electron-builder": "^23.6.0"
-  },
-  "dependencies": {
-    "discord-rpc": "^4.0.1",
-    "download-crx": "^1.1.0",
-    "electron-log": "^4.4.7",
-    "electron-store": "^8.0.2",
-    "eslint": "^8.19.0",
-    "request": "^2.88.2",
-    "uuid": "^8.3.2",
-    "xml2js": "^0.4.23"
   }
 }
