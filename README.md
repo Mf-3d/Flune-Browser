@@ -1,13 +1,16 @@
 # Flune-Browser 3.0.0
 
+> [!WARNING]
+> 紹介されている要素は最終リリース前に変更される可能性があります。
+
 Flune-Browserが生まれ変わりました！
 
-![スクリーンショット](./assets/screenshot-2.3.0-dev-2022.06.29.1.png)
+<!-- ![スクリーンショット](./assets/screenshot-2.3.0-dev-2022.06.29.1.png) -->
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
 
 
-Flune-Browser 2.x系からの互換性があります。
+<!-- Flune-Browser 2.x系からの互換性があります。 -->
 <!-- ## 必須環境
 | バージョン        |       OS       |         OSバージョン          |   アーキテクチャ(macOS)    |
 |-----------------|-----------------|-----------------------------|-------------------------|
