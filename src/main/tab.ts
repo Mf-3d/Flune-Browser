@@ -116,7 +116,6 @@ export class TabManager {
 
     this.activeCurrent = id;
     
-    activeTab.entity.setVisible(true);
     this.tabs.forEach(tab => {
       tab.active ? tab.entity.setVisible(true) : tab.entity.setVisible(false);
     });
