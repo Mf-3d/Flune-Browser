@@ -81,6 +81,15 @@ export class Base {
       x: 0,
       y: this.viewY
     });
+
+    this.win.on("closed", () => {
+      this.nav.webContents.close();
+      this.tabManager.close();
+    });
+  }
+
+  close () {
+    this.win.close();
   }
 
   send (channel: string, ...args: any[]) {
