@@ -52,6 +52,10 @@ export class TabManager {
     ipcMain.handle('tab.new', (event) => {
       this.newTab(undefined, true);
     });
+
+    ipcMain.handle('tab.remove', (event, id) => {
+      this.removeTab(id);
+    });
   }
 
   // IDからタブを取得
@@ -102,6 +106,31 @@ export class TabManager {
     if (active) this.activateTab(newTab.id);
 
     return newTab;
+  }
+
+  // タブを削除
+  removeTab (id: string) {
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not remove tab: Tab does not exist.");
+      return;
+    }
+
+    const i = this.tabs.indexOf(tab);
+
+    tab.entity.webContents.close();
+    this.base.send("tab.remove", id);
+
+    // 別のタブをアクティブ化
+    if (i !== -1) {
+      if (this.tabs.length <= 1) this.base.close();
+      
+      this.activateTab(this.tabs[i > 0 ? i - 1 : 0].id);
+    }
+
+    // 最後に配列から削除
+    this.tabs.splice(i, 1);
   }
 
   // タブをアクティブ化

@@ -22,7 +22,7 @@ window.addEventListener("load", () => {
         <i data-lucide="volume-2"></i>
       </a>
     </span>
-    <a class="close-button right" href="javascript:flune.removeTab(${tab.id})">
+    <a class="close-button right" href="javascript:flune.removeTab('${tab.id}')">
       <i data-lucide="x"></i>
     </a>
     `;
@@ -37,6 +37,13 @@ window.addEventListener("load", () => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
     tabElements.forEach(tab => {
       tab.getAttribute("data-id") === id ? tab.id = "opened" : tab.id = "";
+    });
+  });
+
+  flune.on("tab.remove", (event, id) => {
+    const tabElements = tabContainer.querySelectorAll(":scope > span");
+    tabElements.forEach(tab => {
+      if (tab.getAttribute("data-id") === id) tab.remove();
     });
   });
 });
