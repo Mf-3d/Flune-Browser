@@ -263,11 +263,9 @@ export class TabManager {
       this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
     });
     tab.entity.webContents.on("did-start-loading", () => {
-      console.debug("a")
       this.base.send("tab.change-state", tab.id, "loading", true);
     });
     tab.entity.webContents.on("did-stop-loading", () => {
-      console.debug("b")
       this.base.send("tab.change-state", tab.id, "loading", false);
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {

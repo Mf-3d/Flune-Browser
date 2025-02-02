@@ -48,26 +48,25 @@ window.addEventListener("load", () => {
   });
 
   flune.on("tab.change-state", (event, id, state, value) => {
-    console.debug("change-state");
     const tabElements = tabContainer.querySelectorAll(":scope > span");
     tabElements.forEach(tab => {
       if (tab.getAttribute("data-id") === id) {
         switch (state) {
           case "title":
-            console.debug("title:", value);
+            console.info("(change-state) title:", value);
             tab.querySelector("p.title").innerHTML = value;
             break;
           case "favicon":
-            console.debug("favicon:", value);
+            console.info("(change-state) favicon:", value);
             tab.querySelector("img.favicon").src = value;
             break;
           case "loading":
-            console.debug("loading:", value);
+            console.info("(change-state) loading:", value);
             if (value) tab.querySelector("a.loading").classList.remove("disabled");
             else tab.querySelector("a.loading").classList.add("disabled");
             break;
           case "audible":
-            console.debug("audible:", value);
+            console.info("(change-state) audible:", value);
             if (value) tab.querySelector("a.audible").classList.remove("disabled");
             else tab.querySelector("a.audible").classList.add("disabled");
             break;
