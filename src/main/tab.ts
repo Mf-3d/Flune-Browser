@@ -301,10 +301,13 @@ export class TabManager {
     });
     tab.entity.webContents.on("did-stop-loading", () => {
       this.base.send("tab.change-state", tab.id, "loading", false);
-      // this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
+    });
+    tab.entity.webContents.on("did-finish-load", () => {
+      this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
   }
 
