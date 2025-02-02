@@ -10,18 +10,18 @@ let base: Base | null | undefined;
 function nw() {
   base = new Base();
   base.nav.webContents.once("did-finish-load", () => {
-    base?.tabManager.newTab("https://www.youtube.com");
+    base?.tabManager?.newTab("https://www.youtube.com");
   });
 
   // IPCチャンネル
   ipcMain.handle("tab.reload", (event, ignoringCache) => {
-    base?.tabManager.reloadTab(undefined, ignoringCache);
+    base?.tabManager?.reloadTab(undefined, ignoringCache);
   });
   ipcMain.handle("tab.go-back", () => {
-    base?.tabManager.goBack();
+    base?.tabManager?.goBack();
   });
   ipcMain.handle("tab.go-forward", () => {
-    base?.tabManager.goForward();
+    base?.tabManager?.goForward();
   });
 }
 

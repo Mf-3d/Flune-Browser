@@ -103,11 +103,27 @@ input[type=text] {
 #tabs > span#opened {
   background-color: var(--opened-tab-color);
 }
+#tabs img.favicon {
+  width: 20px;
+  height: 20px;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
 #tabs .title {
+  margin-left: 0.8em;
+  margin-right: 0.8em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: calc(100% - 24px);
+  width: calc(100% - 48px);
+}
+#tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
+#tabs span:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title
+ {
+  width: calc(100% - 72px);
+}
+#tabs span:not(:has(.right .disabled)) .title {
+  width: calc(100% - 96px);
 }
 #tabs > span.adding-left {
   border-left: solid 3px var(--tab-adding-color);
@@ -168,6 +184,7 @@ input[type=text] {
   margin-right: 2px;
 }
 #tabs span > .right {
+  text-align: right;
   position: absolute;
   top: 50%;
   right: 25px;

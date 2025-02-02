@@ -100,6 +100,9 @@ export class TabManager {
     this.tabs?.push(newTab); // 配列に追加
     this.base.win.contentView.addChildView(newTab.entity);
 
+    this.setEvent(newTab.id); // イベントを設定
+
+    // レンダラーにも反映
     const tabInfo = {
       id: newTab.id,
       title: newTab.title,
@@ -234,6 +237,46 @@ export class TabManager {
     this.tabs.forEach((tab) => {
       if (!tab) return;
       tab.entity.webContents.close();
+    });
+  }
+
+  // イベントを設定
+  setEvent (id: string) {
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not set events: Tab does not exist.");
+      return;
+    }
+
+    tab.entity.webContents.removeAllListeners("page-title-updated");
+    tab.entity.webContents.removeAllListeners("page-favicon-updated");
+    tab.entity.webContents.removeAllListeners("did-start-loading");
+    tab.entity.webContents.removeAllListeners("did-stop-loading");
+    tab.entity.webContents.removeAllListeners("audio-state-changed");
+    tab.entity.webContents.removeAllListeners("will-navigate");
+
+    tab.entity.webContents.on("page-title-updated", (event, title) => {
+      this.base.send("tab.change-state", tab.id, "title", title);
+    });
+    tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
+      this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
+    });
+    tab.entity.webContents.on("did-start-loading", () => {
+      console.debug("a")
+      this.base.send("tab.change-state", tab.id, "loading", true);
+    });
+    tab.entity.webContents.on("did-stop-loading", () => {
+      console.debug("b")
+      this.base.send("tab.change-state", tab.id, "loading", false);
+    });
+    tab.entity.webContents.on("audio-state-changed", (event) => {
+      this.base.send("tab.change-state", tab.id, "audible", event.audible);
+    });
+    tab.entity.webContents.on("will-navigate", (details) => {
+      if (!details.isMainFrame) return;
+
+      this.base.send("nav.set-word", details.url);
     });
   }
 }

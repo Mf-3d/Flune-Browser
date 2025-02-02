@@ -10,19 +10,19 @@ window.addEventListener("load", () => {
     element.setAttribute("data-id", tab.id);
     element.innerHTML = `
     <img src="" class="favicon"/>
-    <a class="loading disabled">
+    <a href="#" class="loading disabled">
       <i data-lucide="loader-circle"></i>
     </a>
     <p class="title">${tab.title}</p>
     <span class="right">
-      <a class="downloading disabled">
+      <a href="#" class="downloading disabled">
         <i data-lucide="download"></i>
       </a>
-      <a class="audible disabled">
+      <a href="#" class="audible disabled">
         <i data-lucide="volume-2"></i>
       </a>
     </span>
-    <a class="close-button right" href="javascript:flune.removeTab('${tab.id}')">
+    <a href="javascript:flune.removeTab('${tab.id}')" class="close-button right">
       <i data-lucide="x"></i>
     </a>
     `;
@@ -44,6 +44,35 @@ window.addEventListener("load", () => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
     tabElements.forEach(tab => {
       if (tab.getAttribute("data-id") === id) tab.remove();
+    });
+  });
+
+  flune.on("tab.change-state", (event, id, state, value) => {
+    console.debug("change-state");
+    const tabElements = tabContainer.querySelectorAll(":scope > span");
+    tabElements.forEach(tab => {
+      if (tab.getAttribute("data-id") === id) {
+        switch (state) {
+          case "title":
+            console.debug("title:", value);
+            tab.querySelector("p.title").innerHTML = value;
+            break;
+          case "favicon":
+            console.debug("favicon:", value);
+            tab.querySelector("img.favicon").src = value;
+            break;
+          case "loading":
+            console.debug("loading:", value);
+            if (value) tab.querySelector("a.loading").classList.remove("disabled");
+            else tab.querySelector("a.loading").classList.add("disabled");
+            break;
+          case "audible":
+            console.debug("audible:", value);
+            if (value) tab.querySelector("a.audible").classList.remove("disabled");
+            else tab.querySelector("a.audible").classList.add("disabled");
+            break;
+        }
+      }
     });
   });
 });
