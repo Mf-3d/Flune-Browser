@@ -300,6 +300,8 @@ export class TabManager {
       this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     tab.entity.webContents.on("did-stop-loading", () => {
+      this.base.send("nav.change-state", "can-go-back", tab.entity.webContents.navigationHistory.canGoBack());
+      this.base.send("nav.change-state", "can-go-forward", tab.entity.webContents.navigationHistory.canGoForward());
       this.base.send("tab.change-state", tab.id, "loading", false);
       this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });

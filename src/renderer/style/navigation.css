@@ -73,7 +73,7 @@ nav a > svg:hover {
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
 }
 nav a.disabled {
-  cursor: default;
+  pointer-events:none;
 }
 nav a.disabled > svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);

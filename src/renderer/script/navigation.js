@@ -9,6 +9,19 @@ window.addEventListener("load", () => {
     }
   });
 
+  flune.on("nav.change-state", (event, state, value) => {
+    switch (state) {
+      case "can-go-back":
+        if (value) document.querySelector(".go-back").classList.remove("disabled");
+        else document.querySelector(".go-back").classList.add("disabled");
+        break;
+      case "can-go-forward":
+        if (value) document.querySelector(".go-forward").classList.remove("disabled");
+        else document.querySelector(".go-forward").classList.add("disabled");
+        break;
+    }
+  });
+
   flune.on("tab.new", (event, tab) => {
     const newButton = tabContainer.querySelector(".new-button");
 
