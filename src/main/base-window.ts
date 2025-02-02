@@ -21,7 +21,7 @@ export class Base {
     width: 800,
     height: 600
   };
-  tabManager: TabManager;
+  tabManager?: TabManager;
 
   constructor(bounds?: {
     width: number;
@@ -75,16 +75,18 @@ export class Base {
     
     this.win.contentView.addChildView(this.nav);
 
-    this.tabManager = new TabManager(this, {
-      width: this.bounds.width,
-      height: this.bounds.height - this.viewY,
-      x: 0,
-      y: this.viewY
-    });
+    this.nav.webContents.once("did-finish-load", () => {
+      this.tabManager = new TabManager(this, {
+        width: this.bounds.width,
+        height: this.bounds.height - this.viewY,
+        x: 0,
+        y: this.viewY
+      });
+    })
 
-    this.win.on("closed", () => {
+    this.win.on("close", () => {
       this.nav.webContents.close();
-      this.tabManager.close();
+      this.tabManager?.close();
     });
   }
 
