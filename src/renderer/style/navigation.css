@@ -1,3 +1,23 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    display: none;
+  }
+}
+
 :root {
   --tab-color: #202222;
   --opened-tab-color: #293939;
@@ -138,6 +158,11 @@ input[type=text] {
   height: 20px;
   height: 20px;
   display: inline-block;
+  transition: all .5s;
+
+  animation-name: fadeIn;
+  animation-duration: .2s;
+  animation-fill-mode: forwards;
 }
 #tabs a > svg {
   width: 20px;
@@ -147,19 +172,12 @@ input[type=text] {
   
   transition: stroke .5s, stroke-width .5s, filter .5s;
 }
-#tabs a:not(.loading) > svg:hover {
-  stroke: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
-  stroke-width: 3px;
-  filter: drop-shadow(0 0 0.75rem var(--symbol-color));
-}
 #tabs a:not(.close-button).disabled {
   cursor: default;
-  opacity: 0;
-  display: none;
-}
-#tabs a:not(.loading).disabled > svg {
-  stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
-  stroke-width: 1px;
+
+  animation-name: fadeOut;
+  animation-duration: .1s;
+  animation-fill-mode: forwards;
 }
 
 #tabs > span#opened a > svg {
