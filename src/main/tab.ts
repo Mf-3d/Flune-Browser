@@ -40,7 +40,7 @@ export class TabManager {
       if (!this.base) return;
 
       const bounds = this.base.win.getBounds();
-      [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height];
+      [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
 
     // IPCチャンネル
@@ -99,7 +99,7 @@ export class TabManager {
         x: this.bounds.x,
         y: this.bounds.y,
         width: bounds.width,
-        height: bounds.height,
+        height: bounds.height - this.base.viewY,
       });
     });
 
