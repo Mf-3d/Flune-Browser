@@ -17,6 +17,14 @@
     display: none;
   }
 }
+@keyframes rotation {
+  0%{
+    transform:rotate(0);
+  }
+  100%{
+    transform:rotate(360deg);
+  }
+}
 
 :root {
   --tab-color: #202222;
@@ -217,4 +225,7 @@ input[type=text] {
   transform: translate(0, -50%);
   width: 20px;
   height: 20px;
+}
+#tabs a.loading > svg {
+  animation: .5s ease-in infinite rotation;
 }
