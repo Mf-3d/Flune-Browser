@@ -44,20 +44,29 @@ export class TabManager {
     });
 
     // IPCチャンネル
+    ipcMain.handle("tab.reload", (event, ignoringCache) => {
+      this.reloadTab(undefined, ignoringCache);
+    });
+    ipcMain.handle("tab.go-back", () => {
+      this.goBack();
+    });
+    ipcMain.handle("tab.go-forward", () => {
+      this.goForward();
+    });
     ipcMain.handle("tab.switch", (event, id) => {
       this.activateTab(id);
     });
-
-    ipcMain.handle('tab.new', (event) => {
+    ipcMain.handle('tab.new', () => {
       this.newTab(undefined, true);
     });
-
     ipcMain.handle('tab.remove', (event, id) => {
       this.removeTab(id);
     });
-
     ipcMain.handle('tab.move', (event, from, to) => {
       this.moveTab(from, to);
+    });
+    ipcMain.handle('tab.load', (event, id, url) => {
+      this.load(id, url);
     });
   }
 
@@ -100,7 +109,7 @@ export class TabManager {
     this.tabs?.push(newTab); // 配列に追加
     this.base.win.contentView.addChildView(newTab.entity);
 
-    this.setEvent(newTab.id); // イベントを設定
+    this.setEvents(newTab.id); // イベントを設定
 
     // レンダラーにも反映
     const tabInfo = {
@@ -109,6 +118,10 @@ export class TabManager {
       active: newTab.active
     }
     this.base.send("tab.new", tabInfo);
+
+    entity.webContents.once("did-finish-load", () => {
+      this.base.send("nav.set-word", url);
+    });
 
     if (active) this.activateTab(newTab.id);
 
@@ -163,11 +176,11 @@ export class TabManager {
 
     // レンダラーにも反映
     this.base.send("tab.activate", activeTab.id);
+    this.base.send("nav.set-word", activeTab.entity.webContents.getURL());
 
     return activeTab;
   }
 
-  // [実装中]
   // --タブを移動
   moveTab (fromIndex: number, toIndex: number) {
     if (fromIndex < 0 || fromIndex >= this.tabs.length || toIndex < 0 || toIndex >= this.tabs.length) {
@@ -232,16 +245,71 @@ export class TabManager {
     tab.entity.webContents.navigationHistory.goForward();
   }
 
+  // --ロードする
+  load (id: string | undefined = this.activeCurrent, url: string) {
+    if (!id) {
+      console.error("Could not load URL: Tab ID not specified or active tab does not exist.");
+      return;
+    }
+
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not load URL: Tab does not exist.");
+      return;
+    }
+
+    if (URL.canParse(url)) {
+      tab.entity.webContents.loadURL(url);
+      this.base.send("nav.set-word", url);
+    } else {
+      const searchUrl = `https://google.com/search?q=${url}`
+      tab.entity.webContents.loadURL(searchUrl);
+      this.base.send("nav.set-word", searchUrl);
+    }
+  }
+
   // --タブをすべて閉じる
   close () {
     this.tabs.forEach((tab) => {
       if (!tab) return;
+      this.deleteEvents(tab.id);
       tab.entity.webContents.close();
     });
   }
 
   // イベントを設定
-  setEvent (id: string) {
+  setEvents (id: string) {
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not set events: Tab does not exist.");
+      return;
+    }
+
+    this.deleteEvents(id);
+
+    tab.entity.webContents.on("page-title-updated", (event, title) => {
+      this.base.send("tab.change-state", tab.id, "title", title);
+    });
+    tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
+      this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
+    });
+    tab.entity.webContents.on("did-start-loading", () => {
+      this.base.send("tab.change-state", tab.id, "loading", true);
+      this.base.send("nav.set-word", tab.entity.webContents.getURL());
+    });
+    tab.entity.webContents.on("did-stop-loading", () => {
+      this.base.send("tab.change-state", tab.id, "loading", false);
+      // this.base.send("nav.set-word", tab.entity.webContents.getURL());
+    });
+    tab.entity.webContents.on("audio-state-changed", (event) => {
+      this.base.send("tab.change-state", tab.id, "audible", event.audible);
+    });
+  }
+
+  // イベントを削除
+  deleteEvents (id: string) {
     const tab = this.getTabById(id);
 
     if (!tab) {
@@ -254,27 +322,5 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-start-loading");
     tab.entity.webContents.removeAllListeners("did-stop-loading");
     tab.entity.webContents.removeAllListeners("audio-state-changed");
-    tab.entity.webContents.removeAllListeners("will-navigate");
-
-    tab.entity.webContents.on("page-title-updated", (event, title) => {
-      this.base.send("tab.change-state", tab.id, "title", title);
-    });
-    tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
-      this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
-    });
-    tab.entity.webContents.on("did-start-loading", () => {
-      this.base.send("tab.change-state", tab.id, "loading", true);
-    });
-    tab.entity.webContents.on("did-stop-loading", () => {
-      this.base.send("tab.change-state", tab.id, "loading", false);
-    });
-    tab.entity.webContents.on("audio-state-changed", (event) => {
-      this.base.send("tab.change-state", tab.id, "audible", event.audible);
-    });
-    tab.entity.webContents.on("will-navigate", (details) => {
-      if (!details.isMainFrame) return;
-
-      this.base.send("nav.set-word", details.url);
-    });
   }
 }

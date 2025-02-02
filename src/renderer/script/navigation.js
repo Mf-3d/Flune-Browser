@@ -47,6 +47,12 @@ window.addEventListener("load", () => {
     });
   });
 
+  flune.on("nav.set-word", (event, word) => {
+    console.info("(nav.set-word):", word);
+    const input = document.querySelector("#search-bar");
+    input.value = word;
+  });
+
   flune.on("tab.change-state", (event, id, state, value) => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
     tabElements.forEach(tab => {
@@ -75,6 +81,14 @@ window.addEventListener("load", () => {
     });
   });
 });
+
+function search () {
+  const activeTab = document.querySelector("#tabs > #opened");
+  const input = document.querySelector("#search-bar");
+  flune.load(activeTab.getAttribute("data-id"), input.value);
+  input.value = "";
+  input.blur();
+}
 
 function each () {
   const tabContainer = document.getElementById("tabs");

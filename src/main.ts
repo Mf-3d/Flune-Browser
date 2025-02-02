@@ -12,17 +12,6 @@ function nw() {
   base.nav.webContents.once("did-finish-load", () => {
     base?.tabManager?.newTab("https://www.youtube.com");
   });
-
-  // IPCチャンネル
-  ipcMain.handle("tab.reload", (event, ignoringCache) => {
-    base?.tabManager?.reloadTab(undefined, ignoringCache);
-  });
-  ipcMain.handle("tab.go-back", () => {
-    base?.tabManager?.goBack();
-  });
-  ipcMain.handle("tab.go-forward", () => {
-    base?.tabManager?.goForward();
-  });
 }
 
 app.on("ready", () => {
