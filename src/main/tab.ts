@@ -114,7 +114,15 @@ export class TabManager {
     this.tabs?.push(newTab); // 配列に追加
     this.base.win.contentView.addChildView(newTab.entity);
 
-    this.setEvents(newTab.id); // イベントを設定
+    // イベントを設定
+    this.setEvents(newTab.id); 
+    entity.webContents.setWindowOpenHandler((details) => {
+      this.newTab(details.url, true);
+
+      return {
+        action: "deny"
+      };
+    });
 
     // レンダラーにも反映
     const tabInfo = {
