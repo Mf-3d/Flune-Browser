@@ -75,6 +75,11 @@ export class TabManager {
     return this.tabs.find(tab => (tab.id === id));
   }
 
+  // --現在アクティブなタブを取得
+  getActiveTabCurrent (): Tab | undefined {
+    return this.tabs.find(tab => (tab.id === this.activeCurrent));
+  }
+
   // --新規タブ
   newTab (url?: string, active: boolean = true): Tab {
     if (!url) url = HOME_URL;
@@ -278,7 +283,7 @@ export class TabManager {
     });
   }
 
-  // イベントを設定
+  // --イベントを設定
   setEvents (id: string) {
     const tab = this.getTabById(id);
 
@@ -313,7 +318,7 @@ export class TabManager {
     });
   }
 
-  // イベントを削除
+  // --イベントを削除
   deleteEvents (id: string) {
     const tab = this.getTabById(id);
 
