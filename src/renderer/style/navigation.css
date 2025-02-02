@@ -1,6 +1,7 @@
 :root {
   --tab-color: #202222;
   --opened-tab-color: #293939;
+  --tab-adding-color: #2582CF;
 }
 
 body {
@@ -96,6 +97,8 @@ input[type=text] {
   font-size: 0.8em;
   text-align: center;
   padding: 2px;
+
+  transition: filter .5s, border-right .5s, border-left .5s;
 }
 #tabs > span#opened {
   background-color: var(--opened-tab-color);
@@ -105,6 +108,14 @@ input[type=text] {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: calc(100% - 24px);
+}
+#tabs > span.adding-left {
+  border-left: solid 3px var(--tab-adding-color);
+  filter: drop-shadow(-2em 0 0.75rem var(--tab-adding-color));
+}
+#tabs > span.adding-right {
+  border-right: solid 3px var(--tab-adding-color);
+  filter: drop-shadow(2em 0 0.75rem var(--tab-adding-color));
 }
 
 #tabs a {

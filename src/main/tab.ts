@@ -55,6 +55,10 @@ export class TabManager {
     ipcMain.handle('tab.remove', (event, id) => {
       this.removeTab(id);
     });
+
+    ipcMain.handle('tab.move', (event, from, to) => {
+      this.moveTab(from, to);
+    });
   }
 
   // --IDからタブを取得
@@ -170,6 +174,8 @@ export class TabManager {
   
     const [movedTab] = this.tabs.splice(fromIndex, 1);
     this.tabs.splice(toIndex, 0, movedTab);
+
+    // レンダラーに反映する必要がない
   }
 
   // --再読み込みする
