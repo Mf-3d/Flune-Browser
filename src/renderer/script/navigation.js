@@ -1,6 +1,13 @@
 window.addEventListener("load", () => {
   each();
   const tabContainer = document.getElementById("tabs");
+  const input = document.getElementById("search-bar");
+
+  input.addEventListener("keydown", (event) => {
+    if (!event.isComposing && event.keyCode === 13) {
+      search();
+    }
+  });
 
   flune.on("tab.new", (event, tab) => {
     const newButton = tabContainer.querySelector(".new-button");
@@ -49,7 +56,6 @@ window.addEventListener("load", () => {
 
   flune.on("nav.set-word", (event, word) => {
     console.info("(nav.set-word):", word);
-    const input = document.querySelector("#search-bar");
     input.value = word;
   });
 
