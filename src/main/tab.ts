@@ -4,6 +4,7 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
+import { buildContextMenu } from "./menu";
 
 export type Tab = {
   id: string;
@@ -324,6 +325,22 @@ export class TabManager {
     tab.entity.webContents.on("did-finish-load", () => {
       this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
+    tab.entity.webContents.on("context-menu", (event, params) => {
+      let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
+      if (params.selectionText) type = "text";
+      if (params.linkURL || params.linkText) type = "link";
+      if (params.mediaType === "image") type = "image";
+      if (params.mediaType === "audio") type = "audio";
+      if (params.mediaType === "video") type = "video";
+
+      buildContextMenu(this.base, {
+        type,
+        isEditable: params.isEditable,
+        selectionText: params.selectionText,
+        canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
+        canGoForward: tab.entity.webContents.navigationHistory.canGoForward(),
+      }).popup();
+    });
   }
 
   // --イベントを削除
@@ -340,5 +357,6 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-start-loading");
     tab.entity.webContents.removeAllListeners("did-stop-loading");
     tab.entity.webContents.removeAllListeners("audio-state-changed");
+    tab.entity.webContents.removeAllListeners("context-menu");
   }
 }
