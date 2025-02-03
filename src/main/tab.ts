@@ -283,6 +283,29 @@ export class TabManager {
     }
   }
 
+  // --開発者ツールを表示
+  toggleDevTools (id: string | undefined = this.activeCurrent, options?: {
+    mode?: "right" | "left" | "bottom" | "undocked" | "detach"
+  }) {
+    if (!id) {
+      console.error("Could not toggle DevTools: Tab ID not specified or active tab does not exist.");
+      return;
+    }
+
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not toggle DevTools: Tab does not exist.");
+      return;
+    }
+
+    tab.entity.webContents.isDevToolsOpened()
+      ? tab.entity.webContents.closeDevTools()
+      : tab.entity.webContents.openDevTools({
+        mode: options?.mode ? options.mode : "right"
+      });
+  }
+
   // --タブをすべて閉じる
   close () {
     this.tabs.forEach((tab) => {

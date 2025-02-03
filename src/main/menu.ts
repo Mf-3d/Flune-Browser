@@ -83,21 +83,13 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
           label: "開発者ツールを表示",
           accelerator: "Cmd+Option+I", // macOSのみ
           click() {
-            base.tabManager?.getActiveTabCurrent()?.entity.webContents.isDevToolsOpened()
-              ? base.tabManager?.getActiveTabCurrent()?.entity.webContents.closeDevTools()
-              : base.tabManager?.getActiveTabCurrent()?.entity.webContents.openDevTools({
-                mode: "left"
-              });
+            base.tabManager?.toggleDevTools();
           }
         } : {
           label: "開発者ツールを表示",
           accelerator: "F12", // WindowsとLinux
           click() {
-            base.tabManager?.getActiveTabCurrent()?.entity.webContents.isDevToolsOpened()
-              ? base.tabManager?.getActiveTabCurrent()?.entity.webContents.closeDevTools()
-              : base.tabManager?.getActiveTabCurrent()?.entity.webContents.openDevTools({
-                mode: "left"
-              });
+            base.tabManager?.toggleDevTools();
           }
         }),
         { type: "separator" },
@@ -274,21 +266,13 @@ export function buildContextMenu(base: Base, state: {
       label: "開発者ツールを表示",
       accelerator: "Cmd+Option+I", // macOSのみ
       click() {
-        base.tabManager?.getActiveTabCurrent()?.entity.webContents.isDevToolsOpened()
-          ? base.tabManager?.getActiveTabCurrent()?.entity.webContents.closeDevTools()
-          : base.tabManager?.getActiveTabCurrent()?.entity.webContents.openDevTools({
-            mode: "left"
-          });
+        base.tabManager?.toggleDevTools();
       }
     } : {
       label: "開発者ツールを表示",
       accelerator: "F12", // WindowsとLinux
       click() {
-        base.tabManager?.getActiveTabCurrent()?.entity.webContents.isDevToolsOpened()
-          ? base.tabManager?.getActiveTabCurrent()?.entity.webContents.closeDevTools()
-          : base.tabManager?.getActiveTabCurrent()?.entity.webContents.openDevTools({
-            mode: "left"
-          });
+        base.tabManager?.toggleDevTools();
       }
     })
   ];
