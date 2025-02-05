@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/mf-3d/flune-browser#readme",
   "dependencies": {
-    "electron": "^34.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
@@ -40,5 +39,9 @@
     "mac": {
       "target": "dmg"
     }
+  },
+  "devDependencies": {
+    "electron": "^34.0.2",
+    "electron-builder": "^25.1.8"
   }
 }
