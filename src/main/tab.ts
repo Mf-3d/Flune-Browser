@@ -161,7 +161,14 @@ export class TabManager {
     if (id === this.activeCurrent && i !== -1) {
       if (this.tabs.length <= 1) this.base.close();
 
-      this.activateTab(this.tabs[i >= 0 ? i - 1 : 0].id);
+      const nextTab = this.tabs[i >= 0 ? i - 1 : 1];
+
+      if (!nextTab) {
+        console.error("Could not remove tab: Next tab to activate does not exist.");
+        return;
+      }
+
+      this.activateTab(nextTab.id);
     }
 
     // 最後に配列から削除
