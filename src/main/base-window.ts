@@ -1,13 +1,13 @@
 import * as path from "node:path";
-import { 
-  BaseWindow, 
+import {
+  BaseWindow,
   WebContentsView,
   Menu
 } from "electron";
 import { TabManager } from "./tab";
-import { 
+import {
   buildNavigationContextMenu,
-  buildApplicationMenu 
+  buildApplicationMenu
 } from "./menu";
 
 // new window
@@ -21,9 +21,9 @@ export class Base {
     x?: number;
     y?: number;
   } = {
-    width: 800,
-    height: 600
-  };
+      width: 800,
+      height: 600
+    };
   tabManager?: TabManager;
 
   constructor(bounds?: {
@@ -79,7 +79,7 @@ export class Base {
         y: 0,
       });
     });
-    
+
     this.win.contentView.addChildView(this.nav);
 
     this.nav.webContents.once("did-finish-load", () => {
@@ -114,15 +114,15 @@ export class Base {
 
     this.win.on("close", () => {
       this.nav.webContents.close();
-      this.tabManager?.close();
+      this.tabManager?.closeAll();
     });
   }
 
-  close () {
+  close() {
     this.win.close();
   }
 
-  send (channel: string, ...args: any[]) {
+  send(channel: string, ...args: any[]) {
     this.nav.webContents.send(channel, ...args);
   }
 }
