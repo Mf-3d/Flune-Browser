@@ -40,7 +40,7 @@ export class TabManager {
     this.base.win.on('resize', () => {
       if (!this.base) return;
 
-      const bounds = this.base.win.getBounds();
+      const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
 
@@ -94,7 +94,7 @@ export class TabManager {
     this.base.win.on('resize', () => {
       if (!this.base || !entity) return;
 
-      const bounds = this.base.win.getBounds();
+      const bounds = this.base.win.getContentBounds();
 
       entity.setBounds({
         x: this.bounds.x,

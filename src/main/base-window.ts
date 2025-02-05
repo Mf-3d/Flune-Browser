@@ -70,7 +70,7 @@ export class Base {
     this.win.on('resize', () => {
       if (!this.win || !this.nav) return;
 
-      const bounds = this.win.getBounds();
+      const bounds = this.win.getContentBounds();
 
       this.nav.setBounds({
         width: bounds.width,
