@@ -170,8 +170,8 @@ input[type=text] {
   width: calc(100% - 48px);
 }
 
-#tabs span:not( :has(.right .downloading.disabled)) :has(.right .audible.disabled) .title,
-#tabs span:not( :has(.right .audible.disabled)) :has(.right .downloading.disabled) .title {
+#tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
+#tabs span:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
   width: calc(100% - 72px);
 }
 
