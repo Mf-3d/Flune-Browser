@@ -318,8 +318,7 @@ export class TabManager {
   closeAll() {
     this.tabs.forEach((tab) => {
       if (!tab) return;
-      this.deleteEvents(tab.id);
-      tab.entity.webContents.close();
+      this.deleteEvents(tab.id, () => tab.entity.webContents.close());
     });
   }
 
@@ -375,7 +374,7 @@ export class TabManager {
   }
 
   // --イベントを削除
-  deleteEvents(id: string) {
+  deleteEvents(id: string, callback?: Function) {
     const tab = this.getTabById(id);
 
     if (!tab) {
@@ -389,5 +388,7 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-stop-loading");
     tab.entity.webContents.removeAllListeners("audio-state-changed");
     tab.entity.webContents.removeAllListeners("context-menu");
+
+    if (callback) callback();
   }
 }
