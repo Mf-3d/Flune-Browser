@@ -1,6 +1,5 @@
 import { 
-  app,
-  ipcMain
+  app
 } from "electron";
 import { Base } from "./main/base-window";
 

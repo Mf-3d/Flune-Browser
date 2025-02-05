@@ -1,11 +1,9 @@
 import * as path from "node:path";
 import { 
-  app, 
   BaseWindow, 
-  WebContentsView, 
-  nativeTheme,
+  WebContentsView,
 } from "electron";
-import { TabManager, Tab } from "./tab";
+import { TabManager } from "./tab";
 
 // new window
 export class Base {
