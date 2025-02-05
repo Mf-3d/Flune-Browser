@@ -11,6 +11,7 @@ function nw() {
   base.nav.webContents.once("did-finish-load", () => {
     base?.tabManager?.newTab("https://www.youtube.com");
   });
+  if (!app.isPackaged) base.nav.webContents.openDevTools();
 }
 
 app.on("ready", () => {

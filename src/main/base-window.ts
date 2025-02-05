@@ -65,7 +65,6 @@ export class Base {
       x: 0,
       y: 0
     });
-    // this.nav.webContents.openDevTools();
     this.nav.webContents.loadFile(path.join(__dirname, "..", "renderer", "navigation.html"));
     this.win.on('resize', () => {
       if (!this.win || !this.nav) return;
