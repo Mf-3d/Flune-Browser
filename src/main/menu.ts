@@ -332,7 +332,22 @@ export function buildContextMenu(base: Base, state: {
       {
         type: "separator"
       },
-    ] as Electron.MenuItemConstructorOptions[] : []),
+    ] : (state.type === "text" ? [
+      {
+        label: "コピー",
+        role: "copy",
+        enabled: state.params.selectionText !== ""
+      },
+      {
+        label: `「${state.params.selectionText}」を検索`,
+        click() {
+          base.tabManager?.newTab(state.params.selectionText, true)
+        }
+      },
+      {
+        type: "separator"
+      },
+    ] : [])) as Electron.MenuItemConstructorOptions[],
     ...(state.type === "link" ? [
       {
         label: "新しいタブで開く",
