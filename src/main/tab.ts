@@ -88,7 +88,6 @@ export class TabManager {
     // ビューを作成
     let entity = new WebContentsView();
     entity.setBounds(this.bounds);
-    entity.webContents.loadURL(url);
 
     // 自動でリサイズ
     this.base.win.on('resize', () => {
@@ -114,6 +113,8 @@ export class TabManager {
 
     this.tabs?.push(newTab); // 配列に追加
     this.base.win.contentView.addChildView(newTab.entity);
+
+    this.load(newTab.id, url);
 
     // イベントを設定
     this.setEvents(newTab.id);
