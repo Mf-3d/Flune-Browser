@@ -1,12 +1,13 @@
 import {
   app,
-  Menu
+  Menu,
+  shell
 } from "electron";
 
 import { Base } from "./base-window";
 
 export function buildApplicationMenu(base: Base): Electron.Menu {
-  const templateAppMenu: Electron.MenuItemConstructorOptions[] = [
+  const template: Electron.MenuItemConstructorOptions[] = [
     ...(process.platform === "darwin" ? [{
       label: app.name,
       submenu: [
@@ -122,6 +123,12 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
           label: `${app.name} ヘルプ`,
           enabled: false
         },
+        {
+          label: `${app.name}の問題を報告`,
+          click() {
+            shell.openExternal(`https://github.com/Mf-3d/${app.name}/issues/new`)
+          }
+        },
         ...(process.platform === "darwin" ? [] as Electron.MenuItemConstructorOptions[] : [
           { type: "separator" },
           { role: "about", label: `${app.name}について` }
@@ -132,13 +139,12 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
 
 
 
-  const applicationMenu = Menu.buildFromTemplate(templateAppMenu);
+  const menu = Menu.buildFromTemplate(template);
 
-  return applicationMenu;
+  return menu;
 }
 
 export function buildNavigationContextMenu(base: Base, state: {
-  isNav: boolean,
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
   selectionText?: string,
@@ -146,15 +152,114 @@ export function buildNavigationContextMenu(base: Base, state: {
   canGoForward: boolean,
 }) {
   const templateContextMenu: Electron.MenuItemConstructorOptions[] = [
-    ...((state.type === "text" && state.selectionText) ? [
+    ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
       {
-        label: `「${state.selectionText}」を貼り付けて検索`,
+        label: "絵文字",
+        accelerator: "Super+.",
         click() {
-          if (state.selectionText) base.tabManager?.load(undefined, state.selectionText)
+          app.showEmojiPanel();
         }
       },
+      {
+        type: "separator"
+      }
+    ] : [
+      {
+        label: "絵文字",
+        click() {
+          app.showEmojiPanel();
+        }
+      },
+      {
+        type: "separator"
+      }
+    ]) as Electron.MenuItemConstructorOptions[] : []),
+
+    // ---編集可能
+    ...((state.isEditable) ? [
+      {
+        label: "元に戻す",
+        role: "undo"
+      },
+      {
+        label: "やり直す",
+        role: "redo"
+      },
+      {
+        type: "separator"
+      },
+      {
+        label: "すべて選択",
+        role: "selectAll",
+        enabled: state.selectionText !== ""
+      },
+      {
+        label: "切り取り",
+        role: "cut",
+        enabled: state.selectionText !== ""
+      },
+      {
+        label: "コピー",
+        role: "copy",
+        enabled: state.selectionText !== ""
+      },
+      {
+        label: "貼り付け",
+        role: "paste"
+      },
+      {
+        label: "削除",
+        role: "delete",
+        enabled: state.selectionText !== ""
+      },
+      {
+        type: "separator"
+      },
     ] as Electron.MenuItemConstructorOptions[] : []),
+    {
+      label: "新しいタブ",
+      accelerator: "Ctrl+T",
+      click() {
+        base.tabManager?.newTab(undefined, true);
+      }
+    },
+    {
+      label: "戻る",
+      accelerator: "Alt+Left",
+      enabled: state.canGoBack,
+      click() {
+        base.tabManager?.goBack();
+      }
+    },
+    {
+      label: "進む",
+      accelerator: "Alt+Right",
+      enabled: state.canGoForward,
+      click() {
+        base.tabManager?.goForward();
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "ナビゲーションの開発者ツールを表示",
+      click() {
+        base.nav.webContents.toggleDevTools();
+      }
+    },
+    {
+      label: "設定",
+      enabled: false,
+      click() {
+        // 設定ウィンドウ
+      }
+    },
   ];
+  
+  const menu = Menu.buildFromTemplate(templateContextMenu);
+
+  return menu;
 }
 export function buildContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
@@ -163,7 +268,7 @@ export function buildContextMenu(base: Base, state: {
   canGoBack: boolean,
   canGoForward: boolean,
 }): Electron.Menu {
-  const templateContextMenu: Electron.MenuItemConstructorOptions[] = [
+  const template: Electron.MenuItemConstructorOptions[] = [
     ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
       {
         label: "絵文字",
@@ -277,7 +382,7 @@ export function buildContextMenu(base: Base, state: {
     })
   ];
 
-  const contextMenu = Menu.buildFromTemplate(templateContextMenu);
+  const menu = Menu.buildFromTemplate(template);
 
-  return contextMenu;
+  return menu;
 }

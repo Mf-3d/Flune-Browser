@@ -5,7 +5,10 @@ import {
   Menu
 } from "electron";
 import { TabManager } from "./tab";
-import { buildApplicationMenu } from "./menu";
+import { 
+  buildNavigationContextMenu,
+  buildApplicationMenu 
+} from "./menu";
 
 // new window
 export class Base {
@@ -86,7 +89,28 @@ export class Base {
         x: 0,
         y: this.viewY
       });
-    })
+    });
+    this.nav.webContents.on("context-menu", (event, params) => {
+      if (!this.tabManager) return;
+
+      const activeTab = this.tabManager.getActiveTabCurrent();
+      if (!activeTab) return;
+
+      let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
+      if (params.selectionText) type = "text";
+      if (params.linkURL || params.linkText) type = "link";
+      if (params.mediaType === "image") type = "image";
+      if (params.mediaType === "audio") type = "audio";
+      if (params.mediaType === "video") type = "video";
+
+      buildNavigationContextMenu(this, {
+        type,
+        isEditable: params.isEditable,
+        selectionText: params.selectionText,
+        canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
+        canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward(),
+      }).popup();
+    });
 
     this.win.on("close", () => {
       this.nav.webContents.close();
