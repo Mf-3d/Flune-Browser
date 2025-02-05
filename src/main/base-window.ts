@@ -49,7 +49,7 @@ export class Base {
         // symbolColor: nativeTheme.shouldUseDarkColors ? "#fff" : "#000"
       },
       // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
-      icon: path.join(__dirname, "..", "image", "icon.png")
+      icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
