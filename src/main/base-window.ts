@@ -2,8 +2,10 @@ import * as path from "node:path";
 import { 
   BaseWindow, 
   WebContentsView,
+  Menu
 } from "electron";
 import { TabManager } from "./tab";
+import { buildApplicationMenu } from "./menu";
 
 // new window
 export class Base {
@@ -46,6 +48,8 @@ export class Base {
       // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
       icon: path.join(__dirname, "..", "image", "icon.png")
     });
+
+    Menu.setApplicationMenu(buildApplicationMenu(this));
 
     this.nav = new WebContentsView({
       webPreferences: {
