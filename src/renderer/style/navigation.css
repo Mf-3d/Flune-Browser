@@ -182,12 +182,12 @@ input[type=text] {
 
 #tabs>span.adding-left {
   border-left: solid 3px var(--tab-adding-color);
-  filter: drop-shadow(-2em 0 0.75rem var(--tab-adding-color));
+  filter: drop-shadow(-2em 0 2rem var(--tab-adding-color));
 }
 
 #tabs>span.adding-right {
   border-right: solid 3px var(--tab-adding-color);
-  filter: drop-shadow(2em 0 0.75rem var(--tab-adding-color));
+  filter: drop-shadow(2em 0 2rem var(--tab-adding-color));
 }
 
 #tabs a {
