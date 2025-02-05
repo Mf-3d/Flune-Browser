@@ -154,8 +154,8 @@ input[type=text] {
 }
 
 #tabs img.favicon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   aspect-ratio: 1 / 1;
   display: inline-block;
 }
