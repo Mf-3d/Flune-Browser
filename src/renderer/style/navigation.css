@@ -2,27 +2,33 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 @keyframes fadeOut {
   0% {
     opacity: 1;
   }
+
   99% {
     opacity: 0;
   }
+
   100% {
     display: none;
   }
 }
+
 @keyframes rotation {
-  0%{
-    transform:rotate(0);
+  0% {
+    transform: rotate(0);
   }
-  100%{
-    transform:rotate(360deg);
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -39,6 +45,7 @@ body {
   height: 60px;
   -webkit-app-region: drag;
 }
+
 a {
   -webkit-user-drag: none;
 }
@@ -49,46 +56,53 @@ nav {
   user-select: none;
   cursor: default;
 }
+
 nav * {
   -webkit-app-region: no-drag;
 }
+
 nav a.right {
   float: right;
   margin-top: 4px;
 }
+
 nav a {
-  vertical-align:middle; 
+  vertical-align: middle;
 }
-nav a > svg {
+
+nav a>svg {
   width: 20px;
   height: auto;
   stroke: var(--symbol-color);
   stroke-width: 3px;
-  
+
   transition: stroke .5s, stroke-width .5s, filter .5s;
 }
-nav a > svg:hover {
+
+nav a>svg:hover {
   stroke: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
   stroke-width: 4px;
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
 }
+
 nav a.disabled {
-  pointer-events:none;
+  pointer-events: none;
 }
-nav a.disabled > svg {
+
+nav a.disabled>svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
 
-nav > div {
+nav>div {
   display: inline-block;
   background-color: var(--input-color);
   border: none;
   border-radius: 6px;
   height: 23px;
   width: calc(100% - 28px * 4);
-  position:relative;
-  top:-0.5px;
+  position: relative;
+  top: -0.5px;
   padding: 3px;
 }
 
@@ -96,8 +110,8 @@ input[type=text] {
   width: calc(100% - 30px);
   height: 16px;
   line-height: 16px;
-  position: relative; 
-  top:-2px;
+  position: relative;
+  top: -2px;
   font-size: 11px;
 }
 
@@ -109,10 +123,12 @@ input[type=text] {
   margin: 2px;
   margin-right: 160px;
 }
+
 #tabs * {
   -webkit-app-region: no-drag;
 }
-#tabs > span {
+
+#tabs>span {
   display: flex;
   background-color: var(--tab-color);
   border-radius: 6px;
@@ -128,15 +144,18 @@ input[type=text] {
 
   transition: filter .5s, border-right .5s, border-left .5s;
 }
-#tabs > span#opened {
+
+#tabs>span#opened {
   background-color: var(--opened-tab-color);
 }
+
 #tabs img.favicon {
   width: 20px;
   height: 20px;
   aspect-ratio: 1 / 1;
   display: inline-block;
 }
+
 #tabs .title {
   margin-left: 0.8em;
   margin-right: 0.8em;
@@ -145,19 +164,22 @@ input[type=text] {
   white-space: nowrap;
   width: calc(100% - 48px);
 }
-#tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
-#tabs span:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title
- {
+
+#tabs span:not( :has(.right .downloading.disabled)) :has(.right .audible.disabled) .title,
+#tabs span:not( :has(.right .audible.disabled)) :has(.right .downloading.disabled) .title {
   width: calc(100% - 72px);
 }
+
 #tabs span:not(:has(.right .disabled)) .title {
   width: calc(100% - 96px);
 }
-#tabs > span.adding-left {
+
+#tabs>span.adding-left {
   border-left: solid 3px var(--tab-adding-color);
   filter: drop-shadow(-2em 0 0.75rem var(--tab-adding-color));
 }
-#tabs > span.adding-right {
+
+#tabs>span.adding-right {
   border-right: solid 3px var(--tab-adding-color);
   filter: drop-shadow(2em 0 0.75rem var(--tab-adding-color));
 }
@@ -172,14 +194,16 @@ input[type=text] {
   animation-duration: .2s;
   animation-fill-mode: forwards;
 }
-#tabs a > svg {
+
+#tabs a>svg {
   width: 20px;
   height: 20px;
   stroke: color-mix(in srgb, var(--symbol-color), #fff 50%);
   stroke-width: 2px;
-  
+
   transition: stroke .5s, stroke-width .5s, filter .5s;
 }
+
 #tabs a:not(.close-button).disabled {
   cursor: default;
 
@@ -188,12 +212,12 @@ input[type=text] {
   animation-fill-mode: forwards;
 }
 
-#tabs > span#opened a > svg {
+#tabs>span#opened a>svg {
   width: 20px;
   height: 20px;
   stroke: #fff;
   stroke-width: 2px;
-  
+
   transition: stroke .5s, stroke-width .5s, filter .5s;
 }
 
@@ -202,14 +226,15 @@ input[type=text] {
   width: 100%;
 }
 
-#tabs > .right {
+#tabs>.right {
   transform: translate(0, 10%);
   width: 20px;
   height: 20px;
   margin-left: 2px;
   margin-right: 2px;
 }
-#tabs span > .right {
+
+#tabs span>.right {
   text-align: right;
   position: absolute;
   top: 50%;
@@ -218,6 +243,7 @@ input[type=text] {
   width: 64px;
   height: 20px;
 }
+
 #tabs a.close-button {
   position: absolute;
   top: 50%;
@@ -226,6 +252,7 @@ input[type=text] {
   width: 20px;
   height: 20px;
 }
-#tabs a.loading > svg {
+
+#tabs a.loading>svg {
   animation: .5s ease-in infinite rotation;
 }

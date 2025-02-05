@@ -101,7 +101,7 @@ window.addEventListener("load", () => {
   });
 });
 
-function search () {
+function search() {
   const activeTab = document.querySelector("#tabs > #opened");
   const input = document.querySelector("#search-bar");
   flune.load(activeTab.getAttribute("data-id"), input.value);
@@ -109,7 +109,7 @@ function search () {
   input.blur();
 }
 
-function each () {
+function each() {
   const tabContainer = document.getElementById("tabs");
 
   tabContainer.querySelectorAll(":scope > span").forEach((element) => {
@@ -157,7 +157,7 @@ function each () {
         //マウスカーソルの位置が要素の半分より右
         element.insertAdjacentElement('afterend', tabInDrag);
       }
-      
+
       tabContainer.querySelectorAll(":scope > span").forEach((el) => {
         el.classList.remove("adding-left");
         el.classList.remove("adding-right");

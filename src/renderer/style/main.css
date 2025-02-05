@@ -19,6 +19,7 @@ input[type=text] {
   padding: 3px;
   vertical-align: middle;
 }
+
 input[type=text]:focus {
   outline: none;
 }

@@ -1,4 +1,4 @@
-import { 
+import {
   app
 } from "electron";
 import { Base } from "./main/base-window";
