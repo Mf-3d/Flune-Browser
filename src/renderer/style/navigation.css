@@ -159,6 +159,7 @@ input[type=text] {
   height: 18px;
   aspect-ratio: 1 / 1;
   display: inline-block;
+  pointer-events: none;
 }
 
 #tabs .title {
@@ -249,6 +250,10 @@ input[type=text] {
   height: 20px;
 }
 
+span.right {
+  pointer-events: none;
+}
+
 #tabs a.close-button {
   position: absolute;
   top: 50%;
@@ -260,4 +265,5 @@ input[type=text] {
 
 #tabs a.loading>svg {
   animation: .5s ease-in infinite rotation;
+  pointer-events: none;
 }
