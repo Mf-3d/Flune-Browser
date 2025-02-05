@@ -38,6 +38,10 @@
   --tab-adding-color: #2582CF;
 }
 
+:root:active {
+  outline: none;
+}
+
 body {
   margin: 0;
   margin-left: 8px;
