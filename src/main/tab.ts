@@ -158,7 +158,7 @@ export class TabManager {
     this.base.send("tab.remove", id);
 
     // 別のタブをアクティブ化
-    if (i !== -1) {
+    if (id === this.activeCurrent && i !== -1) {
       if (this.tabs.length <= 1) this.base.close();
 
       this.activateTab(this.tabs[i > 0 ? i - 1 : 0].id);

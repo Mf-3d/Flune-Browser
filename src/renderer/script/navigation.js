@@ -117,7 +117,7 @@ function each() {
     element.removeEventListener("click", arguments.callee);
     element.removeEventListener("dragend", arguments.callee);
 
-    element.addEventListener("click", () => {
+    element.querySelector(":scope > .title").addEventListener("click", () => {
       // if (!canMove) return;
       flune.switchTab(element.getAttribute("data-id"));
     });
