@@ -359,9 +359,9 @@ export class TabManager {
       buildContextMenu(this.base, {
         type,
         isEditable: params.isEditable,
-        selectionText: params.selectionText,
         canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
         canGoForward: tab.entity.webContents.navigationHistory.canGoForward(),
+        params
       }).popup();
     });
   }

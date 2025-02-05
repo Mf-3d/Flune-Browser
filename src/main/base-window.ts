@@ -106,9 +106,9 @@ export class Base {
       buildNavigationContextMenu(this, {
         type,
         isEditable: params.isEditable,
-        selectionText: params.selectionText,
         canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
         canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward(),
+        params
       }).popup();
     });
 

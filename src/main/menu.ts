@@ -147,9 +147,9 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
 export function buildNavigationContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
-  selectionText?: string,
   canGoBack: boolean,
   canGoForward: boolean,
+  params: Electron.ContextMenuParams
 }) {
   const templateContextMenu: Electron.MenuItemConstructorOptions[] = [
     ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
@@ -191,17 +191,17 @@ export function buildNavigationContextMenu(base: Base, state: {
       {
         label: "すべて選択",
         role: "selectAll",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "切り取り",
         role: "cut",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "コピー",
         role: "copy",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "貼り付け",
@@ -210,7 +210,7 @@ export function buildNavigationContextMenu(base: Base, state: {
       {
         label: "削除",
         role: "delete",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         type: "separator"
@@ -264,9 +264,9 @@ export function buildNavigationContextMenu(base: Base, state: {
 export function buildContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
-  selectionText?: string,
   canGoBack: boolean,
   canGoForward: boolean,
+  params: Electron.ContextMenuParams
 }): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
@@ -308,17 +308,17 @@ export function buildContextMenu(base: Base, state: {
       {
         label: "すべて選択",
         role: "selectAll",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "切り取り",
         role: "cut",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "コピー",
         role: "copy",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         label: "貼り付け",
@@ -327,13 +327,20 @@ export function buildContextMenu(base: Base, state: {
       {
         label: "削除",
         role: "delete",
-        enabled: state.selectionText !== ""
+        enabled: state.params.selectionText !== ""
       },
       {
         type: "separator"
       },
     ] as Electron.MenuItemConstructorOptions[] : []),
-
+    ...(state.type === "link" ? [
+      {
+        label: "新しいタブで開く",
+        click() {
+          base.tabManager?.newTab(state.params.linkURL)
+        }
+      }
+    ] : []) as Electron.MenuItemConstructorOptions[],
     {
       label: "戻る",
       accelerator: "Alt+Left",
