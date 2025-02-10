@@ -143,6 +143,7 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
 
   return menu;
 }
+
 export function buildContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
@@ -317,6 +318,51 @@ export function buildContextMenu(base: Base, state: {
         }
       })
     ]) as Electron.MenuItemConstructorOptions[]
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+
+  return menu;
+}
+
+export function buildOptionsMenu(base: Base): Electron.Menu {
+  const template: Electron.MenuItemConstructorOptions[] = [
+    {
+      label: "新しいタブ",
+      accelerator: "Ctrl+T",
+      click() {
+        base.tabManager?.newTab(undefined, true);
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "履歴",
+      submenu: []
+    },
+    {
+      label: "ダウンロード",
+      submenu: []
+    },
+    {
+      label: "ブックマーク",
+      submenu: []
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "設定",
+      enabled: false,
+      click() {
+        // 設定ウィンドウ
+      }
+    },
+    {
+      label: "終了",
+      role: "quit"
+    }
   ];
 
   const menu = Menu.buildFromTemplate(template);

@@ -2,12 +2,14 @@ import * as path from "node:path";
 import {
   BaseWindow,
   WebContentsView,
-  Menu
+  Menu,
+  ipcMain
 } from "electron";
 import { TabManager } from "./tab";
 import {
   buildContextMenu,
-  buildApplicationMenu
+  buildApplicationMenu,
+  buildOptionsMenu
 } from "./menu";
 
 // new window
@@ -25,6 +27,7 @@ export class Base {
       height: 600
     };
   tabManager?: TabManager;
+  optionsMenu: Electron.Menu;
 
   constructor(bounds?: {
     width: number;
@@ -53,6 +56,9 @@ export class Base {
     });
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
+
+    
+    this.optionsMenu = buildOptionsMenu(this);
 
     this.nav = new WebContentsView({
       webPreferences: {
@@ -110,6 +116,10 @@ export class Base {
         params,
         isNav: true
       }).popup();
+    });
+
+    ipcMain.handle("options.toggle", () => {
+      this.optionsMenu.popup();
     });
 
     this.win.on("close", () => {
