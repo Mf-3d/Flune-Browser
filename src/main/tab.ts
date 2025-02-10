@@ -368,7 +368,8 @@ export class TabManager {
         isEditable: params.isEditable,
         canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
         canGoForward: tab.entity.webContents.navigationHistory.canGoForward(),
-        params
+        params,
+        isNav: false
       }).popup();
     });
   }

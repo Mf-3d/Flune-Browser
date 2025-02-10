@@ -143,7 +143,7 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
 
   return menu;
 }
-
+/** @deprecated */
 export function buildNavigationContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
@@ -266,7 +266,8 @@ export function buildContextMenu(base: Base, state: {
   isEditable: boolean,
   canGoBack: boolean,
   canGoForward: boolean,
-  params: Electron.ContextMenuParams
+  params: Electron.ContextMenuParams,
+  isNav: boolean
 }): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
@@ -290,7 +291,7 @@ export function buildContextMenu(base: Base, state: {
       {
         type: "separator"
       }
-    ]) as Electron.MenuItemConstructorOptions[] : []),
+    ]) : []) as Electron.MenuItemConstructorOptions[],
 
     // ---編集可能
     ...((state.isEditable) ? [
@@ -354,54 +355,86 @@ export function buildContextMenu(base: Base, state: {
         click() {
           base.tabManager?.newTab(state.params.linkURL)
         }
-      }
+      },
+      {
+        type: "separator"
+      },
     ] : []) as Electron.MenuItemConstructorOptions[],
-    {
-      label: "戻る",
-      accelerator: "Alt+Left",
-      enabled: state.canGoBack,
-      click() {
-        base.tabManager?.goBack();
-      }
-    },
-    {
-      label: "進む",
-      accelerator: "Alt+Right",
-      enabled: state.canGoForward,
-      click() {
-        base.tabManager?.goForward();
-      }
-    },
-    {
-      label: "再読み込み",
-      accelerator: "CmdOrCtrl+R",
-      click() {
-        base.tabManager?.reloadTab();
-      }
-    },
+    ...(state.isNav ? [
+      {
+        label: "新しいタブ",
+        accelerator: "Ctrl+T",
+        click() {
+          base.tabManager?.newTab(undefined, true);
+        }
+      },
+    ] : [
+      {
+        label: "戻る",
+        accelerator: "Alt+Left",
+        enabled: state.canGoBack,
+        click() {
+          base.tabManager?.goBack();
+        }
+      },
+      {
+        label: "進む",
+        accelerator: "Alt+Right",
+        enabled: state.canGoForward,
+        click() {
+          base.tabManager?.goForward();
+        }
+      },
+      {
+        label: "再読み込み",
+        accelerator: "CmdOrCtrl+R",
+        click() {
+          base.tabManager?.reloadTab();
+        }
+      },
+    ]),
     {
       type: "separator"
     },
-    {
-      label: "ページのソースを表示",
-      accelerator: "Ctrl+U",
-      click() {
-        base.tabManager?.newTab(`view-source:${base.tabManager?.getActiveTabCurrent()?.entity.webContents.getURL()}`);
+    ...(state.isNav ? [
+      {
+        type: "separator"
+      },
+      {
+        label: "ナビゲーションの開発者ツールを表示",
+        click() {
+          base.nav.webContents.toggleDevTools();
+        }
+      },
+      {
+        label: "設定",
+        enabled: false,
+        click() {
+          // 設定ウィンドウ
+        }
       }
-    },
-    (process.platform === "darwin" ? {
-      label: "開発者ツールを表示",
-      accelerator: "Cmd+Option+I", // macOSのみ
-      click() {
-        base.tabManager?.toggleDevTools();
-      }
-    } : {
-      label: "開発者ツールを表示",
-      accelerator: "F12", // WindowsとLinux
-      click() {
-        base.tabManager?.toggleDevTools();
-      }
-    })
+    ] : [
+      {
+        label: "ページのソースを表示",
+        accelerator: "Ctrl+U",
+        click() {
+          base.tabManager?.newTab(`view-source:${base.tabManager?.getActiveTabCurrent()?.entity.webContents.getURL()}`);
+        }
+      },
+      (process.platform === "darwin" ? {
+        label: "開発者ツールを表示",
+        accelerator: "Cmd+Option+I", // macOSのみ
+        click() {
+          base.tabManager?.toggleDevTools();
+        }
+      } : {
+        label: "開発者ツールを表示",
+        accelerator: "F12", // WindowsとLinux
+        click() {
+          base.tabManager?.toggleDevTools();
+        }
+      })
+    ]) as Electron.MenuItemConstructorOptions[]
   ];
 
   const menu = Menu.buildFromTemplate(template);

@@ -6,7 +6,7 @@ import {
 } from "electron";
 import { TabManager } from "./tab";
 import {
-  buildNavigationContextMenu,
+  buildContextMenu,
   buildApplicationMenu
 } from "./menu";
 
@@ -102,12 +102,13 @@ export class Base {
       if (params.mediaType === "audio") type = "audio";
       if (params.mediaType === "video") type = "video";
 
-      buildNavigationContextMenu(this, {
+      buildContextMenu(this, {
         type,
         isEditable: params.isEditable,
         canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
         canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward(),
-        params
+        params,
+        isNav: true
       }).popup();
     });
 
