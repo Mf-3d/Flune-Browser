@@ -1,11 +1,13 @@
 {
   "name": "flune-browser",
-  "version": "3.0.0",
+  "version": "3.0.0-dev.2025.02.10.1",
   "description": "Newer and more challenging than anyone else.",
   "main": "src/main.js",
   "scripts": {
     "test": "npm run build & npx electron .",
-    "build": "npx tsc"
+    "build": "npx tsc",
+    "build:win": "npm run build & npx electron-builder --win --x64",
+    "build:mac": "npm run build & npx electron-builder --mac --x64"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -24,24 +26,50 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
-  "build": {
-    "appId": "io.github.mf-3d.flune-browser",
-    "productName": "Flune-Browser",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "build/**/*"
-    ],
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    }
-  },
   "devDependencies": {
     "electron": "^34.0.2",
     "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "io.github.mf-3d.flune-browser",
+    "productName": "Flune-Browser",
+    "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}",
+    "files": [
+      "src/**/*",
+      "!src/**/*.ts"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "draft"
+    },
+    "win": {
+      "icon": "./src/assets/image/icon.png",
+      "target": ["nsis", "zip"],
+      "signtoolOptions": {
+        "publisherName": "mf7cli"
+      }
+    },
+    "nsis": {
+      "artifactName": "${productName}-${version}-win-installer.exe"
+    },
+    "mac": {
+      "icon": "./src/assets/image/icon.png",
+      
+      "category": "public.app-category.utilities",
+      "target": {
+        "target": "dmg",
+        "arch": "universal"
+      },
+      "identity": null
+    },
+    "linux": {
+      "icon": "./src/assets/image/icon.png",
+      "target": ["AppImage"],
+      
+      "category": "Utility"
+    }
   }
 }
