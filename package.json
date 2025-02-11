@@ -1,6 +1,6 @@
 {
   "name": "flune-browser",
-  "version": "3.0.0-dev-2025.02.10.2",
+  "version": "3.0.0",
   "description": "Newer and more challenging than anyone else.",
   "main": "src/main.js",
   "scripts": {
