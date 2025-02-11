@@ -1,1 +1,32 @@
-😟😟😟😟😟
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="../style/main.css" />
+  <link rel="stylesheet" href="../style/browser.css" />
+  <title>新しいタブ - Flune-Browser</title>
+</head>
+
+<body>
+  <div>
+    <span style="user-select: none;">
+      <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
+      <span class="flune-version">3</span>
+    </span>
+    <br />
+    <span id="address-box">
+      <input id="search-bar" type="text" placeholder="検索するURLを入力" style="-webkit-app-region: no-drag;" />
+      <a href="javascript:search()" class="border"><i data-lucide="search"></i></a>
+    </span>
+    <br />
+    <div id="links">
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="../script/home.js"></script>
+</body>
+
+</html>
