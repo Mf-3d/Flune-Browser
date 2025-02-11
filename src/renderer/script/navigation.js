@@ -79,7 +79,7 @@ window.addEventListener("load", () => {
         switch (state) {
           case "title":
             console.info("(change-state) title:", value);
-            tab.querySelector("p.title").innerHTML = value;
+            tab.querySelector("p.title").innerText = value;
             break;
           case "favicon":
             console.info("(change-state) favicon:", value);
