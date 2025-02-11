@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld("flune", {
   moveTab: () => {
     ipcRenderer.invoke("tab.move"); // タブ移動
   },
-  load: (id: string, word: string) => {
+  load: (id: string | undefined, word: string) => {
     ipcRenderer.invoke("tab.load", id, word); // ページをロードする
   },
   goForward: () => {
