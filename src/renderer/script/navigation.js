@@ -29,7 +29,7 @@ window.addEventListener("load", () => {
     element.draggable = true;
     element.setAttribute("data-id", tab.id);
     element.innerHTML = `
-    <img src="" class="favicon" onerror="this.onerror = null; this.src='https://unpkg.com/lucide-static@latest/icons/file.svg';"/>
+    <img src="" class="favicon" onerror="this.src='https://unpkg.com/lucide-static@latest/icons/file.svg';"/>
     <a href="#" class="loading disabled">
       <i data-lucide="loader-circle"></i>
     </a>

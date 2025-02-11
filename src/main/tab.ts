@@ -355,6 +355,7 @@ export class TabManager {
       this.base.send("nav.change-state", "can-go-forward", tab.entity.webContents.navigationHistory.canGoForward());
       this.base.send("tab.change-state", tab.id, "loading", false);
       this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      this.base.send("tab.change-state", tab.id, "favicon", "");
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
