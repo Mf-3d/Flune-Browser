@@ -176,6 +176,18 @@ export function buildContextMenu(base: Base, state: {
       }
     ]) : []) as Electron.MenuItemConstructorOptions[],
 
+    ...((state.type === "video") ? [
+      {
+        label: "ピクチャーインピクチャー",
+        click() {
+          base.tabManager?.getActiveTabCurrent()?.entity.webContents.send("video.pip");
+          base.tabManager?.getActiveTabCurrent()?.entity.webContents.executeJavaScript(`(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`);
+        }
+      },
+      {
+        type: "separator"
+      }
+    ] : []) as Electron.MenuItemConstructorOptions[],
     // ---編集可能
     ...((state.isEditable) ? [
       {
