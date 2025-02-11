@@ -69,6 +69,9 @@ export class TabManager {
     ipcMain.handle('tab.load', (event, id, url) => {
       this.load(id, url);
     });
+    ipcMain.handle("flune.ver", () => {
+      return process.env.npm_package_version;
+    });
   }
 
   // --IDからタブを取得
@@ -86,7 +89,11 @@ export class TabManager {
     if (!url) url = HOME_URL;
 
     // ビューを作成
-    let entity = new WebContentsView();
+    let entity = new WebContentsView({
+      webPreferences: {
+        preload: path.join(__dirname, "..", "preload", "browser.js")
+      }
+    });
     entity.setBounds(this.bounds);
 
     // 自動でリサイズ
