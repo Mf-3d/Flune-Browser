@@ -9,7 +9,7 @@ let base: Base | null | undefined;
 function nw() {
   base = new Base();
   base.nav.webContents.once("did-finish-load", () => {
-    base?.tabManager?.newTab("https://www.youtube.com");
+    base?.tabManager?.newTab();
   });
   if (!app.isPackaged) base.nav.webContents.openDevTools();
 }
