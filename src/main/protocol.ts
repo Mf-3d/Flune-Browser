@@ -47,7 +47,6 @@ export class Protocol {
           });
         }
         case Url.startsWith("/assets") && Url: {
-          console.log(pathToFileURL(this.pathToServe.assets), 999, Url.slice(7));
           return net.fetch(pathToFileURL(this.pathToServe.assets + Url.slice(7)).toString());
         }
         default: {
