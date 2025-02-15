@@ -12,6 +12,7 @@ export class Protocol {
     script: path.join(__dirname, "..", "renderer", "script"),
     style: path.join(__dirname, "..", "renderer", "style"),
     assets: path.join(__dirname, "..", "assets"),
+    error: path.join(__dirname, "..", "renderer", "browser", "error"),
   };
 
   constructor(name: string = "flune") {
@@ -48,6 +49,9 @@ export class Protocol {
         }
         case Url.startsWith("/assets") && Url: {
           return net.fetch(pathToFileURL(this.pathToServe.assets + Url.slice(7)).toString());
+        }
+        case Url.startsWith("/error") && Url: {
+          return net.fetch(pathToFileURL(this.pathToServe.error + Url.slice(6)).toString());
         }
         default: {
           return new Response(`not found: <pre>${Url}</pre>`, {

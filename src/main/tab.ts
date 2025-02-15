@@ -13,6 +13,13 @@ export type Tab = {
   active: boolean;
 }
 
+const errCodes = {
+  "aborted": -3,
+  "server-notfound": -105,
+  "internet-disconnected": -106,
+  "connection-timed-out": -118,
+}
+
 // 内部ページのパス
 const HOME_URL = "flune://home";
 
@@ -142,7 +149,7 @@ export class TabManager {
     this.base.send("tab.new", tabInfo);
 
     entity.webContents.once("did-finish-load", () => {
-      this.base.send("nav.set-word", url);
+      if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     });
 
     if (active) this.activateTab(newTab.id);
@@ -205,7 +212,8 @@ export class TabManager {
 
     // レンダラーにも反映
     this.base.send("tab.activate", activeTab.id);
-    this.base.send("nav.set-word", activeTab.entity.webContents.getURL());
+    const activeTabUrl = activeTab.entity.webContents.getURL();
+    if (!activeTabUrl.startsWith("flune://error")) this.base.send("nav.set-word", activeTabUrl);
 
     return activeTab;
   }
@@ -290,11 +298,10 @@ export class TabManager {
 
     if (URL.canParse(url)) {
       tab.entity.webContents.loadURL(url);
-      this.base.send("nav.set-word", url);
+      if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     } else {
       const searchUrl = `https://google.com/search?q=${url}`
       tab.entity.webContents.loadURL(searchUrl);
-      this.base.send("nav.set-word", searchUrl);
     }
   }
 
@@ -347,21 +354,33 @@ export class TabManager {
       this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
     });
     tab.entity.webContents.on("did-start-loading", () => {
+      const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
-      this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     tab.entity.webContents.on("did-stop-loading", () => {
+      const tabUrl = tab.entity.webContents.getURL();
       this.base.send("nav.change-state", "can-go-back", tab.entity.webContents.navigationHistory.canGoBack());
       this.base.send("nav.change-state", "can-go-forward", tab.entity.webContents.navigationHistory.canGoForward());
       this.base.send("tab.change-state", tab.id, "loading", false);
-      this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
     });
     tab.entity.webContents.on("did-finish-load", () => {
-      this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      const tabUrl = tab.entity.webContents.getURL();
+      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
+    });
+    tab.entity.webContents.on("did-fail-load", (event, errCode) => {
+      // 無限ループが発生するのを防ぐ
+      if (tab.entity.webContents.getURL().startsWith("flune://error")) return;
+
+      switch (errCode) {
+        case (errCodes["server-notfound"]): this.load(tab.id, "flune://error/server-notfound.html");
+        default: this.load(tab.id, "flune://error/error.html");
+      }
     });
     tab.entity.webContents.on("context-menu", (event, params) => {
       let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
