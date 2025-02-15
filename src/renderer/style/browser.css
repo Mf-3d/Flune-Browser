@@ -55,6 +55,18 @@ body > div {
 
 a {
   vertical-align: middle;
+  display: inline-block;
+  color: var(--symbol-color);
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-app-region: no-drag;
+
+  transition: color .5s, filter .5s;
+}
+
+a:hover {
+  color: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
+  filter: drop-shadow(0 0 0.75rem var(--symbol-color));
 }
 
 a>svg {
@@ -80,3 +92,4 @@ a.disabled>svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
+
