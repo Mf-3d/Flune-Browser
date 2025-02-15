@@ -365,6 +365,7 @@ export class TabManager {
       this.base.send("tab.change-state", tab.id, "loading", false);
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
+      this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
