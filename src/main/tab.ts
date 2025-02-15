@@ -14,7 +14,7 @@ export type Tab = {
 }
 
 // 内部ページのパス
-const HOME_URL = path.join("file://", __dirname, "..", "renderer", "browser", "home.html");
+const HOME_URL = "flune://home";
 
 // -タブ管理
 export class TabManager {
