@@ -68,6 +68,7 @@ window.addEventListener("load", () => {
   });
 
   flune.on("nav.set-word", (event, word) => {
+    if(word === "flune://home") word = "";
     console.info("(nav.set-word):", word);
     input.value = word;
   });
