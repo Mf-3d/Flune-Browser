@@ -3,8 +3,8 @@ import { pathToFileURL } from "node:url";
 import path from "node:path";
 
 export class Protocol {
-  name: string;
-  pathToServe: {
+  readonly name: string;
+  readonly pathToServe: {
     [path: string]: string
   } = {
     home: path.join(__dirname, "..", "renderer", "browser", "home.html"),

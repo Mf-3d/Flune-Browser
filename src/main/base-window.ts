@@ -15,8 +15,8 @@ import {
 // new window
 export class Base {
   viewY: number = 66;
-  win: BaseWindow;
-  nav: WebContentsView;
+  readonly win: BaseWindow;
+  readonly nav: WebContentsView;
   bounds: {
     width: number;
     height: number;
@@ -120,7 +120,7 @@ export class Base {
     ipcMain.handle("options.toggle", () => {
       this.optionsMenu.popup();
     });
-    
+
     this.win.on("close", () => {
       this.nav.webContents.close();
       this.tabManager?.closeAll();

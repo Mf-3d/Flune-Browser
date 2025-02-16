@@ -26,8 +26,8 @@ const HOME_URL = "flune://home";
 
 // -タブ管理
 export class TabManager {
-  private _settings: Settings;
-  private base: Base;
+  private readonly _settings: Settings;
+  private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
     width: number;

@@ -6,7 +6,8 @@ const SETTING_URL = "flune://settings";
 const PRELOAD_URL = path.join(__dirname, "..", "preload", "settings.js");
 
 export class Settings {
-  private _tabManager: TabManager;
+  private readonly _tabManager: TabManager;
+  
   constructor(tabManager: TabManager) {
     this._tabManager = tabManager;
   }
