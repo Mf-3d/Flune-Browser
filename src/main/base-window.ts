@@ -55,9 +55,7 @@ export class Base {
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
 
-    Menu.setApplicationMenu(buildApplicationMenu(this));
-
-    
+    Menu.setApplicationMenu(buildApplicationMenu(this));    
     this.optionsMenu = buildOptionsMenu(this);
 
     this.nav = new WebContentsView({
@@ -72,6 +70,7 @@ export class Base {
       y: 0
     });
     this.nav.webContents.loadFile(path.join(__dirname, "..", "renderer", "navigation.html"));
+
     this.win.on('resize', () => {
       if (!this.win || !this.nav) return;
 
@@ -121,6 +120,7 @@ export class Base {
     ipcMain.handle("options.toggle", () => {
       this.optionsMenu.popup();
     });
+    
     this.win.on("close", () => {
       this.nav.webContents.close();
       this.tabManager?.closeAll();
