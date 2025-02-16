@@ -36,9 +36,6 @@ export class Settings {
       console.error("Could not set events: Tab does not exist.");
       return;
     }
-
-    // tab.entity.webContents.on("did-start-loading", () => { this.exitSettings(tab.id) });
-    // tab.entity.webContents.on("did-start-loading", this.exitSettings);
   }
 
   deleteEvents(tabId: string) {
