@@ -13,6 +13,7 @@ export class Settings {
 
   // 設定をタブとして開く
   openSettingsAsTab(tabId?: string) {
+    console.debug(this._tabManager)
     if (!tabId) tabId = this._tabManager.activeCurrent || "";
     const tab = this._tabManager.getTabById(tabId);
 
@@ -23,8 +24,8 @@ export class Settings {
 
     if(tab.entity.webContents.getURL() !== SETTING_URL) this._tabManager.load(tab.id, SETTING_URL);
 
-    this.setEvents(tab.id);
     this.attachPreload(tab.id);
+    this.setEvents(tab.id);
   }
 
   setEvents(tabId: string) {
@@ -37,7 +38,8 @@ export class Settings {
       return;
     }
 
-    tab.entity.webContents.once("did-start-loading", () => { this.exitSettings(tab.id) });
+    // tab.entity.webContents.on("did-start-loading", () => { this.exitSettings(tab.id) });
+    // tab.entity.webContents.on("did-start-loading", this.exitSettings);
   }
 
   deleteEvents(tabId: string) {
@@ -48,7 +50,8 @@ export class Settings {
       return;
     }
     
-    tab.entity.webContents.removeListener("did-start-loading", () => { this.exitSettings(tab.id) });
+    // tab.entity.webContents.removeListener("did-start-loading", () => { this.exitSettings(tab.id) });
+    // tab.entity.webContents.removeListener("did-start-loading", this.exitSettings);
   }
 
   // プリロードを追加する
@@ -75,7 +78,7 @@ export class Settings {
     tab.entity.webContents.session.setPreloads(preloads);
 
     // プリロードの追加はリロード後に反映される
-    tab.entity.webContents.reload();
+    this._tabManager.reloadTab(tab.id);
   }
 
   // プリロードを削除する
@@ -89,12 +92,18 @@ export class Settings {
     }
 
     const preloads = tab.entity.webContents.session.getPreloads();
+    if (!preloads.includes(PRELOAD_URL)) return;
 
     const detachedPreloads = preloads.filter(preload => preload !== PRELOAD_URL);
     tab.entity.webContents.session.setPreloads(detachedPreloads);
+
+    // プリロードの削除はリロード後に反映される
+    // this._tabManager.reloadTab(tab.id);
+    tab.entity.webContents.reload()
   }
 
-  exitSettings(tabId: string) {
+  exitSettings(tabId?: string) {
+    if (!tabId) tabId = this._tabManager.activeCurrent || "";
     const tab = this._tabManager.getTabById(tabId);
 
     if (!tab) {
@@ -105,6 +114,6 @@ export class Settings {
     if (tab.entity.webContents.getURL() === SETTING_URL) return;
 
     this.detachPreload(tab.id);
-    this.deleteEvents(tab.id);
+    // this.deleteEvents(tab.id);
   }
 }

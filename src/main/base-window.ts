@@ -121,7 +121,6 @@ export class Base {
     ipcMain.handle("options.toggle", () => {
       this.optionsMenu.popup();
     });
-
     this.win.on("close", () => {
       this.nav.webContents.close();
       this.tabManager?.closeAll();

@@ -362,6 +362,7 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      this._settings.exitSettings();
     });
     tab.entity.webContents.on("did-stop-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
