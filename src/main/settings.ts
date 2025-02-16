@@ -72,8 +72,8 @@ export class Settings {
 
     let preloads = tab.entity.webContents.session.getPreloads();
 
-    if (preloads.includes(PRELOAD_URL)) return;
-    
+    if (this.isAttachedPreloads(tab.id)) return;
+
     preloads.push(PRELOAD_URL);
     tab.entity.webContents.session.setPreloads(preloads);
 
@@ -92,14 +92,29 @@ export class Settings {
     }
 
     const preloads = tab.entity.webContents.session.getPreloads();
-    if (!preloads.includes(PRELOAD_URL)) return;
+    if (!this.isAttachedPreloads(tab.id)) return;
 
     const detachedPreloads = preloads.filter(preload => preload !== PRELOAD_URL);
     tab.entity.webContents.session.setPreloads(detachedPreloads);
 
     // プリロードの削除はリロード後に反映される
     // this._tabManager.reloadTab(tab.id);
-    tab.entity.webContents.reload()
+    tab.entity.webContents.reload();
+  }
+
+  // プリロードが追加されているか
+  isAttachedPreloads(tabId?: string) {
+    if (!tabId) tabId = this._tabManager.activeCurrent || "";
+    const tab = this._tabManager.getTabById(tabId);
+
+    if (!tab) {
+      console.error("Could not attach preloads: Tab does not exist.");
+      return;
+    }
+
+    const preloads = tab.entity.webContents.session.getPreloads();
+
+    return preloads.includes(PRELOAD_URL);
   }
 
   closeSettings(tabId?: string) {
