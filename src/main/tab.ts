@@ -217,6 +217,8 @@ export class TabManager {
 
     // レンダラーにも反映
     this.base.send("tab.activate", activeTab.id);
+    this.base.send("nav.change-state", "can-go-back", activeTab.entity.webContents.navigationHistory.canGoBack());
+    this.base.send("nav.change-state", "can-go-forward", activeTab.entity.webContents.navigationHistory.canGoForward());
     const activeTabUrl = activeTab.entity.webContents.getURL();
     if (!activeTabUrl.startsWith("flune://error")) this.base.send("nav.set-word", activeTabUrl);
 
