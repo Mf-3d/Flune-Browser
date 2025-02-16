@@ -354,17 +354,21 @@ export class TabManager {
 
     this.deleteEvents(id);
 
+    // タイトルが変更されたとき
     tab.entity.webContents.on("page-title-updated", (event, title) => {
       this.base.send("tab.change-state", tab.id, "title", title);
     });
+    // ファビコンが変更されたとき
     tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
       this.base.send("tab.change-state", tab.id, "favicon", favicons[0]);
     });
+    // ロードが始まった時
     tab.entity.webContents.on("did-start-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
+    // ロードが停止した時
     tab.entity.webContents.on("did-stop-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("nav.change-state", "can-go-back", tab.entity.webContents.navigationHistory.canGoBack());
@@ -376,13 +380,16 @@ export class TabManager {
       if (tabUrl === "flune://settings") this._settings.openSettingsAsTab(tab.id);
       else this._settings.closeSettings(tab.id);
     });
+    // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
     });
+    // ロードが完了した時
     tab.entity.webContents.on("did-finish-load", () => {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
     });
+    // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {
       // 無限ループが発生するのを防ぐ
       if (tab.entity.webContents.getURL().startsWith("flune://error")) return;
@@ -392,6 +399,7 @@ export class TabManager {
         default: this.load(tab.id, "flune://error/error.html");
       }
     });
+    // コンテキストメニュー
     tab.entity.webContents.on("context-menu", (event, params) => {
       let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
       if (params.selectionText) type = "text";
