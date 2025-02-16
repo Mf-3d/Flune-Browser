@@ -45,9 +45,6 @@ export class Settings {
       console.error("Could not delete events: Tab does not exist.");
       return;
     }
-
-    // tab.entity.webContents.removeListener("did-start-loading", () => { this.exitSettings(tab.id) });
-    // tab.entity.webContents.removeListener("did-start-loading", this.exitSettings);
   }
 
   // プリロードを追加する
