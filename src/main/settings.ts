@@ -1,13 +1,13 @@
-import { BrowserWindow } from "electron";
 import path from "path";
-import { Tab, TabManager } from "./tab";
+import { TabManager } from "./tab";
 
+// 内部ページのパス
 const SETTING_URL = "flune://settings";
-const PRELOAD_URL = path.join(__dirname, "..", "preload", "settings.js");
+const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
 
 export class Settings {
   private readonly _tabManager: TabManager;
-  
+
   constructor(tabManager: TabManager) {
     this._tabManager = tabManager;
   }
@@ -68,7 +68,7 @@ export class Settings {
 
     if (this.isAttachedPreloads(tab.id)) return;
 
-    preloads.push(PRELOAD_URL);
+    preloads.push(PRELOAD_PATH);
     tab.entity.webContents.session.setPreloads(preloads);
 
     // プリロードの追加はリロード後に反映される
@@ -88,7 +88,7 @@ export class Settings {
     const preloads = tab.entity.webContents.session.getPreloads();
     if (!this.isAttachedPreloads(tab.id)) return;
 
-    const detachedPreloads = preloads.filter(preload => preload !== PRELOAD_URL);
+    const detachedPreloads = preloads.filter(preload => preload !== PRELOAD_PATH);
     tab.entity.webContents.session.setPreloads(detachedPreloads);
 
     // プリロードの削除はリロード後に反映される
@@ -107,7 +107,7 @@ export class Settings {
 
     const preloads = tab.entity.webContents.session.getPreloads();
 
-    return preloads.includes(PRELOAD_URL);
+    return preloads.includes(PRELOAD_PATH);
   }
 
   closeSettings(tabId?: string) {
