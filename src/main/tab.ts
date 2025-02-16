@@ -362,7 +362,6 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
-      this._settings.exitSettings();
     });
     tab.entity.webContents.on("did-stop-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
@@ -373,6 +372,7 @@ export class TabManager {
       this.base.send("tab.change-state", tab.id, "favicon", "");
       this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
       if (tabUrl === "flune://settings") this._settings.openSettingsAsTab(tab.id);
+      else this._settings.closeSettings(tab.id);
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);

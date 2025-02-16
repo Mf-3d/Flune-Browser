@@ -102,7 +102,7 @@ export class Settings {
     tab.entity.webContents.reload()
   }
 
-  exitSettings(tabId?: string) {
+  closeSettings(tabId?: string) {
     if (!tabId) tabId = this._tabManager.activeCurrent || "";
     const tab = this._tabManager.getTabById(tabId);
 
