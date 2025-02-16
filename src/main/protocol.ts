@@ -8,7 +8,7 @@ export class Protocol {
     [path: string]: string
   } = {
     home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
-    setting: path.join(__dirname, "..", "renderer", "browser", "setting.html"),
+    settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
     script: path.join(__dirname, "..", "renderer", "script"),
     style: path.join(__dirname, "..", "renderer", "style"),
     assets: path.join(__dirname, "..", "assets"),
@@ -32,7 +32,7 @@ export class Protocol {
             headers: { "content-type": "text/html" }
           });
         }
-        case "/setting": {
+        case "/settings": {
           return net.fetch(pathToFileURL(this.pathToServe.setting).toString(), {
             headers: { "content-type": "text/html" }
           });
