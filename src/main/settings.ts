@@ -13,7 +13,6 @@ export class Settings {
 
   // 設定をタブとして開く
   openSettingsAsTab(tabId?: string) {
-    console.debug(this._tabManager)
     if (!tabId) tabId = this._tabManager.activeCurrent || "";
     const tab = this._tabManager.getTabById(tabId);
 
