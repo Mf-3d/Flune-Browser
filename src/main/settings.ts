@@ -98,8 +98,7 @@ export class Settings {
     tab.entity.webContents.session.setPreloads(detachedPreloads);
 
     // プリロードの削除はリロード後に反映される
-    // this._tabManager.reloadTab(tab.id);
-    tab.entity.webContents.reload();
+    this._tabManager.reloadTab(tab.id);
   }
 
   // プリロードが追加されているか
