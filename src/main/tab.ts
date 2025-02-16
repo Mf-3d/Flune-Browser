@@ -433,6 +433,8 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-start-loading");
     tab.entity.webContents.removeAllListeners("did-stop-loading");
     tab.entity.webContents.removeAllListeners("audio-state-changed");
+    tab.entity.webContents.removeAllListeners("did-finish-loading");
+    tab.entity.webContents.removeAllListeners("did-fail-loading");
     tab.entity.webContents.removeAllListeners("context-menu");
 
     if (callback) callback();
