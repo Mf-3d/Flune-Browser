@@ -33,7 +33,7 @@ export class Protocol {
           });
         }
         case "/settings": {
-          return net.fetch(pathToFileURL(this.pathToServe.setting).toString(), {
+          return net.fetch(pathToFileURL(this.pathToServe.settings).toString(), {
             headers: { "content-type": "text/html" }
           });
         }
