@@ -5,6 +5,7 @@ import {
 } from "electron";
 import { Base } from "./base-window";
 import { buildContextMenu } from "./menu";
+import { Settings } from "./settings";
 
 export type Tab = {
   id: string;
@@ -25,6 +26,7 @@ const HOME_URL = "flune://home";
 
 // -タブ管理
 export class TabManager {
+  private _settings: Settings;
   private base: Base;
   tabs: Tab[] = [];
   private bounds: {
@@ -50,6 +52,8 @@ export class TabManager {
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
+
+    this._settings = new Settings(this);
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
@@ -98,7 +102,8 @@ export class TabManager {
     // ビューを作成
     let entity = new WebContentsView({
       webPreferences: {
-        preload: path.join(__dirname, "..", "preload", "browser.js")
+        preload: path.join(__dirname, "..", "preload", "browser.js"),
+        contextIsolation: true
       }
     });
     entity.setBounds(this.bounds);
@@ -366,6 +371,7 @@ export class TabManager {
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
       this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
+      if (tabUrl === "flune://settings") this._settings.openSettingsAsTab(tab.id);
     });
     tab.entity.webContents.on("audio-state-changed", (event) => {
       this.base.send("tab.change-state", tab.id, "audible", event.audible);
