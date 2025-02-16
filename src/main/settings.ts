@@ -22,7 +22,7 @@ export class Settings {
       return;
     }
 
-    if(tab.entity.webContents.getURL() !== SETTING_URL) this._tabManager.load(tab.id, SETTING_URL);
+    if (tab.entity.webContents.getURL() !== SETTING_URL) this._tabManager.load(tab.id, SETTING_URL);
 
     this.attachPreload(tab.id);
     this.setEvents(tab.id);
@@ -49,7 +49,7 @@ export class Settings {
       console.error("Could not delete events: Tab does not exist.");
       return;
     }
-    
+
     // tab.entity.webContents.removeListener("did-start-loading", () => { this.exitSettings(tab.id) });
     // tab.entity.webContents.removeListener("did-start-loading", this.exitSettings);
   }
@@ -65,7 +65,7 @@ export class Settings {
     }
 
     // タブが設定を開いていなければ追加しない
-    if(tab.entity.webContents.getURL() !== SETTING_URL) {
+    if (tab.entity.webContents.getURL() !== SETTING_URL) {
       console.error("Could not attach preloads: Tab does not open settings.");
       return;
     }
@@ -128,7 +128,6 @@ export class Settings {
 
     if (tab.entity.webContents.getURL() === SETTING_URL) return;
 
-    this.detachPreload(tab.id);
-    // this.deleteEvents(tab.id);
+    if (this.isAttachedPreloads(tab.id)) this.detachPreload(tab.id);
   }
 }
