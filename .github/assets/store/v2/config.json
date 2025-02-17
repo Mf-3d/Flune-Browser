@@ -1,0 +1,17 @@
+{
+  "window": {
+    "window_size": [
+      800,
+      600
+    ]
+  },
+  "settings": {
+    "force_twemoji": false,
+    "theme": "theme_dark",
+    "search_engine": "google",
+    "use-home-button": false,
+    "setting-auto-save": false
+  },
+  "bookmark": [],
+  "history": []
+}
