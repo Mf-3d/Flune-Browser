@@ -1,15 +1,32 @@
-import path from "path";
+import path from "node:path";
+import fs from "node:fs";
+import Store from "electron-store";
+
 import { TabManager } from "./tab";
+import { ipcMain } from "electron";
 
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
+const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "assets", "default", "store", "config-3.json");
+const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "default", "store", "data-3.json");
 
 export class Settings {
   private readonly _tabManager: TabManager;
+  readonly storeConfig;
 
   constructor(tabManager: TabManager) {
     this._tabManager = tabManager;
+
+    const DEFAULT_CONFIG = JSON.parse(fs.readFileSync(DEFAULT_CONFIG_PATH, {
+      encoding: "utf-8"
+    }));
+
+    this.storeConfig = new Store({
+      name: "config-3",
+      defaults: DEFAULT_CONFIG,
+      // schema: {}, // 後で設定する
+    });
   }
 
   // 設定をタブとして開く
@@ -37,6 +54,19 @@ export class Settings {
       console.error("Could not set events: Tab does not exist.");
       return;
     }
+
+    ipcMain.handle("flune.store.config.get-all", (event) => {
+      return this.storeConfig.store;
+    });
+    ipcMain.handle("flune.store.config.get", (event, key: string) => {
+      return this.storeConfig.get(key);
+    });
+    ipcMain.handle("flune.store.config.save-all", (event, config) => {
+      this.storeConfig.store = config;
+    });
+    ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
+      this.storeConfig.set(key, value);
+    });
   }
 
   deleteEvents(tabId: string) {
@@ -46,6 +76,11 @@ export class Settings {
       console.error("Could not delete events: Tab does not exist.");
       return;
     }
+
+    ipcMain.removeHandler("flune.store.config.get");
+    ipcMain.removeHandler("flune.store.config.get-all");
+    ipcMain.removeHandler("flune.store.config.save");
+    ipcMain.removeHandler("flune.store.config.save-all");
   }
 
   // プリロードを追加する
