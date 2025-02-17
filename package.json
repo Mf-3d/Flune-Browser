@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mf-3d/flune-browser#readme",
   "dependencies": {
-    "electron-store": "^10.0.1",
+    "electron-store": "^8.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
