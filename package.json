@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/mf-3d/flune-browser#readme",
   "dependencies": {
+    "electron-store": "^10.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
@@ -47,7 +48,10 @@
     },
     "win": {
       "icon": "./src/assets/image/icon.png",
-      "target": ["nsis", "zip"],
+      "target": [
+        "nsis",
+        "zip"
+      ],
       "signtoolOptions": {
         "publisherName": "mf7cli"
       }
@@ -57,7 +61,6 @@
     },
     "mac": {
       "icon": "./src/assets/image/icon.png",
-      
       "category": "public.app-category.utilities",
       "target": {
         "target": "dmg",
@@ -67,8 +70,9 @@
     },
     "linux": {
       "icon": "./src/assets/image/icon.png",
-      "target": ["AppImage"],
-      
+      "target": [
+        "AppImage"
+      ],
       "category": "Utility"
     }
   }
