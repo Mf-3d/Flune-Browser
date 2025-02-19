@@ -8,8 +8,8 @@ import { ipcMain } from "electron";
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "assets", "default", "store", "config-3.json");
-const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "default", "store", "data-3.json");
+const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "assets", "store", "default", "config-3.json");
+const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "store", "default", "data-3.json");
 
 export class Settings {
   private readonly _tabManager: TabManager;
