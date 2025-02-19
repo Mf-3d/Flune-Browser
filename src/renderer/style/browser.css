@@ -7,17 +7,16 @@ html {
 }
 
 body {
+  text-shadow: #4c7a6a79 1px 1px 10px;
+}
+body.bg-image {
   background-image: var(--background-image);
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: normal;
-  text-align: center;
-  margin-top: 10%;
-  color: var(--text-color);
-  text-shadow: #4c7a6a79 1px 1px 10px;
 }
 
-body > div {
+body>div {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
@@ -92,4 +91,3 @@ a.disabled>svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
-
