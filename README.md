@@ -21,5 +21,12 @@ Flune-Browserが生まれ変わりました！
 ## 🔖 最新バージョン
 |リリースチャネル |Stable|Beta|Dev|
 |---------------|---|---|---|
-|   バージョン   |-|-|3.0.0 Dev 2025.02.10.2|
-|   リリース日   |-|-|2025/02/10|
+|   バージョン   |-|-|3.0.0 Dev 2025.02.15.1|
+|   リリース日   |-|-|2025/02/15|
+
+## ℹ️ 関連
+- [Flune-Optional-Pack](https://github.com/Mf-3d/Flune-Optional-Pack) — Flune-Browser v2.x系の拡張パック。
+- [Flune-C](https://github.com/Mf-3d/Flune-C) — c.Monotの実質的な後継、Monotの派生。
+<!-- - [Runa-Browser](https://github.com/Mf-3d/Runa-Browser) — Flune-Browserの前身。
+- [Lunowse](https://github.com/Mf-3d/lunowse) — Runa-Browserの後継。
+- [c.Monot](https://github.com/Mf-3d/c.monot) — Monotの派生。 -->
