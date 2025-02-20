@@ -11,10 +11,10 @@ contextBridge.exposeInMainWorld("fluneSettings", {
     getAll: async () => {
       return await ipcRenderer.invoke("flune.store.config.get-all"); // コンフィグをすべて取得
     },
-    save: (key: string, value?: any) => {
+    set: (key: string, value?: any) => {
       ipcRenderer.invoke("flune.store.config.save", key, value); // 項目を保存
     },
-    saveAll: (value?: any) => {
+    setAll: (value?: any) => {
       ipcRenderer.invoke("flune.store.config.save-all", value); // コンフィグをすべて保存
     },
   }
