@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "maxItems": 3,
+      "minItems": 3
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "autoSave": {
+          "type": "boolean"
+        },
+        "window": {
+          "type": "object",
+          "properties": {
+            "bounds": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "x": {
+                  "type": ["integer", "null"]
+                },
+                "y": {
+                  "type": ["integer", "null"]
+                }
+              },
+              "required": ["width", "height"]
+            }
+          }
+        },
+        "search": {
+          "type": "object",
+          "properties": {
+            "engine": {
+              "type": "string"
+            }
+          }
+        },
+        "design": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "pattern": "^[a-z|0-9\\-]+$"
+            },
+            "showHomeButton": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "searchEngines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z|0-9\\-]+$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "url"]
+      }
+    }
+  }
+}
