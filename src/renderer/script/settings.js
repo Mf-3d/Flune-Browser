@@ -23,10 +23,11 @@ async function each() {
 
   document.querySelector(`input[type=radio][name=theme][id=theme-${await fluneSettings.store.get("settings.design.theme")}]`).checked = true;
 
-  if (fluneSettings.store.get("settings.autoSave")) {
+  if (await fluneSettings.store.get("settings.autoSave")) {
     inputElements.forEach((element) => {
       element.onchange = () => {
         saveAll();
+        each();
       };
     });
   } else {
