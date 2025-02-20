@@ -1,5 +1,103 @@
-<script>
-  window.onload = () => {
-    console.log(fluneSettings.getVersion());
-  }
-</script>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="flune://style/main.css" />
+  <link rel="stylesheet" href="flune://style/browser.css" />
+  <link rel="stylesheet" href="flune://style/settings.css" />
+  <script src="flune://script/browser.js"></script>
+  <script src="flune://script/settings.js"></script>
+  <title>設定 - Flune-Browser</title>
+</head>
+
+<body>
+  <span style="user-select: none;">
+    <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
+    <span class="flune-version">3</span>
+  </span>
+  <section class="typeA">
+    <input id="TAB-A01" type="radio" name="TAB-A" checked="checked">
+    <label class="tabLabel" for="TAB-A01">見た目</label>
+    <div class="content">
+      <table>
+        <tr>
+          <th>テーマ</th>
+          <td>
+            <form id="theme-select">
+              <input type="radio" id="theme-dark" name="theme" />
+              <label for="theme-dark">Dark</label>
+              <input type="radio" id="theme-light" name="theme" />
+              <label for="theme-light">Light</label>
+              <br />
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <label for="force-twemoji">強制Twimoji変換</label>
+          </th>
+          <td>
+            <input type="checkbox" id="force-twemoji" disabled />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <input id="TAB-A02" type="radio" name="TAB-A">
+    <label class="tabLabel" for="TAB-A02">動作</label>
+    <div class="content">
+      <table>
+        <tr>
+          <th>検索エンジン</th>
+          <td>
+            <select id="search-engine">
+              <option value="google">
+                Google
+              </option>
+              <option value="yahoo-jp">
+                Yahoo! JAPAN
+              </option>
+              <option value="ddg">
+                DuckDuckGo
+              </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="use-home-button">ホームボタンを表示する (再起動必須)</label></th>
+          <td>
+            <input type="checkbox" name="use-home-button" id="use-home-button" />
+          </td>
+        </tr>
+        <tr>
+          <th><label for="setting-auto-save">設定を自動保存する</label></th>
+          <td>
+            <input type="checkbox" name="setting-auto-save" id="setting-auto-save" />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <input id="TAB-A03" type="radio" name="TAB-A">
+    <label class="tabLabel" for="TAB-A03">実験的な機能</label>
+    <div class="content">
+      <h2>注意</h2>
+      ここにある設定項目は実験的な機能であり、
+      <br />
+      <span style="color: #ff8f82">一般利用には適していない</span>ことにご注意ください。
+      <br /><br /><br />
+      <table>
+        <tr>
+          <th><label for="use-history">履歴</label></th>
+          <td><input type="checkbox" name="use-history" id="use-history" /></td>
+        </tr>
+      </table>
+    </div>
+  </section>
+  <a onclick="saveAll()">保存</a>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>
