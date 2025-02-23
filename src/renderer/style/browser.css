@@ -1,5 +1,6 @@
 :root {
-  --background-image: url(flune://assets/image/backgrounds/lake-tahoe-bonsai-milky-way-rock-on-wallpaper.jpeg);
+  --panel-color: #111111a1;
+  --background-image: url(flune://assets/image/backgrounds/keith-camilleri-sV_3SBuiS4I-unsplash.jpg);
 }
 
 html {
@@ -20,7 +21,7 @@ body>div {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
-  background: #111111a1;
+  background: var(--panel-color);
   border: solid 1px var(--flune-main-border-color);
   border-radius: 10px;
   backdrop-filter: blur(5px);
@@ -34,7 +35,7 @@ body>div {
   border-radius: 10px;
   border: solid 1px var(--flune-main-border-color);
   backdrop-filter: blur(0px);
-  background: #111111a1;
+  background: var(--panel-color);
   padding: 0.2em;
   vertical-align: middle;
 }
