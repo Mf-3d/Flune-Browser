@@ -36,6 +36,7 @@
   --tab-color: #202222;
   --opened-tab-color: #293939;
   --tab-adding-color: #2582CF;
+  --tab-text-color: #fff;
 }
 
 :root:active {
@@ -171,6 +172,7 @@ input[type=text] {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: calc(100% - 48px);
+  color: var(--tab-text-color);
 }
 
 #tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
@@ -206,7 +208,8 @@ input[type=text] {
 #tabs a>svg {
   width: 20px;
   height: 20px;
-  stroke: color-mix(in srgb, var(--symbol-color), #fff 50%);
+  /* stroke: color-mix(in srgb, var(--symbol-color), #fff 50%); */
+  stroke: var(--symbol-color);
   stroke-width: 2px;
 
   transition: stroke .5s, stroke-width .5s, filter .5s;
@@ -223,7 +226,7 @@ input[type=text] {
 #tabs>span#opened a>svg {
   width: 20px;
   height: 20px;
-  stroke: #fff;
+  stroke: var(--tab-text-color);
   stroke-width: 2px;
 
   transition: stroke .5s, stroke-width .5s, filter .5s;
