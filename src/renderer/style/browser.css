@@ -50,7 +50,7 @@ body>div {
 }
 
 #address-box>input[type=text]::placeholder {
-  color: color-mix(in srgb, var(--text-color), var(--disabled-color) 20%);
+  color: color-mix(in srgb, var(--text-color), var(--disabled-color) 80%);
 }
 
 a {
