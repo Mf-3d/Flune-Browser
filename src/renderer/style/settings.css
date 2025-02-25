@@ -16,7 +16,7 @@ section.typeA::after {
   height: 3px;
   order: -1;
   display: block;
-  background: #1ebfa4b3;
+  background: var(--opened-tab-color);
 }
 
 section.typeA .tabLabel {
@@ -26,7 +26,7 @@ section.typeA .tabLabel {
   flex: 1;
   order: -1;
   border-radius: 3px 3px 0 0;
-  background: #414746b3;
+  background: var(--tab-color);
   transition: .5s;
   cursor: pointer;
 }
@@ -50,15 +50,15 @@ section.typeA .content {
 
 /*アクティブ設定*/
 section.typeA>input:checked+.tabLabel {
-  color: #fff;
-  background: #1ebfa4b3;
+  color: var(--tab-text-color);
+  background: var(--opened-tab-color);
 }
 
 section.typeA>input:checked+.tabLabel+.content {
   padding: 15px;
   height: auto;
   overflow: auto;
-  background: #252525;
+  background: var(--panel-color);
   transition: .5s opacity;
   opacity: 1;
   border-radius: 0 0 3px 3px;
@@ -68,8 +68,8 @@ select,
 input[type="text"] {
   border: solid 1px #3d3d3d;
   border-radius: 5px;
-  background: #252525;
-  color: #fff;
+  background: var(--input-color);
+  color: var(--text-color);
 }
 
 table {
