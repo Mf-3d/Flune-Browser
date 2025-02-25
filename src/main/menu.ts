@@ -302,9 +302,8 @@ export function buildContextMenu(base: Base, state: {
       },
       {
         label: "設定",
-        enabled: false,
         click() {
-          // 設定ウィンドウ
+          base.tabManager?.settings.openSettingsAsTab();
         }
       }
     ] : [
@@ -365,9 +364,8 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "設定",
-      enabled: false,
       click() {
-        // 設定ウィンドウ
+        base.tabManager?.settings.openSettingsAsTab();
       }
     },
     {

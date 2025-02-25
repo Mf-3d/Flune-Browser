@@ -26,7 +26,7 @@ const HOME_URL = "flune://home";
 
 // -タブ管理
 export class TabManager {
-  private readonly _settings: Settings;
+  readonly settings: Settings;
   private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
@@ -53,7 +53,7 @@ export class TabManager {
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
 
-    this._settings = new Settings(this);
+    this.settings = new Settings(this);
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
