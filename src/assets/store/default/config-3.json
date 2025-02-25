@@ -18,6 +18,18 @@
       "showHomeButton": false
     }
   },
+  "themes": [
+    {
+      "id": "dark",
+      "name": "Flutical Dark",
+      "url": "@theme/dark.css"
+    },
+    {
+      "id": "light",
+      "name": "Flutical Light",
+      "url": "@theme/light.css"
+    }
+  ],
   "searchEngines": [
     {
       "id": "google",
