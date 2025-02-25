@@ -11,6 +11,7 @@ import {
   buildApplicationMenu,
   buildOptionsMenu
 } from "./menu";
+import theme from "./theme";
 
 // new window
 export class Base {
@@ -85,7 +86,7 @@ export class Base {
     });
 
     this.win.contentView.addChildView(this.nav);
-
+    
     this.nav.webContents.once("did-finish-load", () => {
       this.tabManager = new TabManager(this, {
         width: this.bounds.width,
@@ -93,6 +94,8 @@ export class Base {
         x: 0,
         y: this.viewY
       });
+
+      this.appendTheme();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
       if (!this.tabManager) return;
@@ -130,6 +133,23 @@ export class Base {
       this.nav.webContents.close();
       this.tabManager?.closeAll();
     });
+  }
+  
+  appendTheme() {
+    // テーマを追加
+    const themeId = this.tabManager?.settings.config.get("settings.design.theme");
+    const themes: {
+      id: string;
+      name: string;
+      url: string;
+    }[] = this.tabManager?.settings.config.get("themes") as {
+      id: string;
+      name: string;
+      url: string;
+    }[];
+    const currentTheme = themes.find(theme => theme.id === themeId);
+
+    currentTheme ? theme.appendTheme(this.nav.webContents, currentTheme.url) : "";
   }
 
   close() {

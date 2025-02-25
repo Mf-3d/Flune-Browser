@@ -6,6 +6,7 @@ import {
 import { Base } from "./base-window";
 import { buildContextMenu } from "./menu";
 import { Settings } from "./settings";
+import theme from "./theme";
 
 export type Tab = {
   id: string;
@@ -377,8 +378,9 @@ export class TabManager {
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
       this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
-      if (tabUrl === "flune://settings") this._settings.openSettingsAsTab(tab.id);
-      else this._settings.closeSettings(tab.id);
+      if (tabUrl.startsWith("flune://")) this.appendTheme(tab.id);
+      if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
+      else this.settings.closeSettings(tab.id);
     });
     // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
@@ -438,5 +440,34 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("context-menu");
 
     if (callback) callback();
+  }
+
+  appendTheme(id: string | undefined = this.activeCurrent) {
+    if (!id) {
+      console.error("Could not append the theme: Tab ID not specified or active tab does not exist.");
+      return;
+    }
+
+    const tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Could not append the theme: Tab does not exist.");
+      return;
+    }
+
+    // テーマを追加
+    const themeId = this.settings.config.get("settings.design.theme");
+    const themes: {
+      id: string;
+      name: string;
+      url: string;
+    }[] = this.settings.config.get("themes") as {
+      id: string;
+      name: string;
+      url: string;
+    }[];
+    const currentTheme = themes.find(theme => theme.id === themeId);
+
+    currentTheme ? theme.appendTheme(tab.entity.webContents, currentTheme.url) : "";
   }
 }
