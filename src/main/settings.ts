@@ -5,6 +5,8 @@ import Store from "electron-store";
 import { TabManager } from "./tab";
 import { ipcMain } from "electron";
 
+import Event from "./event";
+
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
@@ -124,6 +126,7 @@ const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "store", "default
 // };
 
 export class Settings {
+  private event = new Event();
   private readonly _tabManager: TabManager;
   readonly config;
 
@@ -158,6 +161,8 @@ export class Settings {
 
     this.attachPreload(tab.id);
     this.setEvents(tab.id);
+
+    this.event.send("setting-opened", "tab");
   }
 
   setEvents(tabId: string) {
@@ -177,9 +182,12 @@ export class Settings {
       return this.config.get(key);
     });
     ipcMain.handle("flune.store.config.save-all", (event, config) => {
+      this.event.send("config-updated");
       this.config.store = config;
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
+      if(key === "settings.design.theme")  this.event.send("theme-updated");
+      this.event.send("config-updated");
       this.config.set(key, value);
     });
   }

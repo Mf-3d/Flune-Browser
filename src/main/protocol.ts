@@ -1,6 +1,7 @@
 import { protocol, net } from "electron";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
+import Event from "./event";
 
 export class Protocol {
   readonly name: string;
@@ -14,6 +15,7 @@ export class Protocol {
     assets: path.join(__dirname, "..", "assets"),
     error: path.join(__dirname, "..", "renderer", "browser", "error"),
   };
+  readonly event = new Event();
 
   constructor(name: string = "flune") {
     this.name = name;
@@ -21,6 +23,7 @@ export class Protocol {
     protocol.handle(this.name, (req) => {
       const Url: string = req.url.slice(this.name.length + 2);
     
+      this.event.send("protocol-accessed", Url);
       switch (Url) {
         case "/ping": {
           return new Response("pong!", {

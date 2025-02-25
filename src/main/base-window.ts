@@ -12,6 +12,7 @@ import {
   buildOptionsMenu
 } from "./menu";
 import theme from "./theme";
+import Event from "./event";
 
 // new window
 export class Base {
@@ -29,6 +30,7 @@ export class Base {
     };
   tabManager?: TabManager;
   optionsMenu: Electron.Menu;
+  readonly event: Event;
 
   constructor(bounds?: {
     width: number;
@@ -95,6 +97,8 @@ export class Base {
         y: this.viewY
       });
 
+      this.event.send("navigation-loaded");
+
       this.appendTheme();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
@@ -118,6 +122,12 @@ export class Base {
         params,
         isNav: true
       }).popup();
+    });
+
+    this.event = new Event();
+
+    this.event.on("theme-updated", (id) => {
+      this.appendTheme();
     });
 
     ipcMain.handle("options.toggle", () => {

@@ -8,14 +8,17 @@ export function appendTheme(webContents: WebContents, theme: string) {
   if (URL.canParse(themeUrl)) {
     
     webContents.executeJavaScript(`
-      const element = document.getElementById("theme");
+      (() => {
+        const element = document.getElementById("theme");
 
-      console.log(element)
-      if (element) {
-        element.setAttribute("href", "${themeUrl}")
-      } else {
-        document.head.innerHTML += '<link rel="stylesheet" id="theme" href="${themeUrl}" onload="updateSymbolColor()">';
-      }
+        if (element) {
+          element.setAttribute("href", "${themeUrl}");
+        } else {
+          document.head.innerHTML += '<link rel="stylesheet" id="theme" href="${themeUrl}" onload="updateSymbolColor()">';
+        }
+
+        if (typeof updateSymbolColor === "function") updateSymbolColor();
+      })();
     `);
   } else console.error("Could not append the theme: Theme URL is incorrect.");
 }

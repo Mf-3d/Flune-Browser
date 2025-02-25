@@ -7,6 +7,7 @@ import { Base } from "./base-window";
 import { buildContextMenu } from "./menu";
 import { Settings } from "./settings";
 import theme from "./theme";
+import Event from "./event";
 
 export type Tab = {
   id: string;
@@ -28,6 +29,7 @@ const HOME_URL = "flune://home";
 // -タブ管理
 export class TabManager {
   readonly settings: Settings;
+  readonly event: Event;
   private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
@@ -55,6 +57,7 @@ export class TabManager {
     });
 
     this.settings = new Settings(this);
+    this.event = new Event();
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
@@ -156,6 +159,10 @@ export class TabManager {
 
     entity.webContents.once("did-finish-load", () => {
       if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
+    });
+
+    this.event.on("theme-updated", (themeId) => {
+      if (entity.webContents.getURL().startsWith("flune://")) this.appendTheme();
     });
 
     if (active) this.activateTab(newTab.id);
@@ -311,6 +318,8 @@ export class TabManager {
       const searchUrl = `https://google.com/search?q=${url}`
       tab.entity.webContents.loadURL(searchUrl);
     }
+
+    this.event.send("tab-loaded", tab.id);
   }
 
   // --開発者ツールを表示
@@ -442,13 +451,13 @@ export class TabManager {
     if (callback) callback();
   }
 
-  appendTheme(id: string | undefined = this.activeCurrent) {
-    if (!id) {
+  appendTheme(tabId: string | undefined = this.activeCurrent) {
+    if (!tabId) {
       console.error("Could not append the theme: Tab ID not specified or active tab does not exist.");
       return;
     }
 
-    const tab = this.getTabById(id);
+    const tab = this.getTabById(tabId);
 
     if (!tab) {
       console.error("Could not append the theme: Tab does not exist.");
