@@ -1,0 +1,16 @@
+:root {
+  --text-color: #525252;
+  --background-color: #f0f5f2;
+  --input-color: #ebeeec;
+  --symbol-color: #7bca95;
+  --hover-color: #3caf76;
+  --disabled-color: #d9dad8;
+
+  --tab-color: #cee0d8;
+  --opened-tab-color: #dcf7e9;
+  --tab-adding-color: #2582CF;
+  --tab-text-color: #3a665f;
+
+  --background-image: url(flune://assets/image/backgrounds/cedric-vt-ua0SnGdN-m8-unsplash.jpg);
+  --panel-color: #d2c3b263;
+}
