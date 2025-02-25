@@ -125,7 +125,7 @@ const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "store", "default
 
 export class Settings {
   private readonly _tabManager: TabManager;
-  readonly storeConfig;
+  readonly config;
 
   constructor(tabManager: TabManager) {
     this._tabManager = tabManager;
@@ -137,7 +137,7 @@ export class Settings {
       encoding: "utf-8"
     })).properties;
 
-    this.storeConfig = new Store({
+    this.config = new Store({
       name: "config-3",
       defaults: DEFAULT_CONFIG,
       schema: SCHEMA_CONFIG, // 後で設定する
@@ -171,16 +171,16 @@ export class Settings {
     }
 
     ipcMain.handle("flune.store.config.get-all", (event) => {
-      return this.storeConfig.store;
+      return this.config.store;
     });
     ipcMain.handle("flune.store.config.get", (event, key: string) => {
-      return this.storeConfig.get(key);
+      return this.config.get(key);
     });
     ipcMain.handle("flune.store.config.save-all", (event, config) => {
-      this.storeConfig.store = config;
+      this.config.store = config;
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
-      this.storeConfig.set(key, value);
+      this.config.set(key, value);
     });
   }
 
