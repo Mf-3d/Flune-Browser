@@ -28,6 +28,9 @@ contextBridge.exposeInMainWorld("flune", {
   toggleMenu: () => {
     ipcRenderer.invoke("options.toggle"); // メニューを開く
   },
+  updateSymbolColor: (color: string) => {
+    ipcRenderer.invoke("flune.update-symbol-color", color); // シンボルカラーを変更する
+  },
 
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

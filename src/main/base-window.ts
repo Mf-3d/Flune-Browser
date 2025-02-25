@@ -120,6 +120,11 @@ export class Base {
     ipcMain.handle("options.toggle", () => {
       this.optionsMenu.popup();
     });
+    ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
+      this.win.setTitleBarOverlay({
+        symbolColor: color
+      });
+    });
 
     this.win.on("close", () => {
       this.nav.webContents.close();

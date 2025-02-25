@@ -110,6 +110,11 @@ function search() {
   input.blur();
 }
 
+function updateSymbolColor() {
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+  flune.updateSymbolColor(textColor);
+}
+
 function each() {
   const tabContainer = document.getElementById("tabs");
 
