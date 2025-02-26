@@ -1,3 +1,8 @@
+function removeTab(id) {
+  flune.removeTab(id);
+  console.info("(removeTab):", id);
+}
+
 window.addEventListener("load", () => {
   each();
   const tabContainer = document.getElementById("tabs");
@@ -42,7 +47,7 @@ window.addEventListener("load", () => {
         <i data-lucide="volume-2"></i>
       </a>
     </span>
-    <a href="javascript:flune.removeTab('${tab.id}')" class="close-button right">
+    <a href="javascript:removeTab('${tab.id}')" class="close-button right">
       <i data-lucide="x"></i>
     </a>
     `;
