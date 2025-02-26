@@ -55,6 +55,7 @@ export default class {
    */
   off: <K extends keyof EventMap>(event: K, listener: EventMap[K]) => void;
   removeAllListeners: <K extends keyof EventMap>(event: K) => void;
+  listeners: <K extends keyof EventMap>(event: K) => Function[];
   send: <K extends keyof EventMap>(event: K, ...args: any[]) => any;
 
   constructor() {
@@ -85,6 +86,12 @@ export default class {
       eventName: K
     ): void {
       event.removeAllListeners(eventName);
+    }
+
+    this.listeners = function <K extends keyof EventMap>(
+      eventName: K
+    ): Function[] {
+      return event.listeners(eventName);
     }
 
     this.send = function <K extends keyof EventMap>(
