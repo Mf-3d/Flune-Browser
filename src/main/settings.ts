@@ -145,6 +145,8 @@ export class Settings {
       defaults: DEFAULT_CONFIG,
       schema: SCHEMA_CONFIG, // 後で設定する
     });
+
+    this.setEvents();
   }
 
   // 設定をタブとして開く
@@ -160,20 +162,12 @@ export class Settings {
     if (tab.entity.webContents.getURL() !== SETTING_URL) this._tabManager.load(tab.id, SETTING_URL);
 
     this.attachPreload(tab.id);
-    this.setEvents(tab.id);
 
     this.event.send("setting-opened", "tab");
   }
 
-  setEvents(tabId: string) {
-    this.deleteEvents(tabId);
-
-    const tab = this._tabManager.getTabById(tabId);
-
-    if (!tab) {
-      console.error("Could not set events: Tab does not exist.");
-      return;
-    }
+  setEvents() {
+    this.deleteEvents();
 
     ipcMain.handle("flune.store.config.get-all", (event) => {
       return this.config.store;
@@ -192,14 +186,8 @@ export class Settings {
     });
   }
 
-  deleteEvents(tabId: string) {
-    const tab = this._tabManager.getTabById(tabId);
-
-    if (!tab) {
-      console.error("Could not delete events: Tab does not exist.");
-      return;
-    }
-
+  deleteEvents() {
+    console.debug("deleting the settings events.")
     ipcMain.removeHandler("flune.store.config.get");
     ipcMain.removeHandler("flune.store.config.get-all");
     ipcMain.removeHandler("flune.store.config.save");
