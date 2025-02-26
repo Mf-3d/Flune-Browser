@@ -353,10 +353,12 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "ダウンロード",
+      enabled: false,
       submenu: []
     },
     {
       label: "ブックマーク",
+      enabled: false,
       submenu: []
     },
     {
