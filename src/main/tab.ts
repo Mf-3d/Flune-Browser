@@ -421,6 +421,8 @@ export class TabManager {
         case (errCodes["server-notfound"]): this.load(tab.id, "flune://error/server-notfound.html");
         default: this.load(tab.id, "flune://error/error.html");
       }
+
+      console.error(errCode);
     });
     // コンテキストメニュー
     tab.entity.webContents.on("context-menu", (event, params) => {
