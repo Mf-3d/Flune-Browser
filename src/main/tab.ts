@@ -14,6 +14,7 @@ export type Tab = {
   title: string;
   entity: WebContentsView;
   active: boolean;
+  listeners: { [eventName: string]: ((...args: any[]) => any) | undefined };
 }
 
 const errCodes = {
@@ -131,7 +132,8 @@ export class TabManager {
       id: crypto.randomUUID(),
       title: title ? title : url,
       entity,
-      active
+      active,
+      listeners: {}
     };
 
     this.tabs?.push(newTab); // 配列に追加
@@ -161,15 +163,11 @@ export class TabManager {
       if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     });
 
-    this.event.on("theme-updated", (themeId) => {
-      if (entity.webContents.getURL().startsWith("flune://")) this.appendTheme();
-    });
-
     if (active) this.activateTab(newTab.id);
 
     return newTab;
   }
-
+  
   // --タブを削除
   removeTab(id: string) {
     const tab = this.getTabById(id);
@@ -182,6 +180,7 @@ export class TabManager {
     const i = this.tabs.indexOf(tab);
 
     tab.entity.webContents.close();
+    this.deleteEvents(tab.id);
     this.base.send("tab.remove", id);
 
     // 別のタブをアクティブ化
@@ -392,9 +391,16 @@ export class TabManager {
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
       this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
-      if (tabUrl.startsWith("flune://")) this.appendTheme(tab.id);
-      if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
-      else this.settings.closeSettings(tab.id);
+
+      if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
+      tab.listeners["theme-updated"] = undefined;
+
+      if (tabUrl.startsWith("flune://")) {
+        this.appendTheme(tab.id);
+
+        tab.listeners["theme-updated"] = () => { this.appendTheme(tab.id) };
+        this.event.on("theme-updated", tab.listeners["theme-updated"]);
+      } else this.settings.closeSettings(tab.id);
     });
     // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
@@ -404,6 +410,7 @@ export class TabManager {
     tab.entity.webContents.on("did-finish-load", () => {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
+      if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
     });
     // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {
@@ -452,6 +459,8 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-finish-loading");
     tab.entity.webContents.removeAllListeners("did-fail-loading");
     tab.entity.webContents.removeAllListeners("context-menu");
+    if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
+    tab.listeners["theme-updated"] = undefined;
 
     if (callback) callback();
   }
