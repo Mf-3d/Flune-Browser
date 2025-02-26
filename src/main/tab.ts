@@ -186,9 +186,12 @@ export class TabManager {
 
     // 別のタブをアクティブ化
     if (id === this.activeCurrent && i !== -1) {
-      if (this.tabs.length <= 1) this.base.close();
+      if (this.tabs.length < 2) this.base.close();
 
-      const nextTab = this.tabs[i >= 0 ? i - 1 : 1];
+      const nextTabIndex = i === 0 ? i + 1 : i - 1;
+      const nextTab = this.tabs[nextTabIndex];
+
+      console.info("Tab to activate:", nextTab.id, "(", nextTabIndex, ")", "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
 
       if (!nextTab) {
         console.error("Could not remove tab: Next tab to activate does not exist.");
@@ -197,6 +200,8 @@ export class TabManager {
 
       this.activateTab(nextTab.id);
     }
+
+    console.info("Tab to remove:", id, "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
 
     // 最後に配列から削除
     this.tabs.splice(i, 1);
