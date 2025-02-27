@@ -5,7 +5,7 @@ import {
 } from "electron";
 import { Base } from "./base-window";
 import { buildContextMenu } from "./menu";
-import { Settings } from "./settings";
+import { SearchEngine, Settings } from "./settings";
 import theme from "./theme";
 import Event from "./event";
 
@@ -319,7 +319,9 @@ export class TabManager {
       tab.entity.webContents.loadURL(url);
       if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     } else {
-      const searchUrl = `https://google.com/search?q=${url}`
+      const searchEngine: SearchEngine | undefined = (this.settings.config.get("searchEngines") as SearchEngine[]).find(engine => engine.id === this.settings.config.get("settings.search.engine"));
+
+      const searchUrl: string = searchEngine?.url.replace(/%s/g, url) || `https://google.com/search?q=${url}`;
       tab.entity.webContents.loadURL(searchUrl);
     }
 

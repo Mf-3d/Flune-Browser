@@ -125,6 +125,12 @@ const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "store", "default
 //   }
 // };
 
+export type SearchEngine = {
+  id: string;
+  name: string;
+  url: string;
+};
+
 export class Settings {
   private event = new Event();
   private readonly _tabManager: TabManager;
