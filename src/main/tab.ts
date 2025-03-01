@@ -281,6 +281,7 @@ export class TabManager {
       return;
     }
 
+    tab.entity.webContents.stop();
     tab.entity.webContents.navigationHistory.goBack();
   }
 

@@ -224,6 +224,7 @@ export class Settings {
     tab.entity.webContents.session.setPreloads(preloads);
 
     // プリロードの追加はリロード後に反映される
+    tab.entity.webContents.stop();
     this._tabManager.reloadTab(tab.id);
   }
 
