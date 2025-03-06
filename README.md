@@ -5,7 +5,7 @@
 
 Flune-Browserが生まれ変わりました！
 
-![スクリーンショット](.github\assets\image\screenshot-3.0.0-dev.2025.03.02.1.png)
+![スクリーンショット](.github\assets\image\screenshot-3.0.0-dev.2025.03.02.1.webp)
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
 
