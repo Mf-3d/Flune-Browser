@@ -301,6 +301,7 @@ export class TabManager {
       return;
     }
 
+    tab.entity.webContents.stop();
     tab.entity.webContents.navigationHistory.goForward();
   }
 
@@ -322,7 +323,8 @@ export class TabManager {
       tab.entity.webContents.loadURL(url);
       if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     } else {
-      const searchEngine: SearchEngine | undefined = (this.settings.config.get("searchEngines") as SearchEngine[]).find(engine => engine.id === this.settings.config.get("settings.search.engine"));
+      const searchEngine: SearchEngine | undefined = (this.settings.config.get("searchEngines") as SearchEngine[])
+        .find((engine) => engine.id === this.settings.config.get("settings.search.engine"));
 
       const searchUrl: string = searchEngine?.url.replace(/%s/g, url) || `https://google.com/search?q=${url}`;
       tab.entity.webContents.loadURL(searchUrl);
@@ -403,9 +405,14 @@ export class TabManager {
       if (tabUrl.startsWith("flune://")) {
         this.appendTheme(tab.id);
 
-        tab.listeners["theme-updated"] = () => { this.appendTheme(tab.id) };
+        tab.listeners["theme-updated"] = () => {
+          this.appendTheme(tab.id)
+        };
+        
         this.event.on("theme-updated", tab.listeners["theme-updated"]);
-      } else this.settings.closeSettings(tab.id);
+      } else {
+        this.settings.closeSettings(tab.id);
+      }
     });
     // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
@@ -487,11 +494,7 @@ export class TabManager {
 
     // テーマを追加
     const themeId = this.settings.config.get("settings.design.theme");
-    const themes: {
-      id: string;
-      name: string;
-      url: string;
-    }[] = this.settings.config.get("themes") as {
+    const themes = this.settings.config.get("themes") as {
       id: string;
       name: string;
       url: string;
