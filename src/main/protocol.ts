@@ -8,13 +8,13 @@ export class Protocol {
   readonly pathToServe: {
     [path: string]: string
   } = {
-    home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
-    settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
-    script: path.join(__dirname, "..", "renderer", "script"),
-    style: path.join(__dirname, "..", "renderer", "style"),
-    assets: path.join(__dirname, "..", "assets"),
-    error: path.join(__dirname, "..", "renderer", "browser", "error"),
-  };
+      home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
+      settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
+      script: path.join(__dirname, "..", "renderer", "script"),
+      style: path.join(__dirname, "..", "renderer", "style"),
+      assets: path.join(__dirname, "..", "assets"),
+      error: path.join(__dirname, "..", "renderer", "browser", "error"),
+    };
   readonly event = new Event();
 
   constructor(name: string = "flune") {
@@ -22,7 +22,7 @@ export class Protocol {
 
     protocol.handle(this.name, (req) => {
       const Url: string = req.url.slice(this.name.length + 2);
-    
+
       this.event.send("protocol-accessed", Url);
       switch (Url) {
         case "/ping": {

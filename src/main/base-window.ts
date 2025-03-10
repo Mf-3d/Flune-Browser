@@ -58,7 +58,7 @@ export class Base {
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
 
-    Menu.setApplicationMenu(buildApplicationMenu(this));    
+    Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this);
 
     this.nav = new WebContentsView({
@@ -88,7 +88,7 @@ export class Base {
     });
 
     this.win.contentView.addChildView(this.nav);
-    
+
     this.nav.webContents.once("did-finish-load", () => {
       this.tabManager = new TabManager(this, {
         width: this.bounds.width,
@@ -144,7 +144,7 @@ export class Base {
       this.tabManager?.closeAll();
     });
   }
-  
+
   appendTheme() {
     // テーマを追加
     const themeId = this.tabManager?.settings.config.get("settings.design.theme");
