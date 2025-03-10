@@ -48,6 +48,8 @@ export class TabManager {
 
   constructor(base: Base, bounds?: { width: number; height: number; x: number; y: number }) {
     this.base = base;
+    this.settings = new Settings(this);
+    this.event = new Event();
     if (bounds) this.bounds = bounds;
 
     this.base.win.on('resize', () => {
@@ -56,9 +58,6 @@ export class TabManager {
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
-
-    this.settings = new Settings(this);
-    this.event = new Event();
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
@@ -127,22 +126,24 @@ export class TabManager {
       });
     });
 
-    let title: string = entity.webContents.getTitle();
+    // let title: string = entity.webContents.getTitle();
     let newTab: Tab = {
       id: crypto.randomUUID(),
-      title: title ? title : url,
+      title: entity.webContents.getTitle() || url,
       entity,
       active,
       listeners: {}
     };
 
-    this.tabs?.push(newTab); // 配列に追加
+    // 配列に追加
+    this.tabs?.push(newTab); 
     this.base.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
 
     // イベントを設定
     this.setEvents(newTab.id);
+
     entity.webContents.setWindowOpenHandler((details) => {
       this.newTab(details.url, true);
 
@@ -152,17 +153,17 @@ export class TabManager {
     });
 
     // レンダラーにも反映
-    const tabInfo = {
+    this.base.send("tab.new", {
       id: newTab.id,
       title: newTab.title,
       active: newTab.active
-    }
-    this.base.send("tab.new", tabInfo);
+    });
 
     entity.webContents.once("did-finish-load", () => {
       if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
     });
 
+    // 必要ならタブをアクティブ化
     if (active) this.activateTab(newTab.id);
 
     return newTab;
@@ -190,7 +191,7 @@ export class TabManager {
       const nextTabIndex = i === 0 ? i + 1 : i - 1;
       const nextTab = this.tabs[nextTabIndex];
 
-      console.info("Tab to activate:", nextTab.id, "(", nextTabIndex, ")", "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
+      console.info("Tab to activate:", `nextTab.id (index: ${nextTabIndex})`, "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
 
       if (!nextTab) {
         console.error("Could not remove tab: Next tab to activate does not exist.");
@@ -200,7 +201,8 @@ export class TabManager {
       this.activateTab(nextTab.id);
     }
 
-    console.info("Tab to remove:", id, "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
+    // ❓
+    console.info(`Tab to remove: ${tab.id}`, "\nTab list:", this.tabs.map(tab => ({ id: tab.id, title: tab.title })));
 
     // 最後に配列から削除
     this.tabs.splice(i, 1);
@@ -215,7 +217,7 @@ export class TabManager {
       return;
     }
 
-    // メインプロセスのタブをアクティブ化
+    // メインプロセスに反映
     this.tabs = this.tabs.map(tab => ({
       ...tab,
       active: tab.id === id
@@ -223,7 +225,7 @@ export class TabManager {
 
     this.activeCurrent = id;
 
-    this.tabs.forEach(tab => {
+    this.tabs.forEach((tab) => {
       tab.active ? tab.entity.setVisible(true) : tab.entity.setVisible(false);
     });
 
