@@ -7,6 +7,7 @@ import {
 } from "electron";
 import { TabManager } from "./tab";
 import {
+  ContextMenu,
   buildContextMenu,
   buildApplicationMenu,
   buildOptionsMenu
@@ -31,6 +32,7 @@ export class Base {
   tabManager?: TabManager;
   optionsMenu: Electron.Menu;
   readonly event: Event;
+  readonly contextMenuManager: ContextMenu;
 
   constructor(bounds?: {
     width: number;
@@ -60,6 +62,7 @@ export class Base {
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this);
+    this.contextMenuManager = new ContextMenu(this);
 
     this.nav = new WebContentsView({
       webPreferences: {
@@ -114,7 +117,7 @@ export class Base {
       if (params.mediaType === "audio") type = "audio";
       if (params.mediaType === "video") type = "video";
 
-      buildContextMenu(this, {
+      this.contextMenuManager.build({
         type,
         isEditable: params.isEditable,
         canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),

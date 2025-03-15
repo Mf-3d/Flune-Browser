@@ -4,7 +4,7 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
-import { buildContextMenu } from "./menu";
+import { ContextMenu, buildContextMenu } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./theme";
 import Event from "./event";
@@ -31,6 +31,7 @@ const HOME_URL = "flune://home";
 export class TabManager {
   readonly settings: Settings;
   readonly event: Event;
+  readonly contextMenuManager: ContextMenu;
   private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
@@ -50,6 +51,7 @@ export class TabManager {
     this.base = base;
     this.settings = new Settings(this);
     this.event = new Event();
+    this.contextMenuManager = new ContextMenu(this.base);
     if (bounds) this.bounds = bounds;
 
     this.base.win.on('resize', () => {
@@ -445,7 +447,7 @@ export class TabManager {
       if (params.mediaType === "audio") type = "audio";
       if (params.mediaType === "video") type = "video";
 
-      buildContextMenu(this.base, {
+      this.contextMenuManager.build({
         type,
         isEditable: params.isEditable,
         canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
