@@ -367,6 +367,9 @@ export class ContextMenu {
   }
 };
 
+/**
+ * @deprecated
+ */
 export function buildContextMenu(base: Base, state: {
   type: "normal" | "text" | "link" | "image" | "audio" | "video",
   isEditable: boolean,
