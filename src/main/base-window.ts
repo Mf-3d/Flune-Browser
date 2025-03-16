@@ -7,7 +7,7 @@ import {
 } from "electron";
 import { TabManager } from "./tab";
 import {
-  ContextMenu,
+  ContextMenuManager,
   buildContextMenu,
   buildApplicationMenu,
   buildOptionsMenu
@@ -32,7 +32,7 @@ export class Base {
   tabManager?: TabManager;
   optionsMenu: Electron.Menu;
   readonly event: Event;
-  readonly contextMenuManager: ContextMenu;
+  readonly contextMenuManager: ContextMenuManager;
 
   constructor(bounds?: {
     width: number;
@@ -62,7 +62,7 @@ export class Base {
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this);
-    this.contextMenuManager = new ContextMenu(this);
+    this.contextMenuManager = new ContextMenuManager(this);
 
     this.nav = new WebContentsView({
       webPreferences: {

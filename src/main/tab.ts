@@ -4,7 +4,7 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
-import { ContextMenu, buildContextMenu } from "./menu";
+import { ContextMenuManager, buildContextMenu } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./theme";
 import Event from "./event";
@@ -31,7 +31,7 @@ const HOME_URL = "flune://home";
 export class TabManager {
   readonly settings: Settings;
   readonly event: Event;
-  readonly contextMenuManager: ContextMenu;
+  readonly contextMenuManager: ContextMenuManager;
   private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
@@ -51,7 +51,7 @@ export class TabManager {
     this.base = base;
     this.settings = new Settings(this);
     this.event = new Event();
-    this.contextMenuManager = new ContextMenu(this.base);
+    this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
     this.base.win.on('resize', () => {
@@ -138,7 +138,7 @@ export class TabManager {
     };
 
     // 配列に追加
-    this.tabs?.push(newTab); 
+    this.tabs?.push(newTab);
     this.base.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
@@ -170,7 +170,7 @@ export class TabManager {
 
     return newTab;
   }
-  
+
   // --タブを削除
   removeTab(id: string) {
     const tab = this.getTabById(id);
@@ -410,7 +410,7 @@ export class TabManager {
         tab.listeners["theme-updated"] = () => {
           this.appendTheme(tab.id)
         };
-        
+
         this.event.on("theme-updated", tab.listeners["theme-updated"]);
       } else {
         this.settings.closeSettings(tab.id);

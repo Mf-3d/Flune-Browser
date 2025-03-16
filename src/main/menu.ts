@@ -146,10 +146,10 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
 
 
 
-export class ContextMenu {
+export class ContextMenuManager {
   base: Base;
 
-  constructor (base: Base) {
+  constructor(base: Base) {
     this.base = base;
   }
 
@@ -194,7 +194,7 @@ export class ContextMenu {
         type: "separator"
       }
     ] as Electron.MenuItemConstructorOptions[];
-    
+
     const TEMPLATE_VIDEO: Electron.MenuItemConstructorOptions[] = [
       {
         label: "ピクチャーインピクチャー",
@@ -206,7 +206,7 @@ export class ContextMenu {
         type: "separator"
       }
     ];
-    
+
     const TEMPLATE_EDITABLE: Electron.MenuItemConstructorOptions[] = [
       {
         label: "元に戻す",
@@ -247,7 +247,7 @@ export class ContextMenu {
         type: "separator"
       }
     ];
-    
+
     const TEMPLATE_TEXT: Electron.MenuItemConstructorOptions[] = [
       {
         label: "コピー",
@@ -264,7 +264,7 @@ export class ContextMenu {
         type: "separator"
       },
     ];
-    
+
     const TEMPLATE_LINK: Electron.MenuItemConstructorOptions[] = [
       {
         label: "新しいタブで開く",
@@ -276,7 +276,7 @@ export class ContextMenu {
         type: "separator"
       },
     ];
-    
+
     const TEMPLATE_NAV: Electron.MenuItemConstructorOptions[] = [
       {
         label: "新しいタブ",
@@ -301,7 +301,7 @@ export class ContextMenu {
         }
       }
     ];
-    
+
     const TEMPLATE_VIEW: Electron.MenuItemConstructorOptions[] = [
       {
         label: "戻る",
