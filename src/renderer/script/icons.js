@@ -24,3 +24,7 @@ function createIcons() {
     }
   });
 }
+
+const lucide = {
+  createIcons
+}
