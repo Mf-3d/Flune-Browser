@@ -4,9 +4,9 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
-import { ContextMenuManager, buildContextMenu } from "./menu";
+import { ContextMenuManager } from "./menu";
 import { SearchEngine, Settings } from "./settings";
-import theme from "./theme";
+import theme from "./lib/theme";
 import Event from "./event";
 
 export type Tab = {

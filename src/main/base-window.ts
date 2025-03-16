@@ -8,11 +8,10 @@ import {
 import { TabManager } from "./tab";
 import {
   ContextMenuManager,
-  buildContextMenu,
   buildApplicationMenu,
   buildOptionsMenu
 } from "./menu";
-import theme from "./theme";
+import theme from "./lib/theme";
 import Event from "./event";
 
 // new window
