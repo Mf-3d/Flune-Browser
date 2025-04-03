@@ -48,7 +48,11 @@ export class Base {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `Flune-Browser ${process.env.npm_package_version ? process.env.npm_package_version : "3"}`,
+      title: `Flune-Browser ${
+        (process.env.npm_package_version || "3")
+        .replace("-beta.", " Beta ")
+        .replace("-dev.", " Dev ")
+      }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
         color: "#0000",
