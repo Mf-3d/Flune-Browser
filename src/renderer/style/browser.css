@@ -1,0 +1,94 @@
+:root {
+  --panel-color: #111111a1;
+  --background-image: url(flune://assets/image/backgrounds/keith-camilleri-sV_3SBuiS4I-unsplash.jpg);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  text-shadow: #4c7a6a79 1px 1px 10px;
+}
+body.bg-image {
+  background-image: var(--background-image);
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: normal;
+}
+
+body>div {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  background: var(--panel-color);
+  border: solid 1px var(--flune-main-border-color);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  box-shadow: 5px 5px 20px 5px #48484827;
+  padding: 2em;
+}
+
+#address-box {
+  width: 50%;
+  font-size: 1.5em;
+  border-radius: 10px;
+  border: solid 1px var(--flune-main-border-color);
+  backdrop-filter: blur(0px);
+  background: var(--panel-color);
+  padding: 0.2em;
+  vertical-align: middle;
+}
+
+#address-box>input[type=text] {
+  width: 50%;
+  padding: 0.1em;
+  background: none;
+  font-size: 1em;
+  position: relative;
+  top: -3px;
+}
+
+#address-box>input[type=text]::placeholder {
+  color: color-mix(in srgb, var(--text-color), var(--disabled-color) 80%);
+}
+
+a {
+  vertical-align: middle;
+  display: inline-block;
+  color: var(--symbol-color);
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-app-region: no-drag;
+
+  transition: color .5s, filter .5s;
+}
+
+a:hover {
+  color: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
+  filter: drop-shadow(0 0 0.75rem var(--symbol-color));
+}
+
+a>svg {
+  width: 28px;
+  height: auto;
+  stroke: var(--symbol-color);
+  stroke-width: 3px;
+
+  transition: stroke .5s, stroke-width .5s, filter .5s;
+}
+
+a>svg:hover {
+  stroke: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
+  stroke-width: 4px;
+  filter: drop-shadow(0 0 0.75rem var(--symbol-color));
+}
+
+a.disabled {
+  pointer-events: none;
+}
+
+a.disabled>svg {
+  stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
+  stroke-width: 2px;
+}

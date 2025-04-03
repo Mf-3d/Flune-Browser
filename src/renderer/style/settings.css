@@ -1,0 +1,77 @@
+body {
+  background-color: var(--background-color);
+  user-select: none;
+  padding: 1em;
+}
+
+/*ベース*/
+section.typeA {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+section.typeA::after {
+  content: '';
+  width: 100%;
+  height: 3px;
+  order: -1;
+  display: block;
+  background: var(--opened-tab-color);
+}
+
+section.typeA .tabLabel {
+  /* タブ */
+  margin-right: 3px;
+  padding: 3px 12px;
+  flex: 1;
+  order: -1;
+  border-radius: 3px 3px 0 0;
+  background: var(--tab-color);
+  transition: .5s;
+  cursor: pointer;
+}
+
+section.typeA .tabLabel:nth-last-of-type(1) {
+  margin-right: 0;
+}
+
+section.typeA>input {
+  /* ラジオボタン非表示 */
+  display: none;
+}
+
+section.typeA .content {
+  /* 本文 */
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/*アクティブ設定*/
+section.typeA>input:checked+.tabLabel {
+  color: var(--tab-text-color);
+  background: var(--opened-tab-color);
+}
+
+section.typeA>input:checked+.tabLabel+.content {
+  padding: 15px;
+  height: auto;
+  overflow: auto;
+  background: var(--panel-color);
+  transition: .5s opacity;
+  opacity: 1;
+  border-radius: 0 0 3px 3px;
+}
+
+select,
+input[type="text"] {
+  border: solid 1px #3d3d3d;
+  border-radius: 5px;
+  background: var(--input-color);
+  color: var(--text-color);
+}
+
+table {
+  border-spacing: .5em;
+}

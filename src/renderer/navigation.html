@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="./style/main.css" />
+  <link rel="stylesheet" href="./style/navigation.css" />
+</head>
+
+<body>
+  <div id="tabs">
+    <!-- <span id="opened" draggable="true" data-id="">
+        <img src="" class="favicon" onerror="this.src='https://unpkg.com/lucide-static@latest/icons/file.svg';"/>
+        <a href="#" class="loading disabled">
+          <i data-lucide="loader-circle"></i>
+        </a>
+        <p class="title">Home - Flune-Browser</p>
+        <span class="right">
+          <a href="#" class="downloading disabled">
+            <i data-lucide="download"></i>
+          </a>
+          <a href="#" class="audible disabled">
+            <i data-lucide="volume-2"></i>
+          </a>
+        </span>
+        <a href="javascript:removeTab()" class="close-button right">
+          <i data-lucide="x"></i>
+        </a>
+      </span> -->
+    <a href="javascript:flune.newTab()" class="new-button right">
+      <i data-lucide="plus"></i>
+    </a>
+  </div>
+  <nav>
+    <a class="go-back disabled" href="javascript:flune.goBack()"><i data-lucide="chevron-left"></i></a>
+    <a class="go-forward disabled" href="javascript:flune.goForward()"><i data-lucide="chevron-right"></i></a>
+    <a href="javascript:flune.reloadTab()"><i data-lucide="rotate-cw"></i></a>
+    <div>
+      <input id="search-bar" type="text" placeholder="Enter a search word or URL." />
+      <a href="javascript:search()"><i data-lucide="search"></i></a>
+    </div>
+    <a class="right" href="javascript:flune.toggleMenu()"><i data-lucide="ellipsis-vertical"></i></a>
+  </nav>
+
+  <script src="./script/icons.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="./script/navigation.js"></script>
+</body>
+
+</html>

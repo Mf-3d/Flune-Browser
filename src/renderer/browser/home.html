@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <link rel="icon" href="flune://assets/image/icon.png" />
+  <link rel="stylesheet" href="flune://style/main.css" />
+  <link rel="stylesheet" href="flune://style/browser.css" />
+  <link rel="stylesheet" href="flune://style/home.css" />
+  <script src="flune://script/browser.js"></script>
+  <title>新しいタブ - Flune-Browser</title>
+</head>
+
+<body class="bg-image">
+  <div>
+    <span style="user-select: none;">
+      <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
+      <span class="flune-version">3</span>
+    </span>
+    <br />
+    <span id="address-box">
+      <input id="search-bar" type="text" placeholder="Enter a search word or URL." style="-webkit-app-region: no-drag;" />
+      <a href="javascript:search()" class="border"><i data-lucide="search"></i></a>
+    </span>
+    <br />
+    <div id="links">
+    </div>
+  </div>
+  <script src="flune://script/icons.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="flune://script/home.js"></script>
+</body>
+
+</html>
