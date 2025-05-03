@@ -108,6 +108,10 @@ export class Base {
         y: this.viewY
       });
 
+      if (process.platform === "darwin") this.nav.webContents.executeJavaScript(`
+        document.head.innerHTML += '<link rel="stylesheet" href="./style/navigation-mac.css" />';
+      `);
+
       this.event.send("navigation-loaded");
 
       this.appendTheme();
