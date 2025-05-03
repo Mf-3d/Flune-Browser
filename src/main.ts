@@ -9,6 +9,8 @@ let base: Base | null | undefined;
 let protocol: Protocol | null | undefined;
 let event = new Event();
 
+app.setName("Flune-Browser");
+
 // 新規ウィンドウ
 function nw() {
   base = new Base();
