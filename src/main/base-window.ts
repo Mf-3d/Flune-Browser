@@ -63,6 +63,11 @@ export class Base {
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
 
+    if (process.platform === "darwin") this.win.setWindowButtonPosition({
+      x: 10,
+      y: 8
+    });
+
     Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this);
     this.contextMenuManager = new ContextMenuManager(this);
