@@ -110,6 +110,7 @@ export class Base {
 
       if (process.platform === "darwin") this.nav.webContents.executeJavaScript(`
         document.head.innerHTML += '<link rel="stylesheet" href="./style/navigation-mac.css" />';
+        console.info("mac");
       `);
 
       this.event.send("navigation-loaded");
@@ -149,7 +150,7 @@ export class Base {
       this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
-      this.win.setTitleBarOverlay({
+      if (process.platform === "win32" || process.platform === "linux") this.win.setTitleBarOverlay({
         symbolColor: color
       });
     });
