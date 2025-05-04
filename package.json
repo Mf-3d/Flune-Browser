@@ -57,7 +57,7 @@
       }
     },
     "nsis": {
-      "artifactName": "${productName}-${version}-win-installer.exe"
+      "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
     },
     "mac": {
       "icon": "./src/assets/image/icon.png",
