@@ -105,12 +105,13 @@ export class Settings {
       return;
     }
 
-    let preloads = tab.entity.webContents.session.getPreloads();
-
-    if (this.isAttachedPreloads(tab.id)) return;
-
-    preloads.push(PRELOAD_PATH);
-    tab.entity.webContents.session.setPreloads(preloads);
+    if (this.isPreloadAttached(tab.id)) return;
+    
+    tab.entity.webContents.session.registerPreloadScript({
+      type: "frame",
+      id: "settings",
+      filePath: PRELOAD_PATH,
+    });
 
     // プリロードの追加はリロード後に反映される
     tab.entity.webContents.stop();
@@ -127,18 +128,16 @@ export class Settings {
       return;
     }
 
-    const preloads = tab.entity.webContents.session.getPreloads();
-    if (!this.isAttachedPreloads(tab.id)) return;
+    if (!this.isPreloadAttached(tab.id)) return;
 
-    const detachedPreloads = preloads.filter(preload => preload !== PRELOAD_PATH);
-    tab.entity.webContents.session.setPreloads(detachedPreloads);
+    tab.entity.webContents.session.unregisterPreloadScript("settings");
 
     // プリロードの削除はリロード後に反映される
     this._tabManager.reloadTab(tab.id);
   }
 
   // プリロードが追加されているか
-  isAttachedPreloads(tabId?: string) {
+  isPreloadAttached(tabId?: string) {
     if (!tabId) tabId = this._tabManager.activeCurrent || "";
     const tab = this._tabManager.getTabById(tabId);
 
@@ -147,9 +146,9 @@ export class Settings {
       return;
     }
 
-    const preloads = tab.entity.webContents.session.getPreloads();
+    const preloads = tab.entity.webContents.session.getPreloadScripts();
 
-    return preloads.includes(PRELOAD_PATH);
+    return preloads.map(preloads => preloads.id).includes("settings");
   }
 
   closeSettings(tabId?: string) {
@@ -163,6 +162,6 @@ export class Settings {
 
     if (tab.entity.webContents.getURL() === SETTING_URL) return;
 
-    if (this.isAttachedPreloads(tab.id)) this.detachPreload(tab.id);
+    if (this.isPreloadAttached(tab.id)) this.detachPreload(tab.id);
   }
 }
