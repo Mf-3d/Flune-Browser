@@ -42,11 +42,12 @@ body>div {
 
 #address-box>input[type=text] {
   width: 50%;
-  padding: 0.1em;
+  padding: 0.2em;
   background: none;
-  font-size: 1em;
+  font-size: 0.7em;
   position: relative;
   top: -3px;
+  margin-left: 0.35em;
 }
 
 #address-box>input[type=text]::placeholder {
