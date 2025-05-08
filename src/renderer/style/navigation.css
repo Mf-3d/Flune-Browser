@@ -112,7 +112,7 @@ nav>div {
 }
 
 input[type=text] {
-  width: calc(100% - 35px);
+  width: calc(100% - 30px);
   height: 16px;
   line-height: 16px;
   position: relative;
