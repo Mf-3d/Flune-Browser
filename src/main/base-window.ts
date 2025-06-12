@@ -115,7 +115,7 @@ export class Base {
 
       this.event.send("navigation-loaded");
 
-      this.appendTheme();
+      this.updateTheme();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
       if (!this.tabManager) return;
@@ -143,7 +143,7 @@ export class Base {
     this.event = new Event();
 
     this.event.on("theme-updated", (id) => {
-      this.appendTheme();
+      this.updateTheme();
     });
 
     ipcMain.handle("options.toggle", () => {
@@ -161,7 +161,7 @@ export class Base {
     });
   }
 
-  appendTheme() {
+  updateTheme() {
     // テーマを追加
     const themeId = this.tabManager?.settings.config.get("settings.design.theme");
     const themes: {

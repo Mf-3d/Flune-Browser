@@ -405,10 +405,10 @@ export class TabManager {
       tab.listeners["theme-updated"] = undefined;
 
       if (tabUrl.startsWith("flune://")) {
-        this.appendTheme(tab.id);
+        this.updateTheme(tab.id);
 
         tab.listeners["theme-updated"] = () => {
-          this.appendTheme(tab.id)
+          this.updateTheme(tab.id)
         };
 
         this.event.on("theme-updated", tab.listeners["theme-updated"]);
@@ -481,7 +481,7 @@ export class TabManager {
     if (callback) callback();
   }
 
-  appendTheme(tabId: string | undefined = this.activeCurrent) {
+  updateTheme(tabId: string | undefined = this.activeCurrent) {
     if (!tabId) {
       console.error("Could not append the theme: Tab ID not specified or active tab does not exist.");
       return;
