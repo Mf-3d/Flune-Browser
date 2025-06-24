@@ -1,15 +1,10 @@
-# ビルドされたファイルはreleasesに出すからいらなーい
+# ビルドされたファイルはreleasesに出すからいらない
 dist
 
-# これはnpm installできるからいらないね
-node_modules
-
-# 絶対いらない
+node_modules/
 *.DS_Store
 src/.DS_Store
-
-# 拡張機能はライセンス的にアレなので
-Extension
+Extension/
 
 # その他
 other_data/pat-whelen-L8MiKX6o6uI-unsplash.jpeg
