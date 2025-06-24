@@ -173,7 +173,10 @@ window.onload = async () => {
         each();
 
         if(setting.force_twemoji){
-          twemoji.parse(document.body);
+          twemoji.parse(
+            document.body,
+            { base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/" }
+          );
         }
 
         return;
@@ -264,7 +267,10 @@ window.onload = async () => {
         document.querySelector(`#tabs > span > div[tab_id="${open_index}"]`).classList.add('active');
 
         if(setting.force_twemoji){
-          twemoji.parse(document.body);
+          twemoji.parse(
+            document.body,
+            { base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/" }
+          );
         }
 
         return;
@@ -313,7 +319,10 @@ window.onload = async () => {
   window.flune_api.on('change_title', (event, data)=>{
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .title`).innerHTML = data.title;
     if(setting.force_twemoji){
-      twemoji.parse(document.body);
+      twemoji.parse(
+        document.body,
+        { base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/" }
+      );
     }
   });
   
@@ -333,7 +342,10 @@ window.onload = async () => {
     document.querySelector(`#tabs > span > div[tab_id="${data.index}"] > .favicon`).src = data.favicon;
     faviconCache[data.index] = data.favicon;
     if(setting.force_twemoji){
-      twemoji.parse(document.body);
+      twemoji.parse(
+        document.body,
+        { base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/" }
+      );
     }
   });
   
