@@ -3,7 +3,7 @@ import {
 } from "electron";
 import { Base } from "./main/base-window";
 import { Protocol } from "./main/protocol";
-import Event from "./main/event";
+import Event from "./main/lib/event";
 
 let base: Base | null | undefined;
 let protocol: Protocol | null | undefined;
@@ -17,7 +17,7 @@ function nw() {
   event.once("navigation-loaded", () => {
     base?.tabManager?.newTab();
   });
-  
+
   if (!app.isPackaged) base.nav.webContents.openDevTools({
     mode: "detach"
   });

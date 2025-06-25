@@ -1,7 +1,7 @@
 import { protocol, net } from "electron";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
-import Event from "./event";
+import Event from "./lib/event";
 
 export class Protocol {
   readonly name: string;

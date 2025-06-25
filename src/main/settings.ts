@@ -5,7 +5,7 @@ import Store from "electron-store";
 import { TabManager } from "./tab";
 import { ipcMain } from "electron";
 
-import Event from "./event";
+import Event from "./lib/event";
 
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
@@ -106,7 +106,7 @@ export class Settings {
     }
 
     if (this.isPreloadAttached(tab.id)) return;
-    
+
     tab.entity.webContents.session.registerPreloadScript({
       type: "frame",
       id: "settings",

@@ -12,7 +12,7 @@ import {
   buildOptionsMenu
 } from "./menu";
 import theme from "./lib/theme";
-import Event from "./event";
+import Event from "./lib/event";
 
 // new window
 export class Base {
@@ -48,11 +48,10 @@ export class Base {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `Flune-Browser ${
-        (process.env.npm_package_version || "3")
-        .replace("-beta.", " Beta ")
-        .replace("-dev.", " Dev ")
-      }`,
+      title: `Flune-Browser ${(process.env.npm_package_version || "3")
+          .replace("-beta.", " Beta ")
+          .replace("-dev.", " Dev ")
+        }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
         color: "#0000",

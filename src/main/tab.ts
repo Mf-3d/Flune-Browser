@@ -7,7 +7,7 @@ import { Base } from "./base-window";
 import { ContextMenuManager } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./lib/theme";
-import Event from "./event";
+import Event from "./lib/event";
 
 export type Tab = {
   id: string;
