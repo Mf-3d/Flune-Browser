@@ -31,6 +31,9 @@ contextBridge.exposeInMainWorld("flune", {
   updateSymbolColor: (color: string) => {
     ipcRenderer.invoke("flune.update-symbol-color", color); // シンボルカラーを変更する
   },
+  toggleBookmark: () => {
+    ipcRenderer.invoke("nav.toggle-bookmark"); // 開いているタブをブックマークに追加または削除する
+  },
 
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

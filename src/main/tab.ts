@@ -8,6 +8,7 @@ import { ContextMenuManager } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./lib/theme";
 import Event from "./lib/event";
+import { DataManager } from "./lib/data";
 
 export type Tab = {
   id: string;
@@ -33,6 +34,7 @@ export class TabManager {
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
   private readonly base: Base;
+  private readonly data: DataManager;
   tabs: Tab[] = [];
   private bounds: {
     width: number;
@@ -49,6 +51,7 @@ export class TabManager {
 
   constructor(base: Base, bounds?: { width: number; height: number; x: number; y: number }) {
     this.base = base;
+    this.data = new DataManager;
     this.settings = new Settings(this);
     this.event = new Event();
     this.contextMenuManager = new ContextMenuManager(this.base);
@@ -85,6 +88,28 @@ export class TabManager {
     });
     ipcMain.handle('tab.load', (event, id, url) => {
       this.load(id, url);
+    });
+    // ナビゲーションから
+    ipcMain.handle("nav.toggle-bookmark", () => {
+      this.getActiveTabCurrent()?.entity.webContents.send("nav.toggle-bookmark");
+    });
+    // タブから
+    ipcMain.handle("tab.toggle-bookmark", (event, data: {
+      title: string,
+      url: string,
+    }) => {
+      if (!this.data.bookmarks.existByUrl(data.url)) {
+        this.data.bookmarks.add({
+          title: data.title,
+          url: data.url,
+          tag: [],
+          parentId: "root", // デフォルトはルート
+        });
+      } else {
+        const bookmark = this.data.bookmarks.getByUrl(data.url);
+
+        if (bookmark) this.data.bookmarks.remove(bookmark.id);
+      }
     });
     ipcMain.handle("flune.ver", () => {
       return process.env.npm_package_version;

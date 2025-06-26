@@ -115,6 +115,10 @@ function search() {
   input.blur();
 }
 
+function toggleBookmark() {
+  flune.toggleBookmark();
+}
+
 function updateSymbolColor() {
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
   flune.updateSymbolColor(textColor);
