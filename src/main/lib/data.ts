@@ -85,6 +85,9 @@ export class DataManager {
       return this.bookmarks.getAll().find(bookmark => bookmark.id === id);
     },
     
+    getByUrl: (url: string) => {
+      return this.bookmarks.getAll().find(bookmark => bookmark.url === url);
+    },
     getByTag: (tag: string): Bookmark[] => {
       return this.bookmarks.getAll().filter(bookmark => bookmark.tag.includes(tag));
     },
