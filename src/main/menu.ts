@@ -1,5 +1,6 @@
 import {
   app,
+  clipboard,
   Menu,
   shell
 } from "electron";
@@ -269,7 +270,13 @@ export class ContextMenuManager {
       {
         label: "新しいタブで開く",
         click: () => {
-          this.base.tabManager?.newTab(state.params.linkURL)
+          this.base.tabManager?.newTab(state.params.linkURL);
+        }
+      },
+      {
+        label: "リンクのアドレスをコピー",
+        click() {
+          clipboard.writeText(state.params.linkURL);
         }
       },
       {
