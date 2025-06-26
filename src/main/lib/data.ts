@@ -66,6 +66,7 @@ export class DataManager {
         return this.bookmarks.folders.getAll().find(folder => folder.id === folderId);
       },
       exist: (folderId: string): boolean => {
+        if (folderId === "root") return true;
         return this.bookmarks.folders.getById(folderId) !== undefined;
       },
       create: (folder: {
@@ -77,14 +78,17 @@ export class DataManager {
           console.error("Could not create folder: The folder does not exist.");
           return;
         }
-  
-        this.config.set("bookmarkFolders", this.bookmarks.folders.getAll().push({
+
+        const bookmarks = this.bookmarks.folders.getAll();
+        bookmarks.push({
           type: "folder",
           id: crypto.randomUUID(),
           title: folder.title,
           tag: folder.tag,
           parentId: folder.parentId,
-        }));
+        });
+  
+        this.config.set("bookmarkFolders", bookmarks);
       },
     },
     /**
@@ -145,14 +149,17 @@ export class DataManager {
         return;
       }
 
-      this.config.set("bookmarks", this.bookmarks.getAll().push({
+      const bookmarks = this.bookmarks.getAll();
+      bookmarks.push({
         type: "bookmark",
         id: crypto.randomUUID(),
         title: bookmark.title,
         url: bookmark.url,
         tag: bookmark.tag,
         parentId: bookmark.parentId,
-      }));
+      });
+
+      this.config.set("bookmarks", bookmarks);
     },
     remove: (id: string) => {
       this.config.set("bookmarks", this.bookmarks.getAll().filter(bookmark => bookmark.id !== id));
