@@ -94,6 +94,9 @@ export class DataManager {
     exist: (id: string): boolean => {
       return this.bookmarks.getById(id) !== undefined;
     },
+    existByUrl: (url: string): boolean => {
+      return this.bookmarks.getByUrl(url) !== undefined;
+    },
     add: (bookmark: {
       title: string;
       url: string;
