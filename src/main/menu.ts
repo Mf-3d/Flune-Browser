@@ -6,6 +6,9 @@ import {
 } from "electron";
 
 import { Base } from "./base-window";
+import { DataManager } from "./lib/data";
+
+const data = new DataManager;
 
 export function buildApplicationMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
@@ -591,8 +594,34 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "ブックマーク",
-      enabled: false,
-      submenu: []
+      // enabled: false,
+      submenu: [
+        ...data.bookmarks.folders.getStuff("root").map(entity => {
+          if (entity.type === "bookmark") {
+            return {
+              label: entity.title,
+              click() {
+                base.tabManager?.load(undefined, entity.url);
+              }
+            }
+          } else {
+            return {
+              label: entity.title,
+              submenu: []
+            };
+          }
+        }),
+        {
+          type: "separator"
+        },
+        {
+          label: "ブックマークをタブで開く",
+          enabled: false,
+          click() {
+            // base.tabManager?.newTab(null)
+          },
+        },
+      ]
     },
     {
       type: "separator"
