@@ -146,6 +146,7 @@ export class Base {
     });
 
     ipcMain.handle("options.toggle", () => {
+      this.optionsMenu = buildOptionsMenu(this);
       this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
