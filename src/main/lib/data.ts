@@ -116,6 +116,9 @@ export class DataManager {
         tag: bookmark.tag,
         parentId: bookmark.parentId,
       }));
+    },
+    remove: (id: string) => {
+      this.config.set("bookmarks", this.bookmarks.getAll().filter(bookmark => bookmark.id !== id));
     }
   };
 }
