@@ -40,8 +40,6 @@ export class DataManager {
       name: "data-3",
       defaults: DEFAULT_CONFIG,
     });
-
-    this.bookmarks.add.bind(this);
   }
 
   bookmarks = {
