@@ -91,6 +91,9 @@ export class DataManager {
     getByTag: (tag: string): Bookmark[] => {
       return this.bookmarks.getAll().filter(bookmark => bookmark.tag.includes(tag));
     },
+    exist: (id: string): boolean => {
+      return this.bookmarks.getById(id) !== undefined;
+    },
     add: (bookmark: {
       title: string;
       url: string;
