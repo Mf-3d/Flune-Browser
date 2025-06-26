@@ -10,6 +10,9 @@ type Bookmark = {
   title: string;
   url: string;
   tag: string[];
+  /**
+   * Specify the ID of "root" or parent folder.
+   */
   parentId: string; // フォルダ
 };
 type BookmarkFolder = {
@@ -42,7 +45,13 @@ export class DataManager {
     });
   }
 
+  /**
+   * Bookmarks
+   */
   bookmarks = {
+    /**
+     * Bookmark folders
+     */
     folders: {
       getStuff: (folderId: string): (Bookmark | BookmarkFolder)[] => {
         let bookmarks = this.bookmarks.getAll().filter(bookmark => bookmark.parentId === folderId);
@@ -78,29 +87,57 @@ export class DataManager {
         }));
       },
     },
+    /**
+     * Get all registered bookmarks.
+     * @returns All registered Bookmarks.
+     */
     getAll: () => {
       return this.config.get("bookmarks");
     },
+    /**
+     * Get a bookmark by ID.
+     * @returns Bookmark.
+     */
     getById: (id: string) => {
       return this.bookmarks.getAll().find(bookmark => bookmark.id === id);
     },
-    
+    /**
+     * Get a bookmark by URL.
+     * @returns Bookmark.
+     */
     getByUrl: (url: string) => {
       return this.bookmarks.getAll().find(bookmark => bookmark.url === url);
     },
+    /**
+     * Get a bookmark by tag.
+     * @returns Bookmark.
+     */
     getByTag: (tag: string): Bookmark[] => {
       return this.bookmarks.getAll().filter(bookmark => bookmark.tag.includes(tag));
     },
+    /**
+     * 
+     * @param id 
+     * @returns 
+     */
     exist: (id: string): boolean => {
       return this.bookmarks.getById(id) !== undefined;
     },
     existByUrl: (url: string): boolean => {
       return this.bookmarks.getByUrl(url) !== undefined;
     },
+    /**
+     * Register a bookmark.
+     * 
+     * @param bookmark Bookmark to add
+     */
     add: (bookmark: {
       title: string;
       url: string;
       tag: string[];
+      /**
+       * Specify the ID of "root" or parent folder.
+       */
       parentId: string;
     }) => {
       if (!this.bookmarks.folders.exist(bookmark.parentId)) {
