@@ -81,7 +81,7 @@ nav a>svg {
   stroke: var(--symbol-color);
   stroke-width: 3px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition: stroke .2s, stroke-width .5s, filter .5s, fill .2s;
 }
 
 nav a>svg:hover {
@@ -271,4 +271,12 @@ span.right {
 #tabs a.loading>svg {
   animation: .5s ease-in infinite rotation;
   pointer-events: none;
+}
+
+/*  */
+.bookmark.active > svg {
+  fill: var(--symbol-color);
+}
+.bookmark.active > svg:hover {
+  fill: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
 }

@@ -24,6 +24,10 @@ window.addEventListener("load", () => {
         if (value) document.querySelector(".go-forward").classList.remove("disabled");
         else document.querySelector(".go-forward").classList.add("disabled");
         break;
+      case "is-bookmarked":
+        if (value) document.querySelector("#bookmark").classList.add("active");
+        else document.querySelector("#bookmark").classList.remove("active");
+        break;
     }
   });
 
@@ -117,6 +121,7 @@ function search() {
 
 function toggleBookmark() {
   flune.toggleBookmark();
+  document.getElementById("bookmark").classList.toggle("active");
 }
 
 function updateSymbolColor() {

@@ -260,6 +260,7 @@ export class TabManager {
     this.base.send("tab.activate", activeTab.id);
     this.base.send("nav.change-state", "can-go-back", activeTab.entity.webContents.navigationHistory.canGoBack());
     this.base.send("nav.change-state", "can-go-forward", activeTab.entity.webContents.navigationHistory.canGoForward());
+    this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()));
     const activeTabUrl = activeTab.entity.webContents.getURL();
     if (!activeTabUrl.startsWith("flune://error")) this.base.send("nav.set-word", activeTabUrl);
 
@@ -414,6 +415,7 @@ export class TabManager {
     tab.entity.webContents.on("did-start-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
+      this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()));
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     // ロードが停止した時
@@ -450,6 +452,7 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
       if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
+      this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
     });
     // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {
