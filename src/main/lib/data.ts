@@ -175,5 +175,3 @@ export class DataManager {
     }
   };
 }
-
-const data = new DataManager;
