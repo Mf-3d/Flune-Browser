@@ -120,13 +120,18 @@ export class DataManager {
       return this.bookmarks.getAll().filter(bookmark => bookmark.tag.includes(tag));
     },
     /**
-     * 
+     * Check for the existence of a bookmark by ID.
      * @param id 
      * @returns 
      */
-    exist: (id: string): boolean => {
+    existById: (id: string): boolean => {
       return this.bookmarks.getById(id) !== undefined;
     },
+    /**
+     * Check for the existence of a bookmark by URL.
+     * @param url Bookmark URL
+     * @returns
+     */
     existByUrl: (url: string): boolean => {
       return this.bookmarks.getByUrl(url) !== undefined;
     },
