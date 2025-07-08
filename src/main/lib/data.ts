@@ -133,9 +133,10 @@ export class DataManager {
     /**
      * Register a bookmark.
      * 
-     * @param bookmark Bookmark to add
+     * @param data Bookmark data to add.
+     * @returns New bookmark
      */
-    add: (bookmark: {
+    add: (data: {
       title: string;
       url: string;
       tag: string[];
@@ -143,23 +144,26 @@ export class DataManager {
        * Specify the ID of "root" or parent folder.
        */
       parentId: string;
-    }) => {
-      if (!this.bookmarks.folders.exist(bookmark.parentId)) {
+    }): Bookmark | null => {
+      if (!this.bookmarks.folders.exist(data.parentId)) {
         console.error("Could not add bookmark: The folder does not exist.");
-        return;
+        return null;
       }
 
       const bookmarks = this.bookmarks.getAll();
-      bookmarks.push({
+      let newBookmark: Bookmark = {
         type: "bookmark",
         id: crypto.randomUUID(),
-        title: bookmark.title,
-        url: bookmark.url,
-        tag: bookmark.tag,
-        parentId: bookmark.parentId,
-      });
+        title: data.title,
+        url: data.url,
+        tag: data.tag,
+        parentId: data.parentId,
+      };
+      bookmarks.push(newBookmark);
 
       this.config.set("bookmarks", bookmarks);
+
+      return newBookmark;
     },
     remove: (id: string) => {
       this.config.set("bookmarks", this.bookmarks.getAll().filter(bookmark => bookmark.id !== id));
