@@ -453,6 +453,16 @@ export class TabManager {
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
       if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
       this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
+
+      // 履歴に追加
+      const histories = this.data.histories.getAll();
+      if (histories[histories.length - 1].url === tab.entity.webContents.getURL()) return;
+      
+      this.data.histories.add({
+        title: tab.entity.webContents.getTitle(),
+        url: tab.entity.webContents.getURL(),
+        date: new Date()
+      });
     });
     // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {

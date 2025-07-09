@@ -391,7 +391,26 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "履歴",
-      submenu: []
+      submenu: [
+        ...data.histories.getAll().slice(0, 10).reverse().map(history => {
+          return {
+            label: history.title,
+            click() {
+              base.tabManager?.load(undefined, history.url);
+            }
+          }
+        }),
+        {
+          type: "separator"
+        },
+        {
+          label: "全ての履歴を見る",
+          enabled: false,
+          click() {
+            // base.tabManager?.newTab(null)
+          },
+        },
+      ]
     },
     {
       label: "ダウンロード",

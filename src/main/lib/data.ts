@@ -4,7 +4,7 @@ import Store from "electron-store";
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
 
-type Bookmark = {
+export type Bookmark = {
   type: "bookmark";
   id: string;
   title: string;
@@ -15,17 +15,22 @@ type Bookmark = {
    */
   parentId: string; // フォルダ
 };
-type BookmarkFolder = {
+export type BookmarkFolder = {
   type: "folder";
   id: string;
   title: string;
   tag: string[];
   parentId: string;
 };
+export type History = {
+  title: string;
+  url: string;
+  date: Date;
+};
 
 type ConfigType = {
   version: [number, number, number];
-  history: any[]; // 未実装
+  history: History[]; // 未実装
   bookmarks: Bookmark[];
   bookmarkFolders: BookmarkFolder[];
   downloads: any[]; // 未実装
@@ -172,6 +177,32 @@ export class DataManager {
     },
     remove: (id: string) => {
       this.config.set("bookmarks", this.bookmarks.getAll().filter(bookmark => bookmark.id !== id));
+    }
+  };
+
+  histories = {
+    getAll: () => {
+      return this.config.get("history");
+    },
+    getByUrl: (url: string) => {
+      return this.histories.getAll().find(history => history.url === url);
+    },
+    getByDate: (date: Date) => {
+      return this.histories.getAll().find(history => history.date === date);
+    },
+    getByDuration: (duration: [Date, Date]): History[] => {
+      return this.histories.getAll().filter(history => 
+        duration[0].getTime() <= history.date.getTime() && history.date.getTime() <= duration[1].getTime()
+      );
+    },
+    
+    add: (data: History) => {
+      const histories = this.histories.getAll();
+      histories.push(data);
+
+      this.config.set("history", histories);
+
+      return data;
     }
   };
 }
