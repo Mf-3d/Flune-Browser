@@ -440,7 +440,7 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
           type: "separator"
         },
         {
-          label: "ブックマークをタブで開く",
+          label: "全てのブックマークを見る",
           enabled: false,
           click() {
             // base.tabManager?.newTab(null)
