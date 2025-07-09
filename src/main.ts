@@ -23,6 +23,7 @@ function nw() {
   });
 }
 
+// Intel Macでエラーが出るのを回避する
 function isArchitectureIntel(): boolean {
   const f = new Float32Array(1);
   const u8 = new Uint8Array(f.buffer);
@@ -32,7 +33,6 @@ function isArchitectureIntel(): boolean {
   return u8[3] === 255;
 }
 
-// Intel Macでエラーが出るのを回避する
 if (process.platform === "darwin" && isArchitectureIntel()) app.disableHardwareAcceleration();
 
 app.on("ready", () => {
