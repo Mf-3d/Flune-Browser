@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld("flune", {
   reloadTab: (ignoringCache?: boolean) => {
     ipcRenderer.invoke("tab.reload", ignoringCache); // 再読み込みする
   },
-  toggleMenu: () => {
+  toggleOptionMenu: () => {
     ipcRenderer.invoke("options.toggle"); // メニューを開く
   },
   updateSymbolColor: (color: string) => {
