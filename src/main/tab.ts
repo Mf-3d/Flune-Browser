@@ -128,6 +128,12 @@ export class TabManager {
     return this.tabs.find(tab => (tab.id === this.activeCurrent));
   }
 
+  // --IDからタブの位置を取得
+  getTabPositionById(id: string): number | undefined {
+    let tab = this.getTabById(id);
+    return tab ? this.tabs.indexOf(tab) : undefined;
+  }
+
   // --新規タブ
   newTab(url: string = HOME_URL, 
     options: {
