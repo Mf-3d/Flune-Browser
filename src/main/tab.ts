@@ -78,7 +78,9 @@ export class TabManager {
       this.activateTab(id);
     });
     ipcMain.handle("tab.new", () => {
-      this.newTab(undefined, true);
+      this.newTab(undefined, {
+        active: true
+      });
     });
     ipcMain.handle("tab.remove", (event, id) => {
       this.removeTab(id);
@@ -127,8 +129,16 @@ export class TabManager {
   }
 
   // --新規タブ
-  newTab(url?: string, active: boolean = true): Tab {
-    if (!url) url = HOME_URL;
+  newTab(url: string = HOME_URL, 
+    options: {
+      active: boolean,
+      /**
+       * Tab position from **the left**. Counting starts **from 0**.
+       */
+      position?: number
+    } = {
+      active: true
+    }): Tab {
 
     // ビューを作成
     let entity = new WebContentsView({
@@ -158,12 +168,17 @@ export class TabManager {
       id: crypto.randomUUID(),
       title: entity.webContents.getTitle() || url,
       entity,
-      active,
+      active: options.active,
       listeners: {}
     };
 
     // 配列に追加
-    this.tabs?.push(newTab);
+    if (options.position) {
+      this.tabs = this.tabs.splice(options.position, 0, newTab);
+    } else {
+      this.tabs?.push(newTab);
+    }
+
     this.base.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
@@ -172,7 +187,9 @@ export class TabManager {
     this.setEvents(newTab.id);
 
     entity.webContents.setWindowOpenHandler((details) => {
-      this.newTab(details.url, true);
+      this.newTab(details.url, {
+        active: true
+      });
 
       return {
         action: "deny"
@@ -183,7 +200,8 @@ export class TabManager {
     this.base.send("tab.new", {
       id: newTab.id,
       title: newTab.title,
-      active: newTab.active
+      active: newTab.active,
+      beforeTabId: options.position ? this.tabs[options.position - 1].id : null
     });
 
     entity.webContents.once("did-finish-load", () => {
@@ -191,7 +209,7 @@ export class TabManager {
     });
 
     // 必要ならタブをアクティブ化
-    if (active) this.activateTab(newTab.id);
+    if (options.active) this.activateTab(newTab.id);
 
     return newTab;
   }

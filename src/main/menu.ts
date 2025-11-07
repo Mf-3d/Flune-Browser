@@ -261,7 +261,9 @@ export class ContextMenuManager {
       {
         label: `「${state.params.selectionText}」を検索`,
         click: () => {
-          this.base.tabManager?.newTab(state.params.selectionText, true)
+          this.base.tabManager?.newTab(state.params.selectionText, {
+            active: true
+          })
         }
       },
       {
@@ -292,7 +294,9 @@ export class ContextMenuManager {
         label: "新しいタブ",
         accelerator: "Ctrl+T",
         click: () => {
-          this.base.tabManager?.newTab(undefined, true);
+          this.base.tabManager?.newTab(undefined, {
+            active: true
+          });
         }
       },
       {
@@ -383,7 +387,9 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
       label: "新しいタブ",
       accelerator: "Ctrl+T",
       click() {
-        base.tabManager?.newTab(undefined, true);
+        base.tabManager?.newTab(undefined, {
+          active: true
+        });
       }
     },
     {

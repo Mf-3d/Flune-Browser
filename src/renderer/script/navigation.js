@@ -57,7 +57,11 @@ window.addEventListener("load", () => {
     </a>
     `;
 
-    newButton.before(element); // 一番右に追加
+    if (!tab.beforeTabId) {
+      newButton.before(element); // 一番右に追加
+    } else {
+      tabContainer.querySelector(`:scope > span[data-id="${tab.beforeTabId}"]`).after(element);
+    }
 
     lucide.createIcons();
     each();
