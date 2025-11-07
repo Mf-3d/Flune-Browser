@@ -5,11 +5,12 @@ function removeTab(id) {
 
 window.addEventListener("load", () => {
   each();
+
   const tabContainer = document.getElementById("tabs");
   const input = document.getElementById("search-bar");
 
   input.addEventListener("keydown", (event) => {
-    if (!event.isComposing && event.keyCode === 13) {
+    if (!event.isComposing && event.key === "Enter") {
       search();
     }
   });
