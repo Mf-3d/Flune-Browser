@@ -137,14 +137,13 @@ export class TabManager {
   // --新規タブ
   newTab(url: string = HOME_URL, 
     options: {
-      active: boolean,
+      active?: boolean,
       /**
        * Tab position from **the left**. Counting starts **from 0**.
        */
       position?: number
-    } = {
-      active: true
-    }): Tab {
+  } = {}): Tab {
+    if (!options.active) options.active = true;
 
     // ビューを作成
     let entity = new WebContentsView({
@@ -180,7 +179,7 @@ export class TabManager {
 
     // 配列に追加
     if (options.position) {
-      this.tabs = this.tabs.splice(options.position, 0, newTab);
+      this.tabs.splice(options.position + 1, 0, newTab);
     } else {
       this.tabs?.push(newTab);
     }
