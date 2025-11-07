@@ -57,7 +57,7 @@ export class TabManager {
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
-    this.base.win.on('resize', () => {
+    this.base.win.on("resize", () => {
       if (!this.base) return;
 
       const bounds = this.base.win.getContentBounds();
@@ -77,16 +77,16 @@ export class TabManager {
     ipcMain.handle("tab.switch", (event, id) => {
       this.activateTab(id);
     });
-    ipcMain.handle('tab.new', () => {
+    ipcMain.handle("tab.new", () => {
       this.newTab(undefined, true);
     });
-    ipcMain.handle('tab.remove', (event, id) => {
+    ipcMain.handle("tab.remove", (event, id) => {
       this.removeTab(id);
     });
-    ipcMain.handle('tab.move', (event, from, to) => {
+    ipcMain.handle("tab.move", (event, from, to) => {
       this.moveTab(from, to);
     });
-    ipcMain.handle('tab.load', (event, id, url) => {
+    ipcMain.handle("tab.load", (event, id, url) => {
       this.load(id, url);
     });
     // ナビゲーションから
@@ -140,7 +140,7 @@ export class TabManager {
     entity.setBounds(this.bounds);
 
     // 自動でリサイズ
-    this.base.win.on('resize', () => {
+    this.base.win.on("resize", () => {
       if (!this.base || !entity) return;
 
       const bounds = this.base.win.getContentBounds();
