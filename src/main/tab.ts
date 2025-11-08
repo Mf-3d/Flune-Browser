@@ -146,6 +146,20 @@ export class TabManager {
     this.tabs[tabPosition] = tab;
   }
 
+  // -- タブのタイトルを設定する
+  setTabTitle(id: string, title: string) {
+    let tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Failed to set tab title: Tab does not exist.");
+      return;
+    }
+
+    tab.title = title;
+
+    this.rewriteTab(id, tab);
+  }
+
   // --新規タブ
   newTab(url: string = HOME_URL, 
     options: {
