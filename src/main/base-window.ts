@@ -13,6 +13,13 @@ import {
 } from "./menu";
 import theme from "./lib/theme";
 import Event from "./lib/event";
+import { ContextMenuController } from "./contextMenuController";
+
+const contextMenuController = new ContextMenuController();
+
+ipcMain.handle("nav.set-context-type", (event, type) => {
+  contextMenuController.setContextType(type);
+});
 
 // new window
 export class Base {
@@ -117,7 +124,14 @@ export class Base {
       this.updateTheme();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
+      contextMenuController.setContextType("normal"); // 一度リセットする。（順序的にこの位置で問題なし）
+
       if (!this.tabManager) return;
+
+      if (contextMenuController.getContextType() === "tab") {
+        event.preventDefault();
+        return;
+      }
 
       const activeTab = this.tabManager.getActiveTabCurrent();
       if (!activeTab) return;

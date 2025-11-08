@@ -34,6 +34,9 @@ contextBridge.exposeInMainWorld("flune", {
   toggleBookmark: () => {
     ipcRenderer.invoke("nav.toggle-bookmark"); // 開いているタブをブックマークに追加または削除する
   },
+  setContextType: (type: "normal" | "tab") => {
+    ipcRenderer.invoke("nav.set-context-type", type); // 次に開くコンテキストメニューのタイプを設定する
+  },
 
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });
