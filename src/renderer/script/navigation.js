@@ -138,14 +138,16 @@ function each() {
   const tabContainer = document.getElementById("tabs");
 
   tabContainer.querySelectorAll(":scope > span").forEach((element) => {
-    // 移動関連のイベントは置き換えられる
-    element.removeEventListener("click", arguments.callee);
-    element.removeEventListener("dragend", arguments.callee);
-
-    element.querySelector(":scope > .title").addEventListener("click", () => {
-      // if (!canMove) return;
+    // タブを切り替える
+    element.querySelector(":scope > .title").onclick = () => {
       flune.switchTab(element.getAttribute("data-id"));
-    });
+    };
+    // タブ用のコンテキストメニューを表示する
+    element.querySelector(":scope > .title").oncontextmenu = (event) => {
+      event.preventDefault();
+
+      flune.toggleTabContextMenu(element.getAttribute("data-id"));
+    };
 
     // タブ移動
     element.ondragstart = function (event) {

@@ -4,11 +4,12 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
-import { ContextMenuManager } from "./menu";
+import { buildTabContextMenu, ContextMenuManager } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./lib/theme";
 import Event from "./lib/event";
 import { DataManager } from "./lib/data";
+import { ContextMenuController } from "./contextMenuController";
 
 export type Tab = {
   id: string;
@@ -27,6 +28,8 @@ const errCodes = {
 
 // 内部ページのパス
 const HOME_URL = "flune://home";
+
+const contextMenuController = new ContextMenuController();
 
 // -タブ管理
 export class TabManager {
@@ -91,6 +94,16 @@ export class TabManager {
     ipcMain.handle("tab.load", (event, id, url) => {
       this.load(id, url);
     });
+    ipcMain.handle("tab.toggle-context-menu", (event, id) => {
+      contextMenuController.setContextType("tab");
+
+      const menu = buildTabContextMenu(this.base, id);
+      menu.popup();
+      menu.once("menu-will-close", () => {
+        contextMenuController.setContextType("normal"); // 閉じられたらタイプをリセットする
+      });
+    });
+
     // ナビゲーションから
     ipcMain.handle("nav.toggle-bookmark", () => {
       this.getActiveTabCurrent()?.entity.webContents.send("nav.toggle-bookmark");
@@ -161,14 +174,14 @@ export class TabManager {
   }
 
   // --新規タブ
-  newTab(url: string = HOME_URL, 
+  newTab(url: string = HOME_URL,
     options: {
       active?: boolean,
       /**
        * Tab position from **the left**. Counting starts **from 0**.
        */
       position?: number
-  } = {}): Tab {
+    } = {}): Tab {
     if (!options.active) options.active = true;
 
     // ビューを作成
@@ -507,7 +520,7 @@ export class TabManager {
       // 履歴に追加
       const histories = this.data.histories.getAll();
       if (histories[histories.length - 1].url === tab.entity.webContents.getURL()) return;
-      
+
       this.data.histories.add({
         title: tab.entity.webContents.getTitle(),
         url: tab.entity.webContents.getURL(),

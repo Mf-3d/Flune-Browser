@@ -473,3 +473,67 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
 
   return menu;
 }
+
+export function buildTabContextMenu(base: Base, tabId: string): Electron.Menu {
+  const template: Electron.MenuItemConstructorOptions[] = [
+    {
+      label: "右隣に新しいタブを開く",
+      click() {
+        let tabPosition = base.tabManager?.getTabPositionById(tabId);
+
+        if (typeof tabPosition === "number") {
+          base.tabManager?.newTab(undefined, {
+            active: true,
+            position: tabPosition + 1
+          });
+        } else {
+          console.error("Could not open new tab: Unable to retrieve tab positions.");
+        }
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "再読み込み",
+      accelerator: "CmdOrCtrl+R",
+      click() {
+        base.tabManager?.reloadTab(tabId);
+      }
+    },
+    {
+      label: "タブを複製",
+      click() {
+        let tab = base.tabManager?.getTabById(tabId);
+
+        if (!tab) {
+          console.error("Failed to duplicate tab: Tab does not exist.");
+
+          return;
+        }
+
+        let tabPosition = base.tabManager?.getTabPositionById(tabId);
+
+        if (typeof tabPosition === "number") {
+          base.tabManager?.newTab(tab?.entity.webContents.getURL(), {
+            active: true,
+            position: tabPosition + 1
+          });
+        }
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "閉じる",
+      click() {
+        base.tabManager?.removeTab(tabId);
+      }
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+
+  return menu;
+}
