@@ -454,6 +454,7 @@ export class TabManager {
 
     // タイトルが変更されたとき
     tab.entity.webContents.on("page-title-updated", (event, title) => {
+      this.setTabTitle(id, title);
       this.base.send("tab.change-state", tab.id, "title", title);
     });
     // ファビコンが変更されたとき
