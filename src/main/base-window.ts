@@ -56,8 +56,8 @@ export class Base {
       x: this.bounds.x,
       y: this.bounds.y,
       title: `Flune-Browser ${(process.env.npm_package_version || "3")
-          .replace("-beta.", " Beta ")
-          .replace("-dev.", " Dev ")
+        .replace("-beta.", " Beta ")
+        .replace("-dev.", " Dev ")
         }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
@@ -171,7 +171,7 @@ export class Base {
 
     this.win.on("close", () => {
       this.nav.webContents.close();
-      this.tabManager?.closeAll();
+      this.tabManager?.removeAll();
     });
   }
 

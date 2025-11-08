@@ -447,7 +447,7 @@ export class TabManager {
   }
 
   // --タブをすべて閉じる
-  closeAll() {
+  removeAll() {
     this.tabs.forEach((tab) => {
       if (!tab) return;
       this.deleteEvents(tab.id, () => tab.entity.webContents.close());
