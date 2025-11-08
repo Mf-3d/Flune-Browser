@@ -134,6 +134,18 @@ export class TabManager {
     return tab ? this.tabs.indexOf(tab) : undefined;
   }
 
+  // --【危険】タブを書き換える
+  private rewriteTab(id: string, tab: Tab) {
+    const tabPosition = this.getTabPositionById(id);
+
+    if (!tabPosition) {
+      console.error("Failed to rewrite tab: Unable to retrieve tab positions.")
+      return;
+    }
+
+    this.tabs[tabPosition] = tab;
+  }
+
   // --新規タブ
   newTab(url: string = HOME_URL, 
     options: {
