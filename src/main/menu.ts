@@ -398,7 +398,7 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     {
       label: "履歴",
       submenu: [
-        ...data.histories.getAll().slice(0, 10).reverse().map(history => {
+        ...data.histories.getAll().reverse().slice(0, 10).map(history => {
           return {
             label: history.title,
             click() {
