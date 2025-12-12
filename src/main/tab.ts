@@ -519,11 +519,11 @@ export class TabManager {
 
       // 履歴に追加
       const histories = this.data.histories.getAll();
-      if (histories[histories.length - 1].url === tab.entity.webContents.getURL()) return;
+      if (histories[histories.length - 1].url === tabUrl) return;
 
-      this.data.histories.add({
+      if (tabUrl !== "flune://home") this.data.histories.add({
         title: tab.entity.webContents.getTitle(),
-        url: tab.entity.webContents.getURL(),
+        url: tabUrl,
         date: new Date()
       });
     });
