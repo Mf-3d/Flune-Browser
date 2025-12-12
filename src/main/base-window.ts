@@ -159,6 +159,7 @@ export class Base {
       this.updateTheme();
     });
 
+    // IPCチャンネル
     ipcMain.handle("options.toggle", () => {
       this.optionsMenu = buildOptionsMenu(this);
       this.optionsMenu.popup();
