@@ -126,9 +126,6 @@ export class TabManager {
         if (bookmark) this.data.bookmarks.remove(bookmark.id);
       }
     });
-    ipcMain.handle("flune.ver", () => {
-      return process.env.npm_package_version;
-    });
   }
 
   // --IDからタブを取得

@@ -168,6 +168,9 @@ export class Base {
         symbolColor: color
       });
     });
+    ipcMain.handle("flune.get-version", () => {
+      return process.env.npm_package_version;
+    });
 
     this.win.on("close", () => {
       this.nav.webContents.close();

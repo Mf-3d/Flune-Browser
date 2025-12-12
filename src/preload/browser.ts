@@ -2,7 +2,8 @@ import { contextBridge, ipcRenderer, webFrame } from "electron";
 
 contextBridge.exposeInMainWorld("flune", {
   getVersion: async () => {
-    return await ipcRenderer.invoke("flune.ver"); // バージョン取得
+    return await ipcRenderer.invoke("flune.get-version"); // バージョン取得
+  },
   },
   toggleBookmark: (data: {
     session: number,
