@@ -171,6 +171,15 @@ export class Base {
     ipcMain.handle("flune.get-version", () => {
       return process.env.npm_package_version;
     });
+    ipcMain.handle("flune.get-versions", () => {
+      return {
+        flune: process.env.npm_package_version,
+        electron: process.versions.electron,
+        node: process.versions.node,
+        chrome: process.versions.chrome,
+        v8: process.versions.v8,
+      };
+    });
 
     this.win.on("close", () => {
       this.nav.webContents.close();
