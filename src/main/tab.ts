@@ -139,17 +139,20 @@ export class TabManager {
   }
 
   // --IDからタブの位置を取得
-  getTabPositionById(id: string): number | undefined {
-    let tab = this.getTabById(id);
-    return tab ? this.tabs.indexOf(tab) : undefined;
+  getTabPositionById(id: string): number {
+    const position = this.tabs.map(tab => tab.id).indexOf(id);
+
+    return position;
   }
 
   // --【危険】タブを書き換える
   private rewriteTab(id: string, tab: Tab) {
     const tabPosition = this.getTabPositionById(id);
 
-    if (!tabPosition) {
-      console.error("Failed to rewrite tab: Unable to retrieve tab positions.")
+    if (tabPosition === -1) {
+      console.error("Failed to rewrite tab: Unable to retrieve tab positions.");
+      console.trace();
+      console.error(` "${id}"`, "\n", `"${tab.id}"`, "\n", this.tabs.map((tab) =>  tab.id));
       return;
     }
 
