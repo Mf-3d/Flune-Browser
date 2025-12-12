@@ -7,7 +7,7 @@ Flune-Browserが生まれ変わりました！
 
 ![スクリーンショット](.github/assets/image/screenshot-3.0.0-dev.2025.03.02.1.webp)
 
-![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
+[![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)](https://github.com/Mf-3d/Flune-Browser/releases)
 
 
 <!-- Flune-Browser 2.x系からの互換性があります。 -->
