@@ -4,8 +4,15 @@ import path from "node:path";
 import Event from "./lib/event";
 
 export class Protocol {
+  /**
+   * Protocol name.
+   */
   readonly name: string;
-  readonly pathToServe: {
+
+  /**
+   * If you need to add a path, add it here.
+   */
+  private readonly pathToServe: {
     [path: string]: string
   } = {
       home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
@@ -20,10 +27,33 @@ export class Protocol {
 
   readonly event = new Event();
 
+  /**
+   * **It is generated dynamically.**
+   * @example 
+   * ```javascript
+   * "foo.bar": {
+   *   pathWithProtocol: "flune://foo/bar",
+   *   path: "/foo/bar",
+   *   filePath: ".../foo/bar.html"
+   * }
+   * ```
+   */
   readonly paths: {
     [key: string]: {
+      /**
+       * @type {string} Path with protocol.
+       * @example `"flune://foo/bar"`
+       */
       pathWithProtocol: string,
+      /**
+       * @type {string} Path.
+       * @example `"/foo/bar"`
+       */
       path: string,
+      /**
+       * @type {string} File path.
+       * @example `".../foo/bar.html"`
+       */
       filePath: string
     },
   } = Object.fromEntries(Object.entries(this.pathToServe).map(([key, value]) => [
@@ -82,6 +112,10 @@ export class Protocol {
     });
   }
 
+  /**
+   * @param path Path.
+   * @returns File path.
+   */
   getFilePathByPath(
     path: string
   ): string | undefined {
