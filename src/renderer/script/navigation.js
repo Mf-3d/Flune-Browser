@@ -15,6 +15,12 @@ window.addEventListener("load", () => {
     }
   });
 
+  flune.on("flune.toggle-home-button", (event, visiblity) => {
+    const homeButton = document.getElementById("go-home");
+
+    visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
+  });
+
   flune.on("nav.change-state", (event, state, value) => {
     switch (state) {
       case "can-go-back":

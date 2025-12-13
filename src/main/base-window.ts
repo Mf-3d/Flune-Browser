@@ -158,6 +158,9 @@ export class Base {
     this.event.on("theme-updated", (id) => {
       this.updateTheme();
     });
+    this.event.on("setting-updated", () => {
+      this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
+    });
 
     // IPCチャンネル
     ipcMain.handle("options.toggle", () => {

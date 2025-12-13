@@ -22,6 +22,9 @@ contextBridge.exposeInMainWorld("flune", {
   goBack: () => {
     ipcRenderer.invoke("tab.go-back"); // 前に戻る
   },
+  goHome: () => {
+    ipcRenderer.invoke("tab.go-home"); // ホームを開く
+  },
   reloadTab: (ignoringCache?: boolean) => {
     ipcRenderer.invoke("tab.reload", ignoringCache); // 再読み込みする
   },

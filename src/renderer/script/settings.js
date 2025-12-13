@@ -12,7 +12,7 @@ async function each() {
       case "setting-auto-save":
         element.checked = await fluneSettings.store.get("settings.autoSave");
         break;
-      case "use-home-button":
+      case "toggle-home-button":
         element.checked = await fluneSettings.store.get("settings.design.showHomeButton");
         break;
       case "search-engine":
@@ -52,7 +52,7 @@ function saveAll() {
           console.info(index, id);
           save("settings.autoSave", element.checked);
           break;
-        case "use-home-button":
+        case "toggle-home-button":
           console.info(index, id);
           save("settings.design.showHomeButton", element.checked);
           break;

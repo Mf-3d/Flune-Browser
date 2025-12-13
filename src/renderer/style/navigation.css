@@ -99,6 +99,12 @@ nav a.disabled>svg {
   stroke-width: 2px;
 }
 
+nav a.invisible {
+  pointer-events: none;
+  display: none;
+  visibility: hidden;
+}
+
 nav>div {
   display: inline-block;
   background-color: var(--input-color);
@@ -109,6 +115,9 @@ nav>div {
   position: relative;
   top: -0.5px;
   padding: 3px;
+}
+:has(.go-home:not(.invisible)) nav>div {
+  width: calc(100% - 28px * 5 + 6px);
 }
 
 input[type=text] {

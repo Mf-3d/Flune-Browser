@@ -77,6 +77,9 @@ export class TabManager {
     ipcMain.handle("tab.go-forward", () => {
       this.goForward();
     });
+    ipcMain.handle("tab.go-home", () => {
+      this.load(undefined, HOME_URL);
+    });
     ipcMain.handle("tab.switch", (event, id) => {
       this.activateTab(id);
     });
