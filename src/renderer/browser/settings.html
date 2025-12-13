@@ -35,11 +35,9 @@
           </td>
         </tr>
         <tr>
-          <th>
-            <label for="force-twemoji">強制Twimoji変換</label>
-          </th>
+          <th><label for="toggle-home-button">ホームボタンを表示する</label></th>
           <td>
-            <input type="checkbox" id="force-twemoji" disabled />
+            <input type="checkbox" name="toggle-home-button" id="toggle-home-button" />
           </td>
         </tr>
       </table>
@@ -52,24 +50,14 @@
           <th>検索エンジン</th>
           <td>
             <select id="search-engine">
-              <option value="google">
-                Google
+              <!-- 
+              <option value="search-engine">
+                Search Engine
               </option>
-              <option value="yahoo-jp">
-                Yahoo! JAPAN
-              </option>
-              <option value="ddg">
-                DuckDuckGo
-              </option>
+              -->
             </select>
           </td>
         </tr>
-        <!-- <tr>
-          <th><label for="use-home-button">ホームボタンを表示する (再起動必須)</label></th>
-          <td>
-            <input type="checkbox" name="use-home-button" id="use-home-button" />
-          </td>
-        </tr> -->
         <tr>
           <th><label for="setting-auto-save">設定を自動保存する</label></th>
           <td>
@@ -87,12 +75,16 @@
         <br />
         <span style="color: #ff8f82">一般利用には適していない</span>ことにご注意ください。
       </p>
-      <!-- <table>
+      <table>
         <tr>
-          <th><label for="use-history">履歴</label></th>
-          <td><input type="checkbox" name="use-history" id="use-history" /></td>
+          <th>
+            <label for="force-twemoji">強制的にTwimojiを変換する</label>
+          </th>
+          <td>
+            <input type="checkbox" id="force-twemoji" disabled />
+          </td>
         </tr>
-      </table> -->
+      </table>
     </div>
   </section>
   <a onclick="saveAll()">保存</a>

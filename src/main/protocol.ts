@@ -1,21 +1,69 @@
 import { protocol, net } from "electron";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
-import Event from "./event";
+import Event from "./lib/event";
 
 export class Protocol {
+  /**
+   * Protocol name.
+   */
   readonly name: string;
-  readonly pathToServe: {
+
+  /**
+   * If you need to add a path, add it here.
+   */
+  private readonly pathToServe: {
     [path: string]: string
   } = {
       home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
       settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
+      version: path.join(__dirname, "..", "renderer", "browser", "version.html"),
       script: path.join(__dirname, "..", "renderer", "script"),
       style: path.join(__dirname, "..", "renderer", "style"),
       assets: path.join(__dirname, "..", "assets"),
       error: path.join(__dirname, "..", "renderer", "browser", "error"),
+      // "foo.bar": path.join(__dirname, "..", "renderer", "browser", "foo", "bar"),
     };
+
   readonly event = new Event();
+
+  /**
+   * **It is generated dynamically.**
+   * @example 
+   * ```javascript
+   * "foo.bar": {
+   *   pathWithProtocol: "flune://foo/bar",
+   *   path: "/foo/bar",
+   *   filePath: ".../foo/bar.html"
+   * }
+   * ```
+   */
+  readonly paths: {
+    [key: string]: {
+      /**
+       * @type {string} Path with protocol.
+       * @example `"flune://foo/bar"`
+       */
+      pathWithProtocol: string,
+      /**
+       * @type {string} Path.
+       * @example `"/foo/bar"`
+       */
+      path: string,
+      /**
+       * @type {string} File path.
+       * @example `".../foo/bar.html"`
+       */
+      filePath: string
+    },
+  } = Object.fromEntries(Object.entries(this.pathToServe).map(([key, value]) => [
+    key,
+   {
+      pathWithProtocol: `${this.name}://${key.replace(/\./g, "/")}`,
+      path: `/${key.replace(/\./g, "/")}`,
+      filePath: this.pathToServe[key]
+    }
+  ]));
 
   constructor(name: string = "flune") {
     this.name = name;
@@ -27,16 +75,6 @@ export class Protocol {
       switch (Url) {
         case "/ping": {
           return new Response("pong!", {
-            headers: { "content-type": "text/html" }
-          });
-        }
-        case "/home": {
-          return net.fetch(pathToFileURL(this.pathToServe.home).toString(), {
-            headers: { "content-type": "text/html" }
-          });
-        }
-        case "/settings": {
-          return net.fetch(pathToFileURL(this.pathToServe.settings).toString(), {
             headers: { "content-type": "text/html" }
           });
         }
@@ -57,6 +95,14 @@ export class Protocol {
           return net.fetch(pathToFileURL(this.pathToServe.error + Url.slice(6)).toString());
         }
         default: {
+          if (Object.values(this.paths).map(item => item.path)) {
+            return net.fetch(
+              pathToFileURL(this.getFilePathByPath(Url) || "")
+              .toString(), {
+                headers: { "content-type": "text/html" }
+              });
+          }
+
           return new Response(`not found: <pre>${Url}</pre>`, {
             status: 404,
             headers: { "content-type": "text/html" }
@@ -64,6 +110,18 @@ export class Protocol {
         }
       }
     });
+  }
+
+  /**
+   * @param path Path.
+   * @returns File path.
+   */
+  getFilePathByPath(
+    path: string
+  ): string | undefined {
+    return Object.values(this.paths)
+      .find(route => route.path === path)
+      ?.filePath;
   }
 };
 

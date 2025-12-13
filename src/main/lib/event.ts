@@ -27,7 +27,7 @@ type EventMap = {
    */
   "protocol-accessed": (url: string) => void;
   "setting-opened": (type: "tab" | "window") => void;
-  "config-updated": () => void;
+  "setting-updated": () => void;
   "theme-updated": (themeId: string) => void;
 }
 

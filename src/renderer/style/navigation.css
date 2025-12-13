@@ -81,7 +81,7 @@ nav a>svg {
   stroke: var(--symbol-color);
   stroke-width: 3px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition: stroke .2s, stroke-width .5s, filter .5s, fill .2s;
 }
 
 nav a>svg:hover {
@@ -99,6 +99,12 @@ nav a.disabled>svg {
   stroke-width: 2px;
 }
 
+nav a.invisible {
+  pointer-events: none;
+  display: none;
+  visibility: hidden;
+}
+
 nav>div {
   display: inline-block;
   background-color: var(--input-color);
@@ -110,9 +116,12 @@ nav>div {
   top: -0.5px;
   padding: 3px;
 }
+:has(.go-home:not(.invisible)) nav>div {
+  width: calc(100% - 28px * 5 + 6px);
+}
 
 input[type=text] {
-  width: calc(100% - 30px);
+  width: calc(100% - 60px);
   height: 16px;
   line-height: 16px;
   position: relative;
@@ -271,4 +280,12 @@ span.right {
 #tabs a.loading>svg {
   animation: .5s ease-in infinite rotation;
   pointer-events: none;
+}
+
+/*  */
+.bookmark.active > svg {
+  fill: var(--symbol-color);
+}
+.bookmark.active > svg:hover {
+  fill: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
 }

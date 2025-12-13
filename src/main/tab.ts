@@ -4,10 +4,12 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "./base-window";
-import { ContextMenuManager } from "./menu";
+import { buildTabContextMenu, ContextMenuManager } from "./menu";
 import { SearchEngine, Settings } from "./settings";
 import theme from "./lib/theme";
-import Event from "./event";
+import Event from "./lib/event";
+import { DataManager } from "./lib/data";
+import { ContextMenuController } from "./contextMenuController";
 
 export type Tab = {
   id: string;
@@ -27,12 +29,15 @@ const errCodes = {
 // 内部ページのパス
 const HOME_URL = "flune://home";
 
+const contextMenuController = new ContextMenuController();
+
 // -タブ管理
 export class TabManager {
   readonly settings: Settings;
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
   private readonly base: Base;
+  private readonly data: DataManager;
   tabs: Tab[] = [];
   private bounds: {
     width: number;
@@ -49,12 +54,13 @@ export class TabManager {
 
   constructor(base: Base, bounds?: { width: number; height: number; x: number; y: number }) {
     this.base = base;
+    this.data = new DataManager;
     this.settings = new Settings(this);
     this.event = new Event();
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
-    this.base.win.on('resize', () => {
+    this.base.win.on("resize", () => {
       if (!this.base) return;
 
       const bounds = this.base.win.getContentBounds();
@@ -71,23 +77,57 @@ export class TabManager {
     ipcMain.handle("tab.go-forward", () => {
       this.goForward();
     });
+    ipcMain.handle("tab.go-home", () => {
+      this.load(undefined, HOME_URL);
+    });
     ipcMain.handle("tab.switch", (event, id) => {
       this.activateTab(id);
     });
-    ipcMain.handle('tab.new', () => {
-      this.newTab(undefined, true);
+    ipcMain.handle("tab.new", () => {
+      this.newTab(undefined, {
+        active: true
+      });
     });
-    ipcMain.handle('tab.remove', (event, id) => {
+    ipcMain.handle("tab.remove", (event, id) => {
       this.removeTab(id);
     });
-    ipcMain.handle('tab.move', (event, from, to) => {
+    ipcMain.handle("tab.move", (event, from, to) => {
       this.moveTab(from, to);
     });
-    ipcMain.handle('tab.load', (event, id, url) => {
+    ipcMain.handle("tab.load", (event, id, url) => {
       this.load(id, url);
     });
-    ipcMain.handle("flune.ver", () => {
-      return process.env.npm_package_version;
+    ipcMain.handle("tab.toggle-context-menu", (event, id) => {
+      contextMenuController.setContextType("tab");
+
+      const menu = buildTabContextMenu(this.base, id);
+      menu.popup();
+      menu.once("menu-will-close", () => {
+        contextMenuController.setContextType("normal"); // 閉じられたらタイプをリセットする
+      });
+    });
+
+    // ナビゲーションから
+    ipcMain.handle("nav.toggle-bookmark", () => {
+      this.getActiveTabCurrent()?.entity.webContents.send("nav.toggle-bookmark");
+    });
+    // タブから
+    ipcMain.handle("tab.toggle-bookmark", (event, data: {
+      title: string,
+      url: string,
+    }) => {
+      if (!this.data.bookmarks.existByUrl(data.url)) {
+        this.data.bookmarks.add({
+          title: data.title,
+          url: data.url,
+          tag: [],
+          parentId: "root", // デフォルトはルート
+        });
+      } else {
+        const bookmark = this.data.bookmarks.getByUrl(data.url);
+
+        if (bookmark) this.data.bookmarks.remove(bookmark.id);
+      }
     });
   }
 
@@ -101,9 +141,51 @@ export class TabManager {
     return this.tabs.find(tab => (tab.id === this.activeCurrent));
   }
 
+  // --IDからタブの位置を取得
+  getTabPositionById(id: string): number {
+    const position = this.tabs.map(tab => tab.id).indexOf(id);
+
+    return position;
+  }
+
+  // --【危険】タブを書き換える
+  private rewriteTab(id: string, tab: Tab) {
+    const tabPosition = this.getTabPositionById(id);
+
+    if (tabPosition === -1) {
+      console.error("Failed to rewrite tab: Unable to retrieve tab positions.");
+      console.trace();
+      console.error(` "${id}"`, "\n", `"${tab.id}"`, "\n", this.tabs.map((tab) =>  tab.id));
+      return;
+    }
+
+    this.tabs[tabPosition] = tab;
+  }
+
+  // -- タブのタイトルを設定する
+  setTabTitle(id: string, title: string) {
+    let tab = this.getTabById(id);
+
+    if (!tab) {
+      console.error("Failed to set tab title: Tab does not exist.");
+      return;
+    }
+
+    tab.title = title;
+
+    this.rewriteTab(id, tab);
+  }
+
   // --新規タブ
-  newTab(url?: string, active: boolean = true): Tab {
-    if (!url) url = HOME_URL;
+  newTab(url: string = HOME_URL,
+    options: {
+      active?: boolean,
+      /**
+       * Tab position from **the left**. Counting starts **from 0**.
+       */
+      position?: number
+    } = {}): Tab {
+    if (!options.active) options.active = true;
 
     // ビューを作成
     let entity = new WebContentsView({
@@ -115,7 +197,7 @@ export class TabManager {
     entity.setBounds(this.bounds);
 
     // 自動でリサイズ
-    this.base.win.on('resize', () => {
+    this.base.win.on("resize", () => {
       if (!this.base || !entity) return;
 
       const bounds = this.base.win.getContentBounds();
@@ -133,12 +215,17 @@ export class TabManager {
       id: crypto.randomUUID(),
       title: entity.webContents.getTitle() || url,
       entity,
-      active,
+      active: options.active,
       listeners: {}
     };
 
     // 配列に追加
-    this.tabs?.push(newTab);
+    if (options.position) {
+      this.tabs.splice(options.position + 1, 0, newTab);
+    } else {
+      this.tabs?.push(newTab);
+    }
+
     this.base.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
@@ -147,7 +234,9 @@ export class TabManager {
     this.setEvents(newTab.id);
 
     entity.webContents.setWindowOpenHandler((details) => {
-      this.newTab(details.url, true);
+      this.newTab(details.url, {
+        active: true
+      });
 
       return {
         action: "deny"
@@ -158,7 +247,8 @@ export class TabManager {
     this.base.send("tab.new", {
       id: newTab.id,
       title: newTab.title,
-      active: newTab.active
+      active: newTab.active,
+      beforeTabId: options.position ? this.tabs[options.position - 1].id : null
     });
 
     entity.webContents.once("did-finish-load", () => {
@@ -166,7 +256,7 @@ export class TabManager {
     });
 
     // 必要ならタブをアクティブ化
-    if (active) this.activateTab(newTab.id);
+    if (options.active) this.activateTab(newTab.id);
 
     return newTab;
   }
@@ -235,6 +325,7 @@ export class TabManager {
     this.base.send("tab.activate", activeTab.id);
     this.base.send("nav.change-state", "can-go-back", activeTab.entity.webContents.navigationHistory.canGoBack());
     this.base.send("nav.change-state", "can-go-forward", activeTab.entity.webContents.navigationHistory.canGoForward());
+    this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()));
     const activeTabUrl = activeTab.entity.webContents.getURL();
     if (!activeTabUrl.startsWith("flune://error")) this.base.send("nav.set-word", activeTabUrl);
 
@@ -359,7 +450,7 @@ export class TabManager {
   }
 
   // --タブをすべて閉じる
-  closeAll() {
+  removeAll() {
     this.tabs.forEach((tab) => {
       if (!tab) return;
       this.deleteEvents(tab.id, () => tab.entity.webContents.close());
@@ -379,6 +470,7 @@ export class TabManager {
 
     // タイトルが変更されたとき
     tab.entity.webContents.on("page-title-updated", (event, title) => {
+      this.setTabTitle(id, title);
       this.base.send("tab.change-state", tab.id, "title", title);
     });
     // ファビコンが変更されたとき
@@ -389,6 +481,7 @@ export class TabManager {
     tab.entity.webContents.on("did-start-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
+      this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()));
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     // ロードが停止した時
@@ -405,10 +498,10 @@ export class TabManager {
       tab.listeners["theme-updated"] = undefined;
 
       if (tabUrl.startsWith("flune://")) {
-        this.appendTheme(tab.id);
+        this.updateTheme(tab.id);
 
         tab.listeners["theme-updated"] = () => {
-          this.appendTheme(tab.id)
+          this.updateTheme(tab.id)
         };
 
         this.event.on("theme-updated", tab.listeners["theme-updated"]);
@@ -425,6 +518,17 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
       if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
+      this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
+
+      // 履歴に追加
+      const histories = this.data.histories.getAll();
+      if (histories[histories.length - 1].url === tabUrl) return;
+
+      if (tabUrl !== "flune://home") this.data.histories.add({
+        title: tab.entity.webContents.getTitle(),
+        url: tabUrl,
+        date: new Date()
+      });
     });
     // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {
@@ -481,7 +585,7 @@ export class TabManager {
     if (callback) callback();
   }
 
-  appendTheme(tabId: string | undefined = this.activeCurrent) {
+  updateTheme(tabId: string | undefined = this.activeCurrent) {
     if (!tabId) {
       console.error("Could not append the theme: Tab ID not specified or active tab does not exist.");
       return;

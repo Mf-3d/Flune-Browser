@@ -5,9 +5,9 @@
 
 Flune-Browserが生まれ変わりました！
 
-![スクリーンショット](.github/assets/image/screenshot-3.0.0-dev.2025.03.02.1.webp)
+![スクリーンショット](.github/assets/image/screenshot-3.0.0-beta.2.webp)
 
-![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)
+[![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)](https://github.com/Mf-3d/Flune-Browser/releases)
 
 
 <!-- Flune-Browser 2.x系からの互換性があります。 -->
@@ -21,8 +21,8 @@ Flune-Browserが生まれ変わりました！
 ## 🔖 最新バージョン
 |リリースチャネル |Stable|Beta|Dev|
 |---------------|---|---|---|
-|   バージョン   |2.5.1|3.0.0 Beta 1|3.0.0 Dev 2025.02.25.1|
-|   リリース日   |2022/08/20|2025/04/03|2025/02/25|
+|   バージョン   |2.5.1|3.0.0 Beta 2|3.0.0 Dev 2025.11.8.1|
+|   リリース日   |2022/08/20|2025/12/13|2025/11/08|
 
 ## ℹ️ 関連
 - [Flune-Optional-Pack](https://github.com/Mf-3d/Flune-Optional-Pack) — Flune-Browser v2.x系の拡張パック。

@@ -1,10 +1,14 @@
 import {
   app,
+  clipboard,
   Menu,
   shell
 } from "electron";
 
 import { Base } from "./base-window";
+import { DataManager } from "./lib/data";
+
+const data = new DataManager;
 
 export function buildApplicationMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
@@ -257,7 +261,9 @@ export class ContextMenuManager {
       {
         label: `「${state.params.selectionText}」を検索`,
         click: () => {
-          this.base.tabManager?.newTab(state.params.selectionText, true)
+          this.base.tabManager?.newTab(state.params.selectionText, {
+            active: true
+          })
         }
       },
       {
@@ -269,7 +275,13 @@ export class ContextMenuManager {
       {
         label: "新しいタブで開く",
         click: () => {
-          this.base.tabManager?.newTab(state.params.linkURL)
+          this.base.tabManager?.newTab(state.params.linkURL);
+        }
+      },
+      {
+        label: "リンクのアドレスをコピー",
+        click() {
+          clipboard.writeText(state.params.linkURL);
         }
       },
       {
@@ -282,7 +294,9 @@ export class ContextMenuManager {
         label: "新しいタブ",
         accelerator: "Ctrl+T",
         click: () => {
-          this.base.tabManager?.newTab(undefined, true);
+          this.base.tabManager?.newTab(undefined, {
+            active: true
+          });
         }
       },
       {
@@ -367,207 +381,15 @@ export class ContextMenuManager {
   }
 };
 
-/**
- * @deprecated
- */
-export function buildContextMenu(base: Base, state: {
-  type: "normal" | "text" | "link" | "image" | "audio" | "video",
-  isEditable: boolean,
-  canGoBack: boolean,
-  canGoForward: boolean,
-  params: Electron.ContextMenuParams,
-  isNav: boolean
-}): Electron.Menu {
-  const template: Electron.MenuItemConstructorOptions[] = [
-    ...((state.isEditable && process.platform !== "linux") ? ((process.platform === "win32") ? [
-      {
-        label: "絵文字",
-        accelerator: "Super+.",
-        click() {
-          app.showEmojiPanel();
-        }
-      },
-      {
-        type: "separator"
-      }
-    ] : [
-      {
-        label: "絵文字",
-        click() {
-          app.showEmojiPanel();
-        }
-      },
-      {
-        type: "separator"
-      }
-    ]) : []) as Electron.MenuItemConstructorOptions[],
-
-    ...((state.type === "video") ? [
-      {
-        label: "ピクチャーインピクチャー",
-        click() {
-          base.tabManager?.getActiveTabCurrent()?.entity.webContents.executeJavaScript(`(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`);
-        }
-      },
-      {
-        type: "separator"
-      }
-    ] : []) as Electron.MenuItemConstructorOptions[],
-    // ---編集可能
-    ...((state.isEditable) ? [
-      {
-        label: "元に戻す",
-        role: "undo"
-      },
-      {
-        label: "やり直す",
-        role: "redo"
-      },
-      {
-        type: "separator"
-      },
-      {
-        label: "すべて選択",
-        role: "selectAll",
-        enabled: state.params.selectionText !== ""
-      },
-      {
-        label: "切り取り",
-        role: "cut",
-        enabled: state.params.selectionText !== ""
-      },
-      {
-        label: "コピー",
-        role: "copy",
-        enabled: state.params.selectionText !== ""
-      },
-      {
-        label: "貼り付け",
-        role: "paste"
-      },
-      {
-        label: "削除",
-        role: "delete",
-        enabled: state.params.selectionText !== ""
-      },
-      {
-        type: "separator"
-      },
-    ] : (state.type === "text" ? [
-      {
-        label: "コピー",
-        role: "copy",
-        enabled: state.params.selectionText !== ""
-      },
-      {
-        label: `「${state.params.selectionText}」を検索`,
-        click() {
-          base.tabManager?.newTab(state.params.selectionText, true)
-        }
-      },
-      {
-        type: "separator"
-      },
-    ] : [])) as Electron.MenuItemConstructorOptions[],
-    ...(state.type === "link" ? [
-      {
-        label: "新しいタブで開く",
-        click() {
-          base.tabManager?.newTab(state.params.linkURL)
-        }
-      },
-      {
-        type: "separator"
-      },
-    ] : []) as Electron.MenuItemConstructorOptions[],
-    ...(state.isNav ? [
-      {
-        label: "新しいタブ",
-        accelerator: "Ctrl+T",
-        click() {
-          base.tabManager?.newTab(undefined, true);
-        }
-      },
-    ] : [
-      {
-        label: "戻る",
-        accelerator: "Alt+Left",
-        enabled: state.canGoBack,
-        click() {
-          base.tabManager?.goBack();
-        }
-      },
-      {
-        label: "進む",
-        accelerator: "Alt+Right",
-        enabled: state.canGoForward,
-        click() {
-          base.tabManager?.goForward();
-        }
-      },
-      {
-        label: "再読み込み",
-        accelerator: "CmdOrCtrl+R",
-        click() {
-          base.tabManager?.reloadTab();
-        }
-      },
-    ]),
-    {
-      type: "separator"
-    },
-    ...(state.isNav ? [
-      {
-        type: "separator"
-      },
-      {
-        label: "ナビゲーションの開発者ツールを表示",
-        click() {
-          base.nav.webContents.toggleDevTools();
-        }
-      },
-      {
-        label: "設定",
-        click() {
-          base.tabManager?.settings.openSettingsAsTab();
-        }
-      }
-    ] : [
-      {
-        label: "ページのソースを表示",
-        accelerator: "Ctrl+U",
-        click() {
-          base.tabManager?.newTab(`view-source:${base.tabManager?.getActiveTabCurrent()?.entity.webContents.getURL()}`);
-        }
-      },
-      (process.platform === "darwin" ? {
-        label: "開発者ツールを表示",
-        accelerator: "Cmd+Option+I", // macOSのみ
-        click() {
-          base.tabManager?.toggleDevTools();
-        }
-      } : {
-        label: "開発者ツールを表示",
-        accelerator: "F12", // WindowsとLinux
-        click() {
-          base.tabManager?.toggleDevTools();
-        }
-      })
-    ]) as Electron.MenuItemConstructorOptions[]
-  ];
-
-  const menu = Menu.buildFromTemplate(template);
-
-  return menu;
-}
-
 export function buildOptionsMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: "新しいタブ",
       accelerator: "Ctrl+T",
       click() {
-        base.tabManager?.newTab(undefined, true);
+        base.tabManager?.newTab(undefined, {
+          active: true
+        });
       }
     },
     {
@@ -575,7 +397,26 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "履歴",
-      submenu: []
+      submenu: [
+        ...data.histories.getAll().reverse().slice(0, 10).map(history => {
+          return {
+            label: history.title,
+            click() {
+              base.tabManager?.load(undefined, history.url);
+            }
+          }
+        }),
+        {
+          type: "separator"
+        },
+        {
+          label: "全ての履歴を見る",
+          enabled: false,
+          click() {
+            // base.tabManager?.newTab(null)
+          },
+        },
+      ]
     },
     {
       label: "ダウンロード",
@@ -584,8 +425,34 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     },
     {
       label: "ブックマーク",
-      enabled: false,
-      submenu: []
+      // enabled: false,
+      submenu: [
+        ...data.bookmarks.folders.getStuff("root").map(entity => {
+          if (entity.type === "bookmark") {
+            return {
+              label: entity.title,
+              click() {
+                base.tabManager?.load(undefined, entity.url);
+              }
+            }
+          } else {
+            return {
+              label: entity.title,
+              submenu: []
+            };
+          }
+        }),
+        {
+          type: "separator"
+        },
+        {
+          label: "全てのブックマークを見る",
+          enabled: false,
+          click() {
+            // base.tabManager?.newTab(null)
+          },
+        },
+      ]
     },
     {
       type: "separator"
@@ -599,6 +466,70 @@ export function buildOptionsMenu(base: Base): Electron.Menu {
     {
       label: "終了",
       role: "quit"
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+
+  return menu;
+}
+
+export function buildTabContextMenu(base: Base, tabId: string): Electron.Menu {
+  const template: Electron.MenuItemConstructorOptions[] = [
+    {
+      label: "右隣に新しいタブを開く",
+      click() {
+        let tabPosition = base.tabManager?.getTabPositionById(tabId);
+
+        if (typeof tabPosition === "number") {
+          base.tabManager?.newTab(undefined, {
+            active: true,
+            position: tabPosition + 1
+          });
+        } else {
+          console.error("Could not open new tab: Unable to retrieve tab positions.");
+        }
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "再読み込み",
+      accelerator: "CmdOrCtrl+R",
+      click() {
+        base.tabManager?.reloadTab(tabId);
+      }
+    },
+    {
+      label: "タブを複製",
+      click() {
+        let tab = base.tabManager?.getTabById(tabId);
+
+        if (!tab) {
+          console.error("Failed to duplicate tab: Tab does not exist.");
+
+          return;
+        }
+
+        let tabPosition = base.tabManager?.getTabPositionById(tabId);
+
+        if (typeof tabPosition === "number") {
+          base.tabManager?.newTab(tab?.entity.webContents.getURL(), {
+            active: true,
+            position: tabPosition + 1
+          });
+        }
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: "閉じる",
+      click() {
+        base.tabManager?.removeTab(tabId);
+      }
     }
   ];
 

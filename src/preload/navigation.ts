@@ -22,14 +22,26 @@ contextBridge.exposeInMainWorld("flune", {
   goBack: () => {
     ipcRenderer.invoke("tab.go-back"); // 前に戻る
   },
+  goHome: () => {
+    ipcRenderer.invoke("tab.go-home"); // ホームを開く
+  },
   reloadTab: (ignoringCache?: boolean) => {
     ipcRenderer.invoke("tab.reload", ignoringCache); // 再読み込みする
   },
-  toggleMenu: () => {
+  toggleOptionMenu: () => {
     ipcRenderer.invoke("options.toggle"); // メニューを開く
   },
   updateSymbolColor: (color: string) => {
     ipcRenderer.invoke("flune.update-symbol-color", color); // シンボルカラーを変更する
+  },
+  toggleBookmark: () => {
+    ipcRenderer.invoke("nav.toggle-bookmark"); // 開いているタブをブックマークに追加または削除する
+  },
+  toggleTabContextMenu: (id: string) => {
+    ipcRenderer.invoke("tab.toggle-context-menu", id);
+  },
+  setContextType: (type: "normal" | "tab") => {
+    ipcRenderer.invoke("nav.set-context-type", type); // 次に開くコンテキストメニューのタイプを設定する
   },
 
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))

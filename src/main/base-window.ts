@@ -12,7 +12,14 @@ import {
   buildOptionsMenu
 } from "./menu";
 import theme from "./lib/theme";
-import Event from "./event";
+import Event from "./lib/event";
+import { ContextMenuController } from "./contextMenuController";
+
+const contextMenuController = new ContextMenuController();
+
+ipcMain.handle("nav.set-context-type", (event, type) => {
+  contextMenuController.setContextType(type);
+});
 
 // new window
 export class Base {
@@ -48,11 +55,10 @@ export class Base {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `Flune-Browser ${
-        (process.env.npm_package_version || "3")
+      title: `Flune-Browser ${(process.env.npm_package_version || "3")
         .replace("-beta.", " Beta ")
         .replace("-dev.", " Dev ")
-      }`,
+        }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
         color: "#0000",
@@ -61,6 +67,11 @@ export class Base {
       },
       // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
+    });
+
+    if (process.platform === "darwin") this.win.setWindowButtonPosition({
+      x: 10,
+      y: 8
     });
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
@@ -103,12 +114,24 @@ export class Base {
         y: this.viewY
       });
 
+      if (process.platform === "darwin") this.nav.webContents.executeJavaScript(`
+        document.head.innerHTML += '<link rel="stylesheet" href="./style/navigation-mac.css" />';
+        console.info("mac");
+      `);
+
       this.event.send("navigation-loaded");
 
-      this.appendTheme();
+      this.updateTheme();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
+      contextMenuController.setContextType("normal"); // 一度リセットする。（順序的にこの位置で問題なし）
+
       if (!this.tabManager) return;
+
+      if (contextMenuController.getContextType() === "tab") {
+        event.preventDefault();
+        return;
+      }
 
       const activeTab = this.tabManager.getActiveTabCurrent();
       if (!activeTab) return;
@@ -133,25 +156,42 @@ export class Base {
     this.event = new Event();
 
     this.event.on("theme-updated", (id) => {
-      this.appendTheme();
+      this.updateTheme();
+    });
+    this.event.on("setting-updated", () => {
+      this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
     });
 
+    // IPCチャンネル
     ipcMain.handle("options.toggle", () => {
+      this.optionsMenu = buildOptionsMenu(this);
       this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
-      this.win.setTitleBarOverlay({
+      if (process.platform === "win32" || process.platform === "linux") this.win.setTitleBarOverlay({
         symbolColor: color
       });
+    });
+    ipcMain.handle("flune.get-version", () => {
+      return process.env.npm_package_version;
+    });
+    ipcMain.handle("flune.get-versions", () => {
+      return {
+        flune: process.env.npm_package_version,
+        electron: process.versions.electron,
+        node: process.versions.node,
+        chrome: process.versions.chrome,
+        v8: process.versions.v8,
+      };
     });
 
     this.win.on("close", () => {
       this.nav.webContents.close();
-      this.tabManager?.closeAll();
+      this.tabManager?.removeAll();
     });
   }
 
-  appendTheme() {
+  updateTheme() {
     // テーマを追加
     const themeId = this.tabManager?.settings.config.get("settings.design.theme");
     const themes: {

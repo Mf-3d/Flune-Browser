@@ -5,13 +5,20 @@ function removeTab(id) {
 
 window.addEventListener("load", () => {
   each();
+
   const tabContainer = document.getElementById("tabs");
   const input = document.getElementById("search-bar");
 
   input.addEventListener("keydown", (event) => {
-    if (!event.isComposing && event.keyCode === 13) {
+    if (!event.isComposing && event.key === "Enter") {
       search();
     }
+  });
+
+  flune.on("flune.toggle-home-button", (event, visiblity) => {
+    const homeButton = document.getElementById("go-home");
+
+    visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
   });
 
   flune.on("nav.change-state", (event, state, value) => {
@@ -23,6 +30,10 @@ window.addEventListener("load", () => {
       case "can-go-forward":
         if (value) document.querySelector(".go-forward").classList.remove("disabled");
         else document.querySelector(".go-forward").classList.add("disabled");
+        break;
+      case "is-bookmarked":
+        if (value) document.querySelector("#bookmark").classList.add("active");
+        else document.querySelector("#bookmark").classList.remove("active");
         break;
     }
   });
@@ -52,7 +63,11 @@ window.addEventListener("load", () => {
     </a>
     `;
 
-    newButton.before(element); // 一番右に追加
+    if (!tab.beforeTabId) {
+      newButton.before(element); // 一番右に追加
+    } else {
+      tabContainer.querySelector(`:scope > span[data-id="${tab.beforeTabId}"]`).after(element);
+    }
 
     lucide.createIcons();
     each();
@@ -115,6 +130,11 @@ function search() {
   input.blur();
 }
 
+function toggleBookmark() {
+  flune.toggleBookmark();
+  document.getElementById("bookmark").classList.toggle("active");
+}
+
 function updateSymbolColor() {
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
   flune.updateSymbolColor(textColor);
@@ -124,14 +144,16 @@ function each() {
   const tabContainer = document.getElementById("tabs");
 
   tabContainer.querySelectorAll(":scope > span").forEach((element) => {
-    // 移動関連のイベントは置き換えられる
-    element.removeEventListener("click", arguments.callee);
-    element.removeEventListener("dragend", arguments.callee);
-
-    element.querySelector(":scope > .title").addEventListener("click", () => {
-      // if (!canMove) return;
+    // タブを切り替える
+    element.querySelector(":scope > .title").onclick = () => {
       flune.switchTab(element.getAttribute("data-id"));
-    });
+    };
+    // タブ用のコンテキストメニューを表示する
+    element.querySelector(":scope > .title").oncontextmenu = (event) => {
+      event.preventDefault();
+
+      flune.toggleTabContextMenu(element.getAttribute("data-id"));
+    };
 
     // タブ移動
     element.ondragstart = function (event) {

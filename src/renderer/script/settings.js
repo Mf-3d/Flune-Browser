@@ -3,6 +3,26 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 async function each() {
+  // --エンジンのオプションを追加
+  const selectEngines = document.getElementById("search-engine");
+
+  selectEngines.innerHTML = "";
+
+  const engines = (await fluneSettings.store.get("searchEngines"))
+  .map((engine) => ({
+    id: engine.id,
+    name: engine.name
+  }));
+
+  engines.forEach((engine) => {
+    let option = document.createElement("option");
+    option.value = engine.id;
+    option.innerHTML = engine.name;
+
+    selectEngines.appendChild(option);
+  });
+
+  // --設定フォームの状態を更新
   let inputElements = document.querySelectorAll(".content input, .content select, .content form");
 
   inputElements.forEach(async (element) => {
@@ -12,7 +32,7 @@ async function each() {
       case "setting-auto-save":
         element.checked = await fluneSettings.store.get("settings.autoSave");
         break;
-      case "use-home-button":
+      case "toggle-home-button":
         element.checked = await fluneSettings.store.get("settings.design.showHomeButton");
         break;
       case "search-engine":
@@ -23,6 +43,7 @@ async function each() {
 
   document.querySelector(`input[type=radio][name=theme][id=theme-${await fluneSettings.store.get("settings.design.theme")}]`).checked = true;
 
+  // --オートセーブの設定を適用
   if (await fluneSettings.store.get("settings.autoSave")) {
     inputElements.forEach((element) => {
       element.onchange = () => {
@@ -52,7 +73,7 @@ function saveAll() {
           console.info(index, id);
           save("settings.autoSave", element.checked);
           break;
-        case "use-home-button":
+        case "toggle-home-button":
           console.info(index, id);
           save("settings.design.showHomeButton", element.checked);
           break;
