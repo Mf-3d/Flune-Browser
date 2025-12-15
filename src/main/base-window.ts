@@ -14,6 +14,7 @@ import {
 import theme from "./lib/theme";
 import Event from "./lib/event";
 import { ContextMenuController } from "./contextMenuController";
+import * as packageJson from "../../package.json";
 
 const contextMenuController = new ContextMenuController();
 
@@ -55,7 +56,7 @@ export class Base {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `Flune-Browser ${(process.env.npm_package_version || "3")
+      title: `Flune-Browser ${(packageJson.version || "3")
         .replace("-beta.", " Beta ")
         .replace("-dev.", " Dev ")
         }`,
@@ -173,11 +174,11 @@ export class Base {
       });
     });
     ipcMain.handle("flune.get-version", () => {
-      return process.env.npm_package_version;
+      return packageJson.version;
     });
     ipcMain.handle("flune.get-versions", () => {
       return {
-        flune: process.env.npm_package_version,
+        flune: packageJson.version,
         electron: process.versions.electron,
         node: process.versions.node,
         chrome: process.versions.chrome,
