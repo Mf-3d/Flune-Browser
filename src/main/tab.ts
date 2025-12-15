@@ -539,11 +539,14 @@ export class TabManager {
       if (tab.entity.webContents.getURL().startsWith("flune://error")) return;
 
       switch (errCode) {
-        case (errCodes["server-notfound"]): this.load(tab.id, "flune://error/server-notfound.html");
-        default: this.load(tab.id, "flune://error/error.html");
+        case (errCodes["server-notfound"]):
+          this.load(tab.id, "flune://error/server-notfound.html");
+          break;
+        default:
+          this.load(tab.id, "flune://error/error.html");
+          console.warn("Undefined error code:", errCode);
+          break;
       }
-
-      console.error(errCode);
     });
     // コンテキストメニュー
     tab.entity.webContents.on("context-menu", (event, params) => {
