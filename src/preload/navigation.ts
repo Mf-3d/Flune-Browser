@@ -43,6 +43,9 @@ contextBridge.exposeInMainWorld("flune", {
   setContextType: (type: "normal" | "tab") => {
     ipcRenderer.invoke("nav.set-context-type", type); // 次に開くコンテキストメニューのタイプを設定する
   },
+  focusPage: (id: string) => {
+    ipcRenderer.invoke("tab.focus", id); // 開いているタブにフォーカスする
+  },
 
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

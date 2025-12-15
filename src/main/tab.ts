@@ -129,6 +129,9 @@ export class TabManager {
         if (bookmark) this.data.bookmarks.remove(bookmark.id);
       }
     });
+    ipcMain.handle("tab.focus", (event) => {
+      this.getActiveTabCurrent()?.entity.webContents.focus();
+    });
   }
 
   // --IDからタブを取得
