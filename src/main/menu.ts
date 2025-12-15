@@ -102,7 +102,17 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
         { role: "zoomIn", label: "拡大" },
         { role: "zoomOut", label: "縮小" },
         { type: "separator" },
-        { role: "togglefullscreen", label: "フルスクリーン" }
+        { role: "togglefullscreen", label: "フルスクリーン" },
+        { type: "separator" },
+        {
+          label: "検索バーをフォーカス",
+          accelerator: "CmdOrCtrl+L",
+          visible: false,
+          click: () => {
+            base.nav.webContents.focus();
+            base.nav.webContents.send("flune.focus-search-bar");
+          }
+        }
       ]
     },
     {
