@@ -75,9 +75,9 @@ export class Settings {
       this.config.store = config;
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
-      if (key === "settings.design.theme") this.event.send("theme-updated");
       this.event.send("setting-updated");
       this.config.set(key, value);
+      if (key === "settings.design.theme") this.event.send("theme-updated", value);
     });
   }
 

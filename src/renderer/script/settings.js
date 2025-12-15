@@ -6,7 +6,7 @@ async function each() {
   // --エンジンのオプションを追加
   const selectEngines = document.getElementById("search-engine");
 
-  selectEngines.innerHTML = "";
+  selectEngines.childNodes.forEach(option => selectEngines.remove(option.value));
 
   const engines = (await fluneSettings.store.get("searchEngines"))
   .map((engine) => ({
@@ -23,7 +23,7 @@ async function each() {
   });
 
   // --設定フォームの状態を更新
-  let inputElements = document.querySelectorAll(".content input, .content select, .content form");
+  let inputElements = document.querySelectorAll(".content input, .content select");
 
   inputElements.forEach(async (element) => {
     const id = element.id;
