@@ -1,19 +1,12 @@
-function removeTab(id) {
-  flune.removeTab(id);
-  console.info("(removeTab):", id);
-}
+import { registerInputEvents } from "./navigation/input.js";
+
+registerInputEvents();
 
 window.addEventListener("load", () => {
   each();
 
   const tabContainer = document.getElementById("tabs");
   const input = document.getElementById("search-bar");
-
-  input.addEventListener("keydown", (event) => {
-    if (!event.isComposing && event.key === "Enter") {
-      search();
-    }
-  });
 
   flune.on("flune.toggle-home-button", (event, visiblity) => {
     const homeButton = document.getElementById("go-home");
@@ -87,12 +80,6 @@ window.addEventListener("load", () => {
     });
   });
 
-  flune.on("nav.set-word", (event, word) => {
-    if(word === "flune://home") word = "";
-    console.info("(nav.set-word):", word);
-    input.value = word;
-  });
-
   flune.on("tab.change-state", (event, id, state, value) => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
     tabElements.forEach(tab => {
@@ -122,14 +109,6 @@ window.addEventListener("load", () => {
   });
 });
 
-function search() {
-  const activeTab = document.querySelector("#tabs > #opened");
-  const input = document.querySelector("#search-bar");
-  flune.load(activeTab.getAttribute("data-id"), input.value);
-  input.value = "";
-  input.blur();
-}
-
 function toggleBookmark() {
   flune.toggleBookmark();
   document.getElementById("bookmark").classList.toggle("active");
@@ -139,6 +118,15 @@ function updateSymbolColor() {
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
   flune.updateSymbolColor(textColor);
 }
+
+function removeTab(id) {
+  flune.removeTab(id);
+  console.info("(removeTab):", id);
+}
+
+window.toggleBookmark = toggleBookmark;
+window.updateSymbolColor = updateSymbolColor;
+window.removeTab = removeTab;
 
 function each() {
   const tabContainer = document.getElementById("tabs");
