@@ -60,6 +60,7 @@ nav {
   height: 50%;
   user-select: none;
   cursor: default;
+  display: inline-flexbox;
 }
 
 nav * {
@@ -72,12 +73,16 @@ nav a.right {
 }
 
 nav a {
+  margin-bottom: 4px;
+  width: 20px;
+  height: 20px;
   vertical-align: middle;
+  display: inline-flex;
 }
 
 nav a>svg {
   width: 20px;
-  height: auto;
+  height: 20px;
   stroke: var(--symbol-color);
   stroke-width: 3px;
 
