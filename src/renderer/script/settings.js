@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function each() {
   // --エンジンのオプションを追加
-  const selectEngines = document.getElementById("search-engine");
+  const selectEngines = document.querySelector("#search-engine");
 
   selectEngines.childNodes.forEach(option => selectEngines.remove(option.value));
 
@@ -49,6 +49,7 @@ async function each() {
       element.onchange = () => {
         saveAll();
         each();
+        console.info(element.id, "It was automatically saved.");
       };
     });
   } else {
@@ -60,29 +61,28 @@ async function each() {
 
 function save(id, value) {
   fluneSettings.store.set(id, value);
-  console.info(id, value);
+  console.info("Saved options:", id, value);
 }
 
 function saveAll() {
   let inputElements = document.querySelectorAll(".content input, .content select, .content form");
   inputElements.forEach((element, index) => {
     const id = element.id;
-    
-      switch (id) {
-        case "setting-auto-save":
-          console.info(index, id);
-          save("settings.autoSave", element.checked);
-          break;
-        case "toggle-home-button":
-          console.info(index, id);
-          save("settings.design.showHomeButton", element.checked);
-          break;
-        case "search-engine":
-          console.info(index, id);
-          save("settings.search.engine", element.value);
-          break;
-      }
+
+    switch (id) {
+      case "setting-auto-save":
+        save("settings.autoSave", element.checked);
+        break;
+      case "toggle-home-button":
+        save("settings.design.showHomeButton", element.checked);
+        break;
+      case "search-engine":
+        save("settings.search.engine", element.value);
+        break;
+    }
   });
 
-  save("settings.design.theme", document.querySelector("input[type=radio][name=theme]:checked").id.replace("theme-", ""))
+  save("settings.design.theme", document.querySelector("input[type=radio][name=theme]:checked").id.replace("theme-", ""));
+
+  console.info("All settings have been saved.");
 }

@@ -614,5 +614,10 @@ export class TabManager {
     const currentTheme = themes.find(theme => theme.id === themeId);
 
     currentTheme ? theme.appendTheme(tab.entity.webContents, currentTheme.url) : "";
+    console.info("Theme has been changed:\n", {
+      themeId,
+      currentTheme,
+      tabId
+    });
   }
 }
