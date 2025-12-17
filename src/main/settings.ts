@@ -6,6 +6,7 @@ import { TabManager } from "./tab";
 import { ipcMain } from "electron";
 
 import Event from "./lib/event";
+import { validateSender } from "./lib/ipc";
 
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
@@ -65,16 +66,24 @@ export class Settings {
     this.deleteEvents();
 
     ipcMain.handle("flune.store.config.get-all", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       return this.config.store;
     });
     ipcMain.handle("flune.store.config.get", (event, key: string) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       return this.config.get(key);
     });
     ipcMain.handle("flune.store.config.save-all", (event, config) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.config.store = config;
       this.event.send("setting-updated");
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      
       this.config.set(key, value);
       this.event.send("setting-updated");
       if (key === "settings.design.theme") this.event.send("theme-updated", value);

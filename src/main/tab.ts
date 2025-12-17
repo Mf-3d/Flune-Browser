@@ -10,6 +10,7 @@ import theme from "./lib/theme";
 import Event from "./lib/event";
 import { DataManager } from "./lib/data";
 import { ContextMenuController } from "./contextMenuController";
+import { validateSender } from "./lib/ipc";
 
 export type Tab = {
   id: string;
@@ -69,35 +70,55 @@ export class TabManager {
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.reloadTab(undefined, ignoringCache);
     });
-    ipcMain.handle("tab.go-back", () => {
+    ipcMain.handle("tab.go-back", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.goBack();
     });
-    ipcMain.handle("tab.go-forward", () => {
+    ipcMain.handle("tab.go-forward", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.goForward();
     });
-    ipcMain.handle("tab.go-home", () => {
+    ipcMain.handle("tab.go-home", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.load(undefined, HOME_URL);
     });
     ipcMain.handle("tab.switch", (event, id) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.activateTab(id);
     });
-    ipcMain.handle("tab.new", () => {
+    ipcMain.handle("tab.new", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.newTab(undefined, {
         active: true
       });
     });
     ipcMain.handle("tab.remove", (event, id) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.removeTab(id);
     });
     ipcMain.handle("tab.move", (event, from, to) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.moveTab(from, to);
     });
     ipcMain.handle("tab.load", (event, id, url) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.load(id, url);
     });
     ipcMain.handle("tab.toggle-context-menu", (event, id) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       contextMenuController.setContextType("tab");
 
       const menu = buildTabContextMenu(this.base, id);
@@ -108,7 +129,9 @@ export class TabManager {
     });
 
     // ナビゲーションから
-    ipcMain.handle("nav.toggle-bookmark", () => {
+    ipcMain.handle("nav.toggle-bookmark", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       this.getActiveTabCurrent()?.entity.webContents.send("nav.toggle-bookmark");
     });
     // タブから
@@ -116,6 +139,8 @@ export class TabManager {
       title: string,
       url: string,
     }) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+
       if (!this.data.bookmarks.existByUrl(data.url)) {
         this.data.bookmarks.add({
           title: data.title,
@@ -130,6 +155,8 @@ export class TabManager {
       }
     });
     ipcMain.handle("tab.focus", (event) => {
+      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      
       this.getActiveTabCurrent()?.entity.webContents.focus();
     });
   }
