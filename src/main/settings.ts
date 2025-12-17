@@ -71,12 +71,12 @@ export class Settings {
       return this.config.get(key);
     });
     ipcMain.handle("flune.store.config.save-all", (event, config) => {
-      this.event.send("setting-updated");
       this.config.store = config;
+      this.event.send("setting-updated");
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
-      this.event.send("setting-updated");
       this.config.set(key, value);
+      this.event.send("setting-updated");
       if (key === "settings.design.theme") this.event.send("theme-updated", value);
     });
   }
