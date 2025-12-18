@@ -61,7 +61,7 @@ export class DataManager {
       getStuff: (folderId: string): (Bookmark | BookmarkFolder)[] => {
         let bookmarks = this.bookmarks.getAll().filter(bookmark => bookmark.parentId === folderId);
         let folders = this.bookmarks.folders.getAll().filter(folder => folder.parentId === folderId);
-  
+
         return [...bookmarks, ...folders];
       },
       getAll: () => {
@@ -92,7 +92,7 @@ export class DataManager {
           tag: folder.tag,
           parentId: folder.parentId,
         });
-  
+
         this.config.set("bookmarkFolders", bookmarks);
       },
     },
@@ -191,11 +191,11 @@ export class DataManager {
       return this.histories.getAll().find(history => history.date === date);
     },
     getByDuration: (duration: [Date, Date]): History[] => {
-      return this.histories.getAll().filter(history => 
+      return this.histories.getAll().filter(history =>
         duration[0].getTime() <= history.date.getTime() && history.date.getTime() <= duration[1].getTime()
       );
     },
-    
+
     add: (data: History) => {
       const histories = this.histories.getAll();
       histories.push(data);
