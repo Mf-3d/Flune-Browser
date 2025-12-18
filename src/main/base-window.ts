@@ -201,6 +201,15 @@ export class Base {
         v8: process.versions.v8,
       };
     });
+    ipcMain.handle("flune.get-computer-info", (event) => {
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
+      
+      return {
+        arch: process.arch,
+        platform: process.platform,
+      };
+    });
 
     this.win.on("close", () => {
       this.nav.webContents.close();

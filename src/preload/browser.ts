@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld("flune", {
   getVersions: async () => {
     return await ipcRenderer.invoke("flune.get-versions"); // ElectronやChromeのバージョンも取得
   },
+  getComputerInfo: async () => {
+    return await ipcRenderer.invoke("flune.get-computer-info"); 
+  },
   toggleBookmark: (data: {
     session: string,
     url: string,
