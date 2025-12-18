@@ -66,23 +66,27 @@ export class Settings {
     this.deleteEvents();
 
     ipcMain.handle("flune.store.config.get-all", (event) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       return this.config.store;
     });
     ipcMain.handle("flune.store.config.get", (event, key: string) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       return this.config.get(key);
     });
     ipcMain.handle("flune.store.config.save-all", (event, config) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       this.config.store = config;
       this.event.send("setting-updated");
     });
     ipcMain.handle("flune.store.config.save", (event, key: string, value?: any) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
       
       this.config.set(key, value);
       this.event.send("setting-updated");

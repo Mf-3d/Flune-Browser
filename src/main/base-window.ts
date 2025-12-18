@@ -20,7 +20,8 @@ import { validateSender } from "./lib/ipc";
 const contextMenuController = new ContextMenuController();
 
 ipcMain.handle("nav.set-context-type", (event, type) => {
-  if(event.senderFrame && validateSender(event.senderFrame)) return null;
+  if (!event.senderFrame) return null;
+  if(!validateSender(event.senderFrame)) return null;
 
   contextMenuController.setContextType(type);
 });
@@ -168,25 +169,29 @@ export class Base {
 
     // IPCチャンネル
     ipcMain.handle("options.toggle", (event) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       this.optionsMenu = buildOptionsMenu(this);
       this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
-
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
+      
       if (process.platform === "win32" || process.platform === "linux") this.win.setTitleBarOverlay({
         symbolColor: color
       });
     });
     ipcMain.handle("flune.get-version", (event) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       return packageJson.version;
     });
     ipcMain.handle("flune.get-versions", (event) => {
-      if(event.senderFrame && validateSender(event.senderFrame)) return null;
+      if (!event.senderFrame) return null;
+      if(!validateSender(event.senderFrame)) return null;
 
       return {
         flune: packageJson.version,
