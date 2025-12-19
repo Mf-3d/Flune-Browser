@@ -212,6 +212,12 @@ export class Base {
         platform: process.platform,
       };
     });
+    ipcMain.handle("flune.open-settings", (event) => {
+      if (!event.senderFrame) return null;
+      if (!validateSender(event.senderFrame)) return null;
+
+      this.tabManager?.load(undefined, "flune://settings");
+    });
     ipcMain.handle("flune.show-versions-page", (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
