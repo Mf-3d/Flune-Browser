@@ -23,7 +23,7 @@ const contextMenuController = new ContextMenuController();
 
 ipcMain.handle("nav.set-context-type", (event, type) => {
   if (!event.senderFrame) return null;
-  if(!validateSender(event.senderFrame)) return null;
+  if (!validateSender(event.senderFrame)) return null;
 
   contextMenuController.setContextType(type);
 });
@@ -211,6 +211,12 @@ export class Base {
         arch: process.arch,
         platform: process.platform,
       };
+    });
+    ipcMain.handle("flune.show-versions-page", (event) => {
+      if (!event.senderFrame) return null;
+      if (!validateSender(event.senderFrame)) return null;
+
+      this.tabManager?.load(undefined, "flune://version");
     });
     ipcMain.handle("flune.quit", (event, forced: boolean) => {
       if (!event.senderFrame) return null;
