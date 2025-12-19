@@ -3,7 +3,9 @@ import {
   BaseWindow,
   WebContentsView,
   Menu,
-  ipcMain
+  ipcMain,
+  dialog,
+  app
 } from "electron";
 import { TabManager } from "./tab";
 import {
@@ -170,28 +172,28 @@ export class Base {
     // IPCチャンネル
     ipcMain.handle("options.toggle", (event) => {
       if (!event.senderFrame) return null;
-      if(!validateSender(event.senderFrame)) return null;
+      if (!validateSender(event.senderFrame)) return null;
 
       this.optionsMenu = buildOptionsMenu(this);
       this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
       if (!event.senderFrame) return null;
-      if(!validateSender(event.senderFrame)) return null;
-      
+      if (!validateSender(event.senderFrame)) return null;
+
       if (process.platform === "win32" || process.platform === "linux") this.win.setTitleBarOverlay({
         symbolColor: color
       });
     });
     ipcMain.handle("flune.get-version", (event) => {
       if (!event.senderFrame) return null;
-      if(!validateSender(event.senderFrame)) return null;
+      if (!validateSender(event.senderFrame)) return null;
 
       return packageJson.version;
     });
     ipcMain.handle("flune.get-versions", (event) => {
       if (!event.senderFrame) return null;
-      if(!validateSender(event.senderFrame)) return null;
+      if (!validateSender(event.senderFrame)) return null;
 
       return {
         flune: packageJson.version,
@@ -203,12 +205,29 @@ export class Base {
     });
     ipcMain.handle("flune.get-computer-info", (event) => {
       if (!event.senderFrame) return null;
-      if(!validateSender(event.senderFrame)) return null;
-      
+      if (!validateSender(event.senderFrame)) return null;
+
       return {
         arch: process.arch,
         platform: process.platform,
       };
+    });
+    ipcMain.handle("flune.quit", (event, forced: boolean) => {
+      if (!event.senderFrame) return null;
+      if (!validateSender(event.senderFrame)) return null;
+
+      if (forced) app.quit();
+
+      const choice = dialog.showMessageBoxSync(this.win, {
+        type: "question",
+        message: "本当に終了しますか？",
+        detail: `${this.tabManager?.tabs.length}個のタブを閉じます。`,
+        buttons: [ "終了する", "キャンセル" ],
+        defaultId: 0,
+        cancelId: 1,
+      });
+
+      if (choice === 0) app.quit();
     });
 
     this.win.on("close", () => {
