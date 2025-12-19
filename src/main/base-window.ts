@@ -10,6 +10,7 @@ import {
 import { TabManager } from "./tab";
 import {
   ContextMenuManager,
+  OptionMenuManager,
   buildApplicationMenu,
   buildOptionsMenu
 } from "./menu";
@@ -46,6 +47,7 @@ export class Base {
   optionsMenu: Electron.Menu;
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
+  readonly optionMenuManager: OptionMenuManager;
 
   constructor(bounds?: {
     width: number;
@@ -84,6 +86,12 @@ export class Base {
     Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this);
     this.contextMenuManager = new ContextMenuManager(this);
+    this.optionMenuManager = new OptionMenuManager(this, {
+      width: this.bounds.width,
+      height: this.bounds.height - this.viewY,
+      x: 0,
+      y: this.viewY
+    });
 
     this.nav = new WebContentsView({
       webPreferences: {
@@ -174,8 +182,10 @@ export class Base {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      this.optionsMenu = buildOptionsMenu(this);
-      this.optionsMenu.popup();
+      // もし表示されていたとしても、オーバーレイに登録されているblurイベントが発火されるから必要ない。
+      if (!this.optionMenuManager.isVisible()) this.optionMenuManager.show();
+      // this.optionsMenu = buildOptionsMenu(this);
+      // this.optionsMenu.popup();
     });
     ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
       if (!event.senderFrame) return null;

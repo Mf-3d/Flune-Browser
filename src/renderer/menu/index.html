@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="../style/main.css" />
+  <link rel="stylesheet" href="../style/menu.css" />
+</head>
+
+<body oncontextmenu="return false;">
+  <div id="toggle"></div>
+  <main>
+    <div id="top" class="hidden">
+      <!-- <a
+        href="#"
+        data-command="newTab"
+        role="menuitem"
+      >
+        新しいタブ
+        <span class="accel">
+          <kbd>Ctrl</kbd>+<kbd>T</kbd>
+        </span>
+      </a>
+      <hr />
+      <a
+        href="#"
+        data-command="bookmarks"
+        role="menuitem"
+      >
+        ブックマーク
+        <i data-lucide="chevron-right"></i>
+      </a> -->
+    </div>
+    <div id="children-menu">
+      <a
+        href="#"
+        data-command="go-prev"
+        role="menuitem"
+        tabindex="-1"
+      >
+        <i data-lucide="chevron-left"></i>
+        戻る
+      </a>
+      <iframe src=""></iframe>
+    </div>
+  </main>
+
+  <script src="../script/icons.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="../script/menu.js"></script>
+  <script src="../script/menu/index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+body {
+  background: transparent;
+  overflow: hidden;
+  margin: 0;
+  font-size: smaller;
+}
+
+body>#toggle {
+  background-color: #0006;
+  width: 100vw;
+  height: 100vh;
+
+  transition: background-color .2s ease, height .3s ease;
+}
+body:has(.hidden)>#toggle {
+  background-color: transparent;
+  width: 100vw;
+  height: 0;
+}
+
+main {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background-color: var(--background-color);
+  width: 100%;
+  height: 100vh;
+}
+main:not(:has(#top)) {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-color) 10%, transparent) color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+main:has(#top) {
+  position: absolute;
+  top: 0;
+  right: 1em;
+  width: 18em;
+  height: max-content;
+  max-height: calc(100vh - 16px);
+  border: color-mix(in srgb, var(--disabled-color) 10%, transparent) 2px solid;
+  border-top: none;
+  border-radius: 0 0 calc(.5em + 8px) calc(.5em + 8px);
+
+  transition: top .8s ease;
+}
+main:has(#top).hidden {
+  top: calc(-100vh + 16px);
+}
+
+main>div:not(#children-menu) {
+  padding: .5em;
+}
+main>div#children-menu>a {
+  margin: .5em;
+}
+
+main>div a {
+  user-select: none;
+  -webkit-user-drag: none;
+  color: var(--text-color);
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 8px;
+  outline: color-mix(in srgb, var(--hover-color) 5%, transparent) 0px solid;
+  outline-offset: -1px;
+  border-radius: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  transition: background-color .2s linear,
+              outline-width 0.3s linear,
+              outline-color 0.3s linear;
+}
+main>div a:nth-of-type(even) {
+  background-color: color-mix(in srgb, var(--text-color) 2%, transparent);
+}
+main>div a:hover {
+  background-color: color-mix(in srgb, var(--hover-color) 15%, transparent);
+  outline-width: 3px;
+}
+main>div a:active {
+  background-color: color-mix(in srgb, var(--hover-color) 35%, transparent);
+  outline-width: 6px;
+}
+main>div a:focus {
+  outline-color: color-mix(in srgb, #2582CF 35%, transparent);
+  outline-width: 2px;
+}
+main>div a>.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+main>div a>.accel {
+  padding-right: .5em;
+  float: right;
+  font-weight: bold;
+  color: color-mix(in srgb, var(--text-color) 50%, transparent);
+}
+main>div a>svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 3px;
+  float: right;
+}
+
+hr {
+  border: color-mix(in srgb, var(--disabled-color) 15%, transparent) 2px solid;
+  border-radius: 2px;
+}
+
+#children-menu {
+  background-color: var(--background-color);
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+
+  transition: left .3s ease, opacity .3s linear;
+}
+#children-menu>iframe {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+#children-menu.visible {
+  opacity: 1;
+  left: 0;
+}

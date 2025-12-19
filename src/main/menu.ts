@@ -1,8 +1,7 @@
 import {
   app,
   clipboard,
-  Menu,
-  shell
+  Menu
 } from "electron";
 
 import { Base } from "./base-window";
@@ -13,6 +12,7 @@ const data = new DataManager;
 
 export { buildApplicationMenu } from "./menu/application-menu";
 export { ContextMenuManager, buildTabContextMenu } from "./menu/context-menu";
+export { OptionMenuManager } from "./menu/option-menu";
 
 export function buildOptionsMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
