@@ -27,6 +27,7 @@ export type History = {
   url: string;
   date: Date;
 };
+export type FolderId = `${string}-${string}-${string}-${string}` | "root";
 
 type ConfigType = {
   version: [number, number, number];
@@ -58,7 +59,7 @@ export class DataManager {
      * Bookmark folders
      */
     folders: {
-      getStuff: (folderId: string): (Bookmark | BookmarkFolder)[] => {
+      getStuff: (folderId: FolderId): (Bookmark | BookmarkFolder)[] => {
         let bookmarks = this.bookmarks.getAll().filter(bookmark => bookmark.parentId === folderId);
         let folders = this.bookmarks.folders.getAll().filter(folder => folder.parentId === folderId);
 
@@ -67,17 +68,17 @@ export class DataManager {
       getAll: () => {
         return this.config.get("bookmarkFolders");
       },
-      getById: (folderId: string) => {
+      getById: (folderId: FolderId) => {
         return this.bookmarks.folders.getAll().find(folder => folder.id === folderId);
       },
-      exist: (folderId: string): boolean => {
+      exist: (folderId: FolderId): boolean => {
         if (folderId === "root") return true;
         return this.bookmarks.folders.getById(folderId) !== undefined;
       },
       create: (folder: {
         title: string;
         tag: string[];
-        parentId: string;
+        parentId: FolderId;
       }) => {
         if (!this.bookmarks.folders.exist(folder.parentId)) {
           console.error("Could not create folder: The folder does not exist.");
@@ -153,7 +154,7 @@ export class DataManager {
       /**
        * Specify the ID of "root" or parent folder.
        */
-      parentId: string;
+      parentId: FolderId;
     }): Bookmark | null => {
       if (!this.bookmarks.folders.exist(data.parentId)) {
         console.error("Could not add bookmark: The folder does not exist.");
