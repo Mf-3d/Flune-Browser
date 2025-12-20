@@ -4,10 +4,12 @@
   "description": "Newer and more challenging than anyone else.",
   "main": "src/main.js",
   "scripts": {
-    "test": "npm run build & npx electron .",
-    "build": "npx tsc",
-    "build:win": "npm run build & npx electron-builder --win --x64",
-    "build:mac": "npm run build & npx electron-builder --mac --x64"
+    "test": "playwright test",
+    "start": "npm run build & electron .",
+    "build": "tsc",
+    "package": "electron-builder --dir",
+    "package:win": "electron-builder --win --x64",
+    "package:mac": "electron-builder --mac --x64"
   },
   "engines": {
     "node": ">=22.0.0"

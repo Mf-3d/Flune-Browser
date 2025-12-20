@@ -1,0 +1,35 @@
+name: Packaged App Test
+
+on: [push, pull_request]
+
+jobs:
+  packaged-launch:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Package app
+        run: npm run package
+        shell: bash
+
+      - run: npx playwright install
+
+      - name: Run packaged launch test
+        env:
+          ELECTRON_EXECUTABLE_PATH: ${{ matrix.os == 'windows-latest'
+            && 'dist-packaged/win-unpacked/Flune-Browser.exe'
+            || 'dist-packaged/mac/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
+        run: npx playwright test tests/e2e/packaged-launch.test.ts
