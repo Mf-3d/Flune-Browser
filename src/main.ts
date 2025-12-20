@@ -4,6 +4,11 @@ import {
 import { Base } from "./main/base-window";
 import { Protocol } from "./main/protocol";
 import Event from "./main/lib/event";
+import path from "node:path";
+import fs from "fs";
+
+const LOG_DIR = app.getPath("userData");
+const LOG_FILE = path.join(LOG_DIR, "app-crash.log");
 
 let base: Base | null | undefined;
 let protocol: Protocol | null | undefined;
@@ -48,4 +53,20 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+// クラッシュ時にログを保存する。
+function log(message: string) {
+  fs.appendFileSync(
+    LOG_FILE,
+    `[${new Date().toISOString()}] ${message}\n`
+  );
+}
+
+process.on("uncaughtException", (err) => {
+  log(`UNCAUGHT: ${err.stack || err.message}`);
+});
+
+app.on("render-process-gone", (event, webContents, details) => {
+  log(`RENDERER GONE: ${details.reason}`);
 });
