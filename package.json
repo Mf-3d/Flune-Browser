@@ -28,8 +28,10 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "electron": "^39.2.7",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "playwright": "^1.57.0"
   },
   "build": {
     "appId": "io.github.mf-3d.flune-browser",
