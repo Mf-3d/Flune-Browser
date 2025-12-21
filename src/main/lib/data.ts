@@ -1,33 +1,9 @@
 import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
+import { Bookmark, BookmarkFolder, History, Download, FolderId } from "../types/data";
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
-
-export type Bookmark = {
-  type: "bookmark";
-  id: string;
-  title: string;
-  url: string;
-  tag: string[];
-  /**
-   * Specify the ID of "root" or parent folder.
-   */
-  parentId: string; // フォルダ
-};
-export type BookmarkFolder = {
-  type: "folder";
-  id: string;
-  title: string;
-  tag: string[];
-  parentId: string;
-};
-export type History = {
-  title: string;
-  url: string;
-  date: Date;
-};
-export type FolderId = `${string}-${string}-${string}-${string}` | "root";
 
 type ConfigType = {
   version: [number, number, number];
@@ -206,4 +182,4 @@ export class DataManager {
       return data;
     }
   };
-}
+}export * from "../types/data";
