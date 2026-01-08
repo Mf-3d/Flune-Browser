@@ -234,10 +234,12 @@ export class TabManager {
     let entity = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "browser.js"),
-        contextIsolation: true
+        contextIsolation: true,
+        scrollBounce: true,
       }
     });
     entity.setBounds(this.bounds);
+    entity.webContents.setVisualZoomLevelLimits(1, 3);
 
     // 自動でリサイズ
     this.base.win.on("resize", () => {
