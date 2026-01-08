@@ -6,6 +6,7 @@ test("packaged app launches and survives", async ({}, testInfo) => {
   let app: ElectronApplication | null = null;
 
   try {
+    console.debug(__dirname);
     app = await _electron.launch({
       executablePath: process.env.ELECTRON_EXECUTABLE_PATH,
     });
