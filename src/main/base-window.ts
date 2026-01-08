@@ -74,6 +74,7 @@ export class Base {
         symbolColor: "#fff"
         // symbolColor: nativeTheme.shouldUseDarkColors ? "#fff" : "#000"
       },
+      show: false,
       // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
@@ -118,6 +119,10 @@ export class Base {
         y: 0,
       });
     });
+    this.win.on("close", () => {
+      this.nav.webContents.close();
+      this.tabManager?.removeAll();
+    });
 
     this.win.contentView.addChildView(this.nav);
 
@@ -137,6 +142,8 @@ export class Base {
       this.event.send("navigation-loaded");
 
       this.updateTheme();
+      
+      this.win.show();
     });
     this.nav.webContents.on("context-menu", (event, params) => {
       contextMenuController.setContextType("normal"); // 一度リセットする。（順序的にこの位置で問題なし）
@@ -168,6 +175,7 @@ export class Base {
       }).popup();
     });
 
+    // 独自イベント
     this.event = new Event();
 
     this.event.on("theme-updated", (id) => {
@@ -250,11 +258,6 @@ export class Base {
       });
 
       if (choice === 0) app.quit();
-    });
-
-    this.win.on("close", () => {
-      this.nav.webContents.close();
-      this.tabManager?.removeAll();
     });
   }
 
