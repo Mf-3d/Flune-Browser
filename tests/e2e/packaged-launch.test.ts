@@ -1,4 +1,5 @@
 import { _electron, test, expect, ElectronApplication } from "@playwright/test";
+import fs from "node:fs";
 import path from "node:path";
 
 test("packaged app launches and survives", async ({}, testInfo) => {
@@ -8,9 +9,10 @@ test("packaged app launches and survives", async ({}, testInfo) => {
 
   try {
     console.info("__dirname:", __dirname);
-
     const executablePath = process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined;
     console.info("executablePath:", executablePath);
+    if (executablePath)
+      console.info("File exists:",fs.existsSync(executablePath));
 
     app = await _electron.launch({
       executablePath: executablePath,
