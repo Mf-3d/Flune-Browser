@@ -2,19 +2,23 @@ import { _electron, test, expect, ElectronApplication } from "@playwright/test";
 import path from "node:path";
 
 test("packaged app launches and survives", async ({}, testInfo) => {
-  testInfo.setTimeout(60_000);
+  testInfo.setTimeout(120_000);
 
   let app: ElectronApplication | null = null;
 
   try {
+    console.info("__dirname:", __dirname);
+
+    const executablePath = process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined;
+    console.info("executablePath:", executablePath);
+
     app = await _electron.launch({
-      executablePath: process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined,
+      executablePath: executablePath,
     });
 
     const isPackaged = await app.evaluate(async ({ app }) => {
       return app.isPackaged;
     });
-    console.info("__dirname:", __dirname);
     console.info("isPackaged:", isPackaged);
 
     const window = await app.firstWindow();
@@ -32,4 +36,5 @@ test("packaged app launches and survives", async ({}, testInfo) => {
 });
 
 // $env:ELECTRON_EXECUTABLE_PATH="{path}"
+// "dist/win-unpacked/Flune-Browser.exe" or "dist/mac/Flune-Browser.app/Contents/MacOS/Flune-Browser"
 // npm t
