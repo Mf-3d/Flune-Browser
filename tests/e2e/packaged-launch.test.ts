@@ -1,6 +1,5 @@
 import { _electron, test, expect, ElectronApplication } from "@playwright/test";
 import fs from "node:fs";
-import path from "node:path";
 
 test("packaged app launches and survives", async ({ }, testInfo) => {
   testInfo.setTimeout(120_000);
