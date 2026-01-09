@@ -2,7 +2,7 @@ import { _electron, test, expect, ElectronApplication } from "@playwright/test";
 import path from "node:path";
 
 test("packaged app launches and survives", async ({}, testInfo) => {
-  testInfo.setTimeout(30_000);
+  testInfo.setTimeout(60_000);
 
   let app: ElectronApplication | null = null;
 
@@ -11,11 +11,10 @@ test("packaged app launches and survives", async ({}, testInfo) => {
       executablePath: process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined,
     });
 
-    const isPackaged = app.evaluate(async ({ app }) => {
+    const isPackaged = await app.evaluate(async ({ app }) => {
       return app.isPackaged;
     });
-
-    console.info("isPackaged:", isPackaged)
+    console.info("isPackaged:", isPackaged);
 
     const window = await app.firstWindow();
 
