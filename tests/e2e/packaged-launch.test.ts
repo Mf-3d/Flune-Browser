@@ -2,7 +2,7 @@ import { _electron, test, expect, ElectronApplication } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
-test("packaged app launches and survives", async ({}, testInfo) => {
+test("packaged app launches and survives", async ({ }, testInfo) => {
   testInfo.setTimeout(120_000);
 
   let app: ElectronApplication | null = null;
@@ -16,9 +16,9 @@ test("packaged app launches and survives", async ({}, testInfo) => {
       console.info(fs.readdirSync("./dist/", {
         recursive: true
       }));
-      if (fs.existsSync("./dist/win-unpacked/")) console.info(fs.readdirSync("./dist/win-unpacked/"));
-      if (fs.existsSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS")) console.info(fs.readdirSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS"));
-      
+
+      console.info("win:", fs.existsSync("./dist/win-unpacked/Flune-Browser.exe"));
+      console.info("mac:", fs.existsSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/"), fs.existsSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser"));
       expect(fs.existsSync(executablePath)).toBeTruthy();
     }
 
