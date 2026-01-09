@@ -36,5 +36,4 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
 });
 
 // $env:ELECTRON_EXECUTABLE_PATH="{path}"
-// "dist/win-unpacked/Flune-Browser.exe" or "dist/mac/Flune-Browser.app/Contents/MacOS/Flune-Browser"
 // npm t
