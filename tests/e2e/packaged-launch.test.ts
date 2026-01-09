@@ -7,11 +7,10 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
   let app: ElectronApplication | null = null;
 
   try {
-    console.info("__dirname:", __dirname);
     console.info("cwd:", process.cwd());
-    // const executablePath = process.platform === "win32" ? "./dist/win-unpacked/Flune-Browser.exe" : "./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser";
+    // 余計な文字（キャリッジリターンや改行、空白）を消去する。
     const executablePath = process.env.ELECTRON_EXECUTABLE_PATH?.trim();
-    console.info("executablePath:", executablePath);
+    console.info("executable path:", executablePath);
 
     app = await _electron.launch({
       executablePath: executablePath,
@@ -20,7 +19,7 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
     const isPackaged = await app.evaluate(async ({ app }) => {
       return app.isPackaged;
     });
-    console.info("isPackaged:", isPackaged);
+    console.info("is packaged:", isPackaged);
 
     const window = await app.firstWindow();
 
