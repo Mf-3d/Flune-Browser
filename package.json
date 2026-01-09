@@ -64,7 +64,7 @@
       "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
     },
     "mac": {
-      "icon": "./src/assets/image/icon.png",
+      "icon": "./src/assets/image/icon.icns",
       "category": "public.app-category.utilities",
       "target": {
         "target": "dmg",
