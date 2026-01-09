@@ -9,7 +9,7 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
   try {
     console.info("__dirname:", __dirname);
     console.info("cwd:", process.cwd());
-    const executablePath = process.env.ELECTRON_EXECUTABLE_PATH;
+    const executablePath = process.platform === "win32" ? "./dist/win-unpacked/Flune-Browser.exe" : "./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser";
     console.info("executablePath:", executablePath);
     if (executablePath) {
       console.info(fs.readdirSync("./dist/", {
