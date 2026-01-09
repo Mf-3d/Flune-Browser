@@ -47,6 +47,10 @@ app.on("ready", () => {
 
   // プロトコルを設定
   protocol = new Protocol("flune");
+
+  app.on("activate", () => {
+    if (base?.win.isDestroyed()) nw();
+  });
 });
 
 app.on("window-all-closed", () => {
