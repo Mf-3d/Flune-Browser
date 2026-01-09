@@ -12,7 +12,7 @@ test("packaged app launches and survives", async ({}, testInfo) => {
     const executablePath = process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined;
     console.info("executablePath:", executablePath);
     if (executablePath) {
-      if (fs.existsSync("./dist/win-packed")) console.info(fs.readdirSync("./dist/win-packed"));
+      if (fs.existsSync("./dist/")) console.info(fs.readdirSync("./dist/win-packed"));
       console.info("File exists:", fs.existsSync(executablePath));
     }
 
