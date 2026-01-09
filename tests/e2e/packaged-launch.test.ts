@@ -11,8 +11,10 @@ test("packaged app launches and survives", async ({}, testInfo) => {
     console.info("__dirname:", __dirname);
     const executablePath = process.env.ELECTRON_EXECUTABLE_PATH ? path.resolve(process.env.ELECTRON_EXECUTABLE_PATH) : undefined;
     console.info("executablePath:", executablePath);
-    if (executablePath)
+    if (executablePath) {
+      console.info(fs.readdirSync("./dist/"));
       console.info("File exists:",fs.existsSync(executablePath));
+    }
 
     app = await _electron.launch({
       executablePath: executablePath,
