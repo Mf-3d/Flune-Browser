@@ -32,7 +32,7 @@ jobs:
           ELECTRON_EXECUTABLE_PATH: |
             ${{ matrix.os == 'windows-latest'
             && 'dist/win-unpacked/Flune-Browser.exe'
-            || 'dist/mac/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
+            || 'dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
         run: npx playwright test tests/e2e/packaged-launch.test.ts
 
       - name: Upload logs
