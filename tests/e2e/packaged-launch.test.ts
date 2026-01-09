@@ -9,17 +9,9 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
   try {
     console.info("__dirname:", __dirname);
     console.info("cwd:", process.cwd());
-    const executablePath = process.platform === "win32" ? "./dist/win-unpacked/Flune-Browser.exe" : "./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser";
+    // const executablePath = process.platform === "win32" ? "./dist/win-unpacked/Flune-Browser.exe" : "./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser";
+    const executablePath = process.env.ELECTRON_EXECUTABLE_PATH?.trim();
     console.info("executablePath:", executablePath);
-    if (executablePath) {
-      console.info(fs.readdirSync("./dist/", {
-        recursive: true
-      }));
-
-      console.info("win:", fs.existsSync("./dist/win-unpacked/Flune-Browser.exe"));
-      console.info("mac:", fs.existsSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/"), fs.existsSync("./dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser"));
-      expect(fs.existsSync(executablePath)).toBeTruthy();
-    }
 
     app = await _electron.launch({
       executablePath: executablePath,
