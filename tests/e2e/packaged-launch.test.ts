@@ -14,6 +14,7 @@ test("packaged app launches and survives", async ({}, testInfo) => {
     const isPackaged = await app.evaluate(async ({ app }) => {
       return app.isPackaged;
     });
+    console.info("__dirname:", __dirname);
     console.info("isPackaged:", isPackaged);
 
     const window = await app.firstWindow();
