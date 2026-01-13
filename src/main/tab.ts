@@ -61,8 +61,8 @@ export class TabManager {
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
-    this.base.win.on("resize", () => {
-      if (!this.base) return;
+    this.base.win?.on("resize", () => {
+      if (!this.base || !this.base.win) return;
 
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
@@ -242,8 +242,8 @@ export class TabManager {
     entity.webContents.setVisualZoomLevelLimits(1, 3);
 
     // 自動でリサイズ
-    this.base.win.on("resize", () => {
-      if (!this.base || !entity) return;
+    this.base.win?.on("resize", () => {
+      if (!this.base || !this.base.win || !entity) return;
 
       const bounds = this.base.win.getContentBounds();
 
@@ -271,7 +271,7 @@ export class TabManager {
       this.tabs?.push(newTab);
     }
 
-    this.base.win.contentView.addChildView(newTab.entity);
+    this.base.win?.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
 
@@ -607,6 +607,32 @@ export class TabManager {
         params,
         isNav: false
       }).popup();
+    });
+    // ダウンロードした時
+    tab.entity.webContents.session.on("will-download", (event, item) => {
+      let download = this.data.downloads.add({
+        state: "progressing",
+        url: item.getURL(),
+        filePath: item.getSavePath(),
+        date: new Date(),
+        totalSize: item.getTotalBytes() || null,
+        receivedSize: item.getReceivedBytes() || null,
+        percentComplete: item.getPercentComplete() || null
+      });
+
+      item.on("updated", (event, state) => {
+        download.state = state;
+        download.receivedSize = item.getReceivedBytes() || null;
+        download.percentComplete = item.getPercentComplete() || null;
+        this.data.downloads.edit(download.id, download);
+      });
+
+      item.once("done", (event, state) => {
+        download.state = state;
+        download.receivedSize = item.getReceivedBytes() || null;
+        download.percentComplete = item.getPercentComplete() || null;
+        this.data.downloads.edit(download.id, download);
+      });
     });
   }
 

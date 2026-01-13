@@ -182,4 +182,51 @@ export class DataManager {
       return data;
     }
   };
-}export * from "../types/data";
+
+  downloads = {
+    getAll: () => {
+      return this.config.get("downloads");
+    },
+    getById: (id: string): Download => {
+      return this.downloads.getAll().find(download => download.id === id);
+    },
+    getByDate: (date: Date): Download => {
+      return this.downloads.getAll().find(download => download.date === date);
+    },
+    getByDuration: (duration: [Date, Date]): Download[] => {
+      return this.downloads.getAll().filter(download =>
+        duration[0].getTime() <= download.date.getTime() && download.date.getTime() <= duration[1].getTime()
+      );
+    },
+
+    add: (data: {
+      state: "progressing" | "interrupted" | "interrupted-done" | "completed" | "cancelled";
+      url: string;
+      filePath: string;
+      date: Date;
+      totalSize: number | null;
+      receivedSize: number | null;
+      percentComplete: number | null;
+    }): Download => {
+
+      let download: Download = {
+        id: crypto.randomUUID(),
+        ...data
+      };
+      const downloads = this.downloads.getAll();
+      downloads.push(download);
+
+      this.config.set("downloads", downloads);
+
+      return download;
+    },
+    edit: (id: string, data: Download) => {
+      let downloads = this.downloads.getAll();
+      let ids: string[] = downloads.map((download) => download.id);
+      downloads[ids.indexOf(id)] = data;
+
+      this.config.set("downloads", downloads);
+    }
+  };
+}
+export * from "../types/data";

@@ -93,9 +93,6 @@ function updateBookmarkItems(folderId, bookmarks) {
           type: "bookmark-folder",
           title: bookmark.title,
           command: "open-bookmark-folder",
-          payload: {
-            url: bookmark.url
-          }
         };
       }
 
