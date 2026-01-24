@@ -1,0 +1,41 @@
+name: 🐛 バグ報告
+description: バグを報告する
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグ報告ありがとうございます。以下の情報を記入してください。
+
+  - type: textarea
+    attributes:
+      label: バグの説明
+      description: バグの内容を明確かつ簡潔に説明してください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 再現手順
+      description: バグを再現するための手順を記述してください。
+      placeholder: |
+        1. '...' に移動
+        2. '...' をクリック
+        3. '...' までスクロール
+        4. エラーが発生
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 発生した環境
+      placeholder: |
+        OS：Windows 11 - 25H2
+        バージョン：3.0.0 Beta 2
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 追加の情報
+      description: 問題に関するその他の背景情報をここに追加します。
