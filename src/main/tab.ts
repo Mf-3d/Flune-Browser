@@ -1,5 +1,6 @@
 import * as path from "node:path";
 import {
+  dialog,
   WebContentsView,
   ipcMain
 } from "electron";
@@ -634,6 +635,22 @@ export class TabManager {
         this.data.downloads.edit(download.id, download);
       });
     });
+    // 離脱警告
+    tab.entity.webContents.on("will-prevent-unload", (event) => {
+      const choice = dialog.showMessageBoxSync(this.base.win, {
+        type: "question",
+        buttons: ["このページを離れる", "キャンセル"],
+        title: "このページを離れますか？",
+        message: '変更内容が保存されない可能性があります。',
+        defaultId: 0,
+        cancelId: 1
+      });
+
+      const leave = (choice === 0);
+      if (leave) {
+        event.preventDefault();
+      }
+    });
   }
 
   // --イベントを削除
@@ -653,6 +670,8 @@ export class TabManager {
     tab.entity.webContents.removeAllListeners("did-finish-loading");
     tab.entity.webContents.removeAllListeners("did-fail-loading");
     tab.entity.webContents.removeAllListeners("context-menu");
+    tab.entity.webContents.removeAllListeners("will-download");
+    tab.entity.webContents.removeAllListeners("will-prevent-unload");
     if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
     tab.listeners["theme-updated"] = undefined;
 

@@ -144,6 +144,8 @@ export class Base {
       this.updateTheme();
       
       this.win.show();
+
+      this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
     });
     this.nav.webContents.on("context-menu", (event, params) => {
       contextMenuController.setContextType("normal"); // 一度リセットする。（順序的にこの位置で問題なし）
