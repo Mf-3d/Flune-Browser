@@ -175,6 +175,9 @@ export class DataManager {
 
     add: (data: History) => {
       const histories = this.histories.getAll();
+      let latestHistory = histories.at(-1);
+      if (latestHistory && latestHistory.url === data.url) return;
+
       histories.push(data);
 
       this.config.set("history", histories);

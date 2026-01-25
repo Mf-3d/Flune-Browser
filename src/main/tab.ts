@@ -567,10 +567,6 @@ export class TabManager {
       this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
 
       // 履歴に追加
-      const histories = this.data.histories.getAll();
-      let latestHistory = histories.at(-1);
-      if (!latestHistory || latestHistory.url === tabUrl) return;
-
       if (tabUrl !== "flune://home") this.data.histories.add({
         title: tab.entity.webContents.getTitle(),
         url: tabUrl,
