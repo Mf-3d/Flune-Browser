@@ -568,7 +568,8 @@ export class TabManager {
 
       // 履歴に追加
       const histories = this.data.histories.getAll();
-      if (histories[histories.length - 1].url === tabUrl) return;
+      let latestHistory = histories.at(-1);
+      if (!latestHistory || latestHistory.url === tabUrl) return;
 
       if (tabUrl !== "flune://home") this.data.histories.add({
         title: tab.entity.webContents.getTitle(),
