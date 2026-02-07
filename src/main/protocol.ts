@@ -97,7 +97,7 @@ export class Protocol {
         default: {
           if (Object.values(this.paths).map(item => item.path)) {
             return net.fetch(
-              pathToFileURL(this.getFilePathByPath(Url) || "")
+              pathToFileURL(this.getFilePathByPath(Url) ?? "")
               .toString(), {
                 headers: { "content-type": "text/html" }
               });

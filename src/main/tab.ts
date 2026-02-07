@@ -592,7 +592,7 @@ export class TabManager {
     tab.entity.webContents.on("context-menu", (event, params) => {
       let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
       if (params.selectionText) type = "text";
-      if (params.linkURL || params.linkText) type = "link";
+      if (params.linkURL ?? params.linkText) type = "link";
       if (params.mediaType === "image") type = "image";
       if (params.mediaType === "audio") type = "audio";
       if (params.mediaType === "video") type = "video";

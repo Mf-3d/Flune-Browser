@@ -47,7 +47,7 @@ export class Settings {
 
   // 設定をタブとして開く
   openSettingsAsTab(tabId?: string) {
-    if (!tabId) tabId = this._tabManager.activeCurrent || "";
+    if (!tabId) tabId = this._tabManager.activeCurrent ?? "";
     const tab = this._tabManager.getTabById(tabId);
 
     if (!tab) {
@@ -151,7 +151,7 @@ export class Settings {
 
   // プリロードが追加されているか
   isPreloadAttached(tabId?: string) {
-    if (!tabId) tabId = this._tabManager.activeCurrent || "";
+    if (!tabId) tabId = this._tabManager.activeCurrent ?? "";
     const tab = this._tabManager.getTabById(tabId);
 
     if (!tab) {
@@ -165,7 +165,7 @@ export class Settings {
   }
 
   closeSettings(tabId?: string) {
-    if (!tabId) tabId = this._tabManager.activeCurrent || "";
+    if (!tabId) tabId = this._tabManager.activeCurrent ?? "";
     const tab = this._tabManager.getTabById(tabId);
 
     if (!tab) {

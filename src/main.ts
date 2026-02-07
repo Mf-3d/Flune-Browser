@@ -68,7 +68,7 @@ function log(message: string) {
 }
 
 process.on("uncaughtException", (err) => {
-  log(`UNCAUGHT: ${err.stack || err.message}`);
+  log(`UNCAUGHT: ${err.stack ?? err.message}`);
 });
 
 app.on("render-process-gone", (event, webContents, details) => {

@@ -64,7 +64,7 @@ export class Base {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `Flune-Browser ${(packageJson.version || "3")
+      title: `Flune-Browser ${(packageJson.version ?? "3")
         .replace("-beta.", " Beta ")
         .replace("-dev.", " Dev ")
         }`,
@@ -162,7 +162,7 @@ export class Base {
 
       let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
       if (params.selectionText) type = "text";
-      if (params.linkURL || params.linkText) type = "link";
+      if (params.linkURL ?? params.linkText) type = "link";
       if (params.mediaType === "image") type = "image";
       if (params.mediaType === "audio") type = "audio";
       if (params.mediaType === "video") type = "video";
