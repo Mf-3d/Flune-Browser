@@ -54,7 +54,7 @@ export class Protocol {
        * @type {string} File path.
        * @example `".../foo/bar.html"`
        */
-      filePath: string
+      filePath?: string
     },
   } = Object.fromEntries(Object.entries(this.pathToServe).map(([key, value]) => [
     key,
