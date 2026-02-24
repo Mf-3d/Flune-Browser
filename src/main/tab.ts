@@ -294,7 +294,7 @@ export class TabManager {
       id: newTab.id,
       title: newTab.title,
       active: newTab.active,
-      beforeTabId: options.position ? this.tabs[options.position - 1].id : null
+      beforeTabId: options.position ? this.tabs.at(options.position - 1)?.id : null
     });
 
     entity.webContents.once("did-finish-load", () => {
@@ -386,7 +386,9 @@ export class TabManager {
     }
 
     const [movedTab] = this.tabs.splice(fromIndex, 1);
-    this.tabs.splice(toIndex, 0, movedTab);
+    
+    if (movedTab) this.tabs.splice(toIndex, 0, movedTab);
+    else throw new Error("Moved tab does not exist.");
 
     // レンダラーに反映する必要がない
   }
