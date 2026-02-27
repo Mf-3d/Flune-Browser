@@ -19,6 +19,8 @@ import Event from "./lib/event";
 import { ContextMenuController } from "./contextMenuController";
 import * as packageJson from "../../package.json";
 import { validateSender } from "./lib/ipc";
+import { BookmarkService } from "./bookmark/service";
+import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
 
 const contextMenuController = new ContextMenuController();
 
@@ -49,12 +51,15 @@ export class Base {
   readonly contextMenuManager: ContextMenuManager;
   readonly optionMenuManager: OptionMenuManager;
 
-  constructor(bounds?: {
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  }) {
+  constructor(
+    private readonly bookmarkService: BookmarkService,
+    bounds?: {
+      width: number;
+      height: number;
+      x: number;
+      y: number;
+    }
+  ) {
     if (bounds) this.bounds = bounds;
 
     this.win = new BaseWindow({
@@ -260,6 +265,21 @@ export class Base {
       });
 
       if (choice === 0) app.quit();
+    });
+
+    if (this.tabManager) registerBookmarkHandler(this.tabManager, this.data);
+  }
+
+  updateNavigationState() {
+    const tab = this.tabManager?.getActiveTabCurrent();
+    if (!tab) return;
+
+    const url = tab.entity.webContents.getURL();
+    const isBookmarked = this.bookmarkService.isBookmarked(url);
+
+    this.nav.webContents.send("nav.change-state", {
+      url,
+      isBookmarked
     });
   }
 

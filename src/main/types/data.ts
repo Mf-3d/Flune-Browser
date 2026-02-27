@@ -33,3 +33,13 @@ export type Download = {
 };
 
 export type FolderId = `${string}-${string}-${string}-${string}` | "root";
+
+export type BookmarkInput = {
+  url: string;
+  title: string;
+  tag?: string[];
+  /**
+   * Specify the ID of "root" or parent folder.
+   */
+  parentId?: FolderId;
+};

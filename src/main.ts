@@ -6,19 +6,25 @@ import { Protocol } from "./main/protocol";
 import Event from "./main/lib/event";
 import path from "node:path";
 import fs from "fs";
+import { BookmarkService } from "./main/bookmark/service";
+import { DataManager } from "./main/lib/data";
+import { registerBookmarkHandler } from "./main/ipc/bookmarkHandler";
 
 const LOG_DIR = app.getPath("userData");
 const LOG_FILE = path.join(LOG_DIR, "app-crash.log");
 
 let base: Base | null | undefined;
 let protocol: Protocol | null | undefined;
-let event = new Event();
+const data = new DataManager;
+const event = new Event();
+
+const bookmarkService = new BookmarkService(data);
 
 app.setName("Flune-Browser");
 
 // 新規ウィンドウ
 function nw() {
-  base = new Base();
+  base = new Base(bookmarkService);
   event.once("navigation-loaded", () => {
     base?.tabManager?.newTab();
   });

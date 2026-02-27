@@ -139,34 +139,6 @@ export class TabManager {
       });
     });
 
-    // ナビゲーションから
-    ipcMain.handle("nav.toggle-bookmark", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      this.getActiveTabCurrent()?.entity.webContents.send("nav.toggle-bookmark");
-    });
-    // タブから
-    ipcMain.handle("tab.toggle-bookmark", (event, data: {
-      title: string,
-      url: string,
-    }) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      if (!this.data.bookmarks.existByUrl(data.url)) {
-        this.data.bookmarks.add({
-          title: data.title,
-          url: data.url,
-          tag: [],
-          parentId: "root", // デフォルトはルート
-        });
-      } else {
-        const bookmark = this.data.bookmarks.getByUrl(data.url);
-
-        if (bookmark) this.data.bookmarks.remove(bookmark.id);
-      }
-    });
     ipcMain.handle("tab.focus", (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
