@@ -12,7 +12,6 @@ import { DataManager, FolderId } from "../lib/data";
 const OPTION_MENU_PATH = path.join(__dirname, "..", "..", "renderer", "menu", "index.html");
 export class OptionMenuManager {
   readonly base: Base;
-  readonly data: DataManager;
   readonly overlay: WebContentsView;
   readonly fadeTime: number = 400;
   /**
@@ -33,10 +32,12 @@ export class OptionMenuManager {
       y: 0
     };
 
-  constructor(base: Base, bounds?: { width: number; height: number; x: number; y: number }) {
+  constructor(
+    base: Base,
+    private readonly data: DataManager,
+    bounds?: { width: number; height: number; x: number; y: number }) {
     if (bounds) this.bounds = bounds;
     this.base = base;
-    this.data = new DataManager();
 
     this.overlay = new WebContentsView({
       webPreferences: {

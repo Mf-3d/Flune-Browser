@@ -39,7 +39,6 @@ export class TabManager {
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
   private readonly base: Base;
-  private readonly data: DataManager;
   tabs: Tab[] = [];
   private bounds: {
     width: number;
@@ -54,9 +53,12 @@ export class TabManager {
     };
   activeCurrent?: string; // 現在有効化されているタブのID
 
-  constructor(base: Base, bounds?: { width: number; height: number; x: number; y: number }) {
+  constructor(
+    base: Base,
+    private readonly data: DataManager,
+    bounds?: { width: number; height: number; x: number; y: number }
+  ) {
     this.base = base;
-    this.data = new DataManager;
     this.settings = new Settings(this);
     this.event = new Event();
     this.contextMenuManager = new ContextMenuManager(this.base);

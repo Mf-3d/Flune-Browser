@@ -21,6 +21,7 @@ import * as packageJson from "../../package.json";
 import { validateSender } from "./lib/ipc";
 import { BookmarkService } from "./bookmark/service";
 import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
+import { DataManager } from "./lib/data";
 
 const contextMenuController = new ContextMenuController();
 
@@ -45,7 +46,7 @@ export class Base {
       width: 800,
       height: 600
     };
-  tabManager?: TabManager;
+  tabManager: TabManager;
   optionsMenu: Electron.Menu;
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
@@ -53,6 +54,7 @@ export class Base {
 
   constructor(
     private readonly bookmarkService: BookmarkService,
+    private readonly data: DataManager,
     bounds?: {
       width: number;
       height: number;
@@ -84,20 +86,34 @@ export class Base {
       icon: path.join(__dirname, "..", "assets", "image", "icon.png")
     });
 
+    this.tabManager = new TabManager(
+      this,
+      this.data,
+      {
+        width: this.bounds.width,
+        height: this.bounds.height - this.viewY,
+        x: 0,
+        y: this.viewY
+      }
+    );
+
     if (process.platform === "darwin") this.win.setWindowButtonPosition({
       x: 10,
       y: 8
     });
 
     Menu.setApplicationMenu(buildApplicationMenu(this));
-    this.optionsMenu = buildOptionsMenu(this);
+    this.optionsMenu = buildOptionsMenu(this, this.data);
     this.contextMenuManager = new ContextMenuManager(this);
-    this.optionMenuManager = new OptionMenuManager(this, {
-      width: this.bounds.width,
-      height: this.bounds.height - this.viewY,
-      x: 0,
-      y: this.viewY
-    });
+    this.optionMenuManager = new OptionMenuManager(this,
+      this.data,
+      {
+        width: this.bounds.width,
+        height: this.bounds.height - this.viewY,
+        x: 0,
+        y: this.viewY
+      }
+    );
 
     this.nav = new WebContentsView({
       webPreferences: {
@@ -132,13 +148,6 @@ export class Base {
     this.win.contentView.addChildView(this.nav);
 
     this.nav.webContents.once("did-finish-load", () => {
-      this.tabManager = new TabManager(this, {
-        width: this.bounds.width,
-        height: this.bounds.height - this.viewY,
-        x: 0,
-        y: this.viewY
-      });
-
       if (process.platform === "darwin") this.nav.webContents.executeJavaScript(`
         document.head.innerHTML += '<link rel="stylesheet" href="./style/navigation-mac.css" />';
         console.info("mac");
@@ -267,7 +276,7 @@ export class Base {
       if (choice === 0) app.quit();
     });
 
-    if (this.tabManager) registerBookmarkHandler(this.tabManager, this.data);
+    registerBookmarkHandler(this.tabManager, this.data);
   }
 
   updateNavigationState() {

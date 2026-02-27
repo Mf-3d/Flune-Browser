@@ -1,20 +1,14 @@
-import {
-  app,
-  clipboard,
-  Menu
-} from "electron";
+import { Menu } from "electron";
 
 import { Base } from "./base-window";
 import { DataManager } from "./lib/data";
 
 
-const data = new DataManager;
-
 export { buildApplicationMenu } from "./menu/application-menu";
 export { ContextMenuManager, buildTabContextMenu } from "./menu/context-menu";
 export { OptionMenuManager } from "./menu/option-menu";
 
-export function buildOptionsMenu(base: Base): Electron.Menu {
+export function buildOptionsMenu(base: Base, data: DataManager): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: "新しいタブ",

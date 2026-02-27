@@ -24,7 +24,7 @@ app.setName("Flune-Browser");
 
 // 新規ウィンドウ
 function nw() {
-  base = new Base(bookmarkService);
+  base = new Base(bookmarkService, data);
   event.once("navigation-loaded", () => {
     base?.tabManager?.newTab();
   });
