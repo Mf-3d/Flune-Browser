@@ -15,6 +15,7 @@ export class Protocol {
   private readonly pathToServe: {
     [path: string]: string
   } = {
+      navigation: path.join(__dirname, "..", "renderer", "navigation.html"),
       home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
       settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
       version: path.join(__dirname, "..", "renderer", "browser", "version.html"),

@@ -13,6 +13,7 @@ import Event from "./lib/event";
 import { DataManager } from "./lib/data";
 import { ContextMenuController } from "./contextMenuController";
 import { validateSender } from "./lib/ipc";
+import { resolveView } from "../shared/resolveView";
 
 export type Tab = {
   id: string;
@@ -30,13 +31,12 @@ const errCodes = {
 }
 
 // 内部ページのパス
-const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}` : "flune://";
-const HOME_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/home.html` : "flune://home";
-const ERROR_PAGE_DIRECTORY = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/` : "flune://error";
-const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
-const ERROR_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/error.html` : "flune://error/error";
-const ERROR_NOTFOUND_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/server-notfound.html` : "flune://error/server-notfound.html";
-
+const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? process.env.ELECTRON_RENDERER_URL : "flune://";
+const HOME_URL = resolveView("home");
+const ERROR_PAGE_DIRECTORY = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? path.join(process.env.ELECTRON_RENDERER_URL, "browser", "error") : "flune://error";
+const SETTINGS_URL = resolveView("settings");
+const ERROR_URL = resolveView("error/error");
+const ERROR_NOTFOUND_URL = resolveView("error/server-notfound");
 const contextMenuController = new ContextMenuController();
 
 // -タブ管理

@@ -7,10 +7,10 @@ import { app, ipcMain } from "electron";
 
 import Event from "./lib/event";
 import { validateSender } from "./lib/ipc";
+import { resolveView } from "../shared/resolveView";
 
-console.log(process.env.ELECTRON_RENDERER_URL)
 // 内部ページのパス
-const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
+const SETTINGS_URL = resolveView("settings");
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
 const SCHEMA_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "schema", "config-3.json");

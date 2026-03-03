@@ -23,9 +23,10 @@ import { BookmarkService } from "./bookmark/service";
 import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
 import { DataManager } from "./lib/data";
 import { IPC_NOTIFY } from "../shared/ipc/channels";
+import { resolveView } from "../shared/resolveView";
 
-const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
-const VERSION_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/version.html` : "flune://version";
+const SETTINGS_URL = resolveView("settings");
+const VERSION_URL = resolveView("version");
 
 const contextMenuController = new ContextMenuController();
 
@@ -130,7 +131,7 @@ export class Base {
       x: 0,
       y: 0
     });
-    this.nav.webContents.loadFile(path.join(__dirname, "..", "renderer", "navigation.html"));
+    this.nav.webContents.loadURL(resolveView("navigation"));
 
     this.win.on('resize', () => {
       if (!this.win || !this.nav) return;
