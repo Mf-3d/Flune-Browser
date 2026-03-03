@@ -7,10 +7,10 @@ import { ipcMain } from "electron";
 
 import Event from "@/main/lib/event";
 import { validateSender } from "@/main/ipc/validateSender";
-import { resolveView } from "@/shared/resolveView";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 // 内部ページのパス
-const SETTINGS_URL = resolveView("settings");
+const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
 const SCHEMA_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "schema", "config-3.json");

@@ -8,9 +8,9 @@ import path from "node:path";
 import { Base } from "@/main/base-window";
 import { validateSender } from "@/main/ipc/validateSender";
 import { DataManager, FolderId } from "@/main/lib/data";
-import { resolveView } from "@/shared/resolveView";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
-const OPTION_MENU_PATH = resolveView("menu/top");
+const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 export class OptionMenuManager {
   readonly base: Base;
   readonly overlay: WebContentsView;

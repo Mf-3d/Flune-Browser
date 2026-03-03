@@ -23,10 +23,10 @@ import { BookmarkService } from "@/main/bookmark/service";
 import { registerBookmarkHandler } from "@/main/ipc/bookmarkHandler";
 import { DataManager } from "@/main/lib/data";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { resolveView } from "@/shared/resolveView";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
-const SETTINGS_URL = resolveView("settings");
-const VERSION_URL = resolveView("version");
+const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
+const VERSION_URL = resolveView(ROUTE_MAP.version);
 
 const contextMenuController = new ContextMenuController();
 

@@ -1,27 +1,37 @@
-import { app } from "electron";
-
-const ROUTE_MAP: Record<string, string> = {
+export const ROUTE_MAP = {
   navigation: "navigation.html",
   home: "browser/home.html",
   settings: "browser/settings.html",
   version: "browser/version.html",
-  "error/error": "browser/error/error.html",
-  "error/server-notfound": "browser/error/server-notfound.html",
-  "menu/top": "menu/index.html",
-  "menu/bookmarks": "menu/bookmarks.html",
+  error: {
+    generic: "browser/error/error.html",
+    notFound: "browser/error/server-notfound.html",
+  },
+  menu: {
+    generic: "menu/index.html",
+    bookmarks: "menu/bookmarks.html",
+  }
 } as const;
 
-// type RouteMap =
-//   typeof ROUTE_MAP[keyof typeof ROUTE_MAP];
+export type RouteKey = keyof typeof ROUTE_MAP;
 
-export function resolveView(route: string): string {
-  const filePath = ROUTE_MAP[route];
+// 開発サーバー上とアプリ内プロトコルのパスが違うため解決する必要がある
 
-  if (!filePath) throw new Error("Unknown route");
+/**
+ * @param path Route of View to resolve to
+ * @returns Resolved Path
+ * 
+ * ```js
+ * resolveView(ROUTE_MAP.menu.generic);
+ * // -> "flune://menu/index.html" or "http://localhost:0000/menu/index.html"
+ * ```
+ */
+export function resolveView(path: string) {
+  const isDev = !!process.env.ELECTRON_RENDERER_URL;
 
-  return (
-    (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ?
-    `${process.env.ELECTRON_RENDERER_URL}/${filePath}` :
-    `flune://${route}`
-  );
+  if (isDev) {
+    return new URL(path, process.env.ELECTRON_RENDERER_URL).toString();
+  }
+
+  return `flune://${path}`;
 }

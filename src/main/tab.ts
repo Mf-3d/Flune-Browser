@@ -13,7 +13,7 @@ import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
 import { ContextMenuController } from "@/main/contextMenuController";
 import { validateSender } from "@/main/ipc/validateSender";
-import { resolveView } from "@/shared/resolveView";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 export type Tab = {
   id: string;
@@ -32,11 +32,11 @@ const errCodes = {
 
 // 内部ページのパス
 const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? process.env.ELECTRON_RENDERER_URL : "flune://";
-const HOME_URL = resolveView("home");
+const HOME_URL = resolveView(ROUTE_MAP.home);
 const ERROR_PAGE_DIRECTORY = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? path.join(process.env.ELECTRON_RENDERER_URL, "browser", "error") : "flune://error";
-const SETTINGS_URL = resolveView("settings");
-const ERROR_URL = resolveView("error/error");
-const ERROR_NOTFOUND_URL = resolveView("error/server-notfound");
+const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
+const ERROR_URL = resolveView(ROUTE_MAP.error.generic);
+const ERROR_NOTFOUND_URL = resolveView(ROUTE_MAP.error.notFound);
 const contextMenuController = new ContextMenuController();
 
 // -タブ管理
