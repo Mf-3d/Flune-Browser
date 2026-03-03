@@ -7,6 +7,8 @@ const ROUTE_MAP: Record<string, string> = {
   version: "browser/version.html",
   "error/error": "browser/error/error.html",
   "error/server-notfound": "browser/error/server-notfound.html",
+  "menu/top": "menu/index.html",
+  "menu/bookmarks": "menu/bookmarks.html",
 } as const;
 
 // type RouteMap =

@@ -23,6 +23,7 @@ export class Protocol {
       style: path.join(__dirname, "..", "renderer", "style"),
       assets: path.join(__dirname, "..", "..", "assets"),
       error: path.join(__dirname, "..", "renderer", "browser", "error"),
+      menu: path.join(__dirname, "..", "renderer", "menu"),
       // "foo.bar": path.join(__dirname, "..", "renderer", "browser", "foo", "bar"),
     };
 
@@ -94,6 +95,9 @@ export class Protocol {
         }
         case Url.startsWith("/error") && Url: {
           return net.fetch(pathToFileURL(this.pathToServe.error + Url.slice(6)).toString());
+        }
+        case Url.startsWith("/menu") && Url: {
+          return net.fetch(pathToFileURL(this.pathToServe.menu + Url.slice(5)).toString());
         }
         default: {
           if (Object.values(this.paths).map(item => item.path)) {

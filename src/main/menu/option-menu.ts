@@ -8,8 +8,9 @@ import path from "node:path";
 import { Base } from "@/main/base-window";
 import { validateSender } from "@/main/ipc/validateSender";
 import { DataManager, FolderId } from "@/main/lib/data";
+import { resolveView } from "@/shared/resolveView";
 
-const OPTION_MENU_PATH = path.join(__dirname, "..", "..", "renderer", "menu", "index.html");
+const OPTION_MENU_PATH = resolveView("menu/top");
 export class OptionMenuManager {
   readonly base: Base;
   readonly overlay: WebContentsView;
@@ -41,7 +42,7 @@ export class OptionMenuManager {
 
     this.overlay = new WebContentsView({
       webPreferences: {
-        preload: path.join(__dirname, "..", "..", "preload", "menu.js"),
+        preload: path.join(__dirname, "..", "preload", "menu.js"),
         contextIsolation: true,
         transparent: true
       }
@@ -67,7 +68,7 @@ export class OptionMenuManager {
     });
 
     if (!app.isPackaged) this.overlay.webContents.openDevTools();
-    this.overlay.webContents.loadFile(OPTION_MENU_PATH);
+    this.overlay.webContents.loadURL(OPTION_MENU_PATH);
 
     ipcMain.handle("menu.close", (event) => {
       if (!event.senderFrame) return null;
@@ -107,7 +108,7 @@ export class OptionMenuManager {
       if (this.isVisible()) return;
     }
 
-    this.overlay.webContents.loadFile(OPTION_MENU_PATH);
+    this.overlay.webContents.loadURL(OPTION_MENU_PATH);
     this.base.win.contentView.addChildView(this.overlay, -1);
     this.showing = true;
     this.overlay.setVisible(true);
