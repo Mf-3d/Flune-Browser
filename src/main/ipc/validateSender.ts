@@ -14,6 +14,10 @@ export function validateSender(frame: WebFrameMain): boolean {
                .toLowerCase();
 
   // 既存の URL パーサと allowlist を使用して URL のプロトコルを評価します
-  if (frameUrl.protocol === "file:" && frameUrl.pathname.startsWith(`/${appDir}`)) return true;
-  return frameUrl.protocol === "flune:";
+  if (frameUrl.protocol === "file:" && frameUrl.pathname.startsWith(`/${appDir}`)) return true; // 古いかも
+
+  if (!app.isPackaged && process.env.ELECTRON_RENDERER_URL)
+    return frameUrl.toString().includes(process.env.ELECTRON_RENDERER_URL);
+  else
+    return frameUrl.protocol === "flune:";
 }
