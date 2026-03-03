@@ -2,7 +2,7 @@
   "name": "flune-browser",
   "version": "3.0.0",
   "description": "Newer and more challenging than anyone else.",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "playwright test",
     "start": "npm run build & electron .",
@@ -40,11 +40,12 @@
     "productName": "Flune-Browser",
     "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}",
     "files": [
-      "src/**/*",
-      "!src/**/*.ts"
+      "assets/**/*",
+      "dist/**/*"
     ],
     "directories": {
-      "output": "dist"
+      "output": "artifacts",
+      "buildResources": "assets"
     },
     "publish": {
       "provider": "github",
