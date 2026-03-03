@@ -38,7 +38,7 @@ window.addEventListener("load", () => {
     element.draggable = true;
     element.setAttribute("data-id", tab.id);
     element.innerHTML = `
-    <img src="" class="favicon" onerror="this.src='/assets/image/tab-no-favicon.png';"/>
+    <img src="" class="favicon" onerror="this.src='/image/tab-no-favicon.png';"/>
     <a href="#" class="loading disabled">
       <i data-lucide="loader-circle"></i>
     </a>

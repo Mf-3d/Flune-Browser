@@ -55,7 +55,7 @@
       "releaseType": "draft"
     },
     "win": {
-      "icon": "./src/assets/image/icon.png",
+      "icon": "./assets/image/icon.png",
       "target": [
         "nsis",
         "zip"
@@ -68,7 +68,7 @@
       "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
     },
     "mac": {
-      "icon": "./src/assets/image/icon.icns",
+      "icon": "./assets/image/icon.icns",
       "category": "public.app-category.utilities",
       "target": {
         "target": "dmg",
@@ -77,7 +77,7 @@
       "identity": null
     },
     "linux": {
-      "icon": "./src/assets/image/icon.png",
+      "icon": "./assets/image/icon.png",
       "target": [
         "AppImage"
       ],
