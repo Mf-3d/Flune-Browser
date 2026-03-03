@@ -20,7 +20,7 @@ export class Protocol {
       version: path.join(__dirname, "..", "renderer", "browser", "version.html"),
       script: path.join(__dirname, "..", "renderer", "script"),
       style: path.join(__dirname, "..", "renderer", "style"),
-      assets: path.join(__dirname, "..", "assets"),
+      assets: path.join(__dirname, "..", "..", "assets"),
       error: path.join(__dirname, "..", "renderer", "browser", "error"),
       // "foo.bar": path.join(__dirname, "..", "renderer", "browser", "foo", "bar"),
     };

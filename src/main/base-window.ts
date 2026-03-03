@@ -84,7 +84,7 @@ export class Base {
       },
       show: false,
       // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
-      icon: path.join(__dirname, "..", "assets", "image", "icon.png")
+      icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png")
     });
 
     this.tabManager = new TabManager(

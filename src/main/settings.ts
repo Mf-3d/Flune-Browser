@@ -11,9 +11,9 @@ import { validateSender } from "./lib/ipc";
 // 内部ページのパス
 const SETTING_URL = "flune://settings";
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "assets", "store", "default", "config-3.json");
-const SCHEMA_CONFIG_PATH = path.join(__dirname, "..", "assets", "store", "schema", "config-3.json");
-const DEFAULT_DATA_PATH = path.join(__dirname, "..", "assets", "store", "default", "data-3.json");
+const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
+const SCHEMA_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "schema", "config-3.json");
+const DEFAULT_DATA_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
 
 export type SearchEngine = {
   id: string;
