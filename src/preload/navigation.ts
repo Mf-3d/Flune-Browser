@@ -1,8 +1,8 @@
-import { app, contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 
 contextBridge.exposeInMainWorld("flune", {
-  baseURL: !app.isPackaged
+  baseURL: !process.argv.includes("--is-packaged=true")
     ? process.env.ELECTRON_RENDERER_URL
     : "flune://",
   newTab: () => {

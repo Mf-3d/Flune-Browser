@@ -122,7 +122,10 @@ export class Base {
 
     this.nav = new WebContentsView({
       webPreferences: {
-        preload: path.join(__dirname, "..", "preload", "navigation.js")
+        preload: path.join(__dirname, "..", "preload", "navigation.js"),
+        additionalArguments: [
+          `--is-packaged=${app.isPackaged}`
+        ]
       }
     });
     this.nav.setBounds({
