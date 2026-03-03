@@ -2,7 +2,7 @@
   "name": "flune-browser",
   "version": "3.0.0",
   "description": "Newer and more challenging than anyone else.",
-  "main": "dist/main.js",
+  "main": "out/main/main.js",
   "scripts": {
     "test": "playwright test",
     "start": "electron-vite preview",
