@@ -6,7 +6,7 @@ import { TabManager } from "./tab";
 import { app, ipcMain } from "electron";
 
 import Event from "./lib/event";
-import { validateSender } from "./lib/ipc";
+import { validateSender } from "./ipc/validateSender";
 import { resolveView } from "../shared/resolveView";
 
 // 内部ページのパス

@@ -6,7 +6,7 @@ import {
 import path from "node:path";
 
 import { Base } from "../base-window";
-import { validateSender } from "../lib/ipc";
+import { validateSender } from "../ipc/validateSender";
 import { DataManager, FolderId } from "../lib/data";
 
 const OPTION_MENU_PATH = path.join(__dirname, "..", "..", "renderer", "menu", "index.html");

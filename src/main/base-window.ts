@@ -18,7 +18,7 @@ import theme from "./lib/theme";
 import Event from "./lib/event";
 import { ContextMenuController } from "./contextMenuController";
 import * as packageJson from "../../package.json";
-import { validateSender } from "./lib/ipc";
+import { validateSender } from "./ipc/validateSender";
 import { BookmarkService } from "./bookmark/service";
 import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
 import { DataManager } from "./lib/data";

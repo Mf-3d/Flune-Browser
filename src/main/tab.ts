@@ -12,7 +12,7 @@ import theme from "./lib/theme";
 import Event from "./lib/event";
 import { DataManager } from "./lib/data";
 import { ContextMenuController } from "./contextMenuController";
-import { validateSender } from "./lib/ipc";
+import { validateSender } from "./ipc/validateSender";
 import { resolveView } from "../shared/resolveView";
 
 export type Tab = {
