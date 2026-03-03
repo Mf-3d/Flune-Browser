@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 
 contextBridge.exposeInMainWorld("flune", {
   newTab: () => {
@@ -35,7 +36,7 @@ contextBridge.exposeInMainWorld("flune", {
     ipcRenderer.invoke("flune.update-symbol-color", color); // シンボルカラーを変更する
   },
   toggleBookmark: () => {
-    ipcRenderer.invoke("nav.toggle-bookmark"); // 開いているタブをブックマークに追加または削除する
+    ipcRenderer.invoke(IPC_INVOKE.BOOKMARK_TOGGLE); // 開いているタブをブックマークに追加または削除する
   },
   toggleTabContextMenu: (id: string) => {
     ipcRenderer.invoke("tab.toggle-context-menu", id);
@@ -47,5 +48,9 @@ contextBridge.exposeInMainWorld("flune", {
     ipcRenderer.invoke("tab.focus", id); // 開いているタブにフォーカスする
   },
 
+  onStateUpdated: (callback: Function) => ipcRenderer.on(
+    IPC_NOTIFY.NAVIGATION_STATE,
+    (event, state) => callback(event, state)
+  ),
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

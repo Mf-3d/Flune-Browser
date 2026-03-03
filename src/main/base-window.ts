@@ -22,6 +22,7 @@ import { validateSender } from "./lib/ipc";
 import { BookmarkService } from "./bookmark/service";
 import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
 import { DataManager } from "./lib/data";
+import { IPC_NOTIFY } from "../shared/ipc/channels";
 
 const contextMenuController = new ContextMenuController();
 
@@ -156,7 +157,7 @@ export class Base {
       this.event.send("navigation-loaded");
 
       this.updateTheme();
-      
+
       this.win.show();
 
       this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
@@ -268,7 +269,7 @@ export class Base {
         type: "question",
         message: "本当に終了しますか？",
         detail: `${this.tabManager?.tabs.length}個のタブを閉じます。`,
-        buttons: [ "終了する", "キャンセル" ],
+        buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
       });
@@ -286,7 +287,7 @@ export class Base {
     const url = tab.entity.webContents.getURL();
     const isBookmarked = this.bookmarkService.isBookmarked(url);
 
-    this.nav.webContents.send("nav.change-state", {
+    this.nav.webContents.send(IPC_NOTIFY.NAVIGATION_STATE, {
       url,
       isBookmarked
     });

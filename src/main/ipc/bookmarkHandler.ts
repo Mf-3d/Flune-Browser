@@ -3,10 +3,11 @@ import { ipcMain } from "electron";
 import { validateSender } from "../lib/ipc";
 import { TabManager } from "../tab";
 import { DataManager } from "../lib/data";
+import { IPC_INVOKE } from "../../shared/ipc/channels";
 
 export function registerBookmarkHandler(tabManager: TabManager, data: DataManager) {
   try {
-    ipcMain.handle("nav.toggle-bookmark", (event) => {
+    ipcMain.handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
       if (!event.senderFrame) throw new Error;
       if (!validateSender(event.senderFrame)) throw new Error;
 
@@ -27,11 +28,11 @@ export function registerBookmarkHandler(tabManager: TabManager, data: DataManage
         const bookmark = data.bookmarks.getByUrl(tabURL);
 
         if (!bookmark) throw new Error;
-          
+
         data.bookmarks.remove(bookmark.id);
       }
     });
   } catch (err) {
     console.error("Failed to register bookmarkHandler:", err); // ロガーはまだ入れていないので仮
-  } 
+  }
 }

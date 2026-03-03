@@ -14,18 +14,18 @@ window.addEventListener("load", () => {
     visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
   });
 
-  flune.on("nav.change-state", (event, state, value) => {
-    switch (state) {
+  flune.onStateUpdated((event, id, state) => {
+    switch (id) {
       case "can-go-back":
-        if (value) document.querySelector(".go-back").classList.remove("disabled");
+        if (state) document.querySelector(".go-back").classList.remove("disabled");
         else document.querySelector(".go-back").classList.add("disabled");
         break;
       case "can-go-forward":
-        if (value) document.querySelector(".go-forward").classList.remove("disabled");
+        if (state) document.querySelector(".go-forward").classList.remove("disabled");
         else document.querySelector(".go-forward").classList.add("disabled");
         break;
       case "is-bookmarked":
-        if (value) document.querySelector("#bookmark").classList.add("active");
+        if (state) document.querySelector("#bookmark").classList.add("active");
         else document.querySelector("#bookmark").classList.remove("active");
         break;
     }
