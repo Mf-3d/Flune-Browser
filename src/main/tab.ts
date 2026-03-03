@@ -1,5 +1,6 @@
-import * as path from "node:path";
+import path from "node:path";
 import {
+  app,
   dialog,
   WebContentsView,
   ipcMain
@@ -29,7 +30,12 @@ const errCodes = {
 }
 
 // 内部ページのパス
-const HOME_URL = "flune://home";
+const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}` : "flune://";
+const HOME_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/home.html` : "flune://home";
+const ERROR_PAGE_DIRECTORY = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/` : "flune://error";
+const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
+const ERROR_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/error.html` : "flune://error/error";
+const ERROR_NOTFOUND_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/error/server-notfound.html` : "flune://error/server-notfound.html";
 
 const contextMenuController = new ContextMenuController();
 
@@ -272,7 +278,7 @@ export class TabManager {
     });
 
     entity.webContents.once("did-finish-load", () => {
-      if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
+      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", url);
     });
 
     // 必要ならタブをアクティブ化
@@ -347,7 +353,7 @@ export class TabManager {
     this.base.send("nav.change-state", "can-go-forward", activeTab.entity.webContents.navigationHistory.canGoForward());
     this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()));
     const activeTabUrl = activeTab.entity.webContents.getURL();
-    if (!activeTabUrl.startsWith("flune://error")) this.base.send("nav.set-word", activeTabUrl);
+    if (!activeTabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", activeTabUrl);
 
     return activeTab;
   }
@@ -436,7 +442,7 @@ export class TabManager {
 
     if (URL.canParse(url)) {
       tab.entity.webContents.loadURL(url);
-      if (!url.startsWith("flune://error")) this.base.send("nav.set-word", url);
+      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", url);
     } else {
       const searchEngine: SearchEngine | undefined = (this.settings.config.get("searchEngines") as SearchEngine[])
         .find((engine) => engine.id === this.settings.config.get("settings.search.engine"));
@@ -504,7 +510,7 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       this.base.send("tab.change-state", tab.id, "loading", true);
       this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()));
-      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", tab.entity.webContents.getURL());
     });
     // ロードが停止した時
     tab.entity.webContents.on("did-stop-loading", () => {
@@ -512,14 +518,14 @@ export class TabManager {
       this.base.send("nav.change-state", "can-go-back", tab.entity.webContents.navigationHistory.canGoBack());
       this.base.send("nav.change-state", "can-go-forward", tab.entity.webContents.navigationHistory.canGoForward());
       this.base.send("tab.change-state", tab.id, "loading", false);
-      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tab.entity.webContents.getURL());
+      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", tab.entity.webContents.getURL());
       this.base.send("tab.change-state", tab.id, "favicon", "");
       this.base.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
 
       if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
       tab.listeners["theme-updated"] = undefined;
 
-      if (tabUrl.startsWith("flune://")) {
+      if (tabUrl.startsWith(URL_PREFIX)) {
         this.updateTheme(tab.id);
 
         tab.listeners["theme-updated"] = () => {
@@ -538,12 +544,12 @@ export class TabManager {
     // ロードが完了した時
     tab.entity.webContents.on("did-finish-load", () => {
       const tabUrl = tab.entity.webContents.getURL();
-      if (!tabUrl.startsWith("flune://error")) this.base.send("nav.set-word", tabUrl);
-      if (tabUrl === "flune://settings") this.settings.openSettingsAsTab(tab.id);
+      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.send("nav.set-word", tabUrl);
+      if (tabUrl === SETTINGS_URL) this.settings.openSettingsAsTab(tab.id);
       this.base.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
 
       // 履歴に追加
-      if (tabUrl !== "flune://home") this.data.histories.add({
+      if (tabUrl !== HOME_URL) this.data.histories.add({
         title: tab.entity.webContents.getTitle(),
         url: tabUrl,
         date: new Date()
@@ -552,14 +558,14 @@ export class TabManager {
     // ロードが失敗した時
     tab.entity.webContents.on("did-fail-load", (event, errCode) => {
       // 無限ループが発生するのを防ぐ
-      if (tab.entity.webContents.getURL().startsWith("flune://error")) return;
+      if (tab.entity.webContents.getURL().startsWith(ERROR_PAGE_DIRECTORY)) return;
 
       switch (errCode) {
         case (errCodes["server-notfound"]):
-          this.load(tab.id, "flune://error/server-notfound.html");
+          this.load(tab.id, ERROR_NOTFOUND_URL);
           break;
         default:
-          this.load(tab.id, "flune://error/error.html");
+          this.load(tab.id, ERROR_URL);
           console.warn("Undefined error code:", errCode);
           break;
       }

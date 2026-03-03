@@ -5,8 +5,9 @@
   "main": "dist/main.js",
   "scripts": {
     "test": "playwright test",
-    "start": "npm run build & electron .",
-    "build": "tsc",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "prebuild": "electron-vite build",
     "package": "electron-builder --dir",
     "package:win": "electron-builder --win --x64",
     "package:mac": "electron-builder --mac --x64"
@@ -33,7 +34,9 @@
     "@playwright/test": "^1.57.0",
     "electron": "^39.2.7",
     "electron-builder": "^26.4.0",
-    "playwright": "^1.57.0"
+    "electron-vite": "^5.0.0",
+    "playwright": "^1.57.0",
+    "vite": "^7.3.1"
   },
   "build": {
     "appId": "io.github.mf-3d.flune-browser",

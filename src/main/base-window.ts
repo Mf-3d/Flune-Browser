@@ -24,6 +24,9 @@ import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
 import { DataManager } from "./lib/data";
 import { IPC_NOTIFY } from "../shared/ipc/channels";
 
+const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
+const VERSION_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/version.html` : "flune://version";
+
 const contextMenuController = new ContextMenuController();
 
 ipcMain.handle("nav.set-context-type", (event, type) => {
@@ -251,13 +254,13 @@ export class Base {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      this.tabManager?.load(undefined, "flune://settings");
+      this.tabManager?.load(undefined, SETTINGS_URL);
     });
     ipcMain.handle("flune.show-versions-page", (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      this.tabManager?.load(undefined, "flune://version");
+      this.tabManager?.load(undefined, VERSION_URL);
     });
     ipcMain.handle("flune.quit", (event, forced: boolean) => {
       if (!event.senderFrame) return null;

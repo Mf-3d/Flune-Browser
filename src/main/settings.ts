@@ -3,13 +3,14 @@ import fs from "node:fs";
 import Store from "electron-store";
 
 import { TabManager } from "./tab";
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 
 import Event from "./lib/event";
 import { validateSender } from "./lib/ipc";
 
+console.log(process.env.ELECTRON_RENDERER_URL)
 // 内部ページのパス
-const SETTING_URL = "flune://settings";
+const SETTINGS_URL = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/settings.html` : "flune://settings";
 const PRELOAD_PATH = path.join(__dirname, "..", "preload", "settings.js");
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
 const SCHEMA_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "schema", "config-3.json");
@@ -55,7 +56,7 @@ export class Settings {
       return;
     }
 
-    if (tab.entity.webContents.getURL() !== SETTING_URL) this._tabManager.load(tab.id, SETTING_URL);
+    if (tab.entity.webContents.getURL() !== SETTINGS_URL) this._tabManager.load(tab.id, SETTINGS_URL);
 
     this.attachPreload(tab.id);
 
@@ -113,7 +114,7 @@ export class Settings {
     }
 
     // タブが設定を開いていなければ追加しない
-    if (tab.entity.webContents.getURL() !== SETTING_URL) {
+    if (tab.entity.webContents.getURL() !== SETTINGS_URL) {
       console.error("Could not attach preloads: Tab does not open settings.");
       return;
     }
@@ -173,7 +174,7 @@ export class Settings {
       return;
     }
 
-    if (tab.entity.webContents.getURL() === SETTING_URL) return;
+    if (tab.entity.webContents.getURL() === SETTINGS_URL) return;
 
     if (this.isPreloadAttached(tab.id)) this.detachPreload(tab.id);
   }

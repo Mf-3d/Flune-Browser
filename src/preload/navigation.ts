@@ -1,7 +1,10 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { app, contextBridge, ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 
 contextBridge.exposeInMainWorld("flune", {
+  baseURL: !app.isPackaged
+    ? process.env.ELECTRON_RENDERER_URL
+    : "flune://",
   newTab: () => {
     ipcRenderer.invoke("tab.new"); // 新規タブ
   },

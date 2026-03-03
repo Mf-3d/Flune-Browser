@@ -42,7 +42,7 @@ export function registerInputEvents() {
 
     // メイン側から値を代入するように指示される。
     flune.on("nav.set-word", (event, word) => {
-      if(word === "flune://home") word = "";
+      if(word === `${flune.baseURL}home`) word = "";
       console.info("(nav.set-word):", word);
       input.value = word;
     });
