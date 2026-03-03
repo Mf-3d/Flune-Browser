@@ -1,11 +1,10 @@
 import {
   app,
-  clipboard,
   Menu,
   shell
 } from "electron";
 
-import { Base } from "../base-window";
+import { Base } from "@/main/base-window";
 
 export function buildApplicationMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [

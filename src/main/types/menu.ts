@@ -1,4 +1,4 @@
-import { Bookmark, FolderId } from "./data";
+import { Bookmark, FolderId } from "@/main/types/data";
 
 export type MenuNode =
   | {

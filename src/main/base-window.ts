@@ -7,23 +7,23 @@ import {
   dialog,
   app
 } from "electron";
-import { TabManager } from "./tab";
+import { TabManager } from "@/main/tab";
 import {
   ContextMenuManager,
   OptionMenuManager,
   buildApplicationMenu,
   buildOptionsMenu
-} from "./menu";
-import theme from "./lib/theme";
-import Event from "./lib/event";
-import { ContextMenuController } from "./contextMenuController";
-import * as packageJson from "../../package.json";
-import { validateSender } from "./ipc/validateSender";
-import { BookmarkService } from "./bookmark/service";
-import { registerBookmarkHandler } from "./ipc/bookmarkHandler";
-import { DataManager } from "./lib/data";
-import { IPC_NOTIFY } from "../shared/ipc/channels";
-import { resolveView } from "../shared/resolveView";
+} from "@/main/menu";
+import theme from "@/main/lib/theme";
+import Event from "@/main/lib/event";
+import { ContextMenuController } from "@/main/contextMenuController";
+import * as packageJson from "@/../package.json";
+import { validateSender } from "@/main/ipc/validateSender";
+import { BookmarkService } from "@/main/bookmark/service";
+import { registerBookmarkHandler } from "@/main/ipc/bookmarkHandler";
+import { DataManager } from "@/main/lib/data";
+import { IPC_NOTIFY } from "@/shared/ipc/channels";
+import { resolveView } from "@/shared/resolveView";
 
 const SETTINGS_URL = resolveView("settings");
 const VERSION_URL = resolveView("version");

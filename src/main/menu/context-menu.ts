@@ -4,7 +4,7 @@ import {
   Menu
 } from "electron";
 
-import { Base } from "../base-window";
+import { Base } from "@/main/base-window";
 
 export class ContextMenuManager {
   base: Base;

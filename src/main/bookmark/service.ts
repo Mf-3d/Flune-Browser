@@ -1,5 +1,4 @@
-import { DataManager } from "../lib/data";
-import { BookmarkInput } from "../lib/data";
+import { DataManager, BookmarkInput } from "@/main/lib/data";
 
 export class BookmarkService {
   constructor (private readonly data: DataManager) { }

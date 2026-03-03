@@ -1,12 +1,12 @@
 import { Menu } from "electron";
 
-import { Base } from "./base-window";
-import { DataManager } from "./lib/data";
+import { Base } from "@/main/base-window";
+import { DataManager } from "@/main/lib/data";
 
 
-export { buildApplicationMenu } from "./menu/application-menu";
-export { ContextMenuManager, buildTabContextMenu } from "./menu/context-menu";
-export { OptionMenuManager } from "./menu/option-menu";
+export { buildApplicationMenu } from "@/main/menu/application-menu";
+export { ContextMenuManager, buildTabContextMenu } from "@/main/menu/context-menu";
+export { OptionMenuManager } from "@/main/menu/option-menu";
 
 export function buildOptionsMenu(base: Base, data: DataManager): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [

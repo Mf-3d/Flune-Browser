@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
-import { Bookmark, BookmarkFolder, History, Download, FolderId, BookmarkInput } from "../types/data";
+import { Bookmark, BookmarkFolder, History, Download, FolderId, BookmarkInput } from "@/main/types/data";
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
 

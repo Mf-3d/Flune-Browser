@@ -1,9 +1,9 @@
 import { ipcMain } from "electron";
 
-import { validateSender } from "../lib/ipc";
-import { TabManager } from "../tab";
-import { DataManager } from "../lib/data";
-import { IPC_INVOKE } from "../../shared/ipc/channels";
+import { validateSender } from "@/main/ipc/validateSender";
+import { TabManager } from "@/main/tab";
+import { DataManager } from "@/main/lib/data";
+import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 export function registerBookmarkHandler(tabManager: TabManager, data: DataManager) {
   try {

@@ -3,6 +3,11 @@ import path from "path";
 
 export default defineConfig({
   main: {
+    resolve: {
+      alias: {
+        "@": path.resolve("src/"), // 追加
+      },
+    },
     build: {
       lib: {
         entry: "src/main.ts",

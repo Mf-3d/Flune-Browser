@@ -5,15 +5,15 @@ import {
   WebContentsView,
   ipcMain
 } from "electron";
-import { Base } from "./base-window";
-import { buildTabContextMenu, ContextMenuManager } from "./menu";
-import { SearchEngine, Settings } from "./settings";
-import theme from "./lib/theme";
-import Event from "./lib/event";
-import { DataManager } from "./lib/data";
-import { ContextMenuController } from "./contextMenuController";
-import { validateSender } from "./ipc/validateSender";
-import { resolveView } from "../shared/resolveView";
+import { Base } from "@/main/base-window";
+import { buildTabContextMenu, ContextMenuManager } from "@/main/menu";
+import { SearchEngine, Settings } from "@/main/settings";
+import theme from "@/main/lib/theme";
+import Event from "@/main/lib/event";
+import { DataManager } from "@/main/lib/data";
+import { ContextMenuController } from "@/main/contextMenuController";
+import { validateSender } from "@/main/ipc/validateSender";
+import { resolveView } from "@/shared/resolveView";
 
 export type Tab = {
   id: string;

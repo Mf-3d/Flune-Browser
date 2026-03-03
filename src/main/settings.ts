@@ -2,12 +2,12 @@ import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
 
-import { TabManager } from "./tab";
-import { app, ipcMain } from "electron";
+import { TabManager } from "@/main/tab";
+import { ipcMain } from "electron";
 
-import Event from "./lib/event";
-import { validateSender } from "./ipc/validateSender";
-import { resolveView } from "../shared/resolveView";
+import Event from "@/main/lib/event";
+import { validateSender } from "@/main/ipc/validateSender";
+import { resolveView } from "@/shared/resolveView";
 
 // 内部ページのパス
 const SETTINGS_URL = resolveView("settings");
