@@ -4,7 +4,7 @@ import { Protocol } from "@/main/protocol";
 import Event from "@/main/lib/event";
 import { isArchitectureIntel } from "@/main/system/env";
 import { DataManager } from "@/main/lib/data";
-import { WindowManager } from "@/main/window/windowManager";
+import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
 
 type Services = {
