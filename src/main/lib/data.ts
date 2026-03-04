@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
-import { Bookmark, BookmarkFolder, History, Download, FolderId, BookmarkInput } from "@/main/types/data";
+import { Bookmark, BookmarkFolder, History, Download, FolderId, BookmarkInput } from "@/shared/types/data";
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
 
@@ -125,7 +125,7 @@ export class DataManager {
      */
     add: (input: BookmarkInput): Bookmark | null => {
       if (!input.parentId) input.parentId = "root";
-      
+
       if (!this.bookmarks.folders.exist(input.parentId)) {
         console.error("Could not add bookmark: The folder does not exist.");
         return null;
@@ -226,4 +226,4 @@ export class DataManager {
     }
   };
 }
-export * from "../types/data";
+export * from "../../shared/types/data";
