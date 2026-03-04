@@ -31,9 +31,6 @@ export function createViewMenuTemplate(
     {
       label: "ページのソースを表示",
       accelerator: "Ctrl+U",
-      // click: () => {
-      //   this.base.tabManager?.newTab(`view-source:${this.base.tabManager?.getActiveTabCurrent()?.entity.webContents.getURL()}`);
-      // }
       click: actions.viewSource
     },
     {

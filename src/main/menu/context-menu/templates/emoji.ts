@@ -5,9 +5,6 @@ export function createEmojiMenuTemplate(actions: ContextMenuActions): Electron.M
     {
       label: "絵文字",
       accelerator: process.platform === "win32" ? "Super+." : undefined,
-      // click: () => {
-      //   app.showEmojiPanel();
-      // }
       click: actions.showEmojiPanel
     },
   ];

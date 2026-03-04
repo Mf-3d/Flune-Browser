@@ -9,11 +9,6 @@ export function createTextSelectionMenuTemplate(selectionText: string, actions: 
     },
     {
       label: `「${selectionText}」を検索`,
-      // click: () => {
-      //   this.base.tabManager?.newTab(state.params.selectionText, {
-      //     active: true
-      //   })
-      // }
       click: actions.searchSelectionText,
     },
   ];

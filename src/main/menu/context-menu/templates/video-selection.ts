@@ -4,9 +4,6 @@ export function createVideoSelectionMenuTemplate(actions: ContextMenuActions): E
   return [
     {
       label: "ピクチャーインピクチャー",
-      // click: () => {
-      //   this.base.tabManager?.getActiveTabCurrent()?.entity.webContents.executeJavaScript(`(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`);
-      // }
       click: actions.startPip
     },
   ];

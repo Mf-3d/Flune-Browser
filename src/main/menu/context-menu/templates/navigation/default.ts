@@ -5,11 +5,6 @@ export function createNavigationMenuTemplate(actions: ContextMenuActions): Elect
     {
       label: "新しいタブ",
       accelerator: "Ctrl+T",
-      // click: () => {
-      //   this.base.tabManager?.newTab(undefined, {
-      //     active: true
-      //   });
-      // }
       click: actions.newTab
     },
     {
@@ -17,16 +12,10 @@ export function createNavigationMenuTemplate(actions: ContextMenuActions): Elect
     },
     {
       label: "ナビゲーションの開発者ツールを表示",
-      // click: () => {
-      //   this.base.nav.webContents.toggleDevTools();
-      // }
       click: actions.toggleNavigationDevTools
     },
     {
       label: "設定",
-      // click: () => {
-      //   this.base.tabManager?.settings.openSettingsAsTab();
-      // }
       click: actions.openSettings
     },
   ];
