@@ -1,12 +1,12 @@
 import { app, Menu, ContextMenuParams, clipboard } from "electron";
 import { createEmojiMenuTemplate } from "@/main/menu/context-menu/templates/emoji";
 import { Base } from "@/main/window/base-window";
-import { createTextSelectionMenuTemplate } from "../templates/text-selection";
-import { createVideoSelectionMenuTemplate } from "../templates/video-selection";
-import { createEditableSelectionMenuTemplate } from "../templates/editable-selection";
-import { createLinkSelectionMenuTemplate } from "../templates/link-selection";
-import { createNavigationMenuTemplate } from "../templates/navigation/default";
-import { createViewMenuTemplate } from "../templates/view";
+import { createTextSelectionMenuTemplate } from "@/main/menu/context-menu/templates/text-selection";
+import { createVideoSelectionMenuTemplate } from "@/main/menu/context-menu/templates/video-selection";
+import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/templates/editable-selection";
+import { createLinkSelectionMenuTemplate } from "@/main/menu/context-menu/templates/link-selection";
+import { createNavigationMenuTemplate } from "@/main/menu/context-menu/templates/navigation";
+import { createViewMenuTemplate } from "@/main/menu/context-menu/templates/view";
 
 export type ContextMenuActions = {
   showEmojiPanel: () => void,

@@ -1,4 +1,4 @@
-import { ContextMenuActions } from "../controllers/context-menu-controller";
+import { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 export function createEmojiMenuTemplate(actions: ContextMenuActions): Electron.MenuItemConstructorOptions[] {
   return [
