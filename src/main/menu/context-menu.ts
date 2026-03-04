@@ -171,7 +171,7 @@ export class ContextMenuManager {
       {
         label: "ナビゲーションの開発者ツールを表示",
         click: () => {
-          this.base.nav.webContents.toggleDevTools();
+          this.base.navigation.view.webContents.toggleDevTools();
         }
       },
       {

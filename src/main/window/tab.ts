@@ -70,9 +70,7 @@ export class TabManager {
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
-    this.base.win?.on("resize", () => {
-      if (!this.base || !this.base.win) return;
-
+    this.base.win.on("resize", () => {
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
@@ -223,8 +221,8 @@ export class TabManager {
     entity.webContents.setVisualZoomLevelLimits(1, 3);
 
     // 自動でリサイズ
-    this.base.win?.on("resize", () => {
-      if (!this.base || !this.base.win || !entity) return;
+    this.base.win.on("resize", () => {
+      if (!entity) return;
 
       const bounds = this.base.win.getContentBounds();
 
@@ -252,7 +250,7 @@ export class TabManager {
       this.tabs?.push(newTab);
     }
 
-    this.base.win?.contentView.addChildView(newTab.entity);
+    this.base.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
 
@@ -366,7 +364,7 @@ export class TabManager {
     }
 
     const [movedTab] = this.tabs.splice(fromIndex, 1);
-    
+
     if (movedTab) this.tabs.splice(toIndex, 0, movedTab);
     else throw new Error("Moved tab does not exist.");
 

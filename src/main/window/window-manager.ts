@@ -1,12 +1,13 @@
-import { app, Menu, shell } from "electron";
+import { app, shell } from "electron";
 import { Base } from "./base-window";
 import Event from "@/main/lib/event";
 import { DataManager } from "../lib/data";
 import { BookmarkService } from "../bookmark/service";
 import { ContextMenuManager } from "@/main/menu/context-menu";
-import { ContextMenuController } from "@/main/menu/contextMenuController";
+// import { ContextMenuController } from "@/main/menu/contextMenuController";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-import { ApplicationMenuController } from "../menu/application-menu/controllers/application-menu-controller";
+import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
+import { ContextMenuController } from "../menu/context-menu/controllers/context-menu-controller";
 
 export class WindowManager {
   private baseWindow: Base | undefined;
@@ -18,7 +19,7 @@ export class WindowManager {
       this.baseWindow?.tabManager.newTab();
     });
 
-    if (!app.isPackaged) this.baseWindow.nav.webContents.openDevTools({
+    if (!app.isPackaged) this.baseWindow.navigation?.view.webContents.openDevTools({
       mode: "detach"
     });
 
@@ -49,12 +50,21 @@ export class WindowManager {
         mode: "right"
       }),
       focusSearchBar: () => {
-        this.baseWindow?.nav.webContents.focus();
-        this.baseWindow?.nav.webContents.send("flune.focus-search-bar");
+        this.baseWindow?.navigation?.view.webContents.focus();
+        this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
       },
       reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${app.name}/issues/new`)
     });
 
     applicationMenuController.setup();
+  }
+
+  private setupContextMenu() {
+    if (!this.baseWindow || !this.baseWindow.navigation) return;
+
+    const contextMenuController = new ContextMenuController(this.baseWindow);
+    contextMenuController.register(this.baseWindow.navigation.view.webContents, {
+      area: "navigation"
+    });
   }
 }

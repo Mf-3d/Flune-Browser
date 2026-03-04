@@ -11,6 +11,8 @@ export const IPC_INVOKE = {
 export const IPC_EVENTS = {} as const;
 
 export const IPC_NOTIFY = {
+  NAVIGATION_INIT: "navigation:init",
+  NAVIGATION_APPLY_THEME: "navigation:apply-theme",
   NAVIGATION_STATE: "navigation:state",
   TAB_CREATED: "tab:created",
   TAB_REMOVED: "tab:removed",

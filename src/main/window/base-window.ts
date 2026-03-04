@@ -21,6 +21,8 @@ import { registerBookmarkHandler } from "@/main/ipc/bookmarkHandler";
 import { DataManager } from "@/main/lib/data";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { registerWindowEvents } from "./window-events";
+import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -38,7 +40,7 @@ ipcMain.handle("nav.set-context-type", (event, type) => {
 export class Base {
   viewY: number = 66;
   readonly win: BaseWindow;
-  readonly nav: WebContentsView;
+  readonly navigation: Navigation;
   bounds: {
     width: number;
     height: number;
@@ -55,7 +57,6 @@ export class Base {
   readonly optionMenuManager: OptionMenuManager;
 
   constructor(
-    private readonly bookmarkService: BookmarkService,
     private readonly data: DataManager,
     bounds?: {
       width: number;
@@ -66,27 +67,27 @@ export class Base {
   ) {
     if (bounds) this.bounds = bounds;
 
-    this.win = new BaseWindow({
-      width: this.bounds.width,
-      height: this.bounds.height,
-      minWidth: 300,
-      minHeight: 300,
-      x: this.bounds.x,
-      y: this.bounds.y,
-      title: `Flune-Browser ${(packageJson.version ?? "3")
-        .replace("-beta.", " Beta ")
-        .replace("-dev.", " Dev ")
-        }`,
-      titleBarStyle: "hidden",
-      titleBarOverlay: process.platform === "darwin" ? true : {
-        color: "#0000",
-        symbolColor: "#fff"
-        // symbolColor: nativeTheme.shouldUseDarkColors ? "#fff" : "#000"
-      },
-      show: false,
-      // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
-      icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png")
-    });
+    // this.win = new BaseWindow({
+    //   width: this.bounds.width,
+    //   height: this.bounds.height,
+    //   minWidth: 300,
+    //   minHeight: 300,
+    //   x: this.bounds.x,
+    //   y: this.bounds.y,
+    //   title: `Flune-Browser ${(packageJson.version ?? "3")
+    //     .replace("-beta.", " Beta ")
+    //     .replace("-dev.", " Dev ")
+    //     }`,
+    //   titleBarStyle: "hidden",
+    //   titleBarOverlay: process.platform === "darwin" ? true : {
+    //     color: "#0000",
+    //     symbolColor: "#fff"
+    //     // symbolColor: nativeTheme.shouldUseDarkColors ? "#fff" : "#000"
+    //   },
+    //   show: false,
+    //   // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
+    //   icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png")
+    // });
 
     this.tabManager = new TabManager(
       this,
@@ -98,11 +99,6 @@ export class Base {
         y: this.viewY
       }
     );
-
-    if (process.platform === "darwin") this.win.setWindowButtonPosition({
-      x: 10,
-      y: 8
-    });
 
     this.optionsMenu = buildOptionsMenu(this, this.data);
     this.contextMenuManager = new ContextMenuManager(this);
@@ -116,90 +112,17 @@ export class Base {
       }
     );
 
-    this.nav = new WebContentsView({
-      webPreferences: {
-        preload: path.join(__dirname, "..", "preload", "navigation.js"),
-        additionalArguments: [
-          `--is-packaged=${app.isPackaged}`
-        ]
-      }
-    });
-    this.nav.setBounds({
-      width: 800,
-      height: this.viewY,
-      x: 0,
-      y: 0
-    });
-    this.nav.webContents.loadURL(resolveView("navigation"));
+    this.win = new BaseWindow(this.createWindowConstructorOptions());
+    this.navigation = this.setupNavigation();
 
-    this.win.on('resize', () => {
-      if (!this.win || !this.nav) return;
-
-      const bounds = this.win.getContentBounds();
-
-      this.nav.setBounds({
-        width: bounds.width,
-        height: bounds.height,
-        x: 0,
-        y: 0,
-      });
-    });
-    this.win.on("close", () => {
-      this.nav.webContents.close();
-      this.tabManager?.removeAll();
-    });
-
-    this.win.contentView.addChildView(this.nav);
-
-    this.nav.webContents.once("did-finish-load", () => {
-      if (process.platform === "darwin") this.nav.webContents.executeJavaScript(`
-        document.head.innerHTML += '<link rel="stylesheet" href="./style/navigation-mac.css" />';
-        console.info("mac");
-      `);
-
-      this.event.send("navigation-loaded");
-
-      this.updateTheme();
-
-      this.win.show();
-
-      this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
-    });
-    this.nav.webContents.on("context-menu", (event, params) => {
-      contextMenuController.setContextType("normal"); // 一度リセットする。（順序的にこの位置で問題なし）
-
-      if (!this.tabManager) return;
-
-      if (contextMenuController.getContextType() === "tab") {
-        event.preventDefault();
-        return;
-      }
-
-      const activeTab = this.tabManager.getActiveTabCurrent();
-      if (!activeTab) return;
-
-      let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
-      if (params.selectionText) type = "text";
-      if (params.linkURL ?? params.linkText) type = "link";
-      if (params.mediaType === "image") type = "image";
-      if (params.mediaType === "audio") type = "audio";
-      if (params.mediaType === "video") type = "video";
-
-      this.contextMenuManager.build({
-        type,
-        isEditable: params.isEditable,
-        canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
-        canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward(),
-        params,
-        isNav: true
-      }).popup();
-    });
+    registerWindowEvents(this.win, this.navigation, this.tabManager);
+    registerBookmarkHandler(this.tabManager, this.data);
 
     // 独自イベント
     this.event = new Event();
 
     this.event.on("theme-updated", (id) => {
-      this.updateTheme();
+      this.navigation?.updateTheme(id);
     });
     this.event.on("setting-updated", () => {
       this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
@@ -279,45 +202,65 @@ export class Base {
 
       if (choice === 0) app.quit();
     });
-
-    registerBookmarkHandler(this.tabManager, this.data);
   }
 
-  updateNavigationState() {
-    const tab = this.tabManager?.getActiveTabCurrent();
-    if (!tab) return;
+  private createWindowConstructorOptions(): Electron.BaseWindowConstructorOptions {
+    return {
+      width: this.bounds.width,
+      height: this.bounds.height,
+      minWidth: 300,
+      minHeight: 300,
+      x: this.bounds.x,
+      y: this.bounds.y,
+      title: `${app.getName()} ${(packageJson.version ?? "3")
+        .replace("-beta.", " Beta ")
+        .replace("-dev.", " Dev ")
+        }`,
+      titleBarStyle: "hidden",
+      titleBarOverlay: process.platform === "darwin" ? true : {
+        color: "#0000",
+        symbolColor: "#fff",
+      },
+      show: false,
+      icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png"),
+      trafficLightPosition: {
+        x: 10,
+        y: 8,
+      }
+    };
+  }
 
-    const url = tab.entity.webContents.getURL();
-    const isBookmarked = this.bookmarkService.isBookmarked(url);
-
-    this.nav.webContents.send(IPC_NOTIFY.NAVIGATION_STATE, {
-      url,
-      isBookmarked
+  private setupNavigation(): Navigation {
+    const navigation = createNavigationFeature(this.win, this.viewY, /* ???? */, () => {
+      this.event.send("navigation-loaded");
     });
+
+    navigation.attach();
+
+    return navigation;
   }
 
-  updateTheme() {
-    // テーマを追加
-    const themeId = this.tabManager?.settings.config.get("settings.design.theme");
-    const themes: {
-      id: string;
-      name: string;
-      url: string;
-    }[] = this.tabManager?.settings.config.get("themes") as {
-      id: string;
-      name: string;
-      url: string;
-    }[];
-    const currentTheme = themes.find(theme => theme.id === themeId);
+  // updateTheme() {
+  //   // テーマを追加
+  //   const themeId = this.tabManager?.settings.config.get("settings.design.theme");
+  //   const themes: {
+  //     id: string;
+  //     name: string;
+  //     url: string;
+  //   }[] = this.tabManager?.settings.config.get("themes") as {
+  //     id: string;
+  //     name: string;
+  //     url: string;
+  //   }[];
+  //   const currentTheme = themes.find(theme => theme.id === themeId);
 
-    currentTheme ? theme.appendTheme(this.nav.webContents, currentTheme.url) : "";
-  }
+  //   currentTheme ? theme.appendTheme(this.nav.webContents, currentTheme.url) : "";
+  // }
 
+  /**
+   * @deprecated
+   */
   close() {
-    this.win.close();
-  }
-
-  send(channel: string, ...args: any[]) {
-    this.nav.webContents.send(channel, ...args);
+    this.win?.close();
   }
 }

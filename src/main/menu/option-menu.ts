@@ -69,7 +69,7 @@ export class OptionMenuManager {
       });
     });
     this.overlay.webContents.on("blur", () => {
-      if(this.isVisible()) this.close();
+      if (this.isVisible()) this.close();
     });
 
     if (!app.isPackaged) this.overlay.webContents.openDevTools();
