@@ -51,10 +51,10 @@ function onReady(services: Services) {
   const protocol = new Protocol("flune");
 
   services.event.send("init");
-  services.windowManager.create(services.bookmarkService, services.event, services.data);
+  services.windowManager.create(services.event, services.data);
 
   app.on("activate", () => {
-    services.windowManager.ensure(services.bookmarkService, services.event, services.data);
+    services.windowManager.ensure(services.event, services.data);
   });
 }
 

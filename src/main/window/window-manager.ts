@@ -11,8 +11,8 @@ import { ApplicationMenuController } from "../menu/application-menu/controllers/
 export class WindowManager {
   private baseWindow: Base | undefined;
 
-  create(bookmarkService: BookmarkService, event: Event, data: DataManager) {
-    this.baseWindow = new Base(bookmarkService, data);
+  create(event: Event, data: DataManager) {
+    this.baseWindow = new Base(data);
 
     event.once("navigation-loaded", () => {
       this.baseWindow?.tabManager.newTab();
@@ -27,9 +27,9 @@ export class WindowManager {
     return this.baseWindow;
   }
 
-  ensure(bookmarkService: BookmarkService, event: Event, data: DataManager) {
-    if (!this.baseWindow || this.baseWindow?.win.isDestroyed())
-      this.baseWindow = this.create(bookmarkService, event, data);
+  ensure(event: Event, data: DataManager) {
+    if (!this.baseWindow || this.baseWindow?.win?.isDestroyed())
+      this.baseWindow = this.create(event, data);
 
     return this.baseWindow;
   }
