@@ -6,7 +6,7 @@ import { BookmarkService } from "../bookmark/service";
 import { ContextMenuManager } from "@/main/menu/context-menu";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-import { ApplicationMenuController } from "../menu/controllers/application-menu-controller";
+import { ApplicationMenuController } from "../menu/application-menu/controllers/application-menu-controller";
 
 export class WindowManager {
   private baseWindow: Base | undefined;
@@ -22,6 +22,8 @@ export class WindowManager {
       mode: "detach"
     });
 
+    this.initializeControllers();
+
     return this.baseWindow;
   }
 
@@ -32,7 +34,13 @@ export class WindowManager {
     return this.baseWindow;
   }
 
-  setupMenu() {
+  private initializeControllers() {
+    this.setupApplicationMenu();
+    // this.setupContextMenu();
+    // this.setupTabs();
+  }
+
+  private setupApplicationMenu() {
     const applicationMenuController = new ApplicationMenuController({
       newTab: () => this.baseWindow?.tabManager.newTab(),
       reloadTab: () => this.baseWindow?.tabManager.reloadTab(),

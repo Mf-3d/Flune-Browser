@@ -1,5 +1,5 @@
 import { app, Menu } from "electron";
-import { ApplicationMenuActions, createAppMenuTemplate } from "@/main/menu/templates/application-menu";
+import { ApplicationMenuActions, createAppMenuTemplate } from "@/main/menu/application-menu/templates/application-menu";
 
 export class ApplicationMenuController {
   constructor(
