@@ -4,7 +4,7 @@ import {
   shell
 } from "electron";
 
-import { Base } from "@/main/base-window";
+import { Base } from "@/main/window/base-window";
 
 export function buildApplicationMenu(base: Base): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [

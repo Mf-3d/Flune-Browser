@@ -1,6 +1,6 @@
 import { Menu } from "electron";
 
-import { Base } from "@/main/base-window";
+import { Base } from "@/main/window/base-window";
 import { DataManager } from "@/main/lib/data";
 
 

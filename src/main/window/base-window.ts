@@ -7,16 +7,16 @@ import {
   dialog,
   app
 } from "electron";
-import { TabManager } from "@/main/tab";
+import { TabManager } from "@/main/window/tab";
 import {
   ContextMenuManager,
   OptionMenuManager,
   buildApplicationMenu,
   buildOptionsMenu
-} from "@/main/menu";
+} from "@/main/menu/";
 import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";
-import { ContextMenuController } from "@/main/contextMenuController";
+import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
 import { validateSender } from "@/main/ipc/validateSender";
 import { BookmarkService } from "@/main/bookmark/service";

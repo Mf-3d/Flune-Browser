@@ -2,7 +2,7 @@ import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
 
-import { TabManager } from "@/main/tab";
+import { TabManager } from "@/main/window/tab";
 import { ipcMain } from "electron";
 
 import Event from "@/main/lib/event";

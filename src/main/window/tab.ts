@@ -5,13 +5,13 @@ import {
   WebContentsView,
   ipcMain
 } from "electron";
-import { Base } from "@/main/base-window";
-import { buildTabContextMenu, ContextMenuManager } from "@/main/menu";
-import { SearchEngine, Settings } from "@/main/settings";
+import { Base } from "@/main/window/base-window";
+import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/";
+import { SearchEngine, Settings } from "@/main/settings/settings";
 import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
-import { ContextMenuController } from "@/main/contextMenuController";
+import { ContextMenuController } from "@/main/menu/contextMenuController";
 import { validateSender } from "@/main/ipc/validateSender";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 

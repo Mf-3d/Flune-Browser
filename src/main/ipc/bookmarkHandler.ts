@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
 import { validateSender } from "@/main/ipc/validateSender";
-import { TabManager } from "@/main/tab";
+import { TabManager } from "@/main/window/tab";
 import { DataManager } from "@/main/lib/data";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
