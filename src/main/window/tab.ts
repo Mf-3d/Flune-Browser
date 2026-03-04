@@ -6,7 +6,7 @@ import {
   ipcMain
 } from "electron";
 import { Base } from "@/main/window/base-window";
-import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/";
+import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/context-menu";
 import { SearchEngine, Settings } from "@/main/settings/settings";
 import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";

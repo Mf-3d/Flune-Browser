@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { registerCrashHandler } from "@/main/infrastructure/crashHandler";
+import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
 import { Protocol } from "@/main/protocol";
 import Event from "@/main/lib/event";
 import { isArchitectureIntel } from "@/main/system/env";

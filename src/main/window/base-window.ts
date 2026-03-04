@@ -8,12 +8,9 @@ import {
   app
 } from "electron";
 import { TabManager } from "@/main/window/tab";
-import {
-  ContextMenuManager,
-  OptionMenuManager,
-  buildApplicationMenu,
-  buildOptionsMenu
-} from "@/main/menu/";
+import { buildOptionsMenu } from "@/main/menu/index";
+import { ContextMenuManager } from "@/main/menu/context-menu";
+import { OptionMenuManager } from "@/main/menu/option-menu";
 import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
@@ -107,7 +104,6 @@ export class Base {
       y: 8
     });
 
-    Menu.setApplicationMenu(buildApplicationMenu(this));
     this.optionsMenu = buildOptionsMenu(this, this.data);
     this.contextMenuManager = new ContextMenuManager(this);
     this.optionMenuManager = new OptionMenuManager(this,
