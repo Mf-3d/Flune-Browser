@@ -55,13 +55,13 @@ export class Base {
     };
   tabManager: TabManager;
   optionsMenu: Electron.Menu;
-  readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
   readonly optionMenuManager: OptionMenuManager;
 
   constructor(
     private readonly data: DataManager,
     private readonly settings: Settings,
+    private readonly event: Event,
     // private readonly settings: Settings,
     bounds?: {
       width: number;
@@ -73,38 +73,7 @@ export class Base {
   ) {
     if (bounds) this.bounds = bounds;
 
-    // this.win = new BaseWindow({
-    //   width: this.bounds.width,
-    //   height: this.bounds.height,
-    //   minWidth: 300,
-    //   minHeight: 300,
-    //   x: this.bounds.x,
-    //   y: this.bounds.y,
-    //   title: `Flune-Browser ${(packageJson.version ?? "3")
-    //     .replace("-beta.", " Beta ")
-    //     .replace("-dev.", " Dev ")
-    //     }`,
-    //   titleBarStyle: "hidden",
-    //   titleBarOverlay: process.platform === "darwin" ? true : {
-    //     color: "#0000",
-    //     symbolColor: "#fff"
-    //     // symbolColor: nativeTheme.shouldUseDarkColors ? "#fff" : "#000"
-    //   },
-    //   show: false,
-    //   // icon: (process.platform === "darwin" ? path.join(__dirname, "..", "image", "icon.icns") : path.join(__dirname, "..", "image", "icon.png"))
-    //   icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png")
-    // });
-
-    this.tabManager = new TabManager(
-      this,
-      this.data,
-      {
-        width: this.bounds.width,
-        height: this.bounds.height - this.viewY,
-        x: 0,
-        y: this.viewY
-      }
-    );
+    this.win = new BaseWindow(this.createWindowConstructorOptions());
 
     this.optionsMenu = buildOptionsMenu(this, this.data);
     this.contextMenuManager = new ContextMenuManager(this);
@@ -118,14 +87,24 @@ export class Base {
       }
     );
 
-    this.win = new BaseWindow(this.createWindowConstructorOptions());
+    
+
+    this.tabManager = new TabManager(
+      this,
+      this.data,
+      {
+        width: this.bounds.width,
+        height: this.bounds.height - this.viewY,
+        x: 0,
+        y: this.viewY
+      }
+    );
     this.navigation = this.setupNavigation();
+
+    
 
     registerWindowEvents(this.win, this.navigation, this.tabManager);
     registerBookmarkHandler(this.tabManager, this.data);
-
-    // 独自イベント
-    this.event = new Event();
 
     this.event.on("theme-updated", (id) => {
       this.navigation?.updateTheme(id);
@@ -227,7 +206,7 @@ export class Base {
         color: "#0000",
         symbolColor: "#fff",
       },
-      show: false,
+      show: true,
       icon: path.join(__dirname, "..", "..", "assets", "image", "icon.png"),
       trafficLightPosition: {
         x: 10,

@@ -52,7 +52,7 @@ function initializeServices(): Services {
 }
 
 function onReady(services: Services) {
-  const protocol = new Protocol("flune");
+  const protocol = new Protocol("flune", services.event);
 
   services.event.send("init");
   services.windowManager.create(services.event, services.data);

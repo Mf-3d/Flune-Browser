@@ -16,7 +16,7 @@ export class WindowManager {
   constructor (private readonly settings: Settings) { }
 
   create(event: Event, data: DataManager) {
-    this.baseWindow = new Base(data, this.settings);
+    this.baseWindow = new Base(data, this.settings, event);
 
     event.once("navigation-loaded", () => {
       this.baseWindow?.tabManager.newTab();

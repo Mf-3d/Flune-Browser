@@ -15,19 +15,17 @@ export class Protocol {
   private readonly pathToServe: {
     [path: string]: string
   } = {
-      navigation: path.join(__dirname, "..", "renderer", "navigation.html"),
-      home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
-      settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
-      version: path.join(__dirname, "..", "renderer", "browser", "version.html"),
-      script: path.join(__dirname, "..", "renderer", "script"),
-      style: path.join(__dirname, "..", "renderer", "style"),
-      assets: path.join(__dirname, "..", "..", "assets"),
-      error: path.join(__dirname, "..", "renderer", "browser", "error"),
-      menu: path.join(__dirname, "..", "renderer", "menu"),
-      // "foo.bar": path.join(__dirname, "..", "renderer", "browser", "foo", "bar"),
-    };
-
-  readonly event = new Event();
+    navigation: path.join(__dirname, "..", "renderer", "navigation.html"),
+    home: path.join(__dirname, "..", "renderer", "browser", "home.html"),
+    settings: path.join(__dirname, "..", "renderer", "browser", "settings.html"),
+    version: path.join(__dirname, "..", "renderer", "browser", "version.html"),
+    script: path.join(__dirname, "..", "renderer", "script"),
+    style: path.join(__dirname, "..", "renderer", "style"),
+    assets: path.join(__dirname, "..", "..", "assets"),
+    error: path.join(__dirname, "..", "renderer", "browser", "error"),
+    menu: path.join(__dirname, "..", "renderer", "menu"),
+    // "foo.bar": path.join(__dirname, "..", "renderer", "browser", "foo", "bar"),
+  };
 
   /**
    * **It is generated dynamically.**
@@ -67,7 +65,7 @@ export class Protocol {
     }
   ]));
 
-  constructor(name: string = "flune") {
+  constructor(name: string = "flune", private readonly event: Event) {
     this.name = name;
 
     protocol.handle(this.name, (req) => {

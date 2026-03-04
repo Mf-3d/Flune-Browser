@@ -31,7 +31,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: {
-          navigation: path.resolve(__dirname, "src/renderer/navigation.html"),
+          navigation: path.resolve(__dirname, "src/renderer/navigation/navigation.html"),
           home: path.resolve(__dirname, "src/renderer/browser/home.html"),
           settings: path.resolve(__dirname, "src/renderer/browser/settings.html"),
           version: path.resolve(__dirname, "src/renderer/browser/version.html"),

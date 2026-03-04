@@ -103,7 +103,7 @@ export class ContextMenuController {
       copyLinkURL: () => {
         clipboard.writeText(params.linkURL);
       },
-      toggleNavigationDevTools: () => this.baseWindow.nav.webContents.toggleDevTools(),
+      toggleNavigationDevTools: () => this.baseWindow.navigation.view.webContents.toggleDevTools(),
       toggleDevTools: () => this.baseWindow.tabManager.toggleDevTools(),
       openSettings: () => this.baseWindow.tabManager.settings.openSettingsAsTab(),
       searchSelectionText: () => this.baseWindow.tabManager?.newTab(params.selectionText, {
