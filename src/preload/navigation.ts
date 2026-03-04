@@ -59,6 +59,10 @@ contextBridge.exposeInMainWorld("flune", {
     IPC_NOTIFY.NAVIGATION_INIT,
     (event, state) => callback(event, state)
   ),
+  onThemeChanged: (callback: Function) => ipcRenderer.on(
+    IPC_NOTIFY.NAVIGATION_APPLY_THEME,
+    (event, themeUrl) => callback(event, themeUrl)
+  ),
   
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

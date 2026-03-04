@@ -6,7 +6,7 @@ interface NavigationStatePayload {
 }; // NavigationState
 
 interface NavigationInitPayload {
-  themeId: string;
+  themeURL: string;
   settings: any; // とりあえずanyでOK
 }
 
@@ -21,9 +21,15 @@ interface FluneAPI {
    * @deprecated
    */
   toggleTabContextMenu: (id: string) => void;
+  /**
+   * @deprecated
+   */
+  load: (id: string, word: string) => void;
+  focusPage: () => void;
 
   onStateUpdated: (callback: (event: Electron.IpcRendererEvent, payload: NavigationStatePayload) => void) => void;
   onInit: (callback: (event: Electron.IpcRendererEvent, payload: NavigationInitPayload) => void) => void;
+  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => void;
   /**
    * @deprecated
    */
@@ -32,4 +38,16 @@ interface FluneAPI {
 
 interface Window {
   flune: FluneAPI;
+  /**
+   * @deprecated
+   */
+  toggleBookmark: () => void;
+  /**
+   * @deprecated
+   */
+  updateSymbolColor: () => void;
+  /**
+   * @deprecated
+   */
+  removeTab: (id: string) => void;
 }

@@ -1,9 +1,10 @@
-import { registerInputEvents } from "./input.js";
+import { registerInputEvents } from "./input";
 import lucide from "../script/icons.js";
+import { applyTheme } from "./theme";
 
-registerInputEvents();
 
 window.addEventListener("load", () => {
+  registerInputEvents();
   each();
 
   const tabContainer = document.getElementById("tabs")!;
@@ -47,8 +48,8 @@ window.addEventListener("load", () => {
     }
   });
 
-  window.flune.onInit((_, { themeId, settings }) => {
-    
+  window.flune.onThemeChanged((_, themeUrl) => {
+    applyTheme(themeUrl);
   });
 
   window.flune.on("tab.new", (event, tab) => {
@@ -148,9 +149,9 @@ function removeTab(id: string) {
   console.info("(removeTab):", id);
 }
 
-// window.toggleBookmark = toggleBookmark;
-// window.updateSymbolColor = updateSymbolColor;
-// window.removeTab = removeTab;
+window.toggleBookmark = toggleBookmark;
+window.updateSymbolColor = updateSymbolColor;
+window.removeTab = removeTab;
 
 function each() {
   const tabContainer = document.getElementById("tabs")!;
