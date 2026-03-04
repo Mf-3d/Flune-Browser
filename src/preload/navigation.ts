@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 
 contextBridge.exposeInMainWorld("flune", {
-  baseURL: !process.argv.includes("--is-packaged=true")
+  baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)
     ? process.env.ELECTRON_RENDERER_URL
     : "flune://",
   newTab: () => {
@@ -55,5 +55,10 @@ contextBridge.exposeInMainWorld("flune", {
     IPC_NOTIFY.NAVIGATION_STATE,
     (event, state) => callback(event, state)
   ),
+  onInit: (callback: Function) => ipcRenderer.on(
+    IPC_NOTIFY.NAVIGATION_INIT,
+    (event, state) => callback(event, state)
+  ),
+  
   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 });

@@ -33,3 +33,5 @@ function createIcons() {
 const lucide = {
   createIcons
 }
+
+export default lucide;

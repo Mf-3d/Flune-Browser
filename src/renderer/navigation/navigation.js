@@ -1,4 +1,4 @@
-import { registerInputEvents } from "./navigation/input.js";
+import { registerInputEvents } from "./input.js";
 
 registerInputEvents();
 
@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
     visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
   });
 
-  flune.onStateUpdated((event, id, state) => {
+  flune.onStateUpdated((_, id, state) => {
     switch (id) {
       case "can-go-back":
         if (state) document.querySelector(".go-back").classList.remove("disabled");
@@ -29,6 +29,10 @@ window.addEventListener("load", () => {
         else document.querySelector("#bookmark").classList.remove("active");
         break;
     }
+  });
+
+  flune.onInit((_, { themeId, settings }) => {
+    
   });
 
   flune.on("tab.new", (event, tab) => {
