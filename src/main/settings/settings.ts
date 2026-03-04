@@ -22,6 +22,9 @@ export type SearchEngine = {
   url: string;
 };
 
+/**
+ * @deprecated
+ */
 export class Settings {
   private event = new Event();
   private readonly _tabManager: TabManager;

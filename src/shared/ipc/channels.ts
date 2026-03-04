@@ -4,11 +4,17 @@ export const IPC_INVOKE = {
   TAB_REMOVE: "tab:remove",
   TAB_ACTIVATE: "tab:activate",
   TAB_FOCUS: "tab:focus",
+  STORE_GET_ALL: "store:get-all",
+  STORE_GET: "store:get",
+  STORE_SET_ALL: "store:get-all",
+  STORE_SET: "store:get",
   // BOOKMARK_STATUS: "bookmark:status",
 } as const;
 
 // 一方向（レスポンスなし）
-export const IPC_EVENTS = {} as const;
+export const IPC_EVENTS = {
+  
+} as const;
 
 export const IPC_NOTIFY = {
   NAVIGATION_INIT: "navigation:init",

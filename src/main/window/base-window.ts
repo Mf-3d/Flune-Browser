@@ -11,7 +11,7 @@ import { TabManager } from "@/main/window/tab";
 import { buildOptionsMenu } from "@/main/menu/index";
 import { ContextMenuManager } from "@/main/menu/context-menu";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-import theme from "@/main/lib/theme";
+// import theme from "@/main/lib/theme";\
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
@@ -23,6 +23,9 @@ import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
+// import { Settings } from "@/main/settings/settings";
+import { Settings } from "@/main/settings";
+import { createSettings } from "../settings";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -58,12 +61,15 @@ export class Base {
 
   constructor(
     private readonly data: DataManager,
+    private readonly settings: Settings,
+    // private readonly settings: Settings,
     bounds?: {
       width: number;
       height: number;
       x: number;
       y: number;
-    }
+    },
+
   ) {
     if (bounds) this.bounds = bounds;
 
@@ -125,7 +131,7 @@ export class Base {
       this.navigation?.updateTheme(id);
     });
     this.event.on("setting-updated", () => {
-      this.navigation.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
+      this.navigation.send("flune.toggle-home-button", this.settings.store.get("settings").design.showHomeButton);
     });
 
     // IPCチャンネル
@@ -231,7 +237,11 @@ export class Base {
   }
 
   private setupNavigation(): Navigation {
-    const navigation = createNavigationFeature(this.win, this.viewY, /* ???? */, () => {
+    let currentTheme = this.settings.themeService.getThemeById(
+      this.settings.themeService.getCurrentThemeId()
+    );
+
+    const navigation = createNavigationFeature(this.win, this.viewY, currentTheme?.url ?? "@theme/dark.css", () => {
       this.event.send("navigation-loaded");
     });
 

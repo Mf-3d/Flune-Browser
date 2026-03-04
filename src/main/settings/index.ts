@@ -1,0 +1,31 @@
+import fs from "fs";
+import path from "path";
+import Store from "electron-store";
+import { SettingsStore } from "./settings-store";
+import { ThemeService } from "./theme-service";
+import { registerSettingsIpc } from "./settings-ipc";
+import Event from "@/main/lib/event";
+
+export type Settings = ReturnType<typeof createSettings>;
+
+const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
+
+export function createSettings(event: Event) {
+  const DEFAULT_CONFIG = JSON.parse(fs.readFileSync(DEFAULT_CONFIG_PATH, {
+    encoding: "utf-8"
+  }));
+
+  const config = new Store({
+    defaults: DEFAULT_CONFIG
+  });
+  config.store
+
+  const store = new SettingsStore(config);
+  const themeService = new ThemeService(store);
+
+  registerSettingsIpc(store, event);
+  return {
+    store,
+    themeService
+  };
+}

@@ -17,7 +17,7 @@ export type Navigation = {
     send: (channel: IpcNotify, ...args: any[]) => void;
 };
 
-export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, themeId: string, onLoaded?: () => void): Navigation {
+export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, themeUrl: string, onLoaded?: () => void): Navigation {
   let currentState: NavigationState = {};
 
   const view = new WebContentsView({
@@ -36,7 +36,7 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
     y: 0,
   });
 
-  registerWebContentsEvents(view, themeId, onLoaded);
+  registerWebContentsEvents(view, themeUrl, onLoaded);
 
   view.webContents.loadURL(resolveView("navigation"));
 
@@ -49,8 +49,8 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
     view.webContents.send(IPC_NOTIFY.NAVIGATION_STATE, state);
   }
 
-  function updateTheme(themeId: string) {
-    view.webContents.send(IPC_NOTIFY.NAVIGATION_APPLY_THEME, themeId);
+  function updateTheme(themeUrl: string) {
+    view.webContents.send(IPC_NOTIFY.NAVIGATION_APPLY_THEME, themeUrl);
   }
 
   function send(
@@ -82,11 +82,11 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
 
 function registerWebContentsEvents(
   view: WebContentsView,
-  themeId: string,
+  themeUrl: string,
   onLoaded?: () => void
 ) {
   view.webContents.on("did-finish-load", () => {
     onLoaded?.();
-    view.webContents.send(IPC_NOTIFY.NAVIGATION_APPLY_THEME, themeId);
+    view.webContents.send(IPC_NOTIFY.NAVIGATION_APPLY_THEME, themeUrl);
   });
 }

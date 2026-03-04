@@ -6,12 +6,14 @@ import { isArchitectureIntel } from "@/main/system/env";
 import { DataManager } from "@/main/lib/data";
 import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
+import { Settings, createSettings } from "./settings/";
 
 type Services = {
-  windowManager: WindowManager,
-  data: DataManager,
-  event: Event,
-  bookmarkService: BookmarkService,
+  settings: Settings;
+  windowManager: WindowManager;
+  data: DataManager;
+  event: Event;
+  bookmarkService: BookmarkService;
 };
 
 export function bootstrap() {
@@ -34,12 +36,14 @@ function registerAppEvents(services: Services) {
 }
 
 function initializeServices(): Services {
-  const windowManager = new WindowManager();
   const data = new DataManager;
   const event = new Event();
+  const settings = createSettings(event);
+  const windowManager = new WindowManager(settings);
   const bookmarkService = new BookmarkService(data);
 
   return {
+    settings,
     windowManager,
     data,
     event,

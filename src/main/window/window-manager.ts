@@ -8,12 +8,15 @@ import { ContextMenuManager } from "@/main/menu/context-menu";
 import { OptionMenuManager } from "@/main/menu/option-menu";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
 import { ContextMenuController } from "../menu/context-menu/controllers/context-menu-controller";
+import { Settings } from "@/main/settings/";
 
 export class WindowManager {
   private baseWindow: Base | undefined;
 
+  constructor (private readonly settings: Settings) { }
+
   create(event: Event, data: DataManager) {
-    this.baseWindow = new Base(data);
+    this.baseWindow = new Base(data, this.settings);
 
     event.once("navigation-loaded", () => {
       this.baseWindow?.tabManager.newTab();
