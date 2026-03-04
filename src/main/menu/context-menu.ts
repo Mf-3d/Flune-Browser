@@ -6,6 +6,10 @@ import {
 
 import { Base } from "@/main/window/base-window";
 
+/**
+ * @class
+ * @deprecated
+ */
 export class ContextMenuManager {
   base: Base;
 
@@ -13,6 +17,9 @@ export class ContextMenuManager {
     this.base = base;
   }
 
+  /**
+   * @deprecated
+   */
   build(state: {
     type: "normal" | "text" | "link" | "image" | "audio" | "video",
     isEditable: boolean,
@@ -24,6 +31,9 @@ export class ContextMenuManager {
     return Menu.buildFromTemplate(this.createTemplate(state));
   }
 
+  /**
+   * @deprecated
+   */
   createTemplate(state: {
     type: "normal" | "text" | "link" | "image" | "audio" | "video",
     isEditable: boolean,
@@ -237,6 +247,9 @@ export class ContextMenuManager {
   }
 };
 
+/**
+ * @deprecated
+ */
 export function buildTabContextMenu(base: Base, tabId: string): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {

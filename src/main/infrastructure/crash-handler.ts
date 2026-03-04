@@ -17,6 +17,9 @@ export function registerCrashHandler() {
   });
 }
 
+/**
+ * @deprecated
+ */
 export function log(message: string) {
   fs.appendFileSync(
     LOG_FILE,

@@ -11,6 +11,11 @@ import { DataManager, FolderId } from "@/main/lib/data";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
+
+/**
+ * @class
+ * @deprecated
+ */
 export class OptionMenuManager {
   readonly base: Base;
   readonly overlay: WebContentsView;
