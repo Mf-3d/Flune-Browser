@@ -3,11 +3,9 @@ import { Menu } from "electron";
 import { Base } from "@/main/window/base-window";
 import { DataManager } from "@/main/lib/data";
 
-
-export { buildApplicationMenu } from "@/main/menu/application-menu";
-export { ContextMenuManager, buildTabContextMenu } from "@/main/menu/context-menu";
-export { OptionMenuManager } from "@/main/menu/option-menu";
-
+/**
+ * @deprecated
+ */
 export function buildOptionsMenu(base: Base, data: DataManager): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {

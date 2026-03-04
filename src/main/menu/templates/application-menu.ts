@@ -1,25 +1,29 @@
-import {
-  app,
-  Menu,
-  shell
-} from "electron";
+export type ApplicationMenuActions = {
+  newTab: () => void,
+  reloadTab: () => void,
+  reloadTabIgnoringCache: () => void,
+  toggleDevTools: () => void,
+  focusSearchBar: () => void,
+  reportIssue: () => void,
+}
 
-import { Base } from "@/main/window/base-window";
-
-export function buildApplicationMenu(base: Base): Electron.Menu {
-  const template: Electron.MenuItemConstructorOptions[] = [
+export function createAppMenuTemplate(
+  appName: string,
+  actions: ApplicationMenuActions
+): Electron.MenuItemConstructorOptions[] {
+  return [
     ...(process.platform === "darwin" ? [{
-      label: app.name,
+      label: appName,
       submenu: [
-        { role: "about", label: `${app.name}について` },
+        { role: "about", label: `${appName}について` },
         { type: "separator" },
         { role: "services", label: "サービス" },
         { type: "separator" },
-        { role: "hide", label: `${app.name}を隠す` },
+        { role: "hide", label: `${appName}を隠す` },
         { role: "hideothers", label: "ほかを隠す" },
         { role: "unhide", label: "すべて表示" },
         { type: "separator" },
-        { role: "quit", label: `${app.name}を終了` }
+        { role: "quit", label: `${appName}を終了` }
       ]
     }] as Electron.MenuItemConstructorOptions[] : [] as Electron.MenuItemConstructorOptions[]),
     {
@@ -28,9 +32,7 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
         {
           label: "新しいタブ",
           accelerator: "CmdOrCtrl+T",
-          click() {
-            base.tabManager?.newTab();
-          },
+          click: actions.newTab,
         },
         process.platform === "darwin" ? { role: "close", label: "ウィンドウを閉じる" } : { role: "quit", label: "終了" }
       ]
@@ -69,30 +71,18 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
         {
           label: "再読み込み",
           accelerator: "CmdOrCtrl+R",
-          click() {
-            base.tabManager?.reloadTab();
-          }
+          click: actions.reloadTab,
         },
         {
           label: "強制的に再読み込み",
           accelerator: "CmdOrCtrl+Shift+R",
-          click() {
-            base.tabManager?.reloadTab(undefined, true);
-          }
+          click: actions.reloadTabIgnoringCache,
         },
-        (process.platform === "darwin" ? {
+        {
           label: "開発者ツールを表示",
-          accelerator: "Cmd+Option+I", // macOSのみ
-          click() {
-            base.tabManager?.toggleDevTools();
-          }
-        } : {
-          label: "開発者ツールを表示",
-          accelerator: "F12", // WindowsとLinux
-          click() {
-            base.tabManager?.toggleDevTools();
-          }
-        }),
+          accelerator: (process.platform === "darwin") ? "Cmd+Option+I" : "F12", // WindowsとLinux
+          click: actions.toggleDevTools
+        },
         { type: "separator" },
         { role: "resetZoom", label: "実際のサイズ" },
         { role: "zoomIn", label: "拡大" },
@@ -104,10 +94,7 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
           label: "検索バーをフォーカス",
           accelerator: "CmdOrCtrl+L",
           visible: false,
-          click: () => {
-            base.nav.webContents.focus();
-            base.nav.webContents.send("flune.focus-search-bar");
-          }
+          click: actions.focusSearchBar,
         }
       ]
     },
@@ -130,26 +117,18 @@ export function buildApplicationMenu(base: Base): Electron.Menu {
       label: "ヘルプ",
       submenu: [
         {
-          label: `${app.name} ヘルプ`,
+          label: `${appName} ヘルプ`,
           enabled: false
         },
         {
-          label: `${app.name}の問題を報告`,
-          click() {
-            shell.openExternal(`https://github.com/Mf-3d/${app.name}/issues/new`)
-          }
+          label: `${appName}の問題を報告`,
+          click: actions.reportIssue,
         },
         ...(process.platform === "darwin" ? [] as Electron.MenuItemConstructorOptions[] : [
           { type: "separator" },
-          { role: "about", label: `${app.name}について` }
+          { role: "about", label: `${appName}について` }
         ])
       ] as Electron.MenuItemConstructorOptions[]
     }
   ];
-
-
-
-  const menu = Menu.buildFromTemplate(template);
-
-  return menu;
 }
