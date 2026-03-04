@@ -1,7 +1,7 @@
 import path from "path";
 import { app, BaseWindow, WebContentsView } from "electron";
 import { resolveView } from "@/shared/resolveView";
-import { IPC_NOTIFY } from "@/shared/ipc/channels";
+import { IPC_NOTIFY, IpcEvents, IpcNotify } from "@/shared/ipc/channels";
 
 type NavigationState = {
   url?: string;
@@ -14,6 +14,7 @@ export type Navigation = {
     updateState: (state: NavigationState) => void;
     updateTheme: (themeId: string) => void;
     setWidth: (width: number) => void;
+    send: (channel: IpcNotify, ...args: any[]) => void;
 };
 
 export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, themeId: string, onLoaded?: () => void): Navigation {
@@ -52,6 +53,14 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
     view.webContents.send(IPC_NOTIFY.NAVIGATION_APPLY_THEME, themeId);
   }
 
+  function send(
+    channel: IpcNotify,
+    // channel: IpcNotify & IpcEvents,
+    ...args: any[]
+  ) {
+    view.webContents.send(channel, ...args)
+  }
+
   function setWidth(width: number) {
     view.setBounds({
       width,
@@ -67,6 +76,7 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
     updateState,
     updateTheme,
     setWidth,
+    send,
   }
 }
 

@@ -125,7 +125,7 @@ export class Base {
       this.navigation?.updateTheme(id);
     });
     this.event.on("setting-updated", () => {
-      this.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
+      this.navigation.send("flune.toggle-home-button", this.tabManager?.settings.config.get("settings.design.showHomeButton"));
     });
 
     // IPCチャンネル
