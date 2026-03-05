@@ -1,75 +1,30 @@
-import { registerInputEvents } from "./input";
+import { registerInputEvents } from "./ui/input-events";
 import lucide from "../script/icons.js";
-import { applyTheme } from "./theme";
+import { registerClickEvents } from "./ui/click-events";
+import { registerNavigationEvents } from "./events/navigation-events";
 
 
 window.addEventListener("load", () => {
-  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+  if (!window.flune.navigation) return;
 
   lucide.createIcons();
 
+  registerClickEvents();
   registerInputEvents();
+  registerNavigationEvents();
+
   each();
 
   const tabContainer = document.getElementById("tabs")!;
-  const input = document.getElementById("search-bar");
-
-  window.flune.navigation.onInit((_, state) => {
-    if (state.showHomeButton !== undefined) {
-      const homeButton = document.getElementById("go-home")!;
-
-      state.showHomeButton ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
-    }
-  });
-
-  window.flune.navigation.onStateUpdated((_, state) => {
-    if (state.showHomeButton !== undefined) {
-      const homeButton = document.getElementById("go-home")!;
-
-      state.showHomeButton ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
-    }
-
-    if (state.isBookmarked !== undefined) {
-      const bookmarkElement = document.querySelector("#bookmark")!;
-
-      if (state.isBookmarked) {
-        bookmarkElement.classList.add("active");
-      } else {
-        bookmarkElement.classList.remove("active");
-      }
-    }
-
-    if (state.canGoBack !== undefined) {
-      const goBackElement = document.querySelector(".go-back")!;
-
-      if (state.canGoBack) {
-        goBackElement.classList.remove("disabled");
-      } else {
-        goBackElement.classList.add("disabled");
-      }
-    }
-
-    if (state.canGoForward !== undefined) {
-      const goForwardElement = document.querySelector(".go-forward")!;
-
-      if (state.canGoForward) {
-        goForwardElement.classList.remove("disabled");
-      } else {
-        goForwardElement.classList.add("disabled");
-      }
-    }
-  });
-
-  window.flune.navigation.onThemeChanged((_, themeUrl) => {
-    applyTheme(themeUrl, updateSymbolColor);
-  });
 
   window.flune.navigation.tab.onCreated((_, tab) => {
     const newButton = tabContainer.querySelector(".new-button")!;
 
     const element = document.createElement("span");
     element.draggable = true;
+    
     element.setAttribute("data-id", tab.id);
+
     element.innerHTML = `
     <img src="" class="favicon" onerror="this.src='/image/tab-no-favicon.png';"/>
     <a href="#" class="loading disabled">
@@ -84,7 +39,7 @@ window.addEventListener("load", () => {
         <i data-lucide="volume-2"></i>
       </a>
     </span>
-    <a href="javascript:removeTab('${tab.id}')" class="close-button right">
+    <a href="javascript:window.flune.navigation?.tab.remove('${tab.id}')" class="close-button right">
       <i data-lucide="x"></i>
     </a>
     `;
@@ -94,8 +49,11 @@ window.addEventListener("load", () => {
     } else {
       tabContainer.querySelector(`:scope > span[data-id="${tab.beforeTabId}"]`)?.after(element);
     }
+    
+    if (tab.active) activateTab(tab.id);
 
     lucide.createIcons();
+
     each();
   });
 
@@ -105,6 +63,8 @@ window.addEventListener("load", () => {
     tabElements.forEach(tabElement => {
       if (tabElement.getAttribute("data-id") === id) tabElement.remove();
     });
+
+    each();
   });
 
   window.flune.navigation.tab.onUpdated((_, tab) => {
@@ -143,32 +103,20 @@ window.addEventListener("load", () => {
     });
 
     if (tab.active !== undefined) {
-      tabElements.forEach(tabElement => {
-        tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
-      });
+      activateTab(tab.id);
     }
   });
+
+  each();
 });
 
-function toggleBookmark() {
-  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+function activateTab(id: string) {
+  const tabContainer = document.getElementById("tabs")!;
+  const tabElements = tabContainer.querySelectorAll(":scope > span");
 
-  window.flune.navigation.toggleBookmark();
-  document.getElementById("bookmark")?.classList.toggle("active");
-}
-
-function updateSymbolColor() {
-  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
-
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
-  window.flune.navigation.updateSymbolColor(textColor);
-}
-
-function removeTab(id: string) {
-  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
-
-  window.flune.navigation.tab.remove(id);
-  console.info("(removeTab):", id);
+  tabElements.forEach(tabElement => {
+    tabElement.getAttribute("data-id") === id ? tabElement.id = "opened" : tabElement.id = "";
+  });
 }
 
 function each() {
@@ -180,7 +128,7 @@ function each() {
 
     // タブを切り替える
     title.onclick = () => {
-      if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+      if (!window.flune.navigation) return;
 
       window.flune.navigation.tab.activate(element.getAttribute("data-id")!);
     };

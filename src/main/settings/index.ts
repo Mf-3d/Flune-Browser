@@ -3,9 +3,9 @@ import path from "path";
 import Store from "electron-store";
 import { SettingsStore } from "./settings-store";
 import { ThemeService } from "./theme-service";
-import { registerSettingsIpc } from "./settings-ipc";
 import Event from "@/main/lib/event";
 import { SearchEngineService } from "./search-engine-service";
+import { registerSettingsHandler } from "../ipc/settings-handler";
 
 export type Settings = ReturnType<typeof createSettings>;
 
@@ -25,7 +25,7 @@ export function createSettings(event: Event) {
   const searchEngineService = new SearchEngineService(store);
   const themeService = new ThemeService(store);
 
-  registerSettingsIpc(store, event);
+  registerSettingsHandler(store, event);
   return {
     store,
     themeService,

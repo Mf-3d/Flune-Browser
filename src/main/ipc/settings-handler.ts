@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { SettingsStore } from "./settings-store";
+import { SettingsStore } from "@/main/settings/settings-store";
 import Event from "@/main/lib/event";
 import { validateSender } from "@/main/ipc/validateSender";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
@@ -15,7 +15,7 @@ function setNested(obj: any, path: string, value: unknown) {
   target[last] = value;
 }
 
-export function registerSettingsIpc(store: SettingsStore, event: Event) {
+export function registerSettingsHandler(store: SettingsStore, event: Event) {
   ipcMain.handle(IPC_INVOKE.STORE_GET_ALL, (e) => {
     if (!e.senderFrame) return null;
     if(!validateSender(e.senderFrame)) return null;

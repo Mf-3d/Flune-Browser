@@ -2,7 +2,14 @@ export function applyTheme(themeUrl: string, updateSymbolColor: Function) {
   const element = document.querySelector("#theme");
 
   if (element) element.setAttribute("href", themeUrl);
-  else document.head.innerHTML += `<link rel="stylesheet" id="theme" href="${themeUrl}" />`;
+  else {
+    const themeElement = document.createElement("link");
+    themeElement.rel = "stylesheet";
+    themeElement.id = "theme";
+    themeElement.href = themeUrl;
+    
+    updateSymbolColor();
 
-  updateSymbolColor();
+    document.head.appendChild(themeElement);
+  }
 }

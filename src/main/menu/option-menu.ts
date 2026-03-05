@@ -47,7 +47,7 @@ export class OptionMenuManager {
 
     this.overlay = new WebContentsView({
       webPreferences: {
-        preload: path.join(__dirname, "..", "preload", "menu.js"),
+        preload: path.join(__dirname, "..", "preload", "index.js"),
         contextIsolation: true,
         transparent: true
       }

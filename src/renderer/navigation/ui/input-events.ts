@@ -1,5 +1,7 @@
+import { navigationActions } from "../actions/navigation-actions";
+
 export function registerInputEvents () {
-  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+  if (!window.flune.navigation) return;
 
   const input = document.querySelector("#search-bar")! as HTMLElement;
   let originalValue = ""; // 検索バーの変更前の値
@@ -7,7 +9,7 @@ export function registerInputEvents () {
 
   input.addEventListener("keydown", (event: KeyboardEvent) => {
     if (!event.isComposing && event.key === "Enter") {
-      search();
+      navigationActions.search();
     }
   });
 
@@ -24,7 +26,7 @@ export function registerInputEvents () {
 
   // Escには２段階ある。
   input.addEventListener("keydown", (event: KeyboardEvent) => {
-    if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+    if (!window.flune.navigation) return;
     
     if (event.key !== "Escape") return;
 
@@ -41,13 +43,4 @@ export function registerInputEvents () {
     window.flune.navigation.focusPage();
     event.preventDefault();
   });
-
-  function search() {
-    if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
-    
-    const activeTab = document.querySelector("#tabs > #opened")!;
-    window.flune.navigation.tab.navigate(activeTab.getAttribute("data-id")!, input.getAttribute("value")!);
-    input.removeAttribute("value"); // ロードされたらすぐに値が代入されるが、念のため一度リセットする。
-    input.blur();
-  }
 }

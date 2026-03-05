@@ -110,13 +110,13 @@ export const NAVIGATION: NavigationAPI = {
       ipcRenderer.invoke(IPC_INVOKE.TAB_RELOAD, options); // 再読み込みする
     },
     goForward: () => {
-      ipcRenderer.invoke("tab.go-forward"); // 次に進む
+      ipcRenderer.invoke(IPC_INVOKE.TAB_GO_FORWARD); // 次に進む
     },
     goBack: () => {
-      ipcRenderer.invoke("tab.go-back"); // 前に戻る
+      ipcRenderer.invoke(IPC_INVOKE.TAB_GO_BACK); // 前に戻る
     },
     goHome: () => {
-      ipcRenderer.invoke("tab.go-home"); // ホームを開く
+      ipcRenderer.invoke(IPC_INVOKE.TAB_GO_HOME); // ホームを開く
     },
 
     onCreated: (callback) => ipcRenderer.on(
@@ -128,7 +128,7 @@ export const NAVIGATION: NavigationAPI = {
       (event, id) => callback(event, id)
     ),
     onUpdated: (callback) => ipcRenderer.on(
-      IPC_NOTIFY.TAB_REMOVED,
+      IPC_NOTIFY.TAB_UPDATED,
       (event, state) => callback(event, state)
     ),
   },

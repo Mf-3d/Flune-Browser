@@ -78,6 +78,7 @@ nav a {
   height: 20px;
   vertical-align: middle;
   display: inline-flex;
+  cursor: pointer;
 }
 
 nav a>svg {
@@ -121,7 +122,7 @@ nav>div {
   top: -0.5px;
   padding: 3px;
 }
-:has(.go-home:not(.invisible)) nav>div {
+:has(#go-home:not(.invisible)) nav>div {
   width: calc(100% - 28px * 5 + 6px);
 }
 
@@ -287,10 +288,9 @@ span.right {
   pointer-events: none;
 }
 
-/*  */
-.bookmark.active > svg {
+#toggle-bookmark.active > svg {
   fill: var(--symbol-color);
 }
-.bookmark.active > svg:hover {
+#toggle-bookmark.active > svg:hover {
   fill: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
 }

@@ -7,7 +7,6 @@ import {
 import { TabManager } from "@/main/window/tab";
 import { buildOptionsMenu } from "@/main/menu/index";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-// import theme from "@/main/lib/theme";\
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
@@ -57,7 +56,6 @@ export class Base {
     private readonly data: DataManager,
     private readonly settings: Settings,
     private readonly event: Event,
-    // private readonly settings: Settings,
     bounds?: {
       width: number;
       height: number;
@@ -165,11 +163,13 @@ export class Base {
       this.settings.themeService.getCurrentThemeId()
     );
 
+    if (!currentTheme) throw new Error;
+
     const navigation = createNavigationFeature(
       this.win,
       {
         viewY: this.viewY,
-        themeUrl: currentTheme?.url ?? "@theme/dark.css",
+        themeUrl: currentTheme.url,
         showHomeButton: this.settings.store.get("settings").design.showHomeButton,
       },
       () => {
@@ -181,23 +181,6 @@ export class Base {
 
     return navigation;
   }
-
-  // updateTheme() {
-  //   // テーマを追加
-  //   const themeId = this.tabManager?.settings.config.get("settings.design.theme");
-  //   const themes: {
-  //     id: string;
-  //     name: string;
-  //     url: string;
-  //   }[] = this.tabManager?.settings.config.get("themes") as {
-  //     id: string;
-  //     name: string;
-  //     url: string;
-  //   }[];
-  //   const currentTheme = themes.find(theme => theme.id === themeId);
-
-  //   currentTheme ? theme.appendTheme(this.nav.webContents, currentTheme.url) : "";
-  // }
 
   /**
    * @deprecated

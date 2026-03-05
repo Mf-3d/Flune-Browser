@@ -58,8 +58,6 @@ export type DefaultAPI = {
   getVersions: () => Promise<Versions>;
   getComputerInfo: () => Promise<ComputerInfo>;
   quit: (force?: boolean) => void;
-  isSettingsPage: () => boolean;
-  isNavigationPage: () => boolean;
 };
 
 export type BrowserAPI = {
@@ -74,7 +72,7 @@ export type NavigationAPI = {
     remove: (id: string) => void;
     move: (from: number, to: number) => void;
     navigate: (id: string | undefined, word: string) => void;
-    reload: (options: {
+    reload: (options?: {
       ignoringCache?: boolean | undefined;
     }) => void;
     goForward: () => void;

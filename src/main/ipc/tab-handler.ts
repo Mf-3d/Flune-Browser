@@ -26,6 +26,7 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
+      console.debug(id, word)
       tabManager.load(id, word);
     });
 

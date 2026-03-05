@@ -27,25 +27,38 @@
         <i data-lucide="x"></i>
       </a>
     </span> -->
-    <a href="javascript:flune.newTab()" class="new-button right">
+    <a id="new-button" class="new-button right">
       <i data-lucide="plus"></i>
     </a>
   </div>
   <nav>
-    <a class="go-back disabled" href="javascript:flune.goBack()"><i data-lucide="chevron-left"></i></a>
-    <a class="go-forward disabled" href="javascript:flune.goForward()"><i data-lucide="chevron-right"></i></a>
-    <a href="javascript:flune.reloadTab()"><i data-lucide="rotate-cw"></i></a>
-    <a id="go-home" class="go-home invisible" href="javascript:flune.goHome()"><i data-lucide="house"></i></a>
+    <a id="go-back" class="go-back disabled">
+      <i data-lucide="chevron-left"></i>
+    </a>
+    <a id="go-forward" class="go-forward disabled">
+      <i data-lucide="chevron-right"></i>
+    </a>
+    <a id="reload-tab">
+      <i data-lucide="rotate-cw"></i>
+    </a>
+    <a id="go-home" class="go-home invisible">
+      <i data-lucide="house"></i>
+    </a>
     <div>
       <input id="search-bar" type="text" placeholder="検索する単語またはURLを入力" />
-      <a id="bookmark" class="bookmark" href="javascript:toggleBookmark()"><i data-lucide="bookmark"></i></a>
-      <a href="javascript:search()"><i data-lucide="search"></i></a>
+      <a id="toggle-bookmark" class="bookmark">
+        <i data-lucide="bookmark"></i>
+      </a>
+      <a id="search-button">
+        <i data-lucide="search"></i>
+      </a>
     </div>
-    <a class="right" href="javascript:flune.toggleOptionMenu()"><i data-lucide="ellipsis-vertical"></i></a>
+    <a class="right" href="javascript:flune.toggleOptionMenu()">
+      <i data-lucide="ellipsis-vertical"></i>
+    </a>
   </nav>
   
-  <!-- <script src="./script/navigation.js" type="module"></script> -->
-  <script type="module" src="./main.ts"></script>
+  <script type="module" src="./index.ts"></script>
 </body>
 
 </html>
