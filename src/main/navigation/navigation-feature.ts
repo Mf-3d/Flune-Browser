@@ -1,7 +1,7 @@
 import path from "path";
 import { app, BaseWindow, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
-import { IPC_NOTIFY, IpcEvents, IpcNotify } from "@/shared/ipc/channels";
+import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { NavigationInit } from "@/shared/types/preload-api";
 
 type NavigationState = {
