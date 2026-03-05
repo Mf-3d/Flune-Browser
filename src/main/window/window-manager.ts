@@ -3,7 +3,7 @@ import { Base } from "./base-window";
 import Event from "@/main/lib/event";
 import { DataManager } from "../lib/data";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
-import { ContextMenuController } from "../menu/context-menu/controllers/context-menu-controller";
+import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 import { Settings } from "@/main/settings/";
 
 export class WindowManager {
