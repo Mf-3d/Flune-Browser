@@ -1,3 +1,4 @@
+/*
 
 import { IPC_INVOKE } from "../shared/ipc/channels.js";
 import { contextBridge, ipcRenderer, webFrame } from "electron";
@@ -72,3 +73,4 @@ ipcRenderer.on("nav.toggle-bookmark", (event) => {
   });
   `)
 });
+*/

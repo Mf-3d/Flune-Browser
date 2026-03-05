@@ -1,6 +1,6 @@
 import path from "path";
 import { app, BaseWindow, WebContentsView } from "electron";
-import { resolveView } from "@/shared/resolveView";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, IpcEvents, IpcNotify } from "@/shared/ipc/channels";
 
 type NavigationState = {
@@ -9,12 +9,12 @@ type NavigationState = {
 };
 
 export type Navigation = {
-    view: WebContentsView;
-    attach: () => void;
-    updateState: (state: NavigationState) => void;
-    updateTheme: (themeId: string) => void;
-    setWidth: (width: number) => void;
-    send: (channel: IpcNotify, ...args: any[]) => void;
+  view: WebContentsView;
+  attach: () => void;
+  updateState: (state: NavigationState) => void;
+  updateTheme: (themeId: string) => void;
+  setWidth: (width: number) => void;
+  send: (channel: string, ...args: any[]) => void;
 };
 
 export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, themeUrl: string, onLoaded?: () => void): Navigation {
@@ -22,7 +22,7 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
 
   const view = new WebContentsView({
     webPreferences: {
-      preload: path.join(__dirname, "..", "preload", "navigation.js"),
+      preload: path.join(__dirname, "..", "preload", "index.js"),
       additionalArguments: [
         `--is-packaged=${app.isPackaged}`
       ]
@@ -38,7 +38,7 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
 
   registerWebContentsEvents(view, themeUrl, onLoaded);
 
-  view.webContents.loadURL(resolveView("navigation"));
+  view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
   function attach() {
     baseWindow.contentView.addChildView(view);
@@ -54,7 +54,8 @@ export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, t
   }
 
   function send(
-    channel: IpcNotify,
+    // channel: IpcNotify,
+    channel: string,
     // channel: IpcNotify & IpcEvents,
     ...args: any[]
   ) {

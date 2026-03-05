@@ -55,7 +55,6 @@ export class Base {
     };
   tabManager: TabManager;
   optionsMenu: Electron.Menu;
-  readonly contextMenuManager: ContextMenuManager;
   readonly optionMenuManager: OptionMenuManager;
 
   constructor(
@@ -76,7 +75,6 @@ export class Base {
     this.win = new BaseWindow(this.createWindowConstructorOptions());
 
     this.optionsMenu = buildOptionsMenu(this, this.data);
-    this.contextMenuManager = new ContextMenuManager(this);
     this.optionMenuManager = new OptionMenuManager(this,
       this.data,
       {

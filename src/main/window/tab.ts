@@ -64,16 +64,22 @@ export class TabManager {
     private readonly data: DataManager,
     bounds?: { width: number; height: number; x: number; y: number }
   ) {
+    console.log("TabManager constructor start");
+
     this.base = base;
     this.settings = new Settings(this);
     this.event = new Event();
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
+    console.log("TabManager constructor 1");
+
     this.base.win.on("resize", () => {
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
+
+    console.log("TabManager constructor 2");
 
     // IPCチャンネル
     ipcMain.handle("tab.reload", (event, ignoringCache) => {
@@ -151,6 +157,8 @@ export class TabManager {
 
       this.getActiveTabCurrent()?.entity.webContents.focus();
     });
+
+    console.log("TabManager constructor end");
   }
 
   // --IDからタブを取得
@@ -212,7 +220,7 @@ export class TabManager {
     // ビューを作成
     let entity = new WebContentsView({
       webPreferences: {
-        preload: path.join(__dirname, "..", "preload", "browser.js"),
+        preload: path.join(__dirname, "..", "preload", "index.js"),
         contextIsolation: true,
         scrollBounce: true,
       }
@@ -569,6 +577,9 @@ export class TabManager {
       }
     });
     // コンテキストメニュー
+    /**
+     * @deprecated
+     */
     tab.entity.webContents.on("context-menu", (event, params) => {
       let type: ("normal" | "text" | "link" | "image" | "audio" | "video") = "normal";
       if (params.selectionText) type = "text";

@@ -34,13 +34,13 @@ export function registerInputEvents () {
     }
 
     // 2回目：抜ける
-    window.flune.focusPage();
+    window.flune.navigation.focusPage();
     event.preventDefault();
   });
 
   function search() {
     const activeTab = document.querySelector("#tabs > #opened")!;
-    window.flune.load(activeTab.getAttribute("data-id")!, input.getAttribute("value")!);
+    window.flune.navigation.tab.navigate(activeTab.getAttribute("data-id")!, input.getAttribute("value")!);
     input.removeAttribute("value"); // ロードされたらすぐに値が代入されるが、念のため一度リセットする。
     input.blur();
   }

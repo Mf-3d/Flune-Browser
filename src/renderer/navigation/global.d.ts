@@ -13,27 +13,52 @@ interface NavigationInitPayload {
 interface FluneAPI {
   baseURL: string;
 
-  toggleBookmark: () => void;
-  updateSymbolColor: (color: string) => void;
-  removeTab: (id: string) => void;
-  switchTab: (id: string) => void;
-  /**
-   * @deprecated
-   */
-  toggleTabContextMenu: (id: string) => void;
-  /**
-   * @deprecated
-   */
-  load: (id: string, word: string) => void;
-  focusPage: () => void;
+  // toggleBookmark: () => void;
+  // updateSymbolColor: (color: string) => void;
+  // removeTab: (id: string) => void;
+  // switchTab: (id: string) => void;
+  // /**
+  //  * @deprecated
+  //  */
+  // toggleTabContextMenu: (id: string) => void;
+  // /**
+  //  * @deprecated
+  //  */
+  // load: (id: string, word: string) => void;
+  // focusPage: () => void;
 
-  onStateUpdated: (callback: (event: Electron.IpcRendererEvent, payload: NavigationStatePayload) => void) => void;
-  onInit: (callback: (event: Electron.IpcRendererEvent, payload: NavigationInitPayload) => void) => void;
-  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => void;
-  /**
-   * @deprecated
-   */
-  on: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
+  // onStateUpdated: (callback: (event: Electron.IpcRendererEvent, payload: NavigationStatePayload) => void) => void;
+  // onInit: (callback: (event: Electron.IpcRendererEvent, payload: NavigationInitPayload) => void) => void;
+  // onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => void;
+
+  baseURL: string;
+  getVersion: () => Promise<any>;
+  getVersions: () => Promise<Versions>;
+  getComputerInfo: () => Promise<ComputerInfo>;
+  quit: () => void;
+
+  navigation: {
+    focusPage: () => void;
+    tab: {
+        create: () => void;
+        activate: (id: string) => void;
+        remove: (id: string) => void;
+        move: (from: string, to: string) => void;
+        navigate: (id: string | undefined, word: string) => void;
+        reload: (options: {
+            ignoringCache?: boolean | undefined;
+        }) => void;
+        goForward: () => void;
+        goBack: () => void;
+        goHome: () => void;
+    };
+    toggleBookmark: () => void;
+    toggleOptionMenu: () => void;
+    updateSymbolColor: (color: string) => void;
+    onStateUpdated: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => Electron.IpcRenderer;
+    onInit: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => Electron.IpcRenderer;
+    onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
+  }
 }
 
 interface Window {

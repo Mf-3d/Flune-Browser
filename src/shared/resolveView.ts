@@ -1,5 +1,5 @@
 export const ROUTE_MAP = {
-  navigation: "navigation/index.html",
+  navigation: "navigation/",
   home: "browser/home.html",
   settings: "browser/settings.html",
   version: "browser/version.html",

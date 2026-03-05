@@ -4,6 +4,8 @@ import { applyTheme } from "./theme";
 
 
 window.addEventListener("load", () => {
+  lucide.createIcons();
+  
   registerInputEvents();
   each();
 
@@ -16,7 +18,7 @@ window.addEventListener("load", () => {
     visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
   });
 
-  window.flune.onStateUpdated((_, state) => {
+  window.flune.navigation.onStateUpdated((_, state) => {
     if(state.isBookmarked !== undefined) {
       const bookmarkElement = document.querySelector("#bookmark")!;
 
@@ -48,7 +50,7 @@ window.addEventListener("load", () => {
     }
   });
 
-  window.flune.onThemeChanged((_, themeUrl) => {
+  window.flune.navigation.onThemeChanged((_, themeUrl) => {
     applyTheme(themeUrl);
   });
 
@@ -135,17 +137,17 @@ window.addEventListener("load", () => {
 });
 
 function toggleBookmark() {
-  window.flune.toggleBookmark();
+  window.flune.navigation.toggleBookmark();
   document.getElementById("bookmark")?.classList.toggle("active");
 }
 
 function updateSymbolColor() {
   const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
-  window.flune.updateSymbolColor(textColor);
+  window.flune.navigation.updateSymbolColor(textColor);
 }
 
 function removeTab(id: string) {
-  window.flune.removeTab(id);
+  window.flune.navigation.tab.remove(id);
   console.info("(removeTab):", id);
 }
 
@@ -162,13 +164,13 @@ function each() {
 
     // タブを切り替える
     title.onclick = () => {
-      window.flune.switchTab(element.getAttribute("data-id")!);
+      window.flune.navigation.tab.activate(element.getAttribute("data-id")!);
     };
     // タブ用のコンテキストメニューを表示する
     title.oncontextmenu = (event) => {
       event.preventDefault();
 
-      window.flune.toggleTabContextMenu(element.getAttribute("data-id")!);
+      // window.flune.toggleTabContextMenu(element.getAttribute("data-id")!);
     };
 
     // タブ移動

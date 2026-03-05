@@ -1,19 +1,33 @@
 export const IPC_INVOKE = {
+  APP_GET_VERSION: "app:get-version",
+  APP_GET_VERSIONS: "app:get-versions",
+  APP_GET_COMPUTER_INFO: "app:get-computer-info",
+  APP_QUIT: "app:quit",
+
   BOOKMARK_TOGGLE: "bookmark:toggle",
+
   TAB_CREATE: "tab:create",
   TAB_REMOVE: "tab:remove",
   TAB_ACTIVATE: "tab:activate",
-  TAB_FOCUS: "tab:focus",
+  TAB_MOVE: "tab:move",
+  TAB_NAVIGATE: "tab:navigate",
+  TAB_RELOAD: "tab:reload",
+
+  VIEW_FOCUS: "view:focus",
+
   STORE_GET_ALL: "store:get-all",
   STORE_GET: "store:get",
   STORE_SET_ALL: "store:set-all",
   STORE_SET: "store:set",
+
+  MENU_OPEN: "menu:open",
+  MENU_CLOSE: "menu:close",
   // BOOKMARK_STATUS: "bookmark:status",
 } as const;
 
 // 一方向（レスポンスなし）
 export const IPC_EVENTS = {
-  
+
 } as const;
 
 export const IPC_NOTIFY = {

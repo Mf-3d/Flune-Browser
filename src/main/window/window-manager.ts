@@ -40,7 +40,7 @@ export class WindowManager {
 
   private initializeControllers() {
     this.setupApplicationMenu();
-    // this.setupContextMenu();
+    this.setupContextMenu();
     // this.setupTabs();
   }
 
