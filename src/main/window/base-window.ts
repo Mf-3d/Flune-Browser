@@ -5,7 +5,6 @@ import {
   app
 } from "electron";
 import { TabManager } from "@/main/window/tab";
-import { buildOptionsMenu } from "@/main/menu/index";
 import { OptionMenuManager } from "@/main/menu/option-menu";
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
@@ -49,7 +48,6 @@ export class Base {
       height: 600
     };
   tabManager: TabManager;
-  optionsMenu: Electron.Menu;
   readonly optionMenuManager: OptionMenuManager;
 
   constructor(
@@ -68,7 +66,6 @@ export class Base {
 
     this.win = new BaseWindow(this.createWindowConstructorOptions());
 
-    this.optionsMenu = buildOptionsMenu(this, this.data);
     this.optionMenuManager = new OptionMenuManager(this,
       this.data,
       {
