@@ -21,6 +21,4 @@ export const DEFAULT: DefaultAPI = {
   quit: (force?: boolean) => {
     ipcRenderer.invoke(IPC_INVOKE.APP_QUIT, force); // 終了する
   },
-  isSettingsPage,
-  isNavigationPage,
 };
