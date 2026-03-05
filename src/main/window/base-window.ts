@@ -60,7 +60,6 @@ export class Base {
       x: number;
       y: number;
     },
-
   ) {
     if (bounds) this.bounds = bounds;
 
@@ -75,8 +74,6 @@ export class Base {
         y: this.viewY
       }
     );
-
-
 
     this.tabManager = new TabManager(
       this,
