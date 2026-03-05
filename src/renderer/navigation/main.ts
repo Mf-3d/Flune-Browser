@@ -14,14 +14,22 @@ window.addEventListener("load", () => {
   const tabContainer = document.getElementById("tabs")!;
   const input = document.getElementById("search-bar");
 
-  window.flune.on("flune.toggle-home-button", (event, visiblity) => {
-    const homeButton = document.getElementById("go-home")!;
+  window.flune.navigation.onInit((_, state) => {
+    if (state.showHomeButton !== undefined) {
+      const homeButton = document.getElementById("go-home")!;
 
-    visiblity ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
+      state.showHomeButton ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
+    }
   });
 
   window.flune.navigation.onStateUpdated((_, state) => {
-    if(state.isBookmarked !== undefined) {
+    if (state.showHomeButton !== undefined) {
+      const homeButton = document.getElementById("go-home")!;
+
+      state.showHomeButton ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
+    }
+
+    if (state.isBookmarked !== undefined) {
       const bookmarkElement = document.querySelector("#bookmark")!;
 
       if (state.isBookmarked) {
@@ -31,7 +39,7 @@ window.addEventListener("load", () => {
       }
     }
 
-    if(state.canGoBack !== undefined) {
+    if (state.canGoBack !== undefined) {
       const goBackElement = document.querySelector(".go-back")!;
 
       if (state.canGoBack) {
@@ -41,7 +49,7 @@ window.addEventListener("load", () => {
       }
     }
 
-    if(state.canGoForward !== undefined) {
+    if (state.canGoForward !== undefined) {
       const goForwardElement = document.querySelector(".go-forward")!;
 
       if (state.canGoForward) {
@@ -53,10 +61,10 @@ window.addEventListener("load", () => {
   });
 
   window.flune.navigation.onThemeChanged((_, themeUrl) => {
-    applyTheme(themeUrl);
+    applyTheme(themeUrl, updateSymbolColor);
   });
 
-  window.flune.on("tab.new", (event, tab) => {
+  window.flune.navigation.tab.onCreated((_, tab) => {
     const newButton = tabContainer.querySelector(".new-button")!;
 
     const element = document.createElement("span");
@@ -91,71 +99,77 @@ window.addEventListener("load", () => {
     each();
   });
 
-  window.flune.on("tab.activate", (event, id) => {
+  window.flune.navigation.tab.onRemoved((_, id) => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
-    tabElements.forEach(tab => {
-      tab.getAttribute("data-id") === id ? tab.id = "opened" : tab.id = "";
+
+    tabElements.forEach(tabElement => {
+      if (tabElement.getAttribute("data-id") === id) tabElement.remove();
     });
   });
 
-  window.flune.on("tab.remove", (event, id) => {
+  window.flune.navigation.tab.onUpdated((_, tab) => {
     const tabElements = tabContainer.querySelectorAll(":scope > span");
-    tabElements.forEach(tab => {
-      if (tab.getAttribute("data-id") === id) tab.remove();
-    });
-  });
 
-  window.flune.on("tab.change-state", (event, id, state, value) => {
-    const tabElements = tabContainer.querySelectorAll(":scope > span");
-    tabElements.forEach(t => {
-      const tab = t as HTMLElement;
+    tabElements.forEach((tabElement) => {
+      if (tabElement.getAttribute("data-id") !== tab.id) return;
 
-      if (tab.getAttribute("data-id") === id) {
-        switch (state) {
-          case "title":
-            console.info("(change-state) title:", value);
-            const title = tab.querySelector("p.title")! as HTMLElement;
-            title.innerText = value;
-            break;
-          case "favicon":
-            console.info("(change-state) favicon:", value);
-            const favicon = tab.querySelector("img.favicon")! as HTMLElement;
-            favicon.setAttribute("src", value);
-            break;
-          case "loading":
-            console.info("(change-state) loading:", value);
-            if (value) tab.querySelector("a.loading")!.classList.remove("disabled");
-            else tab.querySelector("a.loading")!.classList.add("disabled");
-            break;
-          case "audible":
-            console.info("(change-state) audible:", value);
-            if (value) tab.querySelector("a.audible")!.classList.remove("disabled");
-            else tab.querySelector("a.audible")!.classList.add("disabled");
-            break;
-        }
+      if (tab.title !== undefined) {
+        console.info("(change-state) title:", tab.title);
+        const titleElement = tabElement.querySelector("p.title")! as HTMLElement;
+        titleElement.innerText = tab.title;
+      }
+
+      if (tab.favicon !== undefined) {
+        console.info("(change-state) favicon:", tab.favicon);
+        const faviconElement = tabElement.querySelector("img.favicon")! as HTMLElement;
+        faviconElement.setAttribute("src", tab.favicon);
+      }
+
+      if (tab.isLoading !== undefined) {
+        console.info("(change-state) loading:", tab.isLoading);
+        const loadingElement = tabElement.querySelector("a.loading")! as HTMLElement;
+
+        if (tab.isLoading) loadingElement.classList.remove("disabled");
+        else loadingElement.classList.add("disabled");
+      }
+
+      if (tab.isAudible !== undefined) {
+        console.info("(change-state) audible:", tab.isAudible);
+        const audibleElement = tabElement.querySelector("a.audible")! as HTMLElement;
+
+        if (tab.isAudible) audibleElement.classList.remove("disabled");
+        else audibleElement.classList.add("disabled");
       }
     });
+
+    if (tab.active !== undefined) {
+      tabElements.forEach(tabElement => {
+        tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
+      });
+    }
   });
 });
 
 function toggleBookmark() {
+  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
   window.flune.navigation.toggleBookmark();
   document.getElementById("bookmark")?.classList.toggle("active");
 }
 
 function updateSymbolColor() {
+  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
   const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
   window.flune.navigation.updateSymbolColor(textColor);
 }
 
 function removeTab(id: string) {
+  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
   window.flune.navigation.tab.remove(id);
   console.info("(removeTab):", id);
 }
-
-window.toggleBookmark = toggleBookmark;
-window.updateSymbolColor = updateSymbolColor;
-window.removeTab = removeTab;
 
 function each() {
   const tabContainer = document.getElementById("tabs")!;
@@ -166,6 +180,8 @@ function each() {
 
     // タブを切り替える
     title.onclick = () => {
+      if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
       window.flune.navigation.tab.activate(element.getAttribute("data-id")!);
     };
     // タブ用のコンテキストメニューを表示する

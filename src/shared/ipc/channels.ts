@@ -2,6 +2,7 @@ export const IPC_INVOKE = {
   APP_GET_VERSION: "app:get-version",
   APP_GET_VERSIONS: "app:get-versions",
   APP_GET_COMPUTER_INFO: "app:get-computer-info",
+  APP_UPDATE_SYMBOL_COLOR: "app:update-symbol-color",
   APP_QUIT: "app:quit",
 
   BOOKMARK_TOGGLE: "bookmark:toggle",
@@ -36,11 +37,12 @@ export const IPC_EVENTS = {
 
 export const IPC_NOTIFY = {
   NAVIGATION_INIT: "navigation:init",
-  NAVIGATION_APPLY_THEME: "navigation:apply-theme",
-  NAVIGATION_STATE: "navigation:state",
+  NAVIGATION_THEME: "navigation:theme",
+  NAVIGATION_UPDATE: "navigation:update",
   TAB_CREATED: "tab:created",
   TAB_REMOVED: "tab:removed",
   TAB_UPDATED: "tab:updated",
+  TAB_THEME: "tab:theme",
 } as const;
 
 export type IpcInvoke =

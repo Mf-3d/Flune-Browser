@@ -5,6 +5,7 @@ import {
 } from "electron";
 
 import { Base } from "@/main/window/base-window";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 /**
  * @class
@@ -177,7 +178,7 @@ export class ContextMenuManager {
       {
         label: "設定",
         click: () => {
-          this.base.tabManager?.settings.openSettingsAsTab();
+          this.base.tabManager?.load(undefined, resolveView(ROUTE_MAP.settings));
         }
       }
     ];

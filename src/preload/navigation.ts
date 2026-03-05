@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
-import { NavigationAPI } from "../shared/types/preload-api.js";
+import { NavigationAPI, NavigationInit, NavigationState } from "../shared/types/preload-api.js";
 
 // contextBridge.exposeInMainWorld("flune", {
 //   baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)
@@ -94,23 +94,19 @@ export const NAVIGATION: NavigationAPI = {
     create: () => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_CREATE); // 新規タブ
     },
-    activate: (id: string) => {
+    activate: (id) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_ACTIVATE, id); // タブを切り替える（tab.activate）
     },
-    remove: (id: string) => {
+    remove: (id) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_REMOVE, id); // タブ削除
     },
-    move: (from: number, to: number) => {
+    move: (from, to) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_MOVE, from, to); // タブ移動
     },
-    navigate: (id: string | undefined, word: string) => {
+    navigate: (id, word) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, id, word); // ページをロードする
     },
-    reload: (
-      options: {
-        ignoringCache?: boolean
-      }
-    ) => {
+    reload: (options) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_RELOAD, options); // 再読み込みする
     },
     goForward: () => {
@@ -122,6 +118,19 @@ export const NAVIGATION: NavigationAPI = {
     goHome: () => {
       ipcRenderer.invoke("tab.go-home"); // ホームを開く
     },
+
+    onCreated: (callback) => ipcRenderer.on(
+      IPC_NOTIFY.TAB_CREATED,
+      (event, tab) => callback(event, tab)
+    ),
+    onRemoved: (callback) => ipcRenderer.on(
+      IPC_NOTIFY.TAB_REMOVED,
+      (event, id) => callback(event, id)
+    ),
+    onUpdated: (callback) => ipcRenderer.on(
+      IPC_NOTIFY.TAB_REMOVED,
+      (event, state) => callback(event, state)
+    ),
   },
 
   toggleBookmark: () => {
@@ -130,20 +139,20 @@ export const NAVIGATION: NavigationAPI = {
   toggleOptionMenu: () => {
     ipcRenderer.invoke("options.toggle"); // メニューを開く
   },
-  updateSymbolColor: (color: string) => {
-    ipcRenderer.invoke("flune.update-symbol-color", color); // シンボルカラーを変更する
+  updateSymbolColor: (color) => {
+    ipcRenderer.invoke(IPC_INVOKE.APP_UPDATE_SYMBOL_COLOR, color); // シンボルカラーを変更する
   },
 
-  onStateUpdated: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => ipcRenderer.on(
-    IPC_NOTIFY.NAVIGATION_STATE,
+  onStateUpdated: (callback) => ipcRenderer.on(
+    IPC_NOTIFY.NAVIGATION_UPDATE,
     (event, state) => callback(event, state)
   ),
-  onInit: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => ipcRenderer.on(
+  onInit: (callback) => ipcRenderer.on(
     IPC_NOTIFY.NAVIGATION_INIT,
     (event, state) => callback(event, state)
   ),
-  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => ipcRenderer.on(
-    IPC_NOTIFY.NAVIGATION_APPLY_THEME,
+  onThemeChanged: (callback) => ipcRenderer.on(
+    IPC_NOTIFY.NAVIGATION_THEME,
     (event, themeUrl) => callback(event, themeUrl)
   ),
 };

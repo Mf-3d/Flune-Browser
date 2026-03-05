@@ -7,13 +7,15 @@ import {
 } from "electron";
 import { Base } from "@/main/window/base-window";
 import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/context-menu";
-import { SearchEngine, Settings } from "@/main/settings/settings";
+import { SearchEngine } from "@/main/settings/settings";
 import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
-import { validateSender } from "@/main/ipc/validateSender";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { IPC_NOTIFY } from "@/shared/ipc/channels";
+import { CreatedTab, NavigationState, TabState } from "@/shared/types/preload-api";
+import { Settings } from "../settings";
 
 export type Tab = {
   id: string;
@@ -41,7 +43,7 @@ const contextMenuController = new ContextMenuController();
 
 // -タブ管理
 export class TabManager {
-  readonly settings: Settings;
+  // readonly settings: Settings;
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
   private readonly base: Base;
@@ -62,12 +64,13 @@ export class TabManager {
   constructor(
     base: Base,
     private readonly data: DataManager,
+    private readonly settings: Settings,
     bounds?: { width: number; height: number; x: number; y: number }
   ) {
     console.log("TabManager constructor start");
 
     this.base = base;
-    this.settings = new Settings(this);
+    // this.settings = new Settings(this);
     this.event = new Event();
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
@@ -273,15 +276,19 @@ export class TabManager {
     });
 
     // レンダラーにも反映
-    this.base.navigation.send("tab.new", {
+    this.base.navigation.send(IPC_NOTIFY.TAB_CREATED, {
       id: newTab.id,
       title: newTab.title,
       active: newTab.active,
       beforeTabId: options.position ? this.tabs.at(options.position - 1)?.id : null
-    });
+    } as CreatedTab);
 
     entity.webContents.once("did-finish-load", () => {
-      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", url);
+      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
+        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+          word: url,
+        } as NavigationState);
+      }
     });
 
     // 必要ならタブをアクティブ化
@@ -303,7 +310,7 @@ export class TabManager {
 
     tab.entity.webContents.close();
     this.deleteEvents(tab.id);
-    this.base.navigation.send("tab.remove", id);
+    this.base.navigation.send(IPC_NOTIFY.TAB_REMOVED, tab.id);
 
     // 別のタブをアクティブ化
     if (id === this.activeCurrent && i !== -1) {
@@ -351,12 +358,24 @@ export class TabManager {
     });
 
     // レンダラーにも反映
-    this.base.navigation.send("tab.activate", activeTab.id);
-    this.base.navigation.send("nav.change-state", "can-go-back", activeTab.entity.webContents.navigationHistory.canGoBack());
-    this.base.navigation.send("nav.change-state", "can-go-forward", activeTab.entity.webContents.navigationHistory.canGoForward());
-    this.base.navigation.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()));
+    const tabState: TabState = {
+      id: activeTab.id,
+      active: true,
+    };
+
+    this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, tabState);
+    this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      isBookmarked: this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()),
+      canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
+      canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward()
+    } as NavigationState);
+
     const activeTabUrl = activeTab.entity.webContents.getURL();
-    if (!activeTabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", activeTabUrl);
+    if (!activeTabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
+      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        word: activeTabUrl,
+      } as NavigationState);
+    }
 
     return activeTab;
   }
@@ -445,10 +464,14 @@ export class TabManager {
 
     if (URL.canParse(url)) {
       tab.entity.webContents.loadURL(url);
-      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", url);
+      if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
+        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+          word: url,
+        } as NavigationState);
+      }
     } else {
-      const searchEngine: SearchEngine | undefined = (this.settings.config.get("searchEngines") as SearchEngine[])
-        .find((engine) => engine.id === this.settings.config.get("settings.search.engine"));
+      const engineId = this.settings.searchEngineService.getCurrentSearchEngineId();
+      const searchEngine = this.settings.searchEngineService.getEngineById(engineId);
 
       const searchUrl: string = searchEngine?.url.replace(/%s/g, url) || `https://google.com/search?q=${url}`;
       tab.entity.webContents.loadURL(searchUrl);
@@ -502,54 +525,92 @@ export class TabManager {
     // タイトルが変更されたとき
     tab.entity.webContents.on("page-title-updated", (event, title) => {
       this.setTabTitle(id, title);
-      this.base.navigation.send("tab.change-state", tab.id, "title", title);
+
+      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+        id: tab.id,
+        title,
+      });
     });
     // ファビコンが変更されたとき
     tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
-      this.base.navigation.send("tab.change-state", tab.id, "favicon", favicons[0]);
+      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+        id: tab.id,
+        favicon: favicons[0]
+      });
     });
     // ロードが始まった時
     tab.entity.webContents.on("did-start-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
-      this.base.navigation.send("tab.change-state", tab.id, "loading", true);
-      this.base.navigation.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()));
-      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", tab.entity.webContents.getURL());
+      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+        id: tab.id,
+        isLoading: true
+      });
+
+      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        isBookmarked: this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()),
+      } as NavigationState);
+
+      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
+        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+          word: tabUrl,
+        } as NavigationState);
+      }
     });
     // ロードが停止した時
     tab.entity.webContents.on("did-stop-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
-      this.base.navigation.send("nav.change-state", "can-go-back", tab.entity.webContents.navigationHistory.canGoBack());
-      this.base.navigation.send("nav.change-state", "can-go-forward", tab.entity.webContents.navigationHistory.canGoForward());
-      this.base.navigation.send("tab.change-state", tab.id, "loading", false);
-      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", tab.entity.webContents.getURL());
-      this.base.navigation.send("tab.change-state", tab.id, "favicon", "");
-      this.base.navigation.send("tab.change-state", tab.id, "title", tab.entity.webContents.getTitle());
+
+      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
+        canGoForward: tab.entity.webContents.navigationHistory.canGoForward()
+      } as NavigationState);
+
+      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+        id: tab.id,
+        isLoading: false,
+        favicon: "",
+        title: tab.entity.webContents.getTitle(),
+      });
+      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        word: tabUrl,
+      } as NavigationState);
 
       if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
       tab.listeners["theme-updated"] = undefined;
 
-      if (tabUrl.startsWith(URL_PREFIX)) {
-        this.updateTheme(tab.id);
+      this.base.navigation.send(
+        IPC_NOTIFY.TAB_THEME,
+        this.settings.themeService.getThemeById(this.settings.themeService.getCurrentThemeId())
+      );
 
-        tab.listeners["theme-updated"] = () => {
-          this.updateTheme(tab.id)
-        };
+      tab.listeners["theme-updated"] = () => {
+        this.base.navigation.send(
+          IPC_NOTIFY.TAB_THEME,
+          this.settings.themeService.getThemeById(this.settings.themeService.getCurrentThemeId())
+        );
+      };
 
-        this.event.on("theme-updated", tab.listeners["theme-updated"]);
-      } else {
-        this.settings.closeSettings(tab.id);
-      }
+      this.event.on("theme-updated", tab.listeners["theme-updated"]);
     });
     // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
-      this.base.navigation.send("tab.change-state", tab.id, "audible", event.audible);
+      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+        id: tab.id,
+        isAudible: event.audible,
+      });
     });
     // ロードが完了した時
     tab.entity.webContents.on("did-finish-load", () => {
       const tabUrl = tab.entity.webContents.getURL();
-      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) this.base.navigation.send("nav.set-word", tabUrl);
-      if (tabUrl === SETTINGS_URL) this.settings.openSettingsAsTab(tab.id);
-      this.base.navigation.send("nav.change-state", "is-bookmarked", this.data.bookmarks.existByUrl(tabUrl));
+      if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
+        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+          word: tabUrl,
+        } as NavigationState);
+      }
+
+      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        isBookmarked: this.data.bookmarks.existByUrl(tabUrl),
+      } as NavigationState);
 
       // 履歴に追加
       if (tabUrl !== HOME_URL) this.data.histories.add({
@@ -661,35 +722,5 @@ export class TabManager {
     tab.listeners["theme-updated"] = undefined;
 
     if (callback) callback();
-  }
-
-  updateTheme(tabId: string | undefined = this.activeCurrent) {
-    if (!tabId) {
-      console.error("Could not append the theme: Tab ID not specified or active tab does not exist.");
-      return;
-    }
-
-    const tab = this.getTabById(tabId);
-
-    if (!tab) {
-      console.error("Could not append the theme: Tab does not exist.");
-      return;
-    }
-
-    // テーマを追加
-    const themeId = this.settings.config.get("settings.design.theme");
-    const themes = this.settings.config.get("themes") as {
-      id: string;
-      name: string;
-      url: string;
-    }[];
-    const currentTheme = themes.find(theme => theme.id === themeId);
-
-    currentTheme ? theme.appendTheme(tab.entity.webContents, currentTheme.url) : "";
-    console.info("Theme has been changed:\n", {
-      themeId,
-      currentTheme,
-      tabId
-    });
   }
 }

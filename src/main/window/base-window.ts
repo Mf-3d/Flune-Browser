@@ -1,32 +1,27 @@
 import path from "node:path";
 import {
   BaseWindow,
-  WebContentsView,
-  Menu,
   ipcMain,
-  dialog,
   app
 } from "electron";
 import { TabManager } from "@/main/window/tab";
 import { buildOptionsMenu } from "@/main/menu/index";
-import { ContextMenuManager } from "@/main/menu/context-menu";
 import { OptionMenuManager } from "@/main/menu/option-menu";
 // import theme from "@/main/lib/theme";\
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
 import { validateSender } from "@/main/ipc/validateSender";
-import { BookmarkService } from "@/main/bookmark/service";
 import { registerBookmarkHandler } from "@/main/ipc/bookmark-handler";
 import { DataManager } from "@/main/lib/data";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
-// import { Settings } from "@/main/settings/settings";
 import { Settings } from "@/main/settings";
-import { createSettings } from "../settings";
 import { registerTabHandler } from "../ipc/tab-handler";
+import { NavigationState } from "@/shared/types/preload-api";
+import { registerAppHandler } from "../ipc/app-handler";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -86,11 +81,12 @@ export class Base {
       }
     );
 
-    
+
 
     this.tabManager = new TabManager(
       this,
       this.data,
+      this.settings,
       {
         width: this.bounds.width,
         height: this.bounds.height - this.viewY,
@@ -101,14 +97,17 @@ export class Base {
     this.navigation = this.setupNavigation();
 
     registerTabHandler(this.tabManager, resolveView(ROUTE_MAP.home));
-    registerWindowEvents(this.win, this.navigation, this.tabManager);
     registerBookmarkHandler(this.tabManager, this.data);
+    registerAppHandler(this.win, this.tabManager);
+    registerWindowEvents(this.win, this.navigation, this.tabManager);
 
     this.event.on("theme-updated", (id) => {
       this.navigation?.updateTheme(id);
     });
     this.event.on("setting-updated", () => {
-      this.navigation.send("flune.toggle-home-button", this.settings.store.get("settings").design.showHomeButton);
+      this.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        showHomeButton: this.settings.store.get("settings").design.showHomeButton
+      } as NavigationState);
     });
 
     // IPCチャンネル
@@ -121,41 +120,6 @@ export class Base {
       // this.optionsMenu = buildOptionsMenu(this);
       // this.optionsMenu.popup();
     });
-    ipcMain.handle("flune.update-symbol-color", (event, color?: string) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      if (process.platform === "win32" || process.platform === "linux") this.win.setTitleBarOverlay({
-        symbolColor: color
-      });
-    });
-    ipcMain.handle("flune.get-version", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      return packageJson.version;
-    });
-    ipcMain.handle("flune.get-versions", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      return {
-        flune: packageJson.version,
-        electron: process.versions.electron,
-        node: process.versions.node,
-        chrome: process.versions.chrome,
-        v8: process.versions.v8,
-      };
-    });
-    ipcMain.handle("flune.get-computer-info", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      return {
-        arch: process.arch,
-        platform: process.platform,
-      };
-    });
     ipcMain.handle("flune.open-settings", (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
@@ -167,23 +131,6 @@ export class Base {
       if (!validateSender(event.senderFrame)) return null;
 
       this.tabManager?.load(undefined, VERSION_URL);
-    });
-    ipcMain.handle("flune.quit", (event, forced: boolean) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      if (forced) app.quit();
-
-      const choice = dialog.showMessageBoxSync(this.win, {
-        type: "question",
-        message: "本当に終了しますか？",
-        detail: `${this.tabManager?.tabs.length}個のタブを閉じます。`,
-        buttons: ["終了する", "キャンセル"],
-        defaultId: 0,
-        cancelId: 1,
-      });
-
-      if (choice === 0) app.quit();
     });
   }
 
@@ -218,9 +165,17 @@ export class Base {
       this.settings.themeService.getCurrentThemeId()
     );
 
-    const navigation = createNavigationFeature(this.win, this.viewY, currentTheme?.url ?? "@theme/dark.css", () => {
-      this.event.send("navigation-loaded");
-    });
+    const navigation = createNavigationFeature(
+      this.win,
+      {
+        viewY: this.viewY,
+        themeUrl: currentTheme?.url ?? "@theme/dark.css",
+        showHomeButton: this.settings.store.get("settings").design.showHomeButton,
+      },
+      () => {
+        this.event.send("navigation-loaded");
+      }
+    );
 
     navigation.attach();
 

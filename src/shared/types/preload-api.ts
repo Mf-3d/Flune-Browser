@@ -11,11 +11,45 @@ export type ComputerInfo = {
   platform: string;
 };
 
+export type NavigationInit = {
+  isMac: boolean;
+  showHomeButton: boolean;
+};
+
+export type NavigationState = {
+  isBookmarked?: boolean;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
+  showHomeButton?: boolean;
+  /**
+   * 検索ワード、またはURL
+   */
+  word?: string;
+};
+
+export type CreatedTab = {
+  id: string;
+  title: string;
+  active: boolean;
+  beforeTabId?: string;
+};
+
+export type TabState = {
+  id: string;
+
+  title?: string;
+  active?: boolean;
+  favicon?: string;
+  isLoading?: boolean;
+  isAudible?: boolean;
+};
+
 export type API = 
   DefaultAPI & {
     navigation?: NavigationAPI;
     menu?: MenuAPI;
     settings?: SettingsAPI;
+    browser?: BrowserAPI;
   };
 
 export type DefaultAPI = {
@@ -26,6 +60,10 @@ export type DefaultAPI = {
   quit: (force?: boolean) => void;
   isSettingsPage: () => boolean;
   isNavigationPage: () => boolean;
+};
+
+export type BrowserAPI = {
+  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
 };
 
 export type NavigationAPI = {
@@ -42,12 +80,16 @@ export type NavigationAPI = {
     goForward: () => void;
     goBack: () => void;
     goHome: () => void;
+
+    onCreated: (callback: (event: Electron.IpcRendererEvent, tab: CreatedTab) => void) => Electron.IpcRenderer;
+    onRemoved: (callback: (event: Electron.IpcRendererEvent, id: string) => void) => Electron.IpcRenderer;
+    onUpdated: (callback: (event: Electron.IpcRendererEvent, state: TabState) => void) => Electron.IpcRenderer;
   };
   toggleBookmark: () => void;
   toggleOptionMenu: () => void;
   updateSymbolColor: (color: string) => void;
-  onStateUpdated: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => Electron.IpcRenderer;
-  onInit: (callback: (event: Electron.IpcRendererEvent, state: any) => void) => Electron.IpcRenderer;
+  onStateUpdated: (callback: (event: Electron.IpcRendererEvent, state: NavigationState) => void) => Electron.IpcRenderer;
+  onInit: (callback: (event: Electron.IpcRendererEvent, state: NavigationInit) => void) => Electron.IpcRenderer;
   onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
 };
 

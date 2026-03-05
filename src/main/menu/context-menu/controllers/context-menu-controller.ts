@@ -7,6 +7,7 @@ import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/te
 import { createLinkSelectionMenuTemplate } from "@/main/menu/context-menu/templates/link-selection";
 import { createNavigationMenuTemplate } from "@/main/menu/context-menu/templates/navigation";
 import { createViewMenuTemplate } from "@/main/menu/context-menu/templates/view";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 export type ContextMenuActions = {
   showEmojiPanel: () => void,
@@ -105,7 +106,7 @@ export class ContextMenuController {
       },
       toggleNavigationDevTools: () => this.baseWindow.navigation.view.webContents.toggleDevTools(),
       toggleDevTools: () => this.baseWindow.tabManager.toggleDevTools(),
-      openSettings: () => this.baseWindow.tabManager.settings.openSettingsAsTab(),
+      openSettings: () => this.baseWindow.tabManager.load(undefined, resolveView(ROUTE_MAP.settings)),
       searchSelectionText: () => this.baseWindow.tabManager?.newTab(params.selectionText, {
         active: true
       }),

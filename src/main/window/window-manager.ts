@@ -19,7 +19,9 @@ export class WindowManager {
     this.baseWindow = new Base(data, this.settings, event);
 
     event.once("navigation-loaded", () => {
-      this.baseWindow?.tabManager.newTab();
+      this.baseWindow?.tabManager.newTab(undefined, {
+        active: true
+      });
     });
 
     if (!app.isPackaged) this.baseWindow.navigation?.view.webContents.openDevTools({
