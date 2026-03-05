@@ -3,6 +3,9 @@ import { app, WebContents } from "electron";
 
 const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/` : "flune://";
 
+/**
+ * @deprecated
+ */
 export function appendTheme(webContents: WebContents, theme: string) {
   const themeUrl = theme.replace(/@theme\//g, URL_PREFIX + path.join("style", "theme", "/"))
                         .replace(/\\/g, "\/");
@@ -25,6 +28,9 @@ export function appendTheme(webContents: WebContents, theme: string) {
   } else console.error("Could not append the theme: Theme URL is incorrect.");
 }
 
+/**
+ * @deprecated
+ */
 export function dependTheme(webContents: WebContents) {
   webContents.executeJavaScript(`
     document.getElementById("theme").remove(); 
