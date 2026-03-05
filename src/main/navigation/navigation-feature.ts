@@ -9,14 +9,7 @@ type NavigationState = {
   isBookmarked?: boolean;
 };
 
-export type Navigation = {
-  view: WebContentsView;
-  attach: () => void;
-  updateState: (state: NavigationState) => void;
-  updateTheme: (themeId: string) => void;
-  setWidth: (width: number) => void;
-  send: (channel: IpcNotify, ...args: any[]) => void;
-};
+export type Navigation = ReturnType<typeof createNavigationFeature>;
 
 export function createNavigationFeature(
   baseWindow: BaseWindow,
@@ -26,7 +19,7 @@ export function createNavigationFeature(
     showHomeButton: boolean;
   },
   onLoaded?: () => void
-): Navigation {
+) {
   let currentState: NavigationState = {};
 
   const view = new WebContentsView({
