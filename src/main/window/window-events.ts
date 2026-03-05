@@ -1,4 +1,4 @@
-import { BaseWindow, WebContentsView } from "electron";
+import { BaseWindow } from "electron";
 import { TabManager } from "./tab";
 import { Navigation } from "../navigation/navigation-feature";
 

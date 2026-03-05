@@ -3,12 +3,9 @@ import {
   app,
   dialog,
   WebContentsView,
-  ipcMain
 } from "electron";
 import { Base } from "@/main/window/base-window";
 import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/context-menu";
-import { SearchEngine } from "@/main/settings/settings";
-import theme from "@/main/lib/theme";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
@@ -80,64 +77,6 @@ export class TabManager {
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
 
-    // IPCチャンネル
-    // ipcMain.handle("tab.reload", (event, ignoringCache) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.reloadTab(undefined, ignoringCache);
-    // });
-    // ipcMain.handle("tab.go-back", (event) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.goBack();
-    // });
-    // ipcMain.handle("tab.go-forward", (event) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.goForward();
-    // });
-    // ipcMain.handle("tab.go-home", (event) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.load(undefined, HOME_URL);
-    // });
-    // ipcMain.handle("tab.switch", (event, id) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.activateTab(id);
-    // });
-    // ipcMain.handle("tab.new", (event) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.newTab(undefined, {
-    //     active: true
-    //   });
-    // });
-    // ipcMain.handle("tab.remove", (event, id) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.removeTab(id);
-    // });
-    // ipcMain.handle("tab.move", (event, from, to) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.moveTab(from, to);
-    // });
-    // ipcMain.handle("tab.load", (event, id, url) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.load(id, url);
-    // });
-
     /* 
     ipcMain.handle("tab.toggle-context-menu", (event, id) => {
       if (!event.senderFrame) return null;
@@ -152,13 +91,6 @@ export class TabManager {
       });
     });
     */
-
-    // ipcMain.handle("tab.focus", (event) => {
-    //   if (!event.senderFrame) return null;
-    //   if (!validateSender(event.senderFrame)) return null;
-
-    //   this.getActiveTabCurrent()?.entity.webContents.focus();
-    // });
   }
 
   // --IDからタブを取得
@@ -242,7 +174,6 @@ export class TabManager {
       });
     });
 
-    // let title: string = entity.webContents.getTitle();
     let newTab: Tab = {
       id: crypto.randomUUID(),
       title: entity.webContents.getTitle() || url,
