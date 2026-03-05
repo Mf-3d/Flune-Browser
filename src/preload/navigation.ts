@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
+import { NavigationAPI } from "../shared/types/preload-api.js";
 
 // contextBridge.exposeInMainWorld("flune", {
 //   baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)
@@ -67,7 +68,24 @@ import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 //   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 // });
 
-export const NAVIGATION = {
+export function isNavigationPage() {
+  const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+
+  if (isDev) {
+    const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
+    return (
+      window.location.host === devUrl.host &&
+      window.location.pathname.startsWith("/navigation")
+    );
+  }
+
+  return (
+    window.location.protocol === "flune:" &&
+    window.location.host.startsWith("navigation")
+  );
+}
+
+export const NAVIGATION: NavigationAPI = {
   focusPage: () => {
     ipcRenderer.invoke(IPC_INVOKE.VIEW_FOCUS); // 開いているタブにフォーカスする
   },
@@ -82,7 +100,7 @@ export const NAVIGATION = {
     remove: (id: string) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_REMOVE, id); // タブ削除
     },
-    move: (from: string, to: string) => {
+    move: (from: number, to: number) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_MOVE, from, to); // タブ移動
     },
     navigate: (id: string | undefined, word: string) => {

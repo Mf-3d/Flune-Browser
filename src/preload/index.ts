@@ -1,12 +1,16 @@
 import { contextBridge } from "electron";
-import { NAVIGATION } from "./navigation";
+import { isNavigationPage, NAVIGATION } from "./navigation";
 import { DEFAULT } from "./default";
 import { isSettingsPage, SETTINGS } from "./settings";
 import { MENU } from "./menu";
+import { API } from "../shared/types/preload-api";
 
-const api: any = DEFAULT;
+const api: API = DEFAULT;
 
-api.navigation = NAVIGATION;
+if (isNavigationPage()) {
+  api.navigation = NAVIGATION;
+}
+
 api.menu = MENU;
 
 if (isSettingsPage()) {

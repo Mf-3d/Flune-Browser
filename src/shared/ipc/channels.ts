@@ -13,6 +13,10 @@ export const IPC_INVOKE = {
   TAB_NAVIGATE: "tab:navigate",
   TAB_RELOAD: "tab:reload",
 
+  TAB_GO_BACK: "tab:go-back",
+  TAB_GO_FORWARD: "tab:go-forward",
+  TAB_GO_HOME: "tab:go-home",
+
   VIEW_FOCUS: "view:focus",
 
   STORE_GET_ALL: "store:get-all",

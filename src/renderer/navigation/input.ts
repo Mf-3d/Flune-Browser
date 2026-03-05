@@ -1,4 +1,6 @@
 export function registerInputEvents () {
+  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
   const input = document.querySelector("#search-bar")! as HTMLElement;
   let originalValue = ""; // 検索バーの変更前の値
   let isDirty = false;    // 検索バーが変更されているか
@@ -22,6 +24,8 @@ export function registerInputEvents () {
 
   // Escには２段階ある。
   input.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+    
     if (event.key !== "Escape") return;
 
     if (isDirty) {
@@ -39,6 +43,8 @@ export function registerInputEvents () {
   });
 
   function search() {
+    if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+    
     const activeTab = document.querySelector("#tabs > #opened")!;
     window.flune.navigation.tab.navigate(activeTab.getAttribute("data-id")!, input.getAttribute("value")!);
     input.removeAttribute("value"); // ロードされたらすぐに値が代入されるが、念のため一度リセットする。

@@ -1,3 +1,4 @@
+import { MenuAPI } from "../shared/types/preload-api";
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { contextBridge, ipcRenderer } from "electron";
 
@@ -47,7 +48,7 @@ import { contextBridge, ipcRenderer } from "electron";
 //   on: (channel: string, callback: Function) => ipcRenderer.on(channel, (event, ...args) => callback(event, ...args))
 // });
 
-export const MENU = {
+export const MENU: MenuAPI = {
   open: () => {
     ipcRenderer.invoke(IPC_INVOKE.MENU_OPEN); // メニューを開く
   },

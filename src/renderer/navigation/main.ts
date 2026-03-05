@@ -4,8 +4,10 @@ import { applyTheme } from "./theme";
 
 
 window.addEventListener("load", () => {
+  if (!window.flune.isNavigationPage() || !window.flune.navigation) return;
+
   lucide.createIcons();
-  
+
   registerInputEvents();
   each();
 

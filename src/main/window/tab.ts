@@ -72,72 +72,70 @@ export class TabManager {
     this.contextMenuManager = new ContextMenuManager(this.base);
     if (bounds) this.bounds = bounds;
 
-    console.log("TabManager constructor 1");
-
     this.base.win.on("resize", () => {
       const bounds = this.base.win.getContentBounds();
       [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
     });
 
-    console.log("TabManager constructor 2");
-
     // IPCチャンネル
-    ipcMain.handle("tab.reload", (event, ignoringCache) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    // ipcMain.handle("tab.reload", (event, ignoringCache) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.reloadTab(undefined, ignoringCache);
-    });
-    ipcMain.handle("tab.go-back", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.reloadTab(undefined, ignoringCache);
+    // });
+    // ipcMain.handle("tab.go-back", (event) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.goBack();
-    });
-    ipcMain.handle("tab.go-forward", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.goBack();
+    // });
+    // ipcMain.handle("tab.go-forward", (event) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.goForward();
-    });
-    ipcMain.handle("tab.go-home", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.goForward();
+    // });
+    // ipcMain.handle("tab.go-home", (event) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.load(undefined, HOME_URL);
-    });
-    ipcMain.handle("tab.switch", (event, id) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.load(undefined, HOME_URL);
+    // });
+    // ipcMain.handle("tab.switch", (event, id) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.activateTab(id);
-    });
-    ipcMain.handle("tab.new", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.activateTab(id);
+    // });
+    // ipcMain.handle("tab.new", (event) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.newTab(undefined, {
-        active: true
-      });
-    });
-    ipcMain.handle("tab.remove", (event, id) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.newTab(undefined, {
+    //     active: true
+    //   });
+    // });
+    // ipcMain.handle("tab.remove", (event, id) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.removeTab(id);
-    });
-    ipcMain.handle("tab.move", (event, from, to) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.removeTab(id);
+    // });
+    // ipcMain.handle("tab.move", (event, from, to) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.moveTab(from, to);
-    });
-    ipcMain.handle("tab.load", (event, id, url) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    //   this.moveTab(from, to);
+    // });
+    // ipcMain.handle("tab.load", (event, id, url) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.load(id, url);
-    });
+    //   this.load(id, url);
+    // });
+
+    /* 
     ipcMain.handle("tab.toggle-context-menu", (event, id) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
@@ -150,15 +148,14 @@ export class TabManager {
         contextMenuController.setContextType("normal"); // 閉じられたらタイプをリセットする
       });
     });
+    */
 
-    ipcMain.handle("tab.focus", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
+    // ipcMain.handle("tab.focus", (event) => {
+    //   if (!event.senderFrame) return null;
+    //   if (!validateSender(event.senderFrame)) return null;
 
-      this.getActiveTabCurrent()?.entity.webContents.focus();
-    });
-
-    console.log("TabManager constructor end");
+    //   this.getActiveTabCurrent()?.entity.webContents.focus();
+    // });
   }
 
   // --IDからタブを取得

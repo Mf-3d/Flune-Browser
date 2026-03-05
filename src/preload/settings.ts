@@ -1,3 +1,4 @@
+import { SettingsAPI } from "../shared/types/preload-api";
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
 
@@ -37,11 +38,11 @@ export function isSettingsPage() {
 
   return (
     window.location.protocol === "flune:" &&
-    window.location.host === "settings"
+    window.location.host.startsWith("settings")
   );
 }
 
-export const SETTINGS = {
+export const SETTINGS: SettingsAPI = {
   get: async (key: string) => {
     return await ipcRenderer.invoke(IPC_INVOKE.STORE_GET, key); // 項目を取得
   },

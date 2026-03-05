@@ -1,20 +1,10 @@
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";
+import { isSettingsPage } from "./settings";
+import { isNavigationPage } from "./navigation";
 
-type Versions = {
-  flune: string;
-  electron: string;
-  node: string;
-  chrome: string;
-  v8: string;
-};
-
-type ComputerInfo = {
-  arch: string;
-  platform: string;
-};
-
-export const DEFAULT = {
+export const DEFAULT: DefaultAPI = {
   baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)
     ? process.env.ELECTRON_RENDERER_URL
     : "flune://",
@@ -28,7 +18,9 @@ export const DEFAULT = {
   getComputerInfo: async (): Promise<ComputerInfo> => {
     return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_COMPUTER_INFO); 
   },
-  quit: () => {
-    ipcRenderer.invoke(IPC_INVOKE.APP_QUIT); // 終了する
+  quit: (force?: boolean) => {
+    ipcRenderer.invoke(IPC_INVOKE.APP_QUIT, force); // 終了する
   },
+  isSettingsPage,
+  isNavigationPage,
 };

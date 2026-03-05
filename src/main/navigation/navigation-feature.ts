@@ -14,7 +14,7 @@ export type Navigation = {
   updateState: (state: NavigationState) => void;
   updateTheme: (themeId: string) => void;
   setWidth: (width: number) => void;
-  send: (channel: string, ...args: any[]) => void;
+  send: (channel: IpcEvents, ...args: any[]) => void;
 };
 
 export function createNavigationFeature(baseWindow: BaseWindow, viewY: number, themeUrl: string, onLoaded?: () => void): Navigation {

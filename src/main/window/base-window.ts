@@ -17,7 +17,7 @@ import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
 import { validateSender } from "@/main/ipc/validateSender";
 import { BookmarkService } from "@/main/bookmark/service";
-import { registerBookmarkHandler } from "@/main/ipc/bookmarkHandler";
+import { registerBookmarkHandler } from "@/main/ipc/bookmark-handler";
 import { DataManager } from "@/main/lib/data";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
@@ -26,6 +26,7 @@ import { createNavigationFeature, Navigation } from "../navigation/navigation-fe
 // import { Settings } from "@/main/settings/settings";
 import { Settings } from "@/main/settings";
 import { createSettings } from "../settings";
+import { registerTabHandler } from "../ipc/tab-handler";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -99,8 +100,7 @@ export class Base {
     );
     this.navigation = this.setupNavigation();
 
-    
-
+    registerTabHandler(this.tabManager, resolveView(ROUTE_MAP.home));
     registerWindowEvents(this.win, this.navigation, this.tabManager);
     registerBookmarkHandler(this.tabManager, this.data);
 
