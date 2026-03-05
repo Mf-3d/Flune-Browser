@@ -32,7 +32,7 @@ export function isSettingsPage() {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
     return (
       window.location.host === devUrl.host &&
-      window.location.pathname.startsWith("/settings")
+      window.location.pathname.startsWith("/browser/settings")
     );
   }
 
