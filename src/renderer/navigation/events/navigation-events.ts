@@ -25,10 +25,10 @@ function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
     state.showHomeButton ? homeButton.classList.remove("invisible") : homeButton.classList.add("invisible");
   }
 
-  if (state.word !== undefined) {
+  if (state.input !== undefined) {
     const input = document.getElementById("search-bar") as HTMLInputElement;
 
-    input.value = state.word;
+    input.value = state.input;
   }
 
   if (state.isBookmarked !== undefined) {

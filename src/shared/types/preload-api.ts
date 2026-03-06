@@ -12,6 +12,9 @@ export type ComputerInfo = {
 };
 
 export type NavigationInit = {
+  /**
+   * @deprecated
+   */
   isMac: boolean;
   showHomeButton: boolean;
 };
@@ -21,10 +24,7 @@ export type NavigationState = {
   canGoBack?: boolean;
   canGoForward?: boolean;
   showHomeButton?: boolean;
-  /**
-   * 検索ワード、またはURL
-   */
-  word?: string;
+  input?: string;
 };
 
 export type CreatedTab = {
@@ -44,7 +44,7 @@ export type TabState = {
   isAudible?: boolean;
 };
 
-export type API = 
+export type API =
   DefaultAPI & {
     navigation?: NavigationAPI;
     menu?: MenuAPI;

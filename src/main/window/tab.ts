@@ -217,7 +217,7 @@ export class TabManager {
     entity.webContents.once("did-finish-load", () => {
       if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
         this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-          word: url,
+          input: url,
         } as NavigationState);
       }
     });
@@ -304,7 +304,7 @@ export class TabManager {
     const activeTabUrl = activeTab.entity.webContents.getURL();
     if (!activeTabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
       this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-        word: activeTabUrl,
+        input: activeTabUrl,
       } as NavigationState);
     }
 
@@ -397,7 +397,7 @@ export class TabManager {
       tab.entity.webContents.loadURL(url);
       if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
         this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-          word: url,
+          input: url,
         } as NavigationState);
       }
     } else {
@@ -483,7 +483,7 @@ export class TabManager {
 
       if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
         this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-          word: tabUrl,
+          input: tabUrl,
         } as NavigationState);
       }
     });
@@ -503,7 +503,7 @@ export class TabManager {
         title: tab.entity.webContents.getTitle(),
       });
       this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-        word: tabUrl,
+        input: tabUrl,
       } as NavigationState);
 
       if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
@@ -535,7 +535,7 @@ export class TabManager {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
         this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-          word: tabUrl,
+          input: tabUrl,
         } as NavigationState);
       }
 
