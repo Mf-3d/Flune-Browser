@@ -23,6 +23,15 @@ export const navigationActions = {
     navigationIpc.goForward();
   },
 
+  activateTab(id: string) {
+    const tabContainer = document.getElementById("tabs")!;
+    const tabElements = tabContainer.querySelectorAll(":scope > span");
+
+    tabElements.forEach(tabElement => {
+      tabElement.getAttribute("data-id") === id ? tabElement.id = "opened" : tabElement.id = "";
+    });
+  },
+
   goHome() {
     navigationIpc.goHome();
   },
