@@ -21,28 +21,3 @@ function navigationInit() {
 export function updateTabsUI() {
   lucide.createIcons();
 }
-
-/**
- * @deprecated
- */
-function each() {
-  const tabContainer = document.getElementById("tabs")!;
-
-  tabContainer.querySelectorAll(":scope > span").forEach((e) => {
-    const element = e as HTMLElement
-    const title = element.querySelector(":scope > .title") as HTMLElement;
-
-    // タブを切り替える
-    title.onclick = () => {
-      if (!window.flune.navigation) return;
-
-      window.flune.navigation.tab.activate(element.getAttribute("data-id")!);
-    };
-    // タブ用のコンテキストメニューを表示する
-    title.oncontextmenu = (event) => {
-      event.preventDefault();
-
-      // window.flune.toggleTabContextMenu(element.getAttribute("data-id")!);
-    };
-  });
-}
