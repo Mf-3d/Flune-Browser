@@ -13,6 +13,9 @@ type ConfigType = {
   downloads: any[]; // 未実装
 };
 
+/**
+ * @deprecated
+ */
 export class DataManager {
   readonly config;
 

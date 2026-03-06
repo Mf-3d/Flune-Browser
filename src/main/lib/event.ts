@@ -36,6 +36,9 @@ type EventMap = {
 
 const event = new EventEmitter();
 
+/**
+ * @deprecated
+ */
 export default class {
   /**
    * Add a listener for the event.
