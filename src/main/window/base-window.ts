@@ -47,7 +47,7 @@ export class Base {
       width: 800,
       height: 600
     };
-  tabManager: TabManager;
+  readonly tabManager: TabManager;
   readonly optionMenuManager: OptionMenuManager;
 
   constructor(
@@ -88,19 +88,12 @@ export class Base {
     );
     this.navigation = this.setupNavigation();
 
+    // ここでいいのかわからない
     registerTabHandler(this.tabManager, resolveView(ROUTE_MAP.home));
     registerBookmarkHandler(this.tabManager, this.data);
     registerAppHandler(this.win, this.tabManager);
-    registerWindowEvents(this.win, this.navigation, this.tabManager);
-
-    this.event.on("theme-updated", (id) => {
-      this.navigation?.updateTheme(id);
-    });
-    this.event.on("setting-updated", () => {
-      this.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
-        showHomeButton: this.settings.store.get("settings").design.showHomeButton
-      } as NavigationState);
-    });
+    
+    registerWindowEvents(this.win, this.navigation, this.tabManager, this.event, this.settings);
 
     // IPCチャンネル
     ipcMain.handle("options.toggle", (event) => {
