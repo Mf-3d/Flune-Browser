@@ -2,7 +2,7 @@ export const ROUTE_MAP = {
   navigation: "navigation/",
   home: "browser/home/",
   settings: "browser/settings.html",
-  version: "browser/version.html",
+  version: "browser/version/",
   error: {
     generic: "browser/error/error.html",
     notFound: "browser/error/server-notfound.html",
