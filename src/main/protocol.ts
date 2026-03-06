@@ -3,6 +3,9 @@ import { pathToFileURL } from "node:url";
 import path from "node:path";
 import Event from "@/main/lib/event";
 
+/**
+ * @deprecated
+ */
 export class Protocol {
   /**
    * Protocol name.

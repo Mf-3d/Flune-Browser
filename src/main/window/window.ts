@@ -12,13 +12,11 @@ import * as packageJson from "@/../package.json";
 import { validateSender } from "@/main/ipc/validateSender";
 import { registerBookmarkHandler } from "@/main/ipc/bookmark-handler";
 import { DataManager } from "@/main/lib/data";
-import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
 import { Settings } from "@/main/settings";
 import { registerTabHandler } from "../ipc/tab-handler";
-import { NavigationState } from "@/shared/types/preload-api";
 import { registerAppHandler } from "../ipc/app-handler";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);

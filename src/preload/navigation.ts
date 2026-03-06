@@ -1,6 +1,6 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
-import { NavigationAPI, NavigationInit, NavigationState } from "../shared/types/preload-api.js";
+import { NavigationAPI } from "../shared/types/preload-api.js";
 
 // contextBridge.exposeInMainWorld("flune", {
 //   baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)

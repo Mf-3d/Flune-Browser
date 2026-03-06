@@ -5,7 +5,7 @@ import {
   WebContentsView,
 } from "electron";
 import { Window } from "@/main/window/window";
-import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/context-menu";
+import { ContextMenuManager } from "@/main/menu/context-menu";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
