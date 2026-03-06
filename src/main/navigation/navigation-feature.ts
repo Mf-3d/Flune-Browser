@@ -1,3 +1,9 @@
+/**
+ * "navigation-feature.ts"
+ * 
+ * ナビゲーション
+ */
+
 import path from "path";
 import { app, BaseWindow, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
@@ -11,6 +17,17 @@ type NavigationState = {
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
+/**
+ * ナビゲーションの機能を作成して返す。
+ * - ビューを作成
+ * - アタッチする関数
+ * - 状態とテーマを更新する関数
+ * 
+ * @param baseWindow ベースとなるウィンドウ
+ * @param settings ナビゲーションを作成するときに必要なパラメータ
+ * @param onLoaded ロードされたときにコールバック関数を実行する
+ * @returns 
+ */
 export function createNavigationFeature(
   baseWindow: BaseWindow,
   settings: {
@@ -91,6 +108,7 @@ function registerWebContentsEvents(
   },
   onLoaded?: () => void
 ) {
+  // ナビゲーションが読み込まれたらコールバックを返してIPCを送信する。
   view.webContents.on("did-finish-load", () => {
     onLoaded?.();
     view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, {
