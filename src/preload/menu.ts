@@ -1,5 +1,5 @@
 import { MenuAPI } from "../shared/types/preload-api";
-import { IPC_INVOKE } from "../shared/ipc/channels";
+import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { contextBridge, ipcRenderer } from "electron";
 
 // contextBridge.exposeInMainWorld("flune", {
@@ -73,6 +73,9 @@ export const MENU: MenuAPI = {
     ipcRenderer.invoke(IPC_INVOKE.MENU_CLOSE); // メニューを閉じる
   },
 
+  /**
+   * @deprecated
+   */
   bookmark: {
     getByFolderId: async (folderId: string) => {
       return await ipcRenderer.invoke("menu.bookmark.get-by-folder-id", folderId); // ブックマークの追加メニューを開く
@@ -81,4 +84,13 @@ export const MENU: MenuAPI = {
       ipcRenderer.invoke("menu.bookmark.add"); // ブックマークの追加メニューを開く
     },
   },
+
+  onOpening: (callback) => ipcRenderer.on(
+    IPC_NOTIFY.MENU_OPENING,
+    (event) => callback(event)
+  ),
+  onClosing: (callback) => ipcRenderer.on(
+    IPC_NOTIFY.MENU_CLOSING,
+    (event) => callback(event)
+  ),
 };

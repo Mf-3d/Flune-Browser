@@ -62,7 +62,7 @@ export type DefaultAPI = {
 
 export type BrowserAPI = {
   navigate: (input: string) => void;
-  
+
   onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
 };
 
@@ -100,6 +100,8 @@ export type MenuAPI = {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;
   };
+  onOpening: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
+  onClosing: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
 };
 
 export type SettingsAPI = {

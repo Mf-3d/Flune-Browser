@@ -39,10 +39,14 @@ export const IPC_NOTIFY = {
   NAVIGATION_INIT: "navigation:init",
   NAVIGATION_THEME: "navigation:theme",
   NAVIGATION_UPDATE: "navigation:update",
+
   TAB_CREATED: "tab:created",
   TAB_REMOVED: "tab:removed",
   TAB_UPDATED: "tab:updated",
   TAB_THEME: "tab:theme",
+
+  MENU_OPENING: "menu:opening",
+  MENU_CLOSING: "menu:closing",
 } as const;
 
 export type IpcInvoke =
