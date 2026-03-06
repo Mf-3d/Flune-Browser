@@ -1,9 +1,8 @@
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
 import { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";
-import { isSettingsPage } from "./settings";
-import { isNavigationPage } from "./navigation";
 
+// TODO: 公開するべきか検討する
 export const DEFAULT: DefaultAPI = {
   baseURL: (!process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL)
     ? process.env.ELECTRON_RENDERER_URL

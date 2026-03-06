@@ -103,8 +103,8 @@ export const NAVIGATION: NavigationAPI = {
     move: (from, to) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_MOVE, from, to); // タブ移動
     },
-    navigate: (id, word) => {
-      ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, id, word); // ページをロードする
+    navigate: (id, input) => {
+      ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, id, input); // ページをロードする
     },
     reload: (options) => {
       ipcRenderer.invoke(IPC_INVOKE.TAB_RELOAD, options); // 再読み込みする

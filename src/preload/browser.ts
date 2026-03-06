@@ -1,4 +1,4 @@
-import { IPC_NOTIFY } from "../shared/ipc/channels";
+import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
 import { BrowserAPI } from "@/shared/types/preload-api";
 
@@ -20,6 +20,10 @@ export function isBrowserPage() {
 }
 
 export const BROWSER: BrowserAPI = {
+  navigate: (input) => {
+    ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, undefined, input); // ページをロードする
+  },
+  
   onThemeChanged: (callback) => ipcRenderer.on(
     IPC_NOTIFY.TAB_THEME,
     (event, tab) => callback(event, tab)

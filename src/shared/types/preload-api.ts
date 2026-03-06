@@ -61,6 +61,8 @@ export type DefaultAPI = {
 };
 
 export type BrowserAPI = {
+  navigate: (input: string) => void;
+  
   onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
 };
 
@@ -71,7 +73,7 @@ export type NavigationAPI = {
     activate: (id: string) => void;
     remove: (id: string) => void;
     move: (from: number, to: number) => void;
-    navigate: (id: string | undefined, word: string) => void;
+    navigate: (id: string | undefined, input: string) => void;
     reload: (options?: {
       ignoringCache?: boolean | undefined;
     }) => void;

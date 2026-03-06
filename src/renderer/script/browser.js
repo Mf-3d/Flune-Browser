@@ -1,3 +1,7 @@
+/**
+ * @deprecated
+ */
+
 window.addEventListener("DOMContentLoaded", async () => {
   const fluneVersion = (await flune.getVersion())
   .replace("-beta.", " Beta ")
