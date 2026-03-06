@@ -1,5 +1,5 @@
 import { app, shell } from "electron";
-import { Window } from "./base-window";
+import { Window } from "./window";
 import Event from "@/main/lib/event";
 import { DataManager } from "../lib/data";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";

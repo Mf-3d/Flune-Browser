@@ -1,6 +1,6 @@
 import { app, Menu, ContextMenuParams, clipboard } from "electron";
 import { createEmojiMenuTemplate } from "@/main/menu/context-menu/templates/emoji";
-import { Window } from "@/main/window/base-window";
+import { Window } from "@/main/window/window";
 import { createTextSelectionMenuTemplate } from "@/main/menu/context-menu/templates/text-selection";
 import { createVideoSelectionMenuTemplate } from "@/main/menu/context-menu/templates/video-selection";
 import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/templates/editable-selection";

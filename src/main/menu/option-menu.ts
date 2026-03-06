@@ -5,7 +5,7 @@ import {
 } from "electron";
 import path from "node:path";
 
-import { Window } from "@/main/window/base-window";
+import { Window } from "@/main/window/window";
 import { validateSender } from "@/main/ipc/validateSender";
 import { DataManager, FolderId } from "@/main/lib/data";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
