@@ -62,15 +62,15 @@ function onDrop(event: DragEvent) {
   if (!tabElement || !tabContainer) return;
 
   const tabId = event.dataTransfer!.getData("text/plain");
-  let tabInDrag = tabContainer.querySelector(`.tab[data-id="${tabId}"]`)!;
+  const draggedTab = tabContainer.querySelector(`.tab[data-id="${tabId}"]`)!;
 
   let rect = tabElement.getBoundingClientRect();
   if ((event.clientX - rect.left) < (tabElement.clientWidth / 2)) {
     //マウスカーソルの位置が要素の半分より左
-    tabElement.insertAdjacentElement("beforebegin", tabInDrag);
+    tabElement.insertAdjacentElement("beforebegin", draggedTab);
   } else {
     //マウスカーソルの位置が要素の半分より右
-    tabElement.insertAdjacentElement("afterend", tabInDrag);
+    tabElement.insertAdjacentElement("afterend", draggedTab);
   }
 
   tabContainer.querySelectorAll(".tab").forEach((el) => {

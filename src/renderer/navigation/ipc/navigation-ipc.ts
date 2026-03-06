@@ -7,6 +7,10 @@ export const navigationIpc = {
     window.flune.navigation?.tab.remove(id);
   },
 
+  activateTab(id: string) {
+    window.flune.navigation?.tab.activate(id);
+  },
+
   reloadTab(options?: {
     ignoringCache: boolean;
   }) {

@@ -14,12 +14,50 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   const tabContainer = document.getElementById("tabs")!;
   const newButton = tabContainer.querySelector(".new-button")!;
 
-  const element = document.createElement("span");
+  const tabElement = document.createElement("span");
 
-  element.draggable = true;
-  element.classList.add("tab");
-  element.setAttribute("data-id", tab.id);
+  tabElement.draggable = true;
+  tabElement.classList.add("tab");
+  tabElement.setAttribute("data-id", tab.id);
 
+  const faviconElement = document.createElement("img");
+  faviconElement.classList.add("favicon");
+  faviconElement.onerror = () => faviconElement.src= "/image/tab-no-favicon.png";
+
+  const isLoadingElement = document.createElement("a");
+  isLoadingElement.classList.add("loading", "diabled");
+  isLoadingElement.innerHTML = "<i data-lucide=\"loader-circle\"></i>";
+
+  const titleElement = document.createElement("p");
+  titleElement.classList.add("title");
+  titleElement.innerHTML = tab.id;
+
+  const rightElements = document.createElement("span");
+  rightElements.classList.add("right");
+
+  const isDownloadingElement = document.createElement("a");
+  isDownloadingElement.classList.add("downloading", "disabled");
+  isDownloadingElement.innerHTML = "<i data-lucide=\"download\"></i>";
+
+  const isAudibleElement = document.createElement("a");
+  isAudibleElement.classList.add("audible", "disabled");
+  isAudibleElement.innerHTML = "<i data-lucide=\"volume-2\"></i>";
+
+  rightElements.appendChild(isDownloadingElement);
+  rightElements.appendChild(isAudibleElement);
+
+  // TODO: rightElementsにまとめる
+  const closeButtonElement = document.createElement("a");
+  closeButtonElement.classList.add("close-button", "right");
+  closeButtonElement.innerHTML = "<i data-lucide=\"x\"></i>";
+
+  tabElement.appendChild(faviconElement);
+  tabElement.appendChild(isLoadingElement);
+  tabElement.appendChild(titleElement);
+  tabElement.appendChild(rightElements);
+  tabElement.appendChild(closeButtonElement);
+
+  /*
   element.innerHTML = `
   <img src="" class="favicon" onerror="this.src='/image/tab-no-favicon.png';"/>
   <a href="#" class="loading disabled">
@@ -38,14 +76,21 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
     <i data-lucide="x"></i>
   </a>
   `;
+  */
 
   if (!tab.beforeTabId) {
-    newButton.before(element); // 一番右に追加
+    newButton.before(tabElement); // 一番右に追加
   } else {
-    tabContainer.querySelector(`.tab[data-id="${tab.beforeTabId}"]`)?.after(element);
+    tabContainer.querySelector(`.tab[data-id="${tab.beforeTabId}"]`)?.after(tabElement);
   }
   
-  if (tab.active) navigationActions.activateTab(tab.id);
+  if (tab.active) {
+    const tabElements = tabContainer.querySelectorAll(".tab");
+    
+    tabElements.forEach(tabElement => {
+      tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
+    });
+  }
 
   updateTabsUI();
 }
@@ -98,7 +143,9 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   });
 
   if (tab.active !== undefined) {
-    navigationActions.activateTab(tab.id);
+    tabElements.forEach(tabElement => {
+      tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
+    });
   }
 
   updateTabsUI();

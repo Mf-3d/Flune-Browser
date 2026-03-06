@@ -281,6 +281,7 @@ span.right {
   transform: translate(0, -50%);
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 
 #tabs a.loading>svg {
@@ -293,4 +294,8 @@ span.right {
 }
 #toggle-bookmark.active > svg:hover {
   fill: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
+}
+
+.new-button {
+  cursor: pointer;
 }
