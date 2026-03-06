@@ -8,6 +8,7 @@ export function registerClickEvents() {
   const reloadButton = document.getElementById("reload-tab");
   const toggleBookmarkButton = document.getElementById("toggle-bookmark");
   const searchButton = document.getElementById("search-button");
+  const tabContainer = document.getElementById("tabs");
 
   newButton?.addEventListener("click", () => navigationActions.createTab());
 
@@ -22,4 +23,21 @@ export function registerClickEvents() {
   toggleBookmarkButton?.addEventListener("click", () => navigationActions.toggleBookmark());
 
   searchButton?.addEventListener("click", () => navigationActions.search());
+
+  tabContainer?.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const tabElement = target.closest(".tab");
+
+    if (!tabElement) return;
+
+    const tabId = tabElement.getAttribute("data-id")!;
+    const titleElement = target.closest(".title") as HTMLElement;
+    const closeButtonElement = target.closest(".close-button") as HTMLElement;
+
+    if (titleElement) {
+      navigationActions.activateTab(tabId);
+    } else if (closeButtonElement) {
+      navigationActions.removeTab(tabId);
+    }
+  });
 }

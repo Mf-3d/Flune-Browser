@@ -1,5 +1,6 @@
 import { CreatedTab, TabState } from "@/shared/types/preload-api";
 import { navigationActions } from "../actions/navigation-actions";
+import { updateTabsUI } from "..";
 
 export function registerTabEvents() {
   if (!window.flune.navigation) return;
@@ -14,8 +15,9 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   const newButton = tabContainer.querySelector(".new-button")!;
 
   const element = document.createElement("span");
+
   element.draggable = true;
-  
+  element.classList.add("tab");
   element.setAttribute("data-id", tab.id);
 
   element.innerHTML = `
@@ -32,7 +34,7 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
       <i data-lucide="volume-2"></i>
     </a>
   </span>
-  <a href="javascript:window.flune.navigation?.tab.remove('${tab.id}')" class="close-button right">
+  <a class="close-button right">
     <i data-lucide="x"></i>
   </a>
   `;
@@ -40,30 +42,28 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   if (!tab.beforeTabId) {
     newButton.before(element); // 一番右に追加
   } else {
-    tabContainer.querySelector(`:scope > span[data-id="${tab.beforeTabId}"]`)?.after(element);
+    tabContainer.querySelector(`.tab[data-id="${tab.beforeTabId}"]`)?.after(element);
   }
   
   if (tab.active) navigationActions.activateTab(tab.id);
 
-  lucide.createIcons();
-
-  each();
+  updateTabsUI();
 }
 
 function onRemoved(_: Electron.IpcRendererEvent, id: string) {
   const tabContainer = document.getElementById("tabs")!;
-  const tabElements = tabContainer.querySelectorAll(":scope > span");
+  const tabElements = tabContainer.querySelectorAll(".tab");
 
   tabElements.forEach(tabElement => {
     if (tabElement.getAttribute("data-id") === id) tabElement.remove();
   });
 
-  each();
+  updateTabsUI();
 }
 
 function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   const tabContainer = document.getElementById("tabs")!;
-  const tabElements = tabContainer.querySelectorAll(":scope > span");
+  const tabElements = tabContainer.querySelectorAll(".tab");
 
   tabElements.forEach((tabElement) => {
     if (tabElement.getAttribute("data-id") !== tab.id) return;
@@ -101,5 +101,5 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
     navigationActions.activateTab(tab.id);
   }
 
-  each();
+  updateTabsUI();
 }

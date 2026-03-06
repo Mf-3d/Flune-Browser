@@ -148,7 +148,7 @@ input[type=text] {
   -webkit-app-region: no-drag;
 }
 
-#tabs>span {
+.tab {
   display: flex;
   align-items: center;
   background-color: var(--tab-color);
@@ -168,7 +168,7 @@ input[type=text] {
   transition: filter .5s, border-right .5s, border-left .5s;
 }
 
-#tabs>span#opened {
+.tab#opened {
   background-color: var(--opened-tab-color);
 }
 
@@ -190,21 +190,21 @@ input[type=text] {
   color: var(--tab-text-color);
 }
 
-#tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
-#tabs span:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
+.tab:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
+.tab:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
   width: calc(100% - 72px);
 }
 
-#tabs span:not(:has(.right .disabled)) .title {
+.tab:not(:has(.right .disabled)) .title {
   width: calc(100% - 96px);
 }
 
-#tabs>span.adding-left {
+.tab.adding-left {
   border-left: solid 3px var(--tab-adding-color);
   filter: drop-shadow(-2em 0 2rem var(--tab-adding-color));
 }
 
-#tabs>span.adding-right {
+.tab.adding-right {
   border-right: solid 3px var(--tab-adding-color);
   filter: drop-shadow(2em 0 2rem var(--tab-adding-color));
 }
@@ -238,7 +238,7 @@ input[type=text] {
   animation-fill-mode: forwards;
 }
 
-#tabs>span#opened a>svg {
+.tab#opened a>svg {
   width: 20px;
   height: 20px;
   stroke: var(--tab-text-color);
@@ -260,7 +260,7 @@ input[type=text] {
   margin-right: 2px;
 }
 
-#tabs span>.right {
+.tab>.right {
   text-align: right;
   position: absolute;
   top: 50%;

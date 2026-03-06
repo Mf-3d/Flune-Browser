@@ -25,7 +25,7 @@ export const navigationActions = {
 
   activateTab(id: string) {
     const tabContainer = document.getElementById("tabs")!;
-    const tabElements = tabContainer.querySelectorAll(":scope > span");
+    const tabElements = tabContainer.querySelectorAll(".tab");
 
     tabElements.forEach(tabElement => {
       tabElement.getAttribute("data-id") === id ? tabElement.id = "opened" : tabElement.id = "";
