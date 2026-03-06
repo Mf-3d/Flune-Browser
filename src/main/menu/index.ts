@@ -1,12 +1,12 @@
 import { Menu } from "electron";
 
-import { Base } from "@/main/window/base-window";
+import { Window } from "@/main/window/base-window";
 import { DataManager } from "@/main/lib/data";
 
 /**
  * @deprecated
  */
-export function buildOptionsMenu(base: Base, data: DataManager): Electron.Menu {
+export function buildOptionsMenu(base: Window, data: DataManager): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: "新しいタブ",

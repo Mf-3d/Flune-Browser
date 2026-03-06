@@ -4,7 +4,7 @@ import {
   Menu
 } from "electron";
 
-import { Base } from "@/main/window/base-window";
+import { Window } from "@/main/window/base-window";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 /**
@@ -12,9 +12,9 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
  * @deprecated
  */
 export class ContextMenuManager {
-  base: Base;
+  base: Window;
 
-  constructor(base: Base) {
+  constructor(base: Window) {
     this.base = base;
   }
 
@@ -251,7 +251,7 @@ export class ContextMenuManager {
 /**
  * @deprecated
  */
-export function buildTabContextMenu(base: Base, tabId: string): Electron.Menu {
+export function buildTabContextMenu(base: Window, tabId: string): Electron.Menu {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: "右隣に新しいタブを開く",

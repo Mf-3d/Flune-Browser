@@ -1,5 +1,5 @@
 import { app, shell } from "electron";
-import { Base } from "./base-window";
+import { Window } from "./base-window";
 import Event from "@/main/lib/event";
 import { DataManager } from "../lib/data";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
@@ -7,12 +7,12 @@ import { ContextMenuController } from "@/main/menu/context-menu/controllers/cont
 import { Settings } from "@/main/settings/";
 
 export class WindowManager {
-  private baseWindow: Base | undefined;
+  private baseWindow: Window | undefined;
 
-  constructor (private readonly settings: Settings) { }
+  constructor(private readonly settings: Settings) { }
 
   create(event: Event, data: DataManager) {
-    this.baseWindow = new Base(data, this.settings, event);
+    this.baseWindow = new Window(data, this.settings, event);
 
     event.once("navigation-loaded", () => {
       this.baseWindow?.tabManager.newTab(undefined, {

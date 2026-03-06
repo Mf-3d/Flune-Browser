@@ -5,7 +5,7 @@ import {
 } from "electron";
 import path from "node:path";
 
-import { Base } from "@/main/window/base-window";
+import { Window } from "@/main/window/base-window";
 import { validateSender } from "@/main/ipc/validateSender";
 import { DataManager, FolderId } from "@/main/lib/data";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
@@ -17,7 +17,7 @@ const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
  * @deprecated
  */
 export class OptionMenuManager {
-  readonly base: Base;
+  readonly base: Window;
   readonly overlay: WebContentsView;
   readonly fadeTime: number = 400;
   /**
@@ -39,7 +39,7 @@ export class OptionMenuManager {
     };
 
   constructor(
-    base: Base,
+    base: Window,
     private readonly data: DataManager,
     bounds?: { width: number; height: number; x: number; y: number }) {
     if (bounds) this.bounds = bounds;

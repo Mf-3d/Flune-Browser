@@ -4,7 +4,7 @@ import {
   dialog,
   WebContentsView,
 } from "electron";
-import { Base } from "@/main/window/base-window";
+import { Window } from "@/main/window/base-window";
 import { buildTabContextMenu, ContextMenuManager } from "@/main/menu/context-menu";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
@@ -43,7 +43,6 @@ export class TabManager {
   // readonly settings: Settings;
   readonly event: Event;
   readonly contextMenuManager: ContextMenuManager;
-  private readonly base: Base;
   tabs: Tab[] = [];
   private bounds: {
     width: number;
@@ -59,22 +58,21 @@ export class TabManager {
   activeCurrent?: string; // 現在有効化されているタブのID
 
   constructor(
-    base: Base,
+    private readonly window: Window,
     private readonly data: DataManager,
     private readonly settings: Settings,
     bounds?: { width: number; height: number; x: number; y: number }
   ) {
     console.log("TabManager constructor start");
 
-    this.base = base;
     // this.settings = new Settings(this);
     this.event = new Event();
-    this.contextMenuManager = new ContextMenuManager(this.base);
+    this.contextMenuManager = new ContextMenuManager(this.window);
     if (bounds) this.bounds = bounds;
 
-    this.base.win.on("resize", () => {
-      const bounds = this.base.win.getContentBounds();
-      [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.base.viewY];
+    this.window.win.on("resize", () => {
+      const bounds = this.window.win.getContentBounds();
+      [this.bounds.width, this.bounds.height] = [bounds.width, bounds.height - this.window.viewY];
     });
 
     /* 
@@ -161,16 +159,16 @@ export class TabManager {
     entity.webContents.setVisualZoomLevelLimits(1, 3);
 
     // 自動でリサイズ
-    this.base.win.on("resize", () => {
+    this.window.win.on("resize", () => {
       if (!entity) return;
 
-      const bounds = this.base.win.getContentBounds();
+      const bounds = this.window.win.getContentBounds();
 
       entity.setBounds({
         x: this.bounds.x,
         y: this.bounds.y,
         width: bounds.width,
-        height: bounds.height - this.base.viewY,
+        height: bounds.height - this.window.viewY,
       });
     });
 
@@ -189,7 +187,7 @@ export class TabManager {
       this.tabs?.push(newTab);
     }
 
-    this.base.win.contentView.addChildView(newTab.entity);
+    this.window.win.contentView.addChildView(newTab.entity);
 
     this.load(newTab.id, url);
 
@@ -207,7 +205,7 @@ export class TabManager {
     });
 
     // レンダラーにも反映
-    this.base.navigation.send(IPC_NOTIFY.TAB_CREATED, {
+    this.window.navigation.send(IPC_NOTIFY.TAB_CREATED, {
       id: newTab.id,
       title: newTab.title,
       active: newTab.active,
@@ -216,7 +214,7 @@ export class TabManager {
 
     entity.webContents.once("did-finish-load", () => {
       if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
-        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
           input: url,
         } as NavigationState);
       }
@@ -241,11 +239,11 @@ export class TabManager {
 
     tab.entity.webContents.close();
     this.deleteEvents(tab.id);
-    this.base.navigation.send(IPC_NOTIFY.TAB_REMOVED, tab.id);
+    this.window.navigation.send(IPC_NOTIFY.TAB_REMOVED, tab.id);
 
     // 別のタブをアクティブ化
     if (id === this.activeCurrent && i !== -1) {
-      if (this.tabs.length < 2) this.base.close();
+      if (this.tabs.length < 2) this.window.close();
 
       const nextTabIndex = i === 0 ? i + 1 : i - 1;
       const nextTab = this.tabs[nextTabIndex];
@@ -294,8 +292,8 @@ export class TabManager {
       active: true,
     };
 
-    this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, tabState);
-    this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+    this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, tabState);
+    this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
       isBookmarked: this.data.bookmarks.existByUrl(activeTab.entity.webContents.getURL()),
       canGoBack: activeTab.entity.webContents.navigationHistory.canGoBack(),
       canGoForward: activeTab.entity.webContents.navigationHistory.canGoForward()
@@ -303,7 +301,7 @@ export class TabManager {
 
     const activeTabUrl = activeTab.entity.webContents.getURL();
     if (!activeTabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
-      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
         input: activeTabUrl,
       } as NavigationState);
     }
@@ -396,7 +394,7 @@ export class TabManager {
     if (URL.canParse(url)) {
       tab.entity.webContents.loadURL(url);
       if (!url.startsWith(ERROR_PAGE_DIRECTORY)) {
-        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
           input: url,
         } as NavigationState);
       }
@@ -457,14 +455,14 @@ export class TabManager {
     tab.entity.webContents.on("page-title-updated", (event, title) => {
       this.setTabTitle(id, title);
 
-      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
         id: tab.id,
         title,
       });
     });
     // ファビコンが変更されたとき
     tab.entity.webContents.on("page-favicon-updated", (event, favicons) => {
-      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
         id: tab.id,
         favicon: favicons[0]
       });
@@ -472,17 +470,17 @@ export class TabManager {
     // ロードが始まった時
     tab.entity.webContents.on("did-start-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
-      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
         id: tab.id,
         isLoading: true
       });
 
-      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
         isBookmarked: this.data.bookmarks.existByUrl(tab.entity.webContents.getURL()),
       } as NavigationState);
 
       if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
-        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
           input: tabUrl,
         } as NavigationState);
       }
@@ -491,31 +489,31 @@ export class TabManager {
     tab.entity.webContents.on("did-stop-loading", () => {
       const tabUrl = tab.entity.webContents.getURL();
 
-      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
         canGoBack: tab.entity.webContents.navigationHistory.canGoBack(),
         canGoForward: tab.entity.webContents.navigationHistory.canGoForward()
       } as NavigationState);
 
-      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
         id: tab.id,
         isLoading: false,
         favicon: "",
         title: tab.entity.webContents.getTitle(),
       });
-      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
         input: tabUrl,
       } as NavigationState);
 
       if (tab.listeners["theme-updated"]) this.event.off("theme-updated", tab.listeners["theme-updated"]);
       tab.listeners["theme-updated"] = undefined;
 
-      this.base.navigation.send(
+      this.window.navigation.send(
         IPC_NOTIFY.TAB_THEME,
         this.settings.themeService.getThemeById(this.settings.themeService.getCurrentThemeId())
       );
 
       tab.listeners["theme-updated"] = () => {
-        this.base.navigation.send(
+        this.window.navigation.send(
           IPC_NOTIFY.TAB_THEME,
           this.settings.themeService.getThemeById(this.settings.themeService.getCurrentThemeId())
         );
@@ -525,7 +523,7 @@ export class TabManager {
     });
     // 音声の状態が変わった時
     tab.entity.webContents.on("audio-state-changed", (event) => {
-      this.base.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
         id: tab.id,
         isAudible: event.audible,
       });
@@ -534,12 +532,12 @@ export class TabManager {
     tab.entity.webContents.on("did-finish-load", () => {
       const tabUrl = tab.entity.webContents.getURL();
       if (!tabUrl.startsWith(ERROR_PAGE_DIRECTORY)) {
-        this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+        this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
           input: tabUrl,
         } as NavigationState);
       }
 
-      this.base.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+      this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
         isBookmarked: this.data.bookmarks.existByUrl(tabUrl),
       } as NavigationState);
 
@@ -614,7 +612,7 @@ export class TabManager {
     });
     // 離脱警告
     tab.entity.webContents.on("will-prevent-unload", (event) => {
-      const choice = dialog.showMessageBoxSync(this.base.win, {
+      const choice = dialog.showMessageBoxSync(this.window.win, {
         type: "question",
         buttons: ["このページを離れる", "キャンセル"],
         title: "このページを離れますか？",

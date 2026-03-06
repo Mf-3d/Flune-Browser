@@ -33,8 +33,7 @@ ipcMain.handle("nav.set-context-type", (event, type) => {
   contextMenuController.setContextType(type);
 });
 
-// new window
-export class Base {
+export class Window {
   viewY: number = 66;
   readonly win: BaseWindow;
   readonly navigation: Navigation;
@@ -92,7 +91,7 @@ export class Base {
     registerTabHandler(this.tabManager, resolveView(ROUTE_MAP.home));
     registerBookmarkHandler(this.tabManager, this.data);
     registerAppHandler(this.win, this.tabManager);
-    
+
     registerWindowEvents(this.win, this.navigation, this.tabManager, this.event, this.settings);
 
     // IPCチャンネル

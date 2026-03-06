@@ -1,6 +1,6 @@
 import { app, Menu, ContextMenuParams, clipboard } from "electron";
 import { createEmojiMenuTemplate } from "@/main/menu/context-menu/templates/emoji";
-import { Base } from "@/main/window/base-window";
+import { Window } from "@/main/window/base-window";
 import { createTextSelectionMenuTemplate } from "@/main/menu/context-menu/templates/text-selection";
 import { createVideoSelectionMenuTemplate } from "@/main/menu/context-menu/templates/video-selection";
 import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/templates/editable-selection";
@@ -38,7 +38,7 @@ type ContextSource =
 
 export class ContextMenuController {
   constructor(
-    private readonly baseWindow: Base,
+    private readonly window: Window,
   ) { }
 
   register(webContents: Electron.WebContents, source: ContextSource) {
@@ -98,27 +98,27 @@ export class ContextMenuController {
   private createActions(params: ContextMenuParams): ContextMenuActions {
     return {
       showEmojiPanel: () => app.showEmojiPanel(),
-      newTab: () => this.baseWindow.tabManager.newTab(undefined, {
+      newTab: () => this.window.tabManager.newTab(undefined, {
         active: true
       }),
       copyLinkURL: () => {
         clipboard.writeText(params.linkURL);
       },
-      toggleNavigationDevTools: () => this.baseWindow.navigation.view.webContents.toggleDevTools(),
-      toggleDevTools: () => this.baseWindow.tabManager.toggleDevTools(),
-      openSettings: () => this.baseWindow.tabManager.load(undefined, resolveView(ROUTE_MAP.settings)),
-      searchSelectionText: () => this.baseWindow.tabManager?.newTab(params.selectionText, {
+      toggleNavigationDevTools: () => this.window.navigation.view.webContents.toggleDevTools(),
+      toggleDevTools: () => this.window.tabManager.toggleDevTools(),
+      openSettings: () => this.window.tabManager.load(undefined, resolveView(ROUTE_MAP.settings)),
+      searchSelectionText: () => this.window.tabManager?.newTab(params.selectionText, {
         active: true
       }),
       startPip: () =>
-        this.baseWindow.tabManager.getActiveTabCurrent()?.entity.webContents.executeJavaScript(
+        this.window.tabManager.getActiveTabCurrent()?.entity.webContents.executeJavaScript(
           `(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`
         ),
-      goBack: () => this.baseWindow.tabManager.goBack(),
-      goForward: () => this.baseWindow.tabManager.goForward(),
-      reloadTab: () => this.baseWindow.tabManager.reloadTab(),
-      viewSource: () => this.baseWindow.tabManager?.newTab(
-        `view-source:${this.baseWindow.tabManager.getActiveTabCurrent()?.entity.webContents.getURL()}`
+      goBack: () => this.window.tabManager.goBack(),
+      goForward: () => this.window.tabManager.goForward(),
+      reloadTab: () => this.window.tabManager.reloadTab(),
+      viewSource: () => this.window.tabManager?.newTab(
+        `view-source:${this.window.tabManager.getActiveTabCurrent()?.entity.webContents.getURL()}`
       ),
     };
   }
