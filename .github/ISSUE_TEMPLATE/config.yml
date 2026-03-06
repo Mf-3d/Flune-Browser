@@ -1,0 +1,7 @@
+contact_links:
+  # - name: GitHub Community Support
+  #   url: https://github.com/mf-3d/flune-browser/discussions
+  #   about: 質問や回答はここでお願いします。
+  - name: GitHub Security Bug Bounty
+    url: https://bounty.github.com/
+    about: セキュリティ上の脆弱性はここで報告してください。
