@@ -19,13 +19,13 @@ export type NavigationInit = {
   showHomeButton: boolean;
 };
 
-export type NavigationState = {
-  isBookmarked?: boolean;
-  canGoBack?: boolean;
-  canGoForward?: boolean;
-  showHomeButton?: boolean;
-  input?: string;
-};
+export type NavigationState = Partial<{
+  isBookmarked: boolean;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  showHomeButton: boolean;
+  input: string;
+}>;
 
 export type CreatedTab = {
   id: string;
@@ -36,13 +36,13 @@ export type CreatedTab = {
 
 export type TabState = {
   id: string;
-
-  title?: string;
-  active?: boolean;
-  favicon?: string;
-  isLoading?: boolean;
-  isAudible?: boolean;
-};
+} & Partial<{
+  title: string;
+  active: boolean;
+  favicon: string;
+  isLoading: boolean;
+  isAudible: boolean;
+}>;
 
 export type API =
   DefaultAPI & {
