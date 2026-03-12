@@ -8,7 +8,6 @@ import { Window } from "@/main/window/window";
 import { ContextMenuManager } from "@/main/menu/context-menu";
 import Event from "@/main/lib/event";
 import { DataManager } from "@/main/lib/data";
-import { ContextMenuController } from "@/main/menu/contextMenuController";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { CreatedTab, NavigationState, TabState } from "@/shared/types/preload-api";
@@ -36,7 +35,6 @@ const ERROR_PAGE_DIRECTORY = (!app.isPackaged && process.env.ELECTRON_RENDERER_U
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const ERROR_URL = resolveView(ROUTE_MAP.error.generic);
 const ERROR_NOTFOUND_URL = resolveView(ROUTE_MAP.error.notFound);
-const contextMenuController = new ContextMenuController();
 
 // -タブ管理
 export class TabManager {

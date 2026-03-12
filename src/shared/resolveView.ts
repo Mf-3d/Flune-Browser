@@ -4,6 +4,7 @@ export const ROUTE_MAP = {
   settings: "browser/settings.html",
   version: "browser/version/",
   error: {
+    directory: "browser/error/",
     generic: "browser/error/error.html",
     notFound: "browser/error/server-notfound.html",
   },
