@@ -1,4 +1,5 @@
 import { Window } from "@/main/window/window";
+import { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
 
 export class Tab {
   readonly id: string;
@@ -14,11 +15,14 @@ export class Tab {
   isAudible = false;
 
   constructor(
-    private readonly view: Electron.WebContentsView,
+    private readonly view: WebContentsView,
+    bounds: Rectangle,
     private readonly onNewWindow: Function,
   ) {
     this.id = crypto.randomUUID();
     this.title = this.view.webContents.getTitle();
+
+    this.setBounds(bounds);
 
     this.webContents.setWindowOpenHandler((details) => {
       this.onNewWindow?.(details.url);
@@ -29,19 +33,19 @@ export class Tab {
     });
   }
 
-  get webContents(): Electron.WebContents {
+  get webContents(): WebContents {
     return this.view.webContents;
   }
 
-  close(options?: Electron.CloseOpts) {
+  close(options?: CloseOpts) {
     this.webContents.close(options);
   }
 
-  getBounds(): Electron.Rectangle {
+  getBounds(): Rectangle {
     return this.view.getBounds();
   }
 
-  setBounds(bounds: Electron.Rectangle) {
+  setBounds(bounds: Rectangle) {
     this.view.setBounds(bounds);
   }
 
@@ -53,6 +57,7 @@ export class Tab {
 
   attachView(window: Window) {
     window.win.contentView.addChildView(this.view);
+    console.debug(window.win.contentView.children)
   }
 
   goBack() {
@@ -75,9 +80,13 @@ export class Tab {
     else this.webContents.reloadIgnoringCache();
   }
 
-  toggleDevTools(options: Electron.OpenDevToolsOptions) {
+  toggleDevTools(options?: OpenDevToolsOptions) {
     this.webContents.isDevToolsOpened()
       ? this.webContents.closeDevTools()
       : this.webContents.openDevTools(options);
+  }
+
+  setVisible(visible: boolean) {
+    this.view.setVisible(visible);
   }
 }

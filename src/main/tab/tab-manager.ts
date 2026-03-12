@@ -6,8 +6,9 @@ import { Window } from "@/main/window/window";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { Settings } from "@/main/settings";
 import Event from "@/main/lib/event";
-import { TabState } from "@/shared/types/preload-api";
+import { NavigationState, TabState } from "@/shared/types/preload-api";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { WebContentsView } from "electron";
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
@@ -28,15 +29,15 @@ export class TabManager {
    * @param options 
    * @returns The new tab
    */
-  createTab(options: Partial<{
+  createTab(options?: Partial<{
+    input: string;
     /**
      * @default false
      */
-    url: string;
     isActive: boolean;
     beforeTabId: string;
   }>): Tab {
-    const view = new Electron.WebContentsView({
+    const view = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
         contextIsolation: true,
@@ -44,27 +45,35 @@ export class TabManager {
       }
     });
 
-    const tab = new Tab(view, () => {
-      this.createTab({
-        isActive: true,
+    const tab = new Tab(
+      view,
+      {
+        x: 0,
+        y: this.window.viewY,
+        width: this.window.bounds.width,
+        height: this.window.bounds.height,
+      },
+      () => {
+        this.createTab({
+          isActive: true,
+        });
       });
-    });
 
     registerTabEvents(tab, this.collection, this.window, this.settings, this.event);
 
-    this.collection.add(tab, options.beforeTabId);
+    this.collection.add(tab, options?.beforeTabId);
 
     this.window.navigation.send(IPC_NOTIFY.TAB_CREATED, {
       id: tab.id,
       title: tab.title,
-      beforeTabId: options.beforeTabId,
+      beforeTabId: options?.beforeTabId,
     });
 
     tab.attachView(this.window);
 
-    if (options.isActive) this.activateTab(tab.id);
-    
-    this.navigate(options.url ?? HOME_URL, tab.id);
+    if (options?.isActive) this.activateTab(tab.id);
+
+    this.navigate(options?.input ?? HOME_URL, tab.id);
 
     return tab;
   }
@@ -117,6 +126,8 @@ export class TabManager {
 
   moveTab(from: number, to: number) {
     this.collection.move(from, to);
+
+    // TODO: レンダラーに通知
   }
 
   moveBefore(id: string, beforeTabId: string) {
@@ -143,12 +154,24 @@ export class TabManager {
   activateTab(id: string) {
     this.collection.setActive(id);
 
+    this.collection.getAll().forEach((tab) => {
+      tab.id === id
+        ? tab.setVisible(true)
+        : tab.setVisible(false);
+    });
+
     const state: TabState = {
       id,
       active: true,
     };
 
     this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, state);
+
+    const navState: NavigationState = {
+      input: this.collection.getActive()?.url?.toString(),
+    };
+
+    this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, navState);
   }
 
   /**
@@ -170,7 +193,7 @@ export class TabManager {
       const engine = this.settings.searchEngineService.getEngineById(engineIdCurrent);
 
       if (!engine) throw new Error("Engine does not exist.");
-      
+
       const searchUrl = engine.url.replace(/%s/g, input);
 
       tab.loadURL(searchUrl);

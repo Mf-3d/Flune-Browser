@@ -2,7 +2,7 @@ import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { ERR_CODES, ERR_PAGES } from "./types";
 import { Window } from "@/main/window/window";
 import { NavigationState } from "@/shared/types/preload-api";
-import { dialog } from "electron";
+import { BaseWindow, dialog, WebContents } from "electron";
 import { Tab } from "./tab";
 import { Settings } from "@/main/settings";
 import Event from "@/main/lib/event";
@@ -104,7 +104,7 @@ export function registerTabEvents(
   webContents.on("will-prevent-unload", (event) => onBeforeUnload(event, window.win));
 }
 
-function updateTheme(webContents: Electron.WebContents, settings: Settings) {
+function updateTheme(webContents: WebContents, settings: Settings) {
   webContents.send(
     IPC_NOTIFY.TAB_THEME,
     settings.themeService.getThemeById(settings.themeService.getCurrentThemeId())
@@ -116,7 +116,7 @@ function onBeforeUnload(
     preventDefault: () => void;
     readonly defaultPrevented: boolean;
   },
-  baseWindow: Electron.BaseWindow
+  baseWindow: BaseWindow
 ) {
   const choice = dialog.showMessageBoxSync(baseWindow, {
     type: "question",
@@ -140,6 +140,11 @@ function onDidStopLoading(tab: Tab, collection: TabCollection, window: Window, s
 
   updateTheme(tab.webContents, settings);
   event.on("theme-updated", () => updateTheme(tab.webContents, settings));
+
+  window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+    id: tab.id,
+    isLoading: false
+  });
 
   if (collection.isActive(tab.id)) {
     const state: NavigationState = {

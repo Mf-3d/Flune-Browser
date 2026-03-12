@@ -15,8 +15,8 @@ export class WindowManager {
     this.baseWindow = new Window(data, this.settings, event);
 
     event.once("navigation-loaded", () => {
-      this.baseWindow?.tabManager.newTab(undefined, {
-        active: true
+      this.baseWindow?.tabManager.createTab({
+        isActive: true
       });
     });
 
@@ -44,10 +44,12 @@ export class WindowManager {
 
   private setupApplicationMenu() {
     const applicationMenuController = new ApplicationMenuController({
-      newTab: () => this.baseWindow?.tabManager.newTab(),
-      reloadTab: () => this.baseWindow?.tabManager.reloadTab(),
-      reloadTabIgnoringCache: () => this.baseWindow?.tabManager.reloadTab(undefined, true),
-      toggleDevTools: () => this.baseWindow?.tabManager.toggleDevTools(undefined, {
+      newTab: () => this.baseWindow?.tabManager.createTab(),
+      reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
+      reloadTabIgnoringCache: () => this.baseWindow?.tabManager.getActiveTab()?.reload({
+        ignoreCache: true
+      }),
+      toggleDevTools: () => this.baseWindow?.tabManager.getActiveTab()?.toggleDevTools({
         mode: "right"
       }),
       focusSearchBar: () => {

@@ -98,28 +98,30 @@ export class ContextMenuController {
   private createActions(params: ContextMenuParams): ContextMenuActions {
     return {
       showEmojiPanel: () => app.showEmojiPanel(),
-      newTab: () => this.window.tabManager.newTab(undefined, {
-        active: true
+      newTab: () => this.window.tabManager.createTab({
+        isActive: true
       }),
       copyLinkURL: () => {
         clipboard.writeText(params.linkURL);
       },
       toggleNavigationDevTools: () => this.window.navigation.view.webContents.toggleDevTools(),
-      toggleDevTools: () => this.window.tabManager.toggleDevTools(),
-      openSettings: () => this.window.tabManager.load(undefined, resolveView(ROUTE_MAP.settings)),
-      searchSelectionText: () => this.window.tabManager?.newTab(params.selectionText, {
-        active: true
+      toggleDevTools: () => this.window.tabManager.getActiveTab()?.toggleDevTools(),
+      openSettings: () => this.window.tabManager.navigate(resolveView(ROUTE_MAP.settings)),
+      searchSelectionText: () => this.window.tabManager.createTab({
+        input: params.selectionText,
+        isActive: true
       }),
       startPip: () =>
-        this.window.tabManager.getActiveTabCurrent()?.entity.webContents.executeJavaScript(
+        this.window.tabManager.getActiveTab()?.webContents.executeJavaScript(
           `(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`
         ),
-      goBack: () => this.window.tabManager.goBack(),
-      goForward: () => this.window.tabManager.goForward(),
-      reloadTab: () => this.window.tabManager.reloadTab(),
-      viewSource: () => this.window.tabManager?.newTab(
-        `view-source:${this.window.tabManager.getActiveTabCurrent()?.entity.webContents.getURL()}`
-      ),
+      goBack: () => this.window.tabManager.getActiveTab()?.goBack(),
+      goForward: () => this.window.tabManager.getActiveTab()?.goForward(),
+      reloadTab: () => this.window.tabManager.getActiveTab()?.reload(),
+      viewSource: () => this.window.tabManager?.createTab({
+        input: `view-source:${this.window.tabManager.getActiveTab()?.url}`,
+        isActive: true,
+      }),
     };
   }
 }
