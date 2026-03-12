@@ -115,6 +115,10 @@ export class TabManager {
     this.collection.removeAll();
   }
 
+  moveTab(from: number, to: number) {
+    this.collection.move(from, to);
+  }
+
   moveBefore(id: string, beforeTabId: string) {
     const from = this.collection.getIndex(id);
     const to = this.collection.getIndex(beforeTabId);

@@ -54,8 +54,7 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      // tabManager.moveTab(from, to);
-      tabManager.moveAfter();
+      tabManager.moveTab(from, to);
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_GO_BACK, (event) => {

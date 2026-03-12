@@ -172,10 +172,8 @@ export class Window {
     return navigation;
   }
 
-  /**
-   * @deprecated
-   */
   close() {
+    this.tabManager.removeAll();
     this.win?.close();
   }
 }
