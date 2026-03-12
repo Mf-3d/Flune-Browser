@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
 import { validateSender } from "@/main/ipc/validateSender";
-import { TabManager } from "@/main/window/tab";
+import { TabManager } from "@/main/tab/tab-manager";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
@@ -10,8 +10,11 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.newTab(undefined, {
-        active: true
+      // tabManager.newTab(undefined, {
+      //   active: true
+      // });
+      tabManager.createTab({
+        isActive: true
       });
     });
 
@@ -26,8 +29,8 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      console.debug(id, word)
-      tabManager.load(id, word);
+      // tabManager.load(id, word);
+      tabManager.navigate(word, id);
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_ACTIVATE, (event, id: string) => {
@@ -37,48 +40,54 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       tabManager.activateTab(id);
     });
 
-    ipcMain.handle(IPC_INVOKE.TAB_RELOAD, (event, options?: {
-      ignoringCache?: boolean
-    }) => {
+    ipcMain.handle(IPC_INVOKE.TAB_RELOAD, (event, options?: Partial<{
+      ignoreCache: boolean
+    }>) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.reloadTab(undefined, options?.ignoringCache);
+      // tabManager.reloadTab(undefined, options?.ignoringCache);
+      tabManager.getActiveTab()?.reload(options);
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_MOVE, (event, from: number, to: number) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.moveTab(from, to);
+      // tabManager.moveTab(from, to);
+      tabManager.moveAfter();
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_GO_BACK, (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.goBack();
+      // tabManager.goBack();
+      tabManager.getActiveTab()?.goBack();
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_GO_FORWARD, (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.goForward();
+      // tabManager.goForward();
+      tabManager.getActiveTab()?.goForward();
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_GO_HOME, (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.load(undefined, homeUrl);
+      // tabManager.load(undefined, homeUrl);
+      tabManager.navigate(homeUrl);
     });
 
     ipcMain.handle(IPC_INVOKE.VIEW_FOCUS, (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.getActiveTabCurrent()?.entity.webContents.focus();
+      // tabManager.getActiveTabCurrent()?.entity.webContents.focus();
+      tabManager.getActiveTab()?.webContents.focus();
     });
   } catch (err) {
     console.error("Failed to register tabHandler:", err); // ロガーはまだ入れていないので仮

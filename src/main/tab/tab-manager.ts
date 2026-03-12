@@ -7,15 +7,21 @@ import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { Settings } from "@/main/settings";
 import Event from "@/main/lib/event";
 import { TabState } from "@/shared/types/preload-api";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
+const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export class TabManager {
-
   constructor(
     private readonly collection: TabCollection,
     private readonly window: Window,
     private readonly settings: Settings,
     private readonly event: Event,
   ) { }
+
+  get length() {
+    return this.collection.length;
+  }
 
   /**
    * Creates a new tab.
@@ -26,6 +32,7 @@ export class TabManager {
     /**
      * @default false
      */
+    url: string;
     isActive: boolean;
     beforeTabId: string;
   }>): Tab {
@@ -56,6 +63,8 @@ export class TabManager {
     tab.attachView(this.window);
 
     if (options.isActive) this.activateTab(tab.id);
+    
+    this.navigate(options.url ?? HOME_URL, tab.id);
 
     return tab;
   }
@@ -162,5 +171,9 @@ export class TabManager {
 
       tab.loadURL(searchUrl);
     }
+  }
+
+  getActiveTab(): Tab | undefined {
+    return this.collection.getActive();
   }
 }

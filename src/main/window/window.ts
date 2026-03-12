@@ -4,7 +4,8 @@ import {
   ipcMain,
   app
 } from "electron";
-import { TabManager } from "@/main/window/tab";
+// import { TabManager } from "@/main/window/tab";
+import { TabManager } from "@/main/tab/tab-manager";
 import { OptionMenuManager } from "@/main/menu/option-menu";
 import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
@@ -18,6 +19,7 @@ import { createNavigationFeature, Navigation } from "../navigation/navigation-fe
 import { Settings } from "@/main/settings";
 import { registerTabHandler } from "../ipc/tab-handler";
 import { registerAppHandler } from "../ipc/app-handler";
+import { TabCollection } from "../tab/tab-collection";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -72,17 +74,19 @@ export class Window {
       }
     );
 
-    this.tabManager = new TabManager(
-      this,
-      this.data,
-      this.settings,
-      {
-        width: this.bounds.width,
-        height: this.bounds.height - this.viewY,
-        x: 0,
-        y: this.viewY
-      }
-    );
+    // this.tabManager = new TabManager(
+    //   this,
+    //   this.data,
+    //   this.settings,
+    //   {
+    //     width: this.bounds.width,
+    //     height: this.bounds.height - this.viewY,
+    //     x: 0,
+    //     y: this.viewY
+    //   }
+    // );
+    const collection = new TabCollection();
+    this.tabManager = new TabManager(collection, this, this.settings, this.event);
     this.navigation = this.setupNavigation();
 
     // ここでいいのかわからない
@@ -106,13 +110,15 @@ export class Window {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      this.tabManager?.load(undefined, SETTINGS_URL);
+      // this.tabManager?.load(undefined, SETTINGS_URL);
+      this.tabManager.navigate(SETTINGS_URL);
     });
     ipcMain.handle("flune.show-versions-page", (event) => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      this.tabManager?.load(undefined, VERSION_URL);
+      // this.tabManager?.load(undefined, VERSION_URL);
+      this.tabManager.navigate(VERSION_URL);
     });
   }
 

@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
 import { validateSender } from "@/main/ipc/validateSender";
-import { TabManager } from "@/main/window/tab";
+import { TabManager } from "@/main/tab/tab-manager";
 import { DataManager } from "@/main/lib/data";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
@@ -11,9 +11,9 @@ export function registerBookmarkHandler(tabManager: TabManager, data: DataManage
       if (!event.senderFrame) throw new Error;
       if (!validateSender(event.senderFrame)) throw new Error;
 
-      const tabCurrent = tabManager.getActiveTabCurrent();
-      const tabTitle = tabCurrent?.entity.webContents.getTitle();
-      const tabURL = tabCurrent?.entity.webContents.getURL();
+      const tabCurrent = tabManager.getActiveTab();
+      const tabTitle = tabCurrent?.webContents.getTitle();
+      const tabURL = tabCurrent?.webContents.getURL();
 
       if (!tabTitle || !tabURL) throw new Error;
 

@@ -37,6 +37,9 @@ const ERROR_URL = resolveView(ROUTE_MAP.error.generic);
 const ERROR_NOTFOUND_URL = resolveView(ROUTE_MAP.error.notFound);
 
 // -タブ管理
+/**
+ * @deprecated
+ */
 export class TabManager {
   // readonly settings: Settings;
   readonly event: Event;

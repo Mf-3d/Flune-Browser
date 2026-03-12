@@ -65,10 +65,13 @@ export class Tab {
       this.webContents.navigationHistory.goForward();
   }
 
-  reload(options: Partial<{
+  reload(options?: Partial<{
+    /**
+     * @default false
+     */
     ignoreCache: boolean;
   }>) {
-    if (!options.ignoreCache) this.webContents.reload();
+    if (!options?.ignoreCache) this.webContents.reload();
     else this.webContents.reloadIgnoringCache();
   }
 

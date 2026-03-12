@@ -2,7 +2,7 @@ import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { app, BaseWindow, dialog, ipcMain } from "electron";
 import { validateSender } from "./validateSender";
 import * as packageJson from "@/../package.json";
-import { TabManager } from "../window/tab";
+import { TabManager } from "@/main/tab/tab-manager";
 
 export function registerAppHandler(baseWindow: BaseWindow, tabManager: TabManager) {
   ipcMain.handle(IPC_INVOKE.APP_GET_VERSION, (event) => {
@@ -54,7 +54,7 @@ export function registerAppHandler(baseWindow: BaseWindow, tabManager: TabManage
       const choice = dialog.showMessageBoxSync(baseWindow, {
         type: "question",
         message: "本当に終了しますか？",
-        detail: `${tabManager.tabs.length}個のタブを閉じます。`,
+        detail: `${tabManager.length}個のタブを閉じます。`,
         buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
