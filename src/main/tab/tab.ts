@@ -57,7 +57,6 @@ export class Tab {
 
   attachView(window: Window) {
     window.win.contentView.addChildView(this.view);
-    console.debug(window.win.contentView.children)
   }
 
   goBack() {

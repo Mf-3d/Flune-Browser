@@ -39,8 +39,6 @@ export function registerTabEvents(
   });
 
   webContents.on("page-favicon-updated", (_, favicons) => {
-    console.debug(favicons);
-
     const favicon = favicons[0];
     tab.favicon = favicon;
 
@@ -51,14 +49,12 @@ export function registerTabEvents(
   });
 
   webContents.on("did-navigate", (_, url) => {
-    console.debug("did-navigate");
     tab.url = new URL(url);
 
     // 履歴追加、ブックマークされているかの状態
   });
 
   webContents.on("did-navigate-in-page", (_, url) => {
-    console.debug("did-navigate-in-page");
     tab.url = new URL(url);
 
     // 履歴追加、ブックマークされているかの状態
