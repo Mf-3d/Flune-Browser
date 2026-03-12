@@ -20,7 +20,7 @@ export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigat
     navigation.updateTheme(id);
   });
   event.on("setting-updated", () => {
-    navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, {
+    navigation.updateState({
       showHomeButton: settings.store.get("settings").design.showHomeButton
     });
   });

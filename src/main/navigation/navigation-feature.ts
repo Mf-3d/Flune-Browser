@@ -8,12 +8,7 @@ import path from "path";
 import { app, BaseWindow, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { NavigationInit } from "@/shared/types/preload-api";
-
-type NavigationState = {
-  url?: string;
-  isBookmarked?: boolean;
-};
+import { NavigationInit, NavigationState } from "@/shared/types/preload-api";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 

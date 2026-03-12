@@ -50,11 +50,12 @@ export function registerTabHandler(tabManager: TabManager, homeUrl: string) {
       tabManager.getActiveTab()?.reload(options);
     });
 
-    ipcMain.handle(IPC_INVOKE.TAB_MOVE, (event, from: number, to: number) => {
+    ipcMain.handle(IPC_INVOKE.TAB_MOVE, (event, id: string, targetId: string, position: "before" | "after") => {
       if (!event.senderFrame) return null;
       if (!validateSender(event.senderFrame)) return null;
 
-      tabManager.moveTab(from, to);
+      if (position === "after") tabManager.moveAfter(id, targetId);
+      else tabManager.moveBefore(id, targetId);
     });
 
     ipcMain.handle(IPC_INVOKE.TAB_GO_BACK, (event) => {

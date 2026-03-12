@@ -68,9 +68,11 @@ function onDrop(event: DragEvent) {
   if ((event.clientX - rect.left) < (tabElement.clientWidth / 2)) {
     //マウスカーソルの位置が要素の半分より左
     tabElement.insertAdjacentElement("beforebegin", draggedTab);
+    window.flune.navigation?.tab.move(tabId, tabElement.getAttribute("data-id")!, "before");
   } else {
     //マウスカーソルの位置が要素の半分より右
     tabElement.insertAdjacentElement("afterend", draggedTab);
+    window.flune.navigation?.tab.move(tabId, tabElement.getAttribute("data-id")!, "after");
   }
 
   tabContainer.querySelectorAll(".tab").forEach((el) => {

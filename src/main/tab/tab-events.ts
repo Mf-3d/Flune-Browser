@@ -147,12 +147,10 @@ function onDidStopLoading(tab: Tab, collection: TabCollection, window: Window, s
   });
 
   if (collection.isActive(tab.id)) {
-    const state: NavigationState = {
+    window.navigation.updateState({
       canGoBack: tab.canGoBack,
       canGoForward: tab.canGoForward,
       input: tab.url?.toString(),
-    };
-
-    window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, state);
+    });
   }
 }

@@ -65,6 +65,11 @@ export const NAVIGATION: NavigationAPI = {
       IPC_NOTIFY.TAB_UPDATED,
       (event, state) => callback(event, state)
     ),
+
+    onReordered: (callback) => ipcRenderer.on(
+      IPC_NOTIFY.TABS_REORDERED,
+      (event, state) => callback(event, state)
+    ),
   },
 
   toggleBookmark: () => {

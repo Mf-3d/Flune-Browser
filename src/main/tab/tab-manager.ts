@@ -93,6 +93,10 @@ export class TabManager {
 
     const wasActive = this.collection.isActive(id);
 
+    console.log(this.collection.getAll().map(t => ({
+      id: t.id,
+      title: t.title
+    })));
     removedTab.close();
 
     this.collection.remove(id);
@@ -104,6 +108,7 @@ export class TabManager {
     if (wasActive) {
       const nextIndex = index === 0 ? index + 1 : index - 1;
       const next = this.collection.at(nextIndex);
+      console.log(this.collection.getAll().map(t => t.id), index, next?.id, id);
 
       if (!next) {
         throw new Error("Next tab to activate does not exist.");
@@ -127,7 +132,10 @@ export class TabManager {
   moveTab(from: number, to: number) {
     this.collection.move(from, to);
 
-    // TODO: レンダラーに通知
+    const order = this.collection.getAll().map(t => t.id);
+    this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
+
+    console.log(order)
   }
 
   moveBefore(id: string, beforeTabId: string) {
@@ -135,7 +143,10 @@ export class TabManager {
     const to = this.collection.getIndex(beforeTabId);
     this.collection.move(from, to);
 
-    // TODO: レンダラーに通知
+    const order = this.collection.getAll().map(t => t.id);
+    this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
+
+    console.log(order)
   }
 
   moveAfter(id: string, afterTabId: string) {
@@ -148,7 +159,10 @@ export class TabManager {
         : to + 1
     );
 
-    // TODO: レンダラーに通知
+    const order = this.collection.getAll().map(t => t.id);
+    this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
+
+    console.log(order)
   }
 
   activateTab(id: string) {
@@ -167,11 +181,9 @@ export class TabManager {
 
     this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, state);
 
-    const navState: NavigationState = {
+    this.window.navigation.updateState({
       input: this.collection.getActive()?.url?.toString(),
-    };
-
-    this.window.navigation.send(IPC_NOTIFY.NAVIGATION_UPDATE, navState);
+    });
   }
 
   /**

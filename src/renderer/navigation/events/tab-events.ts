@@ -1,5 +1,4 @@
 import { CreatedTab, TabState } from "@/shared/types/preload-api";
-import { navigationActions } from "../actions/navigation-actions";
 import { updateTabsUI } from "..";
 
 export function registerTabEvents() {
@@ -8,6 +7,7 @@ export function registerTabEvents() {
   window.flune.navigation.tab.onCreated(onCreated);
   window.flune.navigation.tab.onRemoved(onRemoved);
   window.flune.navigation.tab.onUpdated(OnUpdated);
+  window.flune.navigation.tab.onReordered(onReordered);
 }
 
 function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
@@ -149,4 +149,17 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   }
 
   updateTabsUI();
+}
+
+function onReordered(_: Electron.IpcRendererEvent, order: string[]) {
+  const tabContainer = document.getElementById("tabs")!;
+
+  for (const id of order) {
+    const tabElement = document.querySelector(`[data-id="${id}"]`);
+    if (tabElement) tabContainer.appendChild(tabElement);
+  }
+  
+  // 最後に追加
+  const newButton = tabContainer.querySelector(".new-button")!;
+  tabContainer.appendChild(newButton);
 }

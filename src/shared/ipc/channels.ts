@@ -44,6 +44,8 @@ export const IPC_NOTIFY = {
   TAB_REMOVED: "tab:removed",
   TAB_UPDATED: "tab:updated",
   TAB_THEME: "tab:theme",
+  
+  TABS_REORDERED: "tabs:reordered",
 
   MENU_OPENING: "menu:opening",
   MENU_CLOSING: "menu:closing",

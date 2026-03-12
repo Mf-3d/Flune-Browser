@@ -72,7 +72,7 @@ export type NavigationAPI = {
     create: () => void;
     activate: (id: string) => void;
     remove: (id: string) => void;
-    move: (from: number, to: number) => void;
+    move: (id: string, targetId: string, position: "before" | "after") => void;
     navigate: (id: string | undefined, input: string) => void;
     reload: (options?: {
       ignoringCache?: boolean | undefined;
@@ -84,6 +84,8 @@ export type NavigationAPI = {
     onCreated: (callback: (event: Electron.IpcRendererEvent, tab: CreatedTab) => void) => Electron.IpcRenderer;
     onRemoved: (callback: (event: Electron.IpcRendererEvent, id: string) => void) => Electron.IpcRenderer;
     onUpdated: (callback: (event: Electron.IpcRendererEvent, state: TabState) => void) => Electron.IpcRenderer;
+
+    onReordered: (callback: (event: Electron.IpcRendererEvent, order: string[]) => void) => Electron.IpcRenderer;
   };
   toggleBookmark: () => void;
   toggleOptionMenu: () => void;
