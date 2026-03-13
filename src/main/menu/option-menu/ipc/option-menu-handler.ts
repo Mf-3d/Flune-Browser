@@ -13,7 +13,11 @@ export function registerOptionMenuHandler(optionMenuController: OptionMenuContro
     optionMenuController.close();
   });
 
-  handle(IPC_INVOKE.MENU_ITEM_CLICK, (event, menuId: MenuId) => {
+  handle(IPC_INVOKE.MENU_TOGGLE, () => {
+    optionMenuController.toggle();
+  });
+
+  handle(IPC_INVOKE.MENU_ITEM_CLICK, (_, menuId: MenuId) => {
     optionMenuController.handleClick(menuId);
   });
 }

@@ -12,7 +12,8 @@ import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerSettingsHandler } from "./settings/ipc/settings-handler";
 import { registerBookmarkHandler } from "./bookmark/ipc/bookmark-handler";
-import { registerAppHandler } from "./ipc/app-handler";
+import { registerAppHandler } from "@/main/application/ipc/app-handler";
+import { ApplicationService } from "./application/application-service";
 
 type Services = {
   settings: Settings;
@@ -20,6 +21,7 @@ type Services = {
   data: DataManager;
   event: Event;
   bookmarkService: BookmarkService;
+  appService: ApplicationService;
 };
 
 export function bootstrap() {
@@ -47,6 +49,7 @@ function initializeServices(): Services {
   const settings = createSettings();
   const windowManager = new WindowManager(settings);
   const bookmarkService = new BookmarkService(data);
+  const appService = new ApplicationService();
 
   return {
     settings,
@@ -54,13 +57,14 @@ function initializeServices(): Services {
     data,
     event,
     bookmarkService,
+    appService,
   };
 }
 
 function onReady(services: Services) {
   const protocol = new Protocol("flune", services.event);
 
-  registerAppHandler(services.windowManager);
+  registerAppHandler(services.appService, services.windowManager);
   registerSettingsHandler(services.settings, services.event);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
   registerBookmarkHandler(services.windowManager, services.data);

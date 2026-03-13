@@ -1,5 +1,8 @@
-import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { OptionMenuView } from "../view/option-menu-view";
+import { createOptionMenuActions } from "../actions/option-menu-actions";
+
+import type { OptionMenuView } from "../view/option-menu-view";
+import type { Window } from "@/main/window/window";
+import type { MenuId } from "../templates/types";
 
 type MenuState =
   | "closed"
@@ -9,16 +12,24 @@ type MenuState =
 
 export class OptionMenuController {
   private state: MenuState = "closed";
+  private readonly actions;
 
   constructor(
     private readonly view: OptionMenuView,
-    private readonly fadeTime: number
+    private readonly window: Window,
+    private readonly fadeTime: number,
   ) {
     view.on("close", () => this.close());
+    this.actions = createOptionMenuActions(this.window);
   }
 
   isVisible() {
     return this.view.isVisible();
+  }
+
+  handleClick(id: MenuId) {
+    const action = this.actions[id];
+    action?.();
   }
 
   async open() {
@@ -60,5 +71,13 @@ export class OptionMenuController {
     this.view.hide();
 
     this.state = "closed";
+  }
+
+  async toggle() {
+    if (this.state === "open" || this.state === "opening") {
+      await this.close();
+    } else {
+      await this.open();
+    }
   }
 }

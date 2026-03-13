@@ -76,7 +76,7 @@ export const NAVIGATION: NavigationAPI = {
     ipcRenderer.invoke(IPC_INVOKE.BOOKMARK_TOGGLE); // 開いているタブをブックマークに追加または削除する
   },
   toggleOptionMenu: () => {
-    ipcRenderer.invoke("options.toggle"); // メニューを開く
+    ipcRenderer.invoke(IPC_INVOKE.MENU_TOGGLE); // メニューを開く
   },
   updateSymbolColor: (color) => {
     ipcRenderer.invoke(IPC_INVOKE.APP_UPDATE_SYMBOL_COLOR, color); // シンボルカラーを変更する

@@ -1,26 +1,16 @@
 import { IPC_INVOKE } from "@/shared/ipc/channels";
-import { app, dialog } from "electron";
-import * as packageJson from "@/../package.json";
-import { WindowManager } from "../window/window-manager";
-import { handle } from "./handler";
-import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { handle } from "@/main/ipc/handler";
 
-const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
-const VERSIONS_URL = resolveView(ROUTE_MAP.version);
+import type { ApplicationService } from "../application-service";
+import type { WindowManager } from "@/main/window/window-manager";
 
-export function registerAppHandler(windowManager: WindowManager) {
+export function registerAppHandler(appService: ApplicationService, windowManager: WindowManager) {
   handle(IPC_INVOKE.APP_GET_VERSION, () => {
-    return packageJson.version;
+    return appService.getVersion();
   });
 
   handle(IPC_INVOKE.APP_GET_VERSIONS, () => {
-    return {
-      flune: packageJson.version,
-      electron: process.versions.electron,
-      node: process.versions.node,
-      chrome: process.versions.chrome,
-      v8: process.versions.v8,
-    };
+    return appService.getVersions();
   });
 
   handle(IPC_INVOKE.APP_GET_COMPUTER_INFO, () => {
@@ -51,7 +41,7 @@ export function registerAppHandler(windowManager: WindowManager) {
       throw new Error("Window does not exist.");
     }
 
-    window.tabManager.navigate(SETTINGS_URL);
+    appService.showSettingsPage(window);
   });
 
   handle(IPC_INVOKE.APP_SHOW_VERSIONS_PAGE, (event) => {
@@ -61,28 +51,25 @@ export function registerAppHandler(windowManager: WindowManager) {
       throw new Error("Window does not exist.");
     }
 
-    window.tabManager.navigate(VERSIONS_URL);
+    appService.showVersionsPage(window);
   });
 
   handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
-    if (forced) app.quit();
-    else {
+    if (forced === true) {
+      appService.quit({
+        forced: true
+      });
+    } else {
       const window = windowManager.getWindowFromWebContents(event.sender);
 
       if (!window) {
         throw new Error("Window does not exist.");
       }
 
-      const choice = dialog.showMessageBoxSync(window.win, {
-        type: "question",
-        message: "本当に終了しますか？",
-        detail: `${window.tabManager.length}個のタブを閉じます。`,
-        buttons: ["終了する", "キャンセル"],
-        defaultId: 0,
-        cancelId: 1,
+      appService.quit({
+        forced: false,
+        window
       });
-
-      if (choice === 0) app.quit();
     }
   });
 }

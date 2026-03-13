@@ -1,0 +1,64 @@
+import { app, dialog } from "electron";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
+import type { Window } from "@/main/window/window";
+import type { QuitOptions } from "./types";
+import type { Versions } from "@/shared/types/preload-api";
+import type { Tab } from "@/main/tab/tab";
+
+const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
+const VERSIONS_URL = resolveView(ROUTE_MAP.version);
+
+export class ApplicationService {
+  constructor() { }
+
+  get isPackaged() {
+    return app.isPackaged;
+  }
+
+  quit(options: QuitOptions) {
+    if (options.forced) app.quit();
+    else {
+      if (!options.window) {
+        throw new Error("Window does not exist.");
+      }
+
+      const choice = dialog.showMessageBoxSync(options.window.win, {
+        type: "question",
+        message: "本当に終了しますか？",
+        detail: `${options.window.tabManager.length}個のタブを閉じます。`,
+        buttons: ["終了する", "キャンセル"],
+        defaultId: 0,
+        cancelId: 1,
+      });
+
+      if (choice === 0) app.quit();
+    }
+  }
+
+  getVersion(): string {
+    return app.getVersion();
+  }
+
+  getVersions(): Versions {
+    return {
+      flune: this.getVersion(),
+      electron: process.versions.electron,
+      node: process.versions.node,
+      chrome: process.versions.chrome,
+      v8: process.versions.v8,
+    };
+  }
+
+  createTab(window: Window): Tab {
+    return window.tabManager.createTab();
+  }
+
+  showSettingsPage(window: Window) {
+    window.tabManager.navigate(SETTINGS_URL);
+  }
+
+  showVersionsPage(window: Window) {
+    window.tabManager.navigate(VERSIONS_URL);
+  }
+}

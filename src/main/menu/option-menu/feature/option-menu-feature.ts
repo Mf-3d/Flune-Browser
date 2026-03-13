@@ -11,6 +11,6 @@ export class OptionMenuFeature {
   }
 
   create() {
-    return new OptionMenuController(this.view, this.fadeTime);
+    return new OptionMenuController(this.view, this.window, this.fadeTime);
   }
 }

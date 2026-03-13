@@ -1,7 +1,9 @@
-import { Window } from "@/main/window/window";
+import path from "path";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { app, WebContentsView } from "electron";
+
+import type { Window } from "@/main/window/window";
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 
@@ -27,7 +29,7 @@ export class OptionMenuView {
   constructor(private readonly window: Window) {
     this.view = new WebContentsView({
       webPreferences: {
-        preload: "option-menu-preload.js"
+        preload: path.join(__dirname, "..", "preload", "index.js"),
       }
     });
 
