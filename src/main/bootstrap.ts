@@ -1,12 +1,16 @@
 import { app } from "electron";
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
-import { Protocol } from "@/main/protocol";
+import { Protocol } from "@/main/infrastructure/protocol";
 import Event from "@/main/lib/event";
 import { isArchitectureIntel } from "@/main/system/env";
 import { DataManager } from "@/main/lib/data";
 import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
 import { Settings, createSettings } from "./settings/";
+
+import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { registerSettingsHandler } from "./settings/ipc/settings-handler";
 
 type Services = {
   settings: Settings;
@@ -38,7 +42,7 @@ function registerAppEvents(services: Services) {
 function initializeServices(): Services {
   const data = new DataManager;
   const event = new Event();
-  const settings = createSettings(event);
+  const settings = createSettings();
   const windowManager = new WindowManager(settings);
   const bookmarkService = new BookmarkService(data);
 
@@ -53,6 +57,9 @@ function initializeServices(): Services {
 
 function onReady(services: Services) {
   const protocol = new Protocol("flune", services.event);
+
+  registerSettingsHandler(services.settings, services.event);
+  registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
 
   services.event.send("init");
   services.windowManager.create(services.event, services.data);

@@ -17,7 +17,7 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
 import { Settings } from "@/main/settings";
-import { registerTabHandler } from "../ipc/tab-handler";
+import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
 import { registerAppHandler } from "../ipc/app-handler";
 import { TabCollection } from "../tab/tab-collection";
 
@@ -90,7 +90,6 @@ export class Window {
     this.navigation = this.setupNavigation();
 
     // ここでいいのかわからない
-    registerTabHandler(this.tabManager, resolveView(ROUTE_MAP.home));
     registerBookmarkHandler(this.tabManager, this.data);
     registerAppHandler(this.win, this.tabManager);
 

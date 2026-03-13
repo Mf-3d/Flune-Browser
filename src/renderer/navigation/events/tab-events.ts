@@ -1,5 +1,6 @@
 import { CreatedTab, TabState } from "@/shared/types/preload-api";
 import { updateTabsUI } from "..";
+import { isDragging } from "../ui/tab-drag-events";
 
 export function registerTabEvents() {
   if (!window.flune.navigation) return;
@@ -107,6 +108,8 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
 }
 
 function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
+  if (isDragging) return;
+  
   const tabContainer = document.getElementById("tabs")!;
   const tabElements = tabContainer.querySelectorAll(".tab");
 

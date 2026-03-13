@@ -36,6 +36,16 @@ export class WindowManager {
     return this.baseWindow;
   }
 
+  getWindowFromWebContents(webContents: Electron.WebContents): Window | undefined {
+    // for (const window of this.windows.values()) {
+    //   if (window.containsWebContents(webContents)) {
+    //     return window;
+    //   }
+    // }
+
+    return this.baseWindow;
+  }
+
   private initializeControllers() {
     this.setupApplicationMenu();
     this.setupContextMenu();

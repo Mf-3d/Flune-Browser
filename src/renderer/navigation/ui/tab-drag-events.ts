@@ -1,5 +1,7 @@
 import { updateTabsUI } from "..";
 
+export let isDragging: boolean = false;
+
 export function registerTabDragEvents() {
   const tabContainer = document.getElementById("tabs");
 
@@ -14,6 +16,8 @@ function onDragStart(event: DragEvent) {
   event.dataTransfer!.effectAllowed = "move";
   const target = event.target as HTMLElement;
   event.dataTransfer!.setData("text/plain", target.getAttribute("data-id")!);
+
+  isDragging = true;
 }
 
 function onDragOver(event: DragEvent) {
@@ -51,6 +55,8 @@ function onDragEnd(event: DragEvent) {
 
   tabElement.classList.remove("adding-left");
   tabElement.classList.remove("adding-right");
+
+  isDragging = false;
 }
 
 function onDrop(event: DragEvent) {
