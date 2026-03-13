@@ -45,21 +45,26 @@ export class TabManager {
       }
     });
 
-    const tab = new Tab(
+    const tab = new Tab({
       view,
-      {
+      bounds: {
         x: 0,
         y: this.window.viewY,
         width: this.window.bounds.width,
         height: this.window.bounds.height,
       },
-      () => {
-        this.createTab({
+      onNewWindow: (url) => {
+        const tab = this.createTab({
           isActive: true,
         });
-      });
 
-    registerTabEvents(tab, this.collection, this.window, this.settings, this.event);
+        tab.loadURL(url);
+      },
+      isActiveTab: (id) => this.isActiveTab(id),
+      window: this.window,
+      settings: this.settings,
+      event: this.event,
+    });
 
     this.collection.add(tab, options?.beforeTabId);
 
@@ -203,5 +208,9 @@ export class TabManager {
 
   getActiveTab(): Tab | undefined {
     return this.collection.getActive();
+  }
+
+  isActiveTab(id: string): boolean {
+    return this.collection.isActive(id);
   }
 }

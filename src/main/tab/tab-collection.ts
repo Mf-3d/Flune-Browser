@@ -19,27 +19,6 @@ export class TabCollection {
     return this.tabs.indexOf(tab);
   }
 
-  // move(id: string, targetId: string, position: "before" | "after") {
-  //   const from = this.getIndex(id);
-  //   const to =
-  //     position === "before"
-  //       ? this.getIndex(targetId)
-  //       : this.getIndex(targetId) + 1;
-
-  //   if (from < 0 || from >= this.tabs.length || to < 0 || to >= this.tabs.length) {
-  //     throw new Error("Invalid indices.");
-  //   }
-
-  //   const insertIndex = from < to ? to : to + 1;
-  //   const [movedTab] = this.tabs.splice(from, 1);
-
-  //   if (movedTab) {
-  //     this.tabs.splice(insertIndex, 0, movedTab);
-  //   } else {
-  //     throw new Error("Moved tab does not exist.");
-  //   }
-  // }
-
   move(fromIndex: number, toIndex: number) {
     if (fromIndex < 0 || fromIndex >= this.tabs.length || toIndex < 0 || toIndex >= this.tabs.length) {
       throw new Error("Invalid indices.");

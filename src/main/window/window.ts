@@ -4,22 +4,20 @@ import {
   ipcMain,
   app
 } from "electron";
-// import { TabManager } from "@/main/window/tab";
+
 import { TabManager } from "@/main/tab/tab-manager";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-import Event from "@/main/lib/event";
 import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
 import { validateSender } from "@/main/ipc/validateSender";
-import { registerBookmarkHandler } from "@/main/ipc/bookmark-handler";
-import { DataManager } from "@/main/lib/data";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
-import { Settings } from "@/main/settings";
-import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
-import { registerAppHandler } from "../ipc/app-handler";
 import { TabCollection } from "../tab/tab-collection";
+
+import type { Settings } from "@/main/settings";
+import type { DataManager } from "@/main/lib/data";
+import type Event from "@/main/lib/event";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSION_URL = resolveView(ROUTE_MAP.version);
@@ -74,24 +72,9 @@ export class Window {
       }
     );
 
-    // this.tabManager = new TabManager(
-    //   this,
-    //   this.data,
-    //   this.settings,
-    //   {
-    //     width: this.bounds.width,
-    //     height: this.bounds.height - this.viewY,
-    //     x: 0,
-    //     y: this.viewY
-    //   }
-    // );
-    const collection = new TabCollection();
-    this.tabManager = new TabManager(collection, this, this.settings, this.event);
+    const tabCollection = new TabCollection();
+    this.tabManager = new TabManager(tabCollection, this, this.settings, this.event);
     this.navigation = this.setupNavigation();
-
-    // ここでいいのかわからない
-    registerBookmarkHandler(this.tabManager, this.data);
-    registerAppHandler(this.win, this.tabManager);
 
     registerWindowEvents(this.win, this.navigation, this.tabManager, this.event, this.settings);
 

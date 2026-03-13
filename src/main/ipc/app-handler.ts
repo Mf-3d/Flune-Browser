@@ -1,10 +1,10 @@
 import { IPC_INVOKE } from "@/shared/ipc/channels";
-import { app, BaseWindow, dialog, ipcMain } from "electron";
+import { app, dialog, ipcMain } from "electron";
 import { validateSender } from "./validateSender";
 import * as packageJson from "@/../package.json";
-import { TabManager } from "@/main/tab/tab-manager";
+import { WindowManager } from "../window/window-manager";
 
-export function registerAppHandler(baseWindow: BaseWindow, tabManager: TabManager) {
+export function registerAppHandler(windowManager: WindowManager) {
   ipcMain.handle(IPC_INVOKE.APP_GET_VERSION, (event) => {
     if (!event.senderFrame) return null;
     if (!validateSender(event.senderFrame)) return null;
@@ -39,10 +39,17 @@ export function registerAppHandler(baseWindow: BaseWindow, tabManager: TabManage
     if (!event.senderFrame) return null;
     if (!validateSender(event.senderFrame)) return null;
 
-    if (process.platform === "win32" || process.platform === "linux")
-      baseWindow.setTitleBarOverlay({
+    if (process.platform === "win32" || process.platform === "linux") {
+      const window = windowManager.getWindowFromWebContents(event.sender);
+
+      if (!window) {
+        throw new Error("Window does not exist.");
+      }
+
+      window.win.setTitleBarOverlay({
         symbolColor: color
       });
+    }
   });
 
   ipcMain.handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
@@ -51,10 +58,16 @@ export function registerAppHandler(baseWindow: BaseWindow, tabManager: TabManage
 
     if (forced) app.quit();
     else {
-      const choice = dialog.showMessageBoxSync(baseWindow, {
+      const window = windowManager.getWindowFromWebContents(event.sender);
+
+      if (!window) {
+        throw new Error("Window does not exist.");
+      }
+
+      const choice = dialog.showMessageBoxSync(window.win, {
         type: "question",
         message: "本当に終了しますか？",
-        detail: `${tabManager.length}個のタブを閉じます。`,
+        detail: `${window.tabManager.length}個のタブを閉じます。`,
         buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,

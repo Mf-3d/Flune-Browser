@@ -1,8 +1,27 @@
-import { Window } from "@/main/window/window";
-import { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
+import type { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
+import { registerTabEvents } from "./tab-events";
+
+import type { Window } from "@/main/window/window";
+import type { Settings } from "@/main/settings";
+import type Event from "@/main/lib/event";
+
+type TabOptions = {
+  view: WebContentsView;
+  bounds: Rectangle;
+  onNewWindow: (url: string) => void;
+  isActiveTab: (id: string) => boolean;
+
+  window: Window;
+  settings: Settings;
+  event: Event;
+};
 
 export class Tab {
   readonly id: string;
+  readonly view: WebContentsView;
+  readonly window: Window;
+  readonly settings: Settings;
+  readonly event: Event;
 
   url?: URL;
   title: string;
@@ -14,18 +33,23 @@ export class Tab {
 
   isAudible = false;
 
-  constructor(
-    private readonly view: WebContentsView,
-    bounds: Rectangle,
-    private readonly onNewWindow: Function,
-  ) {
+  private readonly cleanupEvents: () => void;
+
+  constructor(options: TabOptions) {
+    this.view = options.view;
+    this.window = options.window;
+    this.settings = options.settings;
+    this.event = options.event;
+
     this.id = crypto.randomUUID();
     this.title = this.view.webContents.getTitle();
 
-    this.setBounds(bounds);
+    this.setBounds(options.bounds);
+
+    this.cleanupEvents = registerTabEvents(this, options.isActiveTab, this.window, this.settings, this.event);
 
     this.webContents.setWindowOpenHandler((details) => {
-      this.onNewWindow?.(details.url);
+      options.onNewWindow?.(details.url);
 
       return {
         action: "deny"
@@ -38,6 +62,7 @@ export class Tab {
   }
 
   close(options?: CloseOpts) {
+    this.cleanupEvents?.();
     this.webContents.close(options);
   }
 

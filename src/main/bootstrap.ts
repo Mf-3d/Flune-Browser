@@ -11,6 +11,8 @@ import { Settings, createSettings } from "./settings/";
 import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerSettingsHandler } from "./settings/ipc/settings-handler";
+import { registerBookmarkHandler } from "./bookmark/ipc/bookmark-handler";
+import { registerAppHandler } from "./ipc/app-handler";
 
 type Services = {
   settings: Settings;
@@ -58,8 +60,10 @@ function initializeServices(): Services {
 function onReady(services: Services) {
   const protocol = new Protocol("flune", services.event);
 
+  registerAppHandler(services.windowManager);
   registerSettingsHandler(services.settings, services.event);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
+  registerBookmarkHandler(services.windowManager, services.data);
 
   services.event.send("init");
   services.windowManager.create(services.event, services.data);
