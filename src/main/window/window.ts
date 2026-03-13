@@ -1,16 +1,9 @@
 import path from "node:path";
-import {
-  BaseWindow,
-  ipcMain,
-  app
-} from "electron";
+import { BaseWindow, app } from "electron";
 
 import { TabManager } from "@/main/tab/tab-manager";
 import { OptionMenuManager } from "@/main/menu/option-menu";
-import { ContextMenuController } from "@/main/menu/contextMenuController";
 import * as packageJson from "@/../package.json";
-import { validateSender } from "@/main/ipc/validateSender";
-import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
 import { TabCollection } from "../tab/tab-collection";
@@ -19,17 +12,12 @@ import type { Settings } from "@/main/settings";
 import type { DataManager } from "@/main/lib/data";
 import type Event from "@/main/lib/event";
 
-const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
-const VERSION_URL = resolveView(ROUTE_MAP.version);
+// ipcMain.handle("nav.set-context-type", (event, type) => {
+//   if (!event.senderFrame) return null;
+//   if (!validateSender(event.senderFrame)) return null;
 
-const contextMenuController = new ContextMenuController();
-
-ipcMain.handle("nav.set-context-type", (event, type) => {
-  if (!event.senderFrame) return null;
-  if (!validateSender(event.senderFrame)) return null;
-
-  contextMenuController.setContextType(type);
-});
+//   contextMenuController.setContextType(type);
+// });
 
 export class Window {
   viewY: number = 66;
@@ -77,31 +65,6 @@ export class Window {
     this.navigation = this.setupNavigation();
 
     registerWindowEvents(this.win, this.navigation, this.tabManager, this.event, this.settings);
-
-    // IPCチャンネル
-    ipcMain.handle("options.toggle", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      // もし表示されていたとしても、オーバーレイに登録されているblurイベントが発火されるから必要ない。
-      if (!this.optionMenuManager.isVisible()) this.optionMenuManager.show();
-      // this.optionsMenu = buildOptionsMenu(this);
-      // this.optionsMenu.popup();
-    });
-    ipcMain.handle("flune.open-settings", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      // this.tabManager?.load(undefined, SETTINGS_URL);
-      this.tabManager.navigate(SETTINGS_URL);
-    });
-    ipcMain.handle("flune.show-versions-page", (event) => {
-      if (!event.senderFrame) return null;
-      if (!validateSender(event.senderFrame)) return null;
-
-      // this.tabManager?.load(undefined, VERSION_URL);
-      this.tabManager.navigate(VERSION_URL);
-    });
   }
 
   private createWindowConstructorOptions(): Electron.BaseWindowConstructorOptions {

@@ -3,6 +3,8 @@ export const IPC_INVOKE = {
   APP_GET_VERSIONS: "app:get-versions",
   APP_GET_COMPUTER_INFO: "app:get-computer-info",
   APP_UPDATE_SYMBOL_COLOR: "app:update-symbol-color",
+  APP_SHOW_SETTINGS_PAGE: "app:show-settings-page",
+  APP_SHOW_VERSIONS_PAGE: "app:show-versions-page",
   APP_QUIT: "app:quit",
 
   BOOKMARK_TOGGLE: "bookmark:toggle",
@@ -44,7 +46,7 @@ export const IPC_NOTIFY = {
   TAB_REMOVED: "tab:removed",
   TAB_UPDATED: "tab:updated",
   TAB_THEME: "tab:theme",
-  
+
   TABS_REORDERED: "tabs:reordered",
 
   MENU_OPENING: "menu:opening",

@@ -1,5 +1,20 @@
-import { app, WebFrameMain } from "electron";
+import { app, ipcMain } from "electron";
 import path from "node:path";
+
+import type { IpcMainInvokeEvent, WebFrameMain } from "electron";
+import type { IpcInvoke } from "@/shared/ipc/channels";
+
+export function handle(
+  channel: IpcInvoke,
+  handler: (event: IpcMainInvokeEvent, ...args: any[]) => any
+) {
+  ipcMain.handle(channel, (event, ...args: any[]) => {
+    if (!event.senderFrame) return null;
+    if (!validateSender(event.senderFrame)) return null;
+
+    return handler(event, ...args);
+  });
+}
 
 /**
  * senderのプロトコルを評価します。
@@ -7,7 +22,7 @@ import path from "node:path";
  * @param frame
  * @returns { boolean }
  */
-export function validateSender(frame: WebFrameMain): boolean {
+function validateSender(frame: WebFrameMain): boolean {
   let frameUrl = new URL(frame.url.toLowerCase());
   let appDir = path.dirname(app.getAppPath())
                .replace(/\\/g, "\/")

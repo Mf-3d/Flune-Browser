@@ -1,6 +1,4 @@
-import { ipcMain } from "electron";
-
-import { validateSender } from "@/main/ipc/validateSender";
+import { handle } from "@/main/ipc/handler";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 import type { WindowManager } from "@/main/window/window-manager";
@@ -8,10 +6,7 @@ import type { DataManager } from "@/main/lib/data";
 
 export function registerBookmarkHandler(windowManager: WindowManager, data: DataManager) {
   try {
-    ipcMain.handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
-      if (!event.senderFrame) throw new Error;
-      if (!validateSender(event.senderFrame)) throw new Error;
-
+    handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
       const window = windowManager.getWindowFromWebContents(event.sender);
 
       if (!window) {

@@ -1,21 +1,19 @@
 import { IPC_INVOKE } from "@/shared/ipc/channels";
-import { app, dialog, ipcMain } from "electron";
-import { validateSender } from "./validateSender";
+import { app, dialog } from "electron";
 import * as packageJson from "@/../package.json";
 import { WindowManager } from "../window/window-manager";
+import { handle } from "./handler";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
+const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
+const VERSIONS_URL = resolveView(ROUTE_MAP.version);
 
 export function registerAppHandler(windowManager: WindowManager) {
-  ipcMain.handle(IPC_INVOKE.APP_GET_VERSION, (event) => {
-    if (!event.senderFrame) return null;
-    if (!validateSender(event.senderFrame)) return null;
-
+  handle(IPC_INVOKE.APP_GET_VERSION, () => {
     return packageJson.version;
   });
 
-  ipcMain.handle(IPC_INVOKE.APP_GET_VERSIONS, (event) => {
-    if (!event.senderFrame) return null;
-    if (!validateSender(event.senderFrame)) return null;
-
+  handle(IPC_INVOKE.APP_GET_VERSIONS, () => {
     return {
       flune: packageJson.version,
       electron: process.versions.electron,
@@ -25,20 +23,14 @@ export function registerAppHandler(windowManager: WindowManager) {
     };
   });
 
-  ipcMain.handle(IPC_INVOKE.APP_GET_COMPUTER_INFO, (event) => {
-    if (!event.senderFrame) return null;
-    if (!validateSender(event.senderFrame)) return null;
-
+  handle(IPC_INVOKE.APP_GET_COMPUTER_INFO, () => {
     return {
       arch: process.arch,
       platform: process.platform,
     };
   });
 
-  ipcMain.handle(IPC_INVOKE.APP_UPDATE_SYMBOL_COLOR, (event, color: string) => {
-    if (!event.senderFrame) return null;
-    if (!validateSender(event.senderFrame)) return null;
-
+  handle(IPC_INVOKE.APP_UPDATE_SYMBOL_COLOR, (event, color: string) => {
     if (process.platform === "win32" || process.platform === "linux") {
       const window = windowManager.getWindowFromWebContents(event.sender);
 
@@ -52,10 +44,27 @@ export function registerAppHandler(windowManager: WindowManager) {
     }
   });
 
-  ipcMain.handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
-    if (!event.senderFrame) return null;
-    if (!validateSender(event.senderFrame)) return null;
+  handle(IPC_INVOKE.APP_SHOW_SETTINGS_PAGE, (event) => {
+    const window = windowManager.getWindowFromWebContents(event.sender);
 
+    if (!window) {
+      throw new Error("Window does not exist.");
+    }
+
+    window.tabManager.navigate(SETTINGS_URL);
+  });
+
+  handle(IPC_INVOKE.APP_SHOW_VERSIONS_PAGE, (event) => {
+    const window = windowManager.getWindowFromWebContents(event.sender);
+
+    if (!window) {
+      throw new Error("Window does not exist.");
+    }
+
+    window.tabManager.navigate(VERSIONS_URL);
+  });
+
+  handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
     if (forced) app.quit();
     else {
       const window = windowManager.getWindowFromWebContents(event.sender);

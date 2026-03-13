@@ -57,6 +57,14 @@ export type DefaultAPI = {
   getVersion: () => Promise<any>;
   getVersions: () => Promise<Versions>;
   getComputerInfo: () => Promise<ComputerInfo>;
+  /**
+   * Shows settings page in the active tab.
+   */
+  showSettingsPage: () => void;
+  /**
+   * Shows versions page in the active tab.
+   */
+  showVersionsPage: () => void;
   quit: (force?: boolean) => void;
 };
 

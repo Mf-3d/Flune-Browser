@@ -15,7 +15,13 @@ export const DEFAULT: DefaultAPI = {
     return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_VERSIONS); // ElectronやChromeのバージョンも取得
   },
   getComputerInfo: async (): Promise<ComputerInfo> => {
-    return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_COMPUTER_INFO); 
+    return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_COMPUTER_INFO);
+  },
+  showSettingsPage: () => {
+    ipcRenderer.invoke(IPC_INVOKE.APP_SHOW_SETTINGS_PAGE);
+  },
+  showVersionsPage: () => {
+    ipcRenderer.invoke(IPC_INVOKE.APP_SHOW_VERSIONS_PAGE);
   },
   quit: (force?: boolean) => {
     ipcRenderer.invoke(IPC_INVOKE.APP_QUIT, force); // 終了する
