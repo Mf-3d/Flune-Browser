@@ -1,12 +1,11 @@
 import path from "path";
 import { TabCollection } from "./tab-collection";
 import { Tab } from "./tab";
-import { registerTabEvents } from "./tab-events";
 import { Window } from "@/main/window/window";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { Settings } from "@/main/settings";
 import Event from "@/main/lib/event";
-import { NavigationState, TabState } from "@/shared/types/preload-api";
+import { TabState } from "@/shared/types/preload-api";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
 

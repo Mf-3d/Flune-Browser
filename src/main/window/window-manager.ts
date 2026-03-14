@@ -1,18 +1,28 @@
-import { app, shell } from "electron";
+import { shell } from "electron";
 import { Window } from "./window";
-import Event from "@/main/lib/event";
-import { DataManager } from "../lib/data";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
-import { Settings } from "@/main/settings/";
+
+import type { DataManager } from "../lib/data";
+import type Event from "@/main/lib/event";
+import type { Settings } from "@/main/settings/";
+import type { ApplicationService } from "../application/application-service";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
 
-  constructor(private readonly settings: Settings) { }
+  constructor(
+    private readonly appService: ApplicationService,
+    private readonly settings: Settings,
+  ) { }
 
   create(event: Event, data: DataManager) {
-    this.baseWindow = new Window(data, this.settings, event);
+    this.baseWindow = new Window({
+      appService: this.appService,
+      data,
+      settings: this.settings,
+      event,
+    });
 
     event.once("navigation-loaded", () => {
       this.baseWindow?.tabManager.createTab({
@@ -20,7 +30,7 @@ export class WindowManager {
       });
     });
 
-    if (!app.isPackaged) this.baseWindow.navigation?.view.webContents.openDevTools({
+    if (!this.appService.isPackaged) this.baseWindow.navigation?.view.webContents.openDevTools({
       mode: "detach"
     });
 
@@ -66,7 +76,7 @@ export class WindowManager {
         this.baseWindow?.navigation?.view.webContents.focus();
         this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
       },
-      reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${app.name}/issues/new`)
+      reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`)
     });
 
     applicationMenuController.setup();

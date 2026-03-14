@@ -12,6 +12,10 @@ const VERSIONS_URL = resolveView(ROUTE_MAP.version);
 export class ApplicationService {
   constructor() { }
 
+  get name() {
+    return app.name;
+  }
+
   get isPackaged() {
     return app.isPackaged;
   }

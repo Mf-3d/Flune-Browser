@@ -3,6 +3,14 @@ import { createOptionMenuActions } from "../actions/option-menu-actions";
 import type { OptionMenuView } from "../view/option-menu-view";
 import type { Window } from "@/main/window/window";
 import type { MenuId } from "../templates/types";
+import type { ApplicationService } from "@/main/application/application-service";
+
+type OptionMenuControllerOptions = {
+  view: OptionMenuView;
+  window: Window;
+  fadeTime: number;
+  appService: ApplicationService;
+};
 
 type MenuState =
   | "closed"
@@ -13,14 +21,19 @@ type MenuState =
 export class OptionMenuController {
   private state: MenuState = "closed";
   private readonly actions;
+  private readonly view;
+  private readonly window;
+  private readonly fadeTime;
+  private readonly appService;
 
-  constructor(
-    private readonly view: OptionMenuView,
-    private readonly window: Window,
-    private readonly fadeTime: number,
-  ) {
-    view.on("close", () => this.close());
-    this.actions = createOptionMenuActions(this.window);
+  constructor(options: OptionMenuControllerOptions) {
+    this.view = options.view;
+    this.window = options.window;
+    this.fadeTime = options.fadeTime;
+    this.appService = options.appService;
+
+    this.view.on("close", () => this.close());
+    this.actions = createOptionMenuActions(this.appService, this.window);
   }
 
   isVisible() {
