@@ -6,7 +6,7 @@ import { ContextMenuController } from "@/main/menu/context-menu/controllers/cont
 import type { DataManager } from "../lib/data";
 import type Event from "@/main/lib/event";
 import type { Settings } from "@/main/settings/";
-import type { ApplicationService } from "../application/application-service";
+import type { ApplicationService } from "@/main/application/application-service";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
@@ -63,21 +63,24 @@ export class WindowManager {
   }
 
   private setupApplicationMenu() {
-    const applicationMenuController = new ApplicationMenuController({
-      newTab: () => this.baseWindow?.tabManager.createTab(),
-      reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
-      reloadTabIgnoringCache: () => this.baseWindow?.tabManager.getActiveTab()?.reload({
-        ignoreCache: true
-      }),
-      toggleDevTools: () => this.baseWindow?.tabManager.getActiveTab()?.toggleDevTools({
-        mode: "right"
-      }),
-      focusSearchBar: () => {
-        this.baseWindow?.navigation?.view.webContents.focus();
-        this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
-      },
-      reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`)
-    });
+    const applicationMenuController = new ApplicationMenuController(
+      this.appService,
+      {
+        newTab: () => this.baseWindow?.tabManager.createTab(),
+        reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
+        reloadTabIgnoringCache: () => this.baseWindow?.tabManager.getActiveTab()?.reload({
+          ignoreCache: true
+        }),
+        toggleDevTools: () => this.baseWindow?.tabManager.getActiveTab()?.toggleDevTools({
+          mode: "right"
+        }),
+        focusSearchBar: () => {
+          this.baseWindow?.navigation?.view.webContents.focus();
+          this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
+        },
+        reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`)
+      }
+    );
 
     applicationMenuController.setup();
   }

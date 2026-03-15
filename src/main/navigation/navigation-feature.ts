@@ -5,10 +5,12 @@
  */
 
 import path from "path";
-import { app, BaseWindow, WebContentsView } from "electron";
+import { BaseWindow, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { NavigationInit, NavigationState } from "@/shared/types/preload-api";
+
+import type { NavigationInit, NavigationState } from "@/shared/types/preload-api";
+import type { ApplicationService } from "@/main/application/application-service";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -24,6 +26,7 @@ export type Navigation = ReturnType<typeof createNavigationFeature>;
  * @returns 
  */
 export function createNavigationFeature(
+  appService: ApplicationService,
   baseWindow: BaseWindow,
   settings: {
     viewY: number;
@@ -38,7 +41,7 @@ export function createNavigationFeature(
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
       additionalArguments: [
-        `--is-packaged=${app.isPackaged}`
+        `--is-packaged=${appService.isPackaged}`
       ]
     }
   });

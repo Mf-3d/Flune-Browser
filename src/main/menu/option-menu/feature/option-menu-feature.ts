@@ -12,7 +12,7 @@ export class OptionMenuFeature {
     private readonly appService: ApplicationService,
     private readonly window: Window
   ) {
-    this.view = new OptionMenuView(this.window);
+    this.view = new OptionMenuView(this.appService, this.window);
   }
 
   create() {

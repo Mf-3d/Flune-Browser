@@ -2,7 +2,6 @@ import path from "node:path";
 import { BaseWindow, app } from "electron";
 
 import { TabManager } from "@/main/tab/tab-manager";
-import { OptionMenuManager } from "@/main/menu/option-menu";
 import * as packageJson from "@/../package.json";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
@@ -12,7 +11,7 @@ import { OptionMenuFeature } from "../menu/option-menu/feature/option-menu-featu
 import type { Settings } from "@/main/settings";
 import type { DataManager } from "@/main/lib/data";
 import type Event from "@/main/lib/event";
-import type { ApplicationService } from "../application/application-service";
+import type { ApplicationService } from "@/main/application/application-service";
 
 type WindowOptions = {
   appService: ApplicationService;
@@ -108,6 +107,7 @@ export class Window {
     if (!currentTheme) throw new Error;
 
     const navigation = createNavigationFeature(
+      this.appService,
       this.win,
       {
         viewY: this.viewY,

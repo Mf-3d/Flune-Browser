@@ -1,14 +1,15 @@
 import path from "path";
 import { TabCollection } from "./tab-collection";
 import { Tab } from "./tab";
-import { Window } from "@/main/window/window";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { Settings } from "@/main/settings";
-import Event from "@/main/lib/event";
-import { TabState } from "@/shared/types/preload-api";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
 import { registerTabEvents } from "./tab-events";
+
+import type { Settings } from "@/main/settings";
+import type Event from "@/main/lib/event";
+import type { TabState } from "@/shared/types/preload-api";
+import type { Window } from "@/main/window/window";
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 

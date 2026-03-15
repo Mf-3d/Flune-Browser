@@ -1,9 +1,8 @@
 import type { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
-
 import type { Window } from "@/main/window/window";
 import type { Settings } from "@/main/settings";
 import type Event from "@/main/lib/event";
-import { TabOptions } from "./types";
+import type { TabOptions } from "./types";
 
 export class Tab {
   readonly id: string;

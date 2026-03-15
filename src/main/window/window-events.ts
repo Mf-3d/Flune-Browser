@@ -1,10 +1,8 @@
-import { BaseWindow } from "electron";
-// import { TabManager } from "./tab";
-import { Navigation } from "../navigation/navigation-feature";
-import Event from "../lib/event";
-import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { Settings } from "@/main/settings";
-import { TabManager } from "@/main/tab/tab-manager";
+import type { BaseWindow } from "electron";
+import type { Navigation } from "../navigation/navigation-feature";
+import type Event from "../lib/event";
+import type { Settings } from "@/main/settings";
+import type { TabManager } from "@/main/tab/tab-manager";
 
 export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigation, tabManager: TabManager, event: Event, settings: Settings) {
   baseWindow.on("resize", () => {

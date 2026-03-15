@@ -1,9 +1,10 @@
 import path from "path";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
-import { app, WebContentsView } from "electron";
+import { WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
+import { ApplicationService } from "@/main/application/application-service";
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 
@@ -26,14 +27,17 @@ export class OptionMenuView {
     this.events[event]?.()
   }
 
-  constructor(private readonly window: Window) {
+  constructor(
+    private readonly appService: ApplicationService,
+    private readonly window: Window
+  ) {
     this.view = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
       }
     });
 
-    if (!app.isPackaged) this.view.webContents.openDevTools();
+    if (!this.appService.isPackaged) this.view.webContents.openDevTools();
     this.view.webContents.loadURL(OPTION_MENU_PATH);
 
     this.registerEvents();
