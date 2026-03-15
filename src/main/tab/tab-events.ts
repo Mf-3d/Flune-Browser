@@ -133,10 +133,7 @@ export function registerTabEvents(
   }
 
   function onBeforeUnload(
-    event: {
-      preventDefault: () => void;
-      readonly defaultPrevented: boolean;
-    }
+    event: Electron.Event
   ) {
     const choice = dialog.showMessageBoxSync(window.win, {
       type: "question",

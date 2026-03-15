@@ -12,6 +12,7 @@ export type SearchEngine = {
 
 export type Config = {
   /**
+   * Config version.
    * @example [3,0,0]
    */
   version: [number, number, number];

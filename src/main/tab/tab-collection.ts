@@ -41,23 +41,23 @@ export class TabCollection {
     this.tabs = [];
   }
 
-  at(index: number) {
+  at(index: number): Tab | undefined {
     return this.tabs.at(index);
   }
 
-  get(id: string) {
+  get(id: string): Tab | undefined {
     return this.tabs.find(t => t.id === id);
   }
 
-  getIndex(id: string) {
+  getIndex(id: string): number {
     return this.tabs.findIndex(t => t.id === id);
   }
 
-  getAll() {
+  getAll(): Tab[] {
     return this.tabs;
   }
 
-  getActive() {
+  getActive(): Tab | undefined {
     return this.get(this.activeTabId!);
   }
 

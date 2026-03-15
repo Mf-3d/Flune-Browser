@@ -8,6 +8,7 @@ import Event from "@/main/lib/event";
 import { TabState } from "@/shared/types/preload-api";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
+import { registerTabEvents } from "./tab-events";
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
@@ -52,17 +53,23 @@ export class TabManager {
         width: this.window.bounds.width,
         height: this.window.bounds.height,
       },
-      onNewWindow: (url) => {
-        const tab = this.createTab({
-          isActive: true,
-        });
-
-        tab.loadURL(url);
-      },
-      isActiveTab: (id) => this.isActiveTab(id),
       window: this.window,
       settings: this.settings,
       event: this.event,
+    });
+
+    tab.cleanupEvents = registerTabEvents(tab, this.isActiveTab, this.window, this.settings, this.event);
+
+    tab.webContents.setWindowOpenHandler((details) => {
+      const tab = this.createTab({
+        isActive: true,
+      });
+
+      tab.loadURL(details.url);
+
+      return {
+        action: "deny"
+      };
     });
 
     this.collection.add(tab, options?.beforeTabId);
