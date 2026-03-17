@@ -1,15 +1,10 @@
 import type { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
 import type { Window } from "@/main/window/window";
-import type { Settings } from "@/main/settings";
-import type Event from "@/main/lib/event";
 import type { TabOptions } from "./types";
 
 export class Tab {
   readonly id: string;
-  readonly view: WebContentsView;
-  readonly window: Window;
-  readonly settings: Settings;
-  readonly event: Event;
+  private readonly view: WebContentsView;
 
   url?: URL;
   title: string;
@@ -25,9 +20,6 @@ export class Tab {
 
   constructor(options: TabOptions) {
     this.view = options.view;
-    this.window = options.window;
-    this.settings = options.settings;
-    this.event = options.event;
 
     this.id = crypto.randomUUID();
     this.title = this.view.webContents.getTitle();
@@ -80,6 +72,10 @@ export class Tab {
   }>) {
     if (!options?.ignoreCache) this.webContents.reload();
     else this.webContents.reloadIgnoringCache();
+  }
+
+  focus() {
+    this.webContents.focus();
   }
 
   toggleDevTools(options?: OpenDevToolsOptions) {

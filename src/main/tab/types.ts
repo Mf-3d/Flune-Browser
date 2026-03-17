@@ -1,17 +1,10 @@
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import type { Rectangle, WebContentsView } from "electron";
-import type { Settings } from "@/main/settings";
-import type { Window } from "@/main/window/window";
-import type Event from "@/main/lib/event";
 
 export type TabOptions = {
   view: WebContentsView;
   bounds: Rectangle;
-
-  window: Window;
-  settings: Settings;
-  event: Event;
 };
 
 export const ERR_CODES = {

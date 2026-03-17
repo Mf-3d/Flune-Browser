@@ -2,7 +2,6 @@ import { Tab } from "./tab";
 
 export class TabCollection {
   private tabs: Tab[] = [];
-  private activeTabId?: string;
 
   get length() {
     return this.tabs.length;
@@ -55,17 +54,5 @@ export class TabCollection {
 
   getAll(): Tab[] {
     return this.tabs;
-  }
-
-  getActive(): Tab | undefined {
-    return this.get(this.activeTabId!);
-  }
-
-  setActive(id: string) {
-    this.activeTabId = id;
-  }
-
-  isActive(id: string): boolean {
-    return this.getActive()?.id === id;
   }
 };

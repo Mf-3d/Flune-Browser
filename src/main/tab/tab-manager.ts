@@ -14,6 +14,8 @@ import type { Window } from "@/main/window/window";
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export class TabManager {
+  private activeTabId?: string;
+
   constructor(
     private readonly collection: TabCollection,
     private readonly window: Window,
@@ -54,9 +56,6 @@ export class TabManager {
         width: this.window.bounds.width,
         height: this.window.bounds.height,
       },
-      window: this.window,
-      settings: this.settings,
-      event: this.event,
     });
 
     tab.cleanupEvents = registerTabEvents(tab, this.isActiveTab, this.window, this.settings, this.event);
@@ -103,7 +102,7 @@ export class TabManager {
 
     const index = this.collection.getIndex(id);
 
-    const wasActive = this.collection.isActive(id);
+    const wasActive = this.isActiveTab(id);
 
     removedTab.close();
 
@@ -114,8 +113,7 @@ export class TabManager {
     if (this.collection.length < 1) this.window.close();
 
     if (wasActive) {
-      const nextIndex = index === 0 ? index + 1 : index - 1;
-      const next = this.collection.at(nextIndex);
+      const next = this.decideNextActiveTab(index);
 
       if (!next) {
         throw new Error("Next tab to activate does not exist.");
@@ -134,6 +132,12 @@ export class TabManager {
     }
 
     this.collection.removeAll();
+  }
+
+  private decideNextActiveTab(removedTabIndex: number): Tab | undefined {
+    const nextIndex = removedTabIndex === 0 ? removedTabIndex + 1 : removedTabIndex - 1;
+
+    return this.collection.at(nextIndex);
   }
 
   moveTab(from: number, to: number) {
@@ -166,36 +170,15 @@ export class TabManager {
     this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
   }
 
-  activateTab(id: string) {
-    this.collection.setActive(id);
-
-    this.collection.getAll().forEach((tab) => {
-      tab.id === id
-        ? tab.setVisible(true)
-        : tab.setVisible(false);
-    });
-
-    const state: TabState = {
-      id,
-      active: true,
-    };
-
-    this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, state);
-
-    this.window.navigation.updateState({
-      input: this.collection.getActive()?.url?.toString(),
-    });
-  }
-
   /**
    * @param input URL or search words.
-   * @param tabId
+   * @param tabId Tab ID to navigate to.
    */
   navigate(input: string, tabId?: string) {
     const tab =
       tabId
         ? this.collection.get(tabId)
-        : this.collection.getActive();
+        : this.getActiveTab();
 
     if (!tab) throw new Error("Tab does not exist.");
 
@@ -213,11 +196,49 @@ export class TabManager {
     }
   }
 
+  /**
+   * @param id Tab ID to activate.
+   */
+  activateTab(id: string) {
+    this.collection.getAll().forEach((tab) => {
+      tab.id === id
+        ? tab.setVisible(true)
+        : tab.setVisible(false);
+    });
+
+    const activeTab: Tab | undefined = this.getActiveTab();
+
+    if (!activeTab) {
+      throw new Error("Tab does not exist.");
+    }
+
+    activeTab.focus();
+
+    this.activeTabId = id;
+
+    const state: TabState = {
+      id,
+      active: true,
+    };
+
+    this.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, state);
+
+    this.window.navigation.updateState({
+      input: activeTab.url?.toString(),
+    });
+  }
+
   getActiveTab(): Tab | undefined {
-    return this.collection.getActive();
+    return this.activeTabId ?
+      this.collection.get(this.activeTabId) :
+      undefined;
+  }
+
+  getActiveIndex(): number {
+    return this.collection.getAll().findIndex((tab) => tab.id === this.activeTabId);
   }
 
   isActiveTab(id: string): boolean {
-    return this.collection.isActive(id);
+    return id === this.activeTabId;
   }
 }
