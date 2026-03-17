@@ -7,7 +7,7 @@
 import path from "path";
 import { BaseWindow, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
-import { IPC_NOTIFY } from "@/shared/ipc/channels";
+import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
 
 import type { NavigationInit, NavigationState } from "@/shared/types/preload-api";
 import type { ApplicationService } from "@/main/application/application-service";
@@ -71,8 +71,7 @@ export function createNavigationFeature(
   }
 
   function send(
-    // channel: IpcNotify,
-    channel: string,
+    channel: IpcNotify,
     // channel: IpcNotify & IpcEvents,
     ...args: any[]
   ) {
@@ -106,13 +105,14 @@ function registerWebContentsEvents(
   },
   onLoaded?: () => void
 ) {
+  const initOptions: NavigationInit = {
+    showHomeButton: settings.showHomeButton,
+  };
+
   // ナビゲーションが読み込まれたらコールバックを返してIPCを送信する。
   view.webContents.on("did-finish-load", () => {
     onLoaded?.();
-    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, {
-      isMac: process.platform === "darwin",
-      showHomeButton: settings.showHomeButton
-    } as NavigationInit);
+    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, initOptions);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
   });
 }

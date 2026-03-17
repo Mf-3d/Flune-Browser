@@ -12,10 +12,6 @@ export type ComputerInfo = {
 };
 
 export type NavigationInit = {
-  /**
-   * @deprecated
-   */
-  isMac: boolean;
   showHomeButton: boolean;
 };
 
