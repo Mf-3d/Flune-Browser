@@ -1,6 +1,17 @@
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import type { Rectangle, WebContentsView } from "electron";
+import type { TabCollection } from "./tab-collection";
+import type { Window } from "@/main/window/window";
+import type { Settings } from "@/main/settings";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
+
+export type TabManagerOptions = {
+  collection: TabCollection;
+  window: Window;
+  settings: Settings;
+  eventBus: EventBus;
+};
 
 export type TabOptions = {
   view: WebContentsView;

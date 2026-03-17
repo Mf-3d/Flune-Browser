@@ -1,10 +1,10 @@
 import type { BaseWindow } from "electron";
 import type { Navigation } from "../navigation/navigation-feature";
-import type Event from "../lib/event";
 import type { Settings } from "@/main/settings";
 import type { TabManager } from "@/main/tab/tab-manager";
+import type { EventBus } from "../infrastructure/event/event-bus";
 
-export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigation, tabManager: TabManager, event: Event, settings: Settings) {
+export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigation, tabManager: TabManager, eventBus: EventBus, settings: Settings) {
   baseWindow.on("resize", () => {
     const bounds = baseWindow.getContentBounds();
 
@@ -14,10 +14,10 @@ export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigat
     navigation.view.webContents.close();
     tabManager.removeAll();
   });
-  event.on("theme-updated", (id) => {
-    navigation.updateTheme(id);
+  eventBus.on("theme:updated", (payload) => {
+    navigation.updateTheme(payload.themeId);
   });
-  event.on("setting-updated", () => {
+  eventBus.on("settings:updated", () => {
     navigation.updateState({
       showHomeButton: settings.store.get("settings").design.showHomeButton
     });

@@ -3,9 +3,9 @@ import { ERR_CODES, ERR_PAGES } from "./types";
 import { dialog, WebContents } from "electron";
 
 import type { Settings } from "@/main/settings";
-import type Event from "@/main/lib/event";
 import type { Window } from "@/main/window/window";
 import type { Tab } from "./tab";
+import type { EventBus } from "../infrastructure/event/event-bus";
 
 /**
  * @param tab 
@@ -20,7 +20,7 @@ export function registerTabEvents(
   isActiveTab: (id: string) => boolean,
   window: Window,
   settings: Settings,
-  event: Event,
+  eventBus: EventBus,
 ): () => void {
   const webContents = tab.webContents;
 
@@ -85,7 +85,10 @@ export function registerTabEvents(
     tab.canGoForward = tab.webContents.navigationHistory.canGoForward();
 
     updateTheme(tab.webContents, settings);
-    event.on("theme-updated", () => updateTheme(tab.webContents, settings));
+    eventBus.on(
+      "theme:updated",
+      () => updateTheme(tab.webContents, settings)
+    );
 
     window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
       id: tab.id,

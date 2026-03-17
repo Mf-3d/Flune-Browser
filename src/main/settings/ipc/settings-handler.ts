@@ -1,8 +1,8 @@
 import { handle } from "@/main/ipc/handler";
-import Event from "@/main/lib/event";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 import type { Settings } from "..";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
 
 function getNested(obj: any, path: string) {
   return path.split(".").reduce((acc, key) => acc?.[key], obj);
@@ -15,7 +15,7 @@ function setNested(obj: any, path: string, value: unknown) {
   target[last] = value;
 }
 
-export function registerSettingsHandler(settings: Settings, event: Event) {
+export function registerSettingsHandler(settings: Settings, eventBus: EventBus) {
   handle(IPC_INVOKE.STORE_GET_ALL, (_) => {
     return settings.store.getAll();
   });
@@ -26,13 +26,13 @@ export function registerSettingsHandler(settings: Settings, event: Event) {
   handle(IPC_INVOKE.STORE_SET_ALL, (_, config) => {
     settings.store.setAll(config);
 
-    event.send("setting-updated");
+    eventBus.send("settings:updated");
   });
   handle(IPC_INVOKE.STORE_SET, (_, key: string, value?: any) => {
     const root = settings.store.getAll();
     setNested(root, key, value);
 
-    event.send("setting-updated");
-    if (key === "settings.design.theme") event.send("theme-updated", value);
+    eventBus.send("settings:updated");
+    if (key === "settings.design.theme") eventBus.send("theme:updated", value);
   });
 }

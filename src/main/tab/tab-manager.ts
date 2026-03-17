@@ -7,21 +7,26 @@ import { WebContentsView } from "electron";
 import { registerTabEvents } from "./tab-events";
 
 import type { Settings } from "@/main/settings";
-import type Event from "@/main/lib/event";
 import type { TabState } from "@/shared/types/preload-api";
 import type { Window } from "@/main/window/window";
+import type { TabManagerOptions } from "./types";
+import type { EventBus } from "../infrastructure/event/event-bus";
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export class TabManager {
   private activeTabId?: string;
+  private readonly collection: TabCollection;
+  private readonly window: Window;
+  private readonly settings: Settings;
+  private readonly eventBus: EventBus;
 
-  constructor(
-    private readonly collection: TabCollection,
-    private readonly window: Window,
-    private readonly settings: Settings,
-    private readonly event: Event,
-  ) { }
+  constructor(options: TabManagerOptions) {
+    this.collection = options.collection;
+    this.window = options.window;
+    this.settings = options.settings;
+    this.eventBus = options.eventBus;
+  }
 
   get length() {
     return this.collection.length;
@@ -58,7 +63,7 @@ export class TabManager {
       },
     });
 
-    tab.cleanupEvents = registerTabEvents(tab, this.isActiveTab, this.window, this.settings, this.event);
+    tab.cleanupEvents = registerTabEvents(tab, this.isActiveTab, this.window, this.settings, this.eventBus);
 
     tab.webContents.setWindowOpenHandler((details) => {
       const tab = this.createTab({

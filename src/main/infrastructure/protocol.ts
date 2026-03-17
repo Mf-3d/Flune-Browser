@@ -1,7 +1,6 @@
 import { protocol, net } from "electron";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
-import Event from "@/main/lib/event";
 
 /**
  * @deprecated
@@ -68,13 +67,12 @@ export class Protocol {
     }
   ]));
 
-  constructor(name: string = "flune", private readonly event: Event) {
+  constructor(name: string = "flune") {
     this.name = name;
 
     protocol.handle(this.name, (req) => {
       const Url: string = req.url.slice(this.name.length + 2);
 
-      this.event.send("protocol-accessed", Url);
       switch (Url) {
         case "/ping": {
           return new Response("pong!", {

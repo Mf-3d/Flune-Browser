@@ -3,10 +3,9 @@ import { Window } from "./window";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
-import type { DataManager } from "../lib/data";
-import type Event from "@/main/lib/event";
 import type { Settings } from "@/main/settings/";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { EventBus } from "../infrastructure/event/event-bus";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
@@ -14,17 +13,17 @@ export class WindowManager {
   constructor(
     private readonly appService: ApplicationService,
     private readonly settings: Settings,
+    private readonly eventBus: EventBus,
   ) { }
 
-  create(event: Event, data: DataManager) {
+  create() {
     this.baseWindow = new Window({
       appService: this.appService,
-      data,
       settings: this.settings,
-      event,
+      eventBus: this.eventBus,
     });
 
-    event.once("navigation-loaded", () => {
+    this.eventBus.once("navigation:init", () => {
       this.baseWindow?.tabManager.createTab({
         isActive: true
       });
@@ -39,9 +38,9 @@ export class WindowManager {
     return this.baseWindow;
   }
 
-  ensure(event: Event, data: DataManager) {
+  ensure() {
     if (!this.baseWindow || this.baseWindow?.win?.isDestroyed())
-      this.baseWindow = this.create(event, data);
+      this.baseWindow = this.create();
 
     return this.baseWindow;
   }

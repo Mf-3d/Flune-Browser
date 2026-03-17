@@ -1,12 +1,12 @@
 import { app } from "electron";
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
 import { Protocol } from "@/main/infrastructure/protocol";
-import Event from "@/main/lib/event";
 import { isArchitectureIntel } from "@/main/system/env";
 import { DataManager } from "@/main/lib/data";
 import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
 import { Settings, createSettings } from "./settings/";
+import { EventBus } from "./infrastructure/event/event-bus";
 
 import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
@@ -19,7 +19,7 @@ type Services = {
   settings: Settings;
   windowManager: WindowManager;
   data: DataManager;
-  event: Event;
+  eventBus: EventBus;
   bookmarkService: BookmarkService;
   appService: ApplicationService;
   protocol: Protocol;
@@ -46,18 +46,18 @@ function registerAppEvents(services: Services) {
 
 function initializeServices(): Services {
   const data = new DataManager;
-  const event = new Event();
-  const appService = new ApplicationService();
+  const eventBus = new EventBus;
+  const appService = new ApplicationService;
   const settings = createSettings();
-  const windowManager = new WindowManager(appService, settings);
+  const windowManager = new WindowManager(appService, settings, eventBus);
   const bookmarkService = new BookmarkService(data);
-  const protocol = new Protocol("flune", event);
+  const protocol = new Protocol("flune");
 
   return {
     settings,
     windowManager,
     data,
-    event,
+    eventBus,
     bookmarkService,
     appService,
     protocol
@@ -67,15 +67,15 @@ function initializeServices(): Services {
 function onReady(services: Services) {
 
   registerAppHandler(services.appService, services.windowManager);
-  registerSettingsHandler(services.settings, services.event);
+  registerSettingsHandler(services.settings, services.eventBus);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
   registerBookmarkHandler(services.windowManager, services.data);
 
-  services.event.send("init");
-  services.windowManager.create(services.event, services.data);
+  services.eventBus.send("init");
+  services.windowManager.create();
 
   app.on("activate", () => {
-    services.windowManager.ensure(services.event, services.data);
+    services.windowManager.ensure();
   });
 }
 

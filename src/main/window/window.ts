@@ -9,15 +9,13 @@ import { TabCollection } from "../tab/tab-collection";
 import { OptionMenuFeature } from "../menu/option-menu/feature/option-menu-feature";
 
 import type { Settings } from "@/main/settings";
-import type { DataManager } from "@/main/lib/data";
-import type Event from "@/main/lib/event";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
 
 type WindowOptions = {
   appService: ApplicationService;
-  data: DataManager;
   settings: Settings;
-  event: Event;
+  eventBus: EventBus;
   bounds?: Electron.Rectangle;
 };
 
@@ -26,9 +24,8 @@ export class Window {
   readonly win: BaseWindow;
   readonly navigation: Navigation;
   private readonly appService: ApplicationService;
-  private readonly data: DataManager;
   private readonly settings: Settings;
-  private readonly event: Event;
+  private readonly eventBus: EventBus;
   bounds: {
     width: number;
     height: number;
@@ -46,9 +43,8 @@ export class Window {
     if (options.bounds) this.bounds = options.bounds;
 
     this.appService = options.appService;
-    this.data = options.data;
     this.settings = options.settings;
-    this.event = options.event;
+    this.eventBus = options.eventBus;
 
     this.win = new BaseWindow(this.createWindowConstructorOptions());
 
@@ -66,11 +62,16 @@ export class Window {
     // );
 
     const tabCollection = new TabCollection();
-    this.tabManager = new TabManager(tabCollection, this, this.settings, this.event);
+    this.tabManager = new TabManager({
+      collection: tabCollection,
+      settings: this.settings,
+      window: this,
+      eventBus: this.eventBus
+    });
 
     this.navigation = this.setupNavigation();
 
-    registerWindowEvents(this.win, this.navigation, this.tabManager, this.event, this.settings);
+    registerWindowEvents(this.win, this.navigation, this.tabManager, this.eventBus, this.settings);
   }
 
   private createWindowConstructorOptions(): Electron.BaseWindowConstructorOptions {
@@ -115,7 +116,7 @@ export class Window {
         showHomeButton: this.settings.store.get("settings").design.showHomeButton,
       },
       () => {
-        this.event.send("navigation-loaded");
+        this.eventBus.send("navigation:init");
       }
     );
 
