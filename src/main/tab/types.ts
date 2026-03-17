@@ -5,6 +5,7 @@ import type { TabCollection } from "./tab-collection";
 import type { Window } from "@/main/window/window";
 import type { Settings } from "@/main/settings";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { Tab } from "./tab";
 
 export type TabManagerOptions = {
   collection: TabCollection;
@@ -16,6 +17,14 @@ export type TabManagerOptions = {
 export type TabOptions = {
   view: WebContentsView;
   bounds: Rectangle;
+};
+
+export type TabEventOptions = {
+  tab: Tab;
+  isActiveTab: (id: string) => boolean;
+  window: Window;
+  settings: Settings;
+  eventBus: EventBus;
 };
 
 export const ERR_CODES = {

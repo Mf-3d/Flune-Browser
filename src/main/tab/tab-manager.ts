@@ -63,7 +63,13 @@ export class TabManager {
       },
     });
 
-    tab.cleanupEvents = registerTabEvents(tab, this.isActiveTab, this.window, this.settings, this.eventBus);
+    tab.cleanupEvents = registerTabEvents({
+      tab,
+      isActiveTab: this.isActiveTab,
+      window: this.window,
+      settings: this.settings,
+      eventBus: this.eventBus
+    });
 
     tab.webContents.setWindowOpenHandler((details) => {
       const tab = this.createTab({
@@ -96,7 +102,7 @@ export class TabManager {
 
   /**
    * Removes the tab.
-   * @param id 
+   * @param id Tab ID to remove.
    */
   removeTab(id: string) {
     const removedTab = this.collection.get(id);

@@ -3,9 +3,7 @@ import { ERR_CODES, ERR_PAGES } from "./types";
 import { dialog, WebContents } from "electron";
 
 import type { Settings } from "@/main/settings";
-import type { Window } from "@/main/window/window";
-import type { Tab } from "./tab";
-import type { EventBus } from "../infrastructure/event/event-bus";
+import type { TabEventOptions } from "./types";
 
 /**
  * @param tab 
@@ -15,20 +13,14 @@ import type { EventBus } from "../infrastructure/event/event-bus";
  * @param event 
  * @returns Cleanup function.
  */
-export function registerTabEvents(
-  tab: Tab,
-  isActiveTab: (id: string) => boolean,
-  window: Window,
-  settings: Settings,
-  eventBus: EventBus,
-): () => void {
-  const webContents = tab.webContents;
+export function registerTabEvents(options: TabEventOptions): () => void {
+  const webContents = options.tab.webContents;
 
   function onResize() {
-    const winBounds = window.win.getContentBounds();
-    const tabBounds = tab.getBounds();
+    const winBounds = options.window.win.getContentBounds();
+    const tabBounds = options.tab.getBounds();
 
-    tab.setBounds({
+    options.tab.setBounds({
       x: tabBounds.x,
       y: tabBounds.y,
       width: winBounds.width,
@@ -40,10 +32,10 @@ export function registerTabEvents(
     _: Electron.Event,
     title: string
   ) {
-    tab.title = title;
+    options.tab.title = title;
 
-    window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: tab.id,
+    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: options.tab.id,
       title,
     });
   }
@@ -53,10 +45,10 @@ export function registerTabEvents(
     favicons: string[]
   ) {
     const favicon = favicons[0];
-    tab.favicon = favicon;
+    options.tab.favicon = favicon;
 
-    window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: tab.id,
+    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: options.tab.id,
       favicon
     });
   }
@@ -65,41 +57,41 @@ export function registerTabEvents(
     _: Electron.Event,
     url: string
   ) {
-    tab.url = new URL(url);
+    options.tab.url = new URL(url);
 
     // 履歴追加、ブックマークされているかの状態
   }
 
   function onDidStartLoading() {
-    tab.isLoading = true;
+    options.tab.isLoading = true;
 
-    window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: tab.id,
+    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: options.tab.id,
       isLoading: true
     });
   }
 
   function onDidStopLoading() {
-    tab.isLoading = false;
-    tab.canGoBack = tab.webContents.navigationHistory.canGoBack();
-    tab.canGoForward = tab.webContents.navigationHistory.canGoForward();
+    options.tab.isLoading = false;
+    options.tab.canGoBack = options.tab.webContents.navigationHistory.canGoBack();
+    options.tab.canGoForward = options.tab.webContents.navigationHistory.canGoForward();
 
-    updateTheme(tab.webContents, settings);
-    eventBus.on(
+    updateTheme(options.tab.webContents, options.settings);
+    options.eventBus.on(
       "theme:updated",
-      () => updateTheme(tab.webContents, settings)
+      () => updateTheme(options.tab.webContents, options.settings)
     );
 
-    window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: tab.id,
+    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: options.tab.id,
       isLoading: false
     });
 
-    if (isActiveTab(tab.id)) {
-      window.navigation.updateState({
-        canGoBack: tab.canGoBack,
-        canGoForward: tab.canGoForward,
-        input: tab.url?.toString(),
+    if (options.isActiveTab(options.tab.id)) {
+      options.window.navigation.updateState({
+        canGoBack: options.tab.canGoBack,
+        canGoForward: options.tab.canGoForward,
+        input: options.tab.url?.toString(),
       });
     }
   }
@@ -109,15 +101,15 @@ export function registerTabEvents(
     errCode: number
   ) {
     // 無限ループが発生するのを防ぐ
-    if (tab.url && tab.url.toString().startsWith(ERR_PAGES.directory)) return;
+    if (options.tab.url && options.tab.url.toString().startsWith(ERR_PAGES.directory)) return;
 
     switch (errCode) {
       case (ERR_CODES["server-notfound"]): {
-        tab.loadURL(ERR_PAGES["server-notfound"]);
+        options.tab.loadURL(ERR_PAGES["server-notfound"]);
         break;
       }
       default: {
-        tab.loadURL(ERR_PAGES.generic);
+        options.tab.loadURL(ERR_PAGES.generic);
         console.warn("Undefined error code:", errCode);
         break;
       }
@@ -127,18 +119,18 @@ export function registerTabEvents(
   function onAudioStateChanged(
     event: Electron.Event<Electron.WebContentsAudioStateChangedEventParams>
   ) {
-    tab.isAudible = event.audible;
+    options.tab.isAudible = event.audible;
 
-    window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: tab.id,
-      isAudible: tab.isAudible,
+    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: options.tab.id,
+      isAudible: options.tab.isAudible,
     });
   }
 
   function onBeforeUnload(
     event: Electron.Event
   ) {
-    const choice = dialog.showMessageBoxSync(window.win, {
+    const choice = dialog.showMessageBoxSync(options.window.win, {
       type: "question",
       buttons: ["このページを離れる", "キャンセル"],
       title: "このページを離れますか？",
@@ -153,7 +145,7 @@ export function registerTabEvents(
     }
   }
 
-  window.win.on("resize", onResize);
+  options.window.win.on("resize", onResize);
 
   webContents.on("page-title-updated", onTitleUpdated);
   webContents.on("page-favicon-updated", onFaviconUpdated);
@@ -166,7 +158,7 @@ export function registerTabEvents(
   webContents.on("will-prevent-unload", onBeforeUnload);
 
   return () => {
-    window.win.off("resize", onResize);
+    options.window.win.off("resize", onResize);
 
     webContents.off("page-title-updated", onTitleUpdated);
     webContents.off("page-favicon-updated", onFaviconUpdated);
