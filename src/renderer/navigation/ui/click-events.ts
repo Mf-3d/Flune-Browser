@@ -8,6 +8,7 @@ export function registerClickEvents() {
   const reloadButton = document.getElementById("reload-tab");
   const toggleBookmarkButton = document.getElementById("toggle-bookmark");
   const searchButton = document.getElementById("search-button");
+  const optionMenuButton = document.getElementById("option-menu-button");
   const tabContainer = document.getElementById("tabs");
 
   newButton?.addEventListener("click", () => navigationActions.createTab());
@@ -23,6 +24,8 @@ export function registerClickEvents() {
   toggleBookmarkButton?.addEventListener("click", () => navigationActions.toggleBookmark());
 
   searchButton?.addEventListener("click", () => navigationActions.search());
+
+  optionMenuButton?.addEventListener("click", () => navigationActions.toggleOptionMenu());
 
   tabContainer?.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;

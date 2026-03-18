@@ -30,6 +30,7 @@ export const IPC_INVOKE = {
   MENU_OPEN: "menu:open",
   MENU_CLOSE: "menu:close",
   MENU_TOGGLE: "menu:toggle",
+  MENU_ITEM_CLICK: "menu:item-clicked",
   // BOOKMARK_STATUS: "bookmark:status",
 } as const;
 

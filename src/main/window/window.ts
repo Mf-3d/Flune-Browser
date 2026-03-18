@@ -11,6 +11,7 @@ import { OptionMenuFeature } from "../menu/option-menu/feature/option-menu-featu
 import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
 
 type WindowOptions = {
   appService: ApplicationService;
@@ -26,6 +27,7 @@ export class Window {
    */
   readonly win: BaseWindow;
   readonly navigation: Navigation;
+  readonly optionMenuController: OptionMenuController;
   private readonly appService: ApplicationService;
   private readonly settings: Settings;
   private readonly eventBus: EventBus;
@@ -38,7 +40,6 @@ export class Window {
       width: 800,
       height: 600
     };
-  private readonly optionMenuFeature: OptionMenuFeature;
   readonly tabManager: TabManager;
   // readonly optionMenuManager: OptionMenuManager;
 
@@ -51,8 +52,11 @@ export class Window {
 
     this.win = new BaseWindow(this.createWindowConstructorOptions());
 
-    this.optionMenuFeature = new OptionMenuFeature(this.appService, this);
-    this.optionMenuFeature.create();
+    const optionMenuFeature = new OptionMenuFeature(
+      this.appService,
+      this
+    );
+    this.optionMenuController = optionMenuFeature.create();
 
     // this.optionMenuManager = new OptionMenuManager(this,
     //   this.data,

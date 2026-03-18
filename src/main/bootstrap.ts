@@ -14,6 +14,7 @@ import { registerSettingsHandler } from "./settings/ipc/settings-handler";
 import { registerBookmarkHandler } from "./bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
 import { ApplicationService } from "./application/application-service";
+import { registerOptionMenuHandler } from "./menu/option-menu/ipc/option-menu-handler";
 
 type Services = {
   settings: Settings;
@@ -68,6 +69,7 @@ function onReady(services: Services) {
   registerSettingsHandler(services.settings, services.eventBus);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
   registerBookmarkHandler(services.windowManager, services.data);
+  registerOptionMenuHandler(services.windowManager);
 
   services.eventBus.send("init");
   services.windowManager.create();

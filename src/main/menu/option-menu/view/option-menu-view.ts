@@ -9,7 +9,8 @@ import { ApplicationService } from "@/main/application/application-service";
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 
 type OptionMenuEvents = {
-  close: () => void
+  close: () => void,
+  open: () => void
 }
 
 export class OptionMenuView {
@@ -29,13 +30,17 @@ export class OptionMenuView {
 
   constructor(
     private readonly appService: ApplicationService,
-    private readonly window: Window
+    private readonly window: Window,
+    private bounds: Electron.Rectangle
   ) {
     this.view = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
+        transparent: true
       }
     });
+
+    this.view.setBounds(this.bounds);
 
     if (!this.appService.isPackaged) this.view.webContents.openDevTools();
     this.view.webContents.loadURL(OPTION_MENU_PATH);
@@ -43,35 +48,47 @@ export class OptionMenuView {
     this.registerEvents();
   }
 
+  attach() {
+    this.window.win.contentView.addChildView(this.view);
+  }
+
+  detach() {
+    this.window.win.contentView.removeChildView(this.view);
+  }
+
   private registerEvents() {
     this.window.win.on("resize", () => {
-      const bounds = this.window.win.getContentBounds();
+      const windowBounds = this.window.getContentBounds();
       
-      this.view.setBounds({
-        x: bounds.x,
-        y: bounds.y,
-        width: bounds.width,
-        height: bounds.height - this.window.viewY,
-      });
-    });
+      this.bounds = {
+        x: windowBounds.x,
+        y: windowBounds.y,
+        width: windowBounds.width,
+        height: windowBounds.height - this.window.viewY,
+      };
 
-    this.view.webContents.on("blur", () => {
-      this.emit("close");
+      this.view.setBounds(this.bounds);
     });
   }
 
-  isVisible() {
-    return this.window.win.contentView.children.includes(this.view);
+  isVisible(): boolean {
+    return this.view.getVisible();
   }
 
-  show() {
-    this.view.webContents.loadURL(OPTION_MENU_PATH);
-    this.window.win.contentView.addChildView(this.view, -1);
+  setVisible(visible: boolean) {
+    return this.view.setVisible(visible);
+  }
+
+  async show() {
+    this.attach();
+    await this.view.webContents.loadURL(OPTION_MENU_PATH);
+    this.view.webContents.focus();
+    this.setVisible(true);
   }
 
   async hide() {
-    this.window.win.contentView.removeChildView(this.view);
-    this.view.setVisible(false);
+    this.detach();
+    this.setVisible(false);
   }
 
   async openAnimation() {

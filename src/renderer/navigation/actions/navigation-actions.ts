@@ -36,6 +36,10 @@ export const navigationActions = {
     document.getElementById("toggle-bookmark")?.classList.toggle("active");
   },
 
+  toggleOptionMenu() {
+    navigationIpc.toggleOptionMenu();
+  },
+
   updateSymbolColor() {
     const styles = getComputedStyle(document.documentElement);
     const color = styles.getPropertyValue("--text-color");

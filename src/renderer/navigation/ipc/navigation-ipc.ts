@@ -37,6 +37,10 @@ export const navigationIpc = {
     window.flune.navigation?.toggleBookmark();
   },
 
+  toggleOptionMenu() {
+    window.flune.navigation?.toggleOptionMenu();
+  },
+
   updateSymbolColor(color: string) {
     window.flune.navigation?.updateSymbolColor(color);
   }

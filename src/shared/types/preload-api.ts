@@ -1,5 +1,6 @@
-import { Config } from "./config";
-import { Path, PathValue } from "./path";
+import type { MenuId } from "../../main/menu/option-menu/templates/types";
+import type { Config } from "./config";
+import type { Path, PathValue } from "./path";
 
 export type Versions = {
   flune: string;
@@ -105,6 +106,7 @@ export type NavigationAPI = {
 export type MenuAPI = {
   open: () => void;
   close: () => void;
+  clickItem: (menuId: MenuId) => void;
   bookmark: {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;

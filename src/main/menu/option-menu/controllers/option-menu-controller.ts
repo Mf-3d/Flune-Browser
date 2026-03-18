@@ -32,8 +32,9 @@ export class OptionMenuController {
     this.fadeTime = options.fadeTime;
     this.appService = options.appService;
 
-    this.view.on("close", () => this.close());
     this.actions = createOptionMenuActions(this.appService, this.window);
+
+    this.view.setVisible(false);
   }
 
   isVisible() {

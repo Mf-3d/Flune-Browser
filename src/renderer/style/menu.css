@@ -14,8 +14,7 @@ body>#toggle {
 }
 body:has(.hidden)>#toggle {
   background-color: transparent;
-  width: 100vw;
-  height: 0;
+  height: 0vh;
 }
 
 main {
@@ -46,7 +45,7 @@ main:has(#top) {
   transition: top .8s ease;
 }
 main:has(#top).hidden {
-  top: calc(-100vh + 16px);
+  top: -100vh;
 }
 
 main>div:not(#children-menu) {
