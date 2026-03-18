@@ -26,6 +26,6 @@ export const BROWSER: BrowserAPI = {
   
   onThemeChanged: (callback) => ipcRenderer.on(
     IPC_NOTIFY.TAB_THEME,
-    (event, tab) => callback(event, tab)
+    (event, themeUrl) => callback(event, themeUrl)
   ),
 };

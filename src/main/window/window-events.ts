@@ -15,7 +15,13 @@ export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigat
     tabManager.removeAll();
   });
   eventBus.on("theme:updated", (payload) => {
-    navigation.updateTheme(payload.themeId);
+    const theme = settings.themeService.getThemeById(payload.themeId);
+
+    if (!theme) {
+      throw new Error("Theme does not exist.");
+    }
+
+    navigation.updateTheme(theme?.url);
   });
   eventBus.on("settings:updated", () => {
     navigation.updateState({

@@ -175,6 +175,6 @@ export function registerTabEvents(options: TabEventOptions): () => void {
 function updateTheme(webContents: WebContents, settings: Settings) {
   webContents.send(
     IPC_NOTIFY.TAB_THEME,
-    settings.themeService.getThemeById(settings.themeService.getCurrentThemeId())
+    settings.themeService.getThemeById(settings.themeService.getCurrentThemeId())?.url
   );
 }
