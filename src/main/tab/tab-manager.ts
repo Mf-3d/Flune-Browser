@@ -154,7 +154,7 @@ export class TabManager {
   }
 
   private decideNextActiveTab(removedTabIndex: number): Tab | undefined {
-    const nextIndex = removedTabIndex === 0 ? removedTabIndex + 1 : removedTabIndex - 1;
+    const nextIndex = removedTabIndex === 0 ? 0 : removedTabIndex - 1;
 
     return this.collection.at(nextIndex);
   }
