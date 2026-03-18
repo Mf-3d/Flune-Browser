@@ -58,6 +58,3 @@ export class EventBus {
     this.emitter.emit(event, ...args);
   }
 }
-
-const eventBus = new EventBus;
-eventBus.send
