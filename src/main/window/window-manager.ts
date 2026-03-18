@@ -1,7 +1,6 @@
 import { shell } from "electron";
 import { Window } from "./window";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
-import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { Settings } from "@/main/settings/";
 import type { ApplicationService } from "@/main/application/application-service";
