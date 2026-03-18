@@ -1,23 +1,21 @@
-import { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
+import type { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
+import type { Tab } from "@/main/tab/tab";
 
-export function createViewMenuTemplate(
-  state: {
-    canGoBack: boolean,
-    canGoForward: boolean
-  },
+export function createTabMenuTemplate(
+  tab: Tab,
   actions: ContextMenuActions
 ): Electron.MenuItemConstructorOptions[] {
   return [
     {
       label: "戻る",
       accelerator: "Alt+Left",
-      enabled: state.canGoBack,
+      enabled: tab.canGoBack,
       click: actions.goBack
     },
     {
       label: "進む",
       accelerator: "Alt+Right",
-      enabled: state.canGoForward,
+      enabled: tab.canGoForward,
       click: actions.goForward
     },
     {
@@ -35,7 +33,7 @@ export function createViewMenuTemplate(
     },
     {
       label: "開発者ツールを表示",
-      accelerator: process.platform === "darwin" ? "Cmd+Option+I": "F12",
+      accelerator: process.platform === "darwin" ? "Cmd+Option+I" : "F12",
       click: actions.toggleDevTools
     }
   ];

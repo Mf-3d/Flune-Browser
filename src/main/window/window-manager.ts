@@ -57,7 +57,6 @@ export class WindowManager {
 
   private initializeControllers() {
     this.setupApplicationMenu();
-    this.setupContextMenu();
     // this.setupTabs();
   }
 
@@ -82,14 +81,5 @@ export class WindowManager {
     );
 
     applicationMenuController.setup();
-  }
-
-  private setupContextMenu() {
-    if (!this.baseWindow || !this.baseWindow.navigation) return;
-
-    const contextMenuController = new ContextMenuController(this.baseWindow);
-    contextMenuController.register(this.baseWindow.navigation.view.webContents, {
-      area: "navigation"
-    });
   }
 }

@@ -1,13 +1,16 @@
 import { app, Menu, ContextMenuParams, clipboard } from "electron";
 import { createEmojiMenuTemplate } from "@/main/menu/context-menu/templates/emoji";
-import { Window } from "@/main/window/window";
 import { createTextSelectionMenuTemplate } from "@/main/menu/context-menu/templates/text-selection";
 import { createVideoSelectionMenuTemplate } from "@/main/menu/context-menu/templates/video-selection";
 import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/templates/editable-selection";
 import { createLinkSelectionMenuTemplate } from "@/main/menu/context-menu/templates/link-selection";
 import { createNavigationMenuTemplate } from "@/main/menu/context-menu/templates/navigation";
-import { createViewMenuTemplate } from "@/main/menu/context-menu/templates/view";
+import { createTabMenuTemplate } from "@/main/menu/context-menu/templates/tab";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
+import type { Window } from "@/main/window/window";
+import type { Tab } from "@/main/tab/tab";
+
 
 export type ContextMenuActions = {
   showEmojiPanel: () => void,
@@ -26,11 +29,8 @@ export type ContextMenuActions = {
 
 type ContextSource =
   | {
-    area: "view";
-    state: {
-      canGoBack: boolean;
-      canGoForward: boolean;
-    }
+    area: "tab";
+    tab: Tab,
   }
   | {
     area: "navigation";
@@ -75,8 +75,8 @@ export class ContextMenuController {
 
     if (source.area === "navigation") {
       sections.push(createNavigationMenuTemplate(actions));
-    } else if (source.area === "view") {
-      sections.push(createViewMenuTemplate(source.state, actions))
+    } else if (source.area === "tab") {
+      sections.push(createTabMenuTemplate(source.tab, actions))
     }
 
     return this.joinSections(sections);

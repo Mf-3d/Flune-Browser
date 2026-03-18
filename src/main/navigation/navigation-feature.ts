@@ -5,12 +5,14 @@
  */
 
 import path from "path";
-import { BaseWindow, WebContentsView } from "electron";
+import { WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
+import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { NavigationInit, NavigationState } from "@/shared/types/preload-api";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { Window } from "@/main/window/window";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -27,7 +29,7 @@ export type Navigation = ReturnType<typeof createNavigationFeature>;
  */
 export function createNavigationFeature(
   appService: ApplicationService,
-  baseWindow: BaseWindow,
+  window: Window,
   settings: {
     viewY: number;
     themeUrl: string;
@@ -46,8 +48,13 @@ export function createNavigationFeature(
     }
   });
 
+  const contextMenuController = new ContextMenuController(window);
+  contextMenuController.register(view.webContents, {
+    area: "navigation"
+  });
+
   view.setBounds({
-    width: baseWindow.getContentBounds().width,
+    width: window.getContentBounds().width,
     height: settings.viewY,
     x: 0,
     y: 0,
@@ -58,7 +65,7 @@ export function createNavigationFeature(
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
   function attach() {
-    baseWindow.contentView.addChildView(view);
+    window.win.contentView.addChildView(view);
   }
 
   function updateState(state: NavigationState) {

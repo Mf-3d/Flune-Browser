@@ -21,6 +21,9 @@ type WindowOptions = {
 
 export class Window {
   viewY: number = 66;
+  /**
+   * @deprecated 非公開化する予定
+   */
   readonly win: BaseWindow;
   readonly navigation: Navigation;
   private readonly appService: ApplicationService;
@@ -109,7 +112,7 @@ export class Window {
 
     const navigation = createNavigationFeature(
       this.appService,
-      this.win,
+      this,
       {
         viewY: this.viewY,
         themeUrl: currentTheme.url,
@@ -123,6 +126,14 @@ export class Window {
     navigation.attach();
 
     return navigation;
+  }
+
+  getBounds(): Electron.Rectangle {
+    return this.win.getBounds();
+  }
+
+  getContentBounds(): Electron.Rectangle {
+    return this.win.getContentBounds();
   }
 
   close() {

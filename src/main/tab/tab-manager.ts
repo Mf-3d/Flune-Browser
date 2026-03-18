@@ -5,12 +5,13 @@ import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
 import { registerTabEvents } from "./tab-events";
+import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { Settings } from "@/main/settings";
 import type { TabState } from "@/shared/types/preload-api";
 import type { Window } from "@/main/window/window";
 import type { TabManagerOptions } from "./types";
-import type { EventBus } from "../infrastructure/event/event-bus";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
@@ -20,12 +21,15 @@ export class TabManager {
   private readonly window: Window;
   private readonly settings: Settings;
   private readonly eventBus: EventBus;
+  private readonly contextMenuController: ContextMenuController;
 
   constructor(options: TabManagerOptions) {
     this.collection = options.collection;
     this.window = options.window;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
+
+    this.contextMenuController = new ContextMenuController(this.window);
   }
 
   get length() {
@@ -69,6 +73,10 @@ export class TabManager {
       window: this.window,
       settings: this.settings,
       eventBus: this.eventBus
+    });
+    this.contextMenuController.register(tab.webContents, {
+      area: "tab",
+      tab,
     });
 
     tab.webContents.setWindowOpenHandler((details) => {
