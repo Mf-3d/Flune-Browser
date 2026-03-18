@@ -52,6 +52,8 @@ export class Tab {
 
   attachView(window: Window) {
     window.win.contentView.addChildView(this.view);
+
+    console.info(`Tab (${this.id}) has been attached to the window.`);
   }
 
   goBack() {

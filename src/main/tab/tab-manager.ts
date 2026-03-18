@@ -211,6 +211,8 @@ export class TabManager {
    * @param id Tab ID to activate.
    */
   activateTab(id: string) {
+    this.activeTabId = id;
+
     this.collection.getAll().forEach((tab) => {
       tab.id === id
         ? tab.setVisible(true)
@@ -225,8 +227,6 @@ export class TabManager {
 
     activeTab.focus();
 
-    this.activeTabId = id;
-
     const state: TabState = {
       id,
       active: true,
@@ -237,6 +237,8 @@ export class TabManager {
     this.window.navigation.updateState({
       input: activeTab.url?.toString(),
     });
+
+    console.info(`Tab (${activeTab.id}) has activated.`);
   }
 
   getActiveTab(): Tab | undefined {
