@@ -20,16 +20,16 @@ export function isSettingsPage() {
 }
 
 export const SETTINGS: SettingsAPI = {
-  get: async (key: string) => {
+  get: async (key) => {
     return await ipcRenderer.invoke(IPC_INVOKE.STORE_GET, key); // 項目を取得
   },
   getAll: async () => {
     return await ipcRenderer.invoke(IPC_INVOKE.STORE_GET_ALL); // コンフィグをすべて取得
   },
-  set: (key: string, value?: any) => {
-    ipcRenderer.invoke(IPC_INVOKE.STORE_SET, key, value); // 項目を保存
+  set: async (key, value?) => {
+    await ipcRenderer.invoke(IPC_INVOKE.STORE_SET, key, value); // 項目を保存
   },
-  setAll: (value?: any) => {
-    ipcRenderer.invoke(IPC_INVOKE.STORE_SET_ALL, value); // コンフィグをすべて保存
+  setAll: async (value?) => {
+    await ipcRenderer.invoke(IPC_INVOKE.STORE_SET_ALL, value); // コンフィグをすべて保存
   },
 };

@@ -1,7 +1,7 @@
 import { app } from "electron";
 import path from "path";
 import { SettingsStore } from "./settings-store";
-import { Theme } from "./types";
+import { Theme } from "@/shared/types/config";
 
 const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/` : "flune://";
 

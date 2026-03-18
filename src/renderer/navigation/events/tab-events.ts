@@ -12,6 +12,8 @@ export function registerTabEvents() {
 }
 
 function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
+  console.info("New tab is created.", tab.id);
+
   const tabContainer = document.getElementById("tabs")!;
   const newButton = tabContainer.querySelector(".new-button")!;
 
@@ -108,6 +110,8 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
 }
 
 function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
+  console.info("The tab has been updated.", tab.id);
+
   if (isDragging) return;
   
   const tabContainer = document.getElementById("tabs")!;

@@ -1,3 +1,6 @@
+import { Config } from "./config";
+import { Path, PathValue } from "./path";
+
 export type Versions = {
   flune: string;
   electron: string;
@@ -111,8 +114,8 @@ export type MenuAPI = {
 };
 
 export type SettingsAPI = {
-  get: (key: string) => Promise<any>;
-  getAll: () => Promise<any>;
-  set: (key: string, value?: any) => void;
-  setAll: (value?: any) => void;
+  get<P extends Path<Config>>(key: P): Promise<PathValue<Config, P>>;
+  set<P extends Path<Config>>(key: P, value?: PathValue<Config, P>): Promise<void>;
+  getAll: () => Promise<Config>;
+  setAll: (config?: Config) => Promise<void>;
 };

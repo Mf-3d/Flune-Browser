@@ -5,6 +5,8 @@
   --symbol-color: #6E9797;
   --hover-color: #a9fde3;
   --disabled-color: #868686;
+
+  --text-color-red: #ff8f82;
 }
 
 body {
@@ -24,4 +26,8 @@ input[type=text] {
 
 input[type=text]:focus {
   outline: none;
+}
+
+.text-red {
+  color: var(--text-color-red);
 }

@@ -1,10 +1,11 @@
-import { Config } from "./types";
+import type { Config } from "@/shared/types/config";
+import type { Path, PathValue } from "@/shared/types/path";
 
 export class SettingsStore {
   constructor(private config: {
     store: Record<string, unknown>;
-    get<K extends keyof Config>(key: K): Config[K];
-    set<K extends keyof Config>(key: K, value: Config[K]): void;
+    get<P extends Path<Config>>(key: P): PathValue<Config, P>;
+    set<P extends Path<Config>>(key: P, value?: PathValue<Config, P>): void;
   }) { }
 
   getAll(): Config {
@@ -15,11 +16,11 @@ export class SettingsStore {
     this.config.store = config;
   }
 
-  get<K extends keyof Config>(key: K): Config[K] {
+  get<P extends Path<Config>>(key: P): PathValue<Config, P> {
     return this.config.get(key);
   }
 
-  set<K extends keyof Config>(key: K, value: Config[K]) {
+  set<P extends Path<Config>>(key: P, value?: PathValue<Config, P>) {
     this.config.set(key, value);
   }
 }
