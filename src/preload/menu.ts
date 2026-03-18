@@ -45,7 +45,7 @@ export const MENU: MenuAPI = {
 
   onOpening: (callback) => ipcRenderer.on(
     IPC_NOTIFY.MENU_OPENING,
-    (event) => callback(event)
+    (event, template) => callback(event, template)
   ),
   onClosing: (callback) => ipcRenderer.on(
     IPC_NOTIFY.MENU_CLOSING,

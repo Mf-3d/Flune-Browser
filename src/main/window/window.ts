@@ -4,14 +4,14 @@ import { BaseWindow, app } from "electron";
 import { TabManager } from "@/main/tab/tab-manager";
 import * as packageJson from "@/../package.json";
 import { registerWindowEvents } from "./window-events";
-import { createNavigationFeature, Navigation } from "../navigation/navigation-feature";
-import { TabCollection } from "../tab/tab-collection";
-import { OptionMenuFeature } from "../menu/option-menu/feature/option-menu-feature";
+import { createNavigationFeature, Navigation } from "@/main/navigation/navigation-feature";
+import { TabCollection } from "@/main/tab/tab-collection";
 
 import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
-import type { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
+import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
+import { OptionMenuView } from "../menu/option-menu/view/option-menu-view";
 
 type WindowOptions = {
   appService: ApplicationService;
@@ -52,21 +52,22 @@ export class Window {
 
     this.win = new BaseWindow(this.createWindowConstructorOptions());
 
-    const optionMenuFeature = new OptionMenuFeature(
+    const optionMenuView = new OptionMenuView(
       this.appService,
-      this
+      this,
+      {
+        x: 0,
+        y: this.viewY,
+        width: this.bounds.width,
+        height: this.bounds.height,
+      }
     );
-    this.optionMenuController = optionMenuFeature.create();
-
-    // this.optionMenuManager = new OptionMenuManager(this,
-    //   this.data,
-    //   {
-    //     width: this.bounds.width,
-    //     height: this.bounds.height - this.viewY,
-    //     x: 0,
-    //     y: this.viewY
-    //   }
-    // );
+    this.optionMenuController = new OptionMenuController({
+      appService: this.appService,
+      view: optionMenuView,
+      window: this,
+      fadeTime: 400,
+    });
 
     const tabCollection = new TabCollection();
     this.tabManager = new TabManager({

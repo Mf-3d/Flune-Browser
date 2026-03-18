@@ -4,7 +4,8 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
-import { ApplicationService } from "@/main/application/application-service";
+import type { ApplicationService } from "@/main/application/application-service";
+import type { OptionMenuItem } from "@/shared/types/menu";
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 
@@ -91,7 +92,7 @@ export class OptionMenuView {
     this.setVisible(false);
   }
 
-  async openAnimation() {
+  async openAnimation(template: OptionMenuItem[]) {
     this.view.webContents.send(IPC_NOTIFY.MENU_OPENING);
   }
   async closeAnimation() {

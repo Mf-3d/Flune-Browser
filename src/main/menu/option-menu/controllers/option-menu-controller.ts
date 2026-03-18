@@ -1,8 +1,9 @@
-import { createOptionMenuActions } from "../actions/option-menu-actions";
+import { handleAction } from "../actions/option-menu-actions";
+import { buildOptionMenuTemplate } from "../templates/";
 
 import type { OptionMenuView } from "../view/option-menu-view";
 import type { Window } from "@/main/window/window";
-import type { MenuId } from "../templates/types";
+import type { MenuActionDescriptor, OptionMenuItem } from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
 
 type OptionMenuControllerOptions = {
@@ -20,7 +21,6 @@ type MenuState =
 
 export class OptionMenuController {
   private state: MenuState = "closed";
-  private readonly actions;
   private readonly view;
   private readonly window;
   private readonly fadeTime;
@@ -32,8 +32,6 @@ export class OptionMenuController {
     this.fadeTime = options.fadeTime;
     this.appService = options.appService;
 
-    this.actions = createOptionMenuActions(this.appService, this.window);
-
     this.view.setVisible(false);
   }
 
@@ -41,9 +39,14 @@ export class OptionMenuController {
     return this.view.isVisible();
   }
 
-  handleClick(id: MenuId) {
-    const action = this.actions[id];
-    action?.();
+  handleClick(action: MenuActionDescriptor) {
+    handleAction(
+      action,
+      {
+        appService: this.appService,
+        window: this.window
+      }
+    );
   }
 
   async open() {
@@ -60,7 +63,7 @@ export class OptionMenuController {
 
     this.view.show();
 
-    await this.view.openAnimation();
+    await this.view.openAnimation(this.buildMenuTemplate());
 
     await new Promise(resolve => {
       setTimeout(resolve, this.fadeTime);
@@ -93,5 +96,11 @@ export class OptionMenuController {
     } else {
       await this.open();
     }
+  }
+
+  buildMenuTemplate(): OptionMenuItem[] {
+    return buildOptionMenuTemplate({
+      bookmarks: 
+    });
   }
 }

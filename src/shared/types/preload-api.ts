@@ -1,4 +1,4 @@
-import type { MenuId } from "../../main/menu/option-menu/templates/types";
+import type { MenuId, OptionMenuItem } from "./menu";
 import type { Config } from "./config";
 import type { Path, PathValue } from "./path";
 
@@ -111,7 +111,7 @@ export type MenuAPI = {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;
   };
-  onOpening: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
+  onOpening: (callback: (event: Electron.IpcRendererEvent, template: OptionMenuItem[]) => void) => Electron.IpcRenderer;
   onClosing: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
 };
 

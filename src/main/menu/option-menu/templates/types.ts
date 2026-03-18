@@ -1,25 +1,15 @@
-export type MenuId =
-  | "new-tab"
-  | "open-downloads"
-  | "open-versions"
-  | "open-settings"
-  | "quit";
+import type { ApplicationService } from "@/main/application/application-service";
+import type { Window } from "@/main/window/window";
+import { Bookmark } from "@/shared/types/data";
 
-export type Submenu =
-  | "bookmarks"
-  | "histories";
 
-export type MenuAction = () => void;
-
-export type OptionMenuItem = {
-  type: "item";
-  id: MenuId;
-  label: string;
-  accelerator?: string;
-} | {
-  type: "submenu";
-  id: Submenu;
-  label: string;
-} | {
-  type: "separator";
+export type MenuActionContext = {
+  appService: ApplicationService;
+  window: Window;
 };
+
+export type MenuTemplateContext = {
+  bookmarks: Bookmark[];
+};
+
+export type MenuAction = (context: MenuActionContext) => void;

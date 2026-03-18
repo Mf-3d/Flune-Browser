@@ -1,8 +1,8 @@
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { handle } from "@/main/ipc/handler";
 
-import type { MenuId } from "../templates/types";
 import type { WindowManager } from "@/main/window/window-manager";
+import type { MenuActionDescriptor } from "@/shared/types/menu";
 
 export function registerOptionMenuHandler(windowManager: WindowManager) {
   handle(IPC_INVOKE.MENU_OPEN, (event) => {
@@ -11,7 +11,7 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
     if (!window) {
       throw new Error("Window does not exist.");
     }
-    
+
     window.optionMenuController.open();
   });
 
@@ -35,13 +35,13 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
     window.optionMenuController.toggle();
   });
 
-  handle(IPC_INVOKE.MENU_ITEM_CLICK, (event, menuId: MenuId) => {
+  handle(IPC_INVOKE.MENU_ITEM_CLICK, (event, action: MenuActionDescriptor) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
 
-    window.optionMenuController.handleClick(menuId);
+    window.optionMenuController.handleClick(action);
   });
 }
