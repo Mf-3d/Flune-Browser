@@ -15,6 +15,7 @@ export function createSettings() {
   }));
 
   const config = new Store({
+    name: "config-3",
     defaults: DEFAULT_CONFIG
   });
 
