@@ -80,7 +80,10 @@ export function createAppMenuTemplate(
         },
         {
           label: "開発者ツールを表示",
-          accelerator: (process.platform === "darwin") ? "Cmd+Option+I" : "F12", // WindowsとLinux
+          accelerator:
+            (process.platform === "darwin") ?
+              "Cmd+Option+I" :
+              "F12",
           click: actions.toggleDevTools
         },
         { type: "separator" },
