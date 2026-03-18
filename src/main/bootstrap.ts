@@ -22,7 +22,6 @@ type Services = {
   eventBus: EventBus;
   bookmarkService: BookmarkService;
   appService: ApplicationService;
-  protocol: Protocol;
 };
 
 export function bootstrap() {
@@ -51,7 +50,6 @@ function initializeServices(): Services {
   const settings = createSettings();
   const windowManager = new WindowManager(appService, settings, eventBus);
   const bookmarkService = new BookmarkService(data);
-  const protocol = new Protocol("flune");
 
   return {
     settings,
@@ -60,11 +58,11 @@ function initializeServices(): Services {
     eventBus,
     bookmarkService,
     appService,
-    protocol
   };
 }
 
 function onReady(services: Services) {
+  const protocol = new Protocol("flune");
 
   registerAppHandler(services.appService, services.windowManager);
   registerSettingsHandler(services.settings, services.eventBus);
