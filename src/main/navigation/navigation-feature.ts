@@ -4,7 +4,7 @@
  * ナビゲーション
  */
 
-import path from "path";
+import path from "node:path";
 import { WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";

@@ -1,6 +1,6 @@
 import { app } from "electron";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const LOG_DIR = app.getPath("userData");
 const LOG_FILE = path.join(LOG_DIR, "app-crash.log");

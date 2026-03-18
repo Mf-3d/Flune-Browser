@@ -1,5 +1,5 @@
 import { app } from "electron";
-import path from "path";
+import path from "node:path";
 import { SettingsStore } from "./settings-store";
 import { Theme } from "@/shared/types/config";
 

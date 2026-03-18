@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
