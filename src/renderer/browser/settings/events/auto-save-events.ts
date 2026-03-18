@@ -5,6 +5,7 @@ export async function registerAutoSaveEvent() {
   
   const inputElements = document.querySelectorAll(".content input") as NodeListOf<HTMLInputElement>;
   const selectElements = document.querySelectorAll(".content select") as NodeListOf<HTMLSelectElement>;
+  const formElements = document.querySelectorAll(".content form") as NodeListOf<HTMLSelectElement>;
 
   if ((await window.flune.settings.get("settings")).autoSave) {
     // 変更されたらすべて保存。
@@ -12,7 +13,10 @@ export async function registerAutoSaveEvent() {
       element.addEventListener("change", onChange);
     });
     selectElements.forEach((element) => {
-      element.addEventListener("change", onChange)
+      element.addEventListener("change", onChange);
+    });
+    formElements.forEach((element) => {
+      element.addEventListener("change", onChange);
     });
 
     window.removeEventListener("beforeunload", onBeforeUnload);

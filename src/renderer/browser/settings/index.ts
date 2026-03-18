@@ -45,9 +45,7 @@ async function updateThemesUI() {
 
   const themeSelectorElement = document.getElementById("theme-select") as HTMLElement;
 
-  themeSelectorElement.childNodes.forEach(
-    themeElement => themeElement.remove()
-  );
+  themeSelectorElement.innerHTML = "";
 
   const themes =
     (await window.flune.settings.get("themes"))
@@ -59,7 +57,7 @@ async function updateThemesUI() {
   themes.forEach((theme) => {
     const inputElement = document.createElement("input");
     inputElement.type = "radio";
-    inputElement.value = `theme-${theme.id}`;
+    inputElement.id = `theme-${theme.id}`;
     inputElement.name = "theme";
 
     const labelElement = document.createElement("label");
@@ -89,7 +87,6 @@ async function updateOptionsUI() {
       case "toggle-home-button":
         element.checked = (await window.flune.settings.get("settings")).design.showHomeButton;
         break;
-
     }
   });
 
@@ -105,7 +102,7 @@ async function updateOptionsUI() {
     }
   });
 
-  const themeElement = 
+  const themeElement =
     document.querySelector(`input[id=theme-${(await window.flune.settings.get("settings")).design.theme}]`) as HTMLInputElement;
   themeElement.checked = true;
 }

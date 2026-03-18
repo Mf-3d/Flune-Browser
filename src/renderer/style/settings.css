@@ -4,6 +4,23 @@ body {
   padding: 1em;
 }
 
+.save-button {
+  background-color: var(--background-color);
+  margin-top: 1em;
+  padding: .25em;
+  border: color-mix(in srgb, var(--disabled-color) 10%, transparent) 2px solid;
+  border-radius: 8px;
+
+  transition:
+    background-color .5s,
+    color .5s;
+}
+
+.save-button:hover {
+  background-color: color-mix(in srgb, var(--hover-color), var(--background-color) 70%);
+  color: var(--text-color);
+}
+
 /*ベース*/
 section.typeA {
   display: flex;
