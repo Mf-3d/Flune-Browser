@@ -35,7 +35,7 @@ export default defineConfig({
         input: {
           navigation: path.resolve(__dirname, "src/renderer/navigation/index.html"),
           home: path.resolve(__dirname, "src/renderer/browser/home/index.html"),
-          settings: path.resolve(__dirname, "src/renderer/browser/settings.html"),
+          settings: path.resolve(__dirname, "src/renderer/browser/settings/index.html"),
           version: path.resolve(__dirname, "src/renderer/browser/version/index.html"),
           error: path.resolve(__dirname, "src/renderer/browser/error/error.html"),
           serverNotFound: path.resolve(__dirname, "src/renderer/browser/error/server-notfound.html"),
