@@ -1,5 +1,5 @@
 // Icons by https://lucide.dev/icons/
-const icons = {
+const icons: Record<string, string> = {
   "ellipsis-vertical": `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>`,
   search: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
   "chevron-left": `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>`,
@@ -20,10 +20,11 @@ const icons = {
 function createIcons() {
   const iconElements = document.querySelectorAll("i[data-lucide]");
   iconElements.forEach((element) => {
-    const iconName = element.getAttribute("data-lucide");
+    const iconName = element.getAttribute("data-lucide") ?? "";
 
     if (Object.keys(icons).includes(iconName)) {
-      const svg = new DOMParser().parseFromString(icons[iconName], "text/html").body.firstElementChild;
+      const icon = icons[iconName] ?? "";
+      const svg = new DOMParser().parseFromString(icon, "text/html").body.firstElementChild!;
       element.before(svg);
       element.remove();
     }

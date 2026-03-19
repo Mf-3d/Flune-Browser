@@ -1,4 +1,4 @@
-import lucide from "../script/icons.js";
+import lucide from "../utils/icons";
 import { registerInputEvents } from "./ui/input-events";
 import { registerClickEvents } from "./ui/click-events";
 import { registerNavigationEvents } from "./events/navigation-events";

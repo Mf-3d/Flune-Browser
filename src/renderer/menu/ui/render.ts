@@ -2,7 +2,7 @@ import { menuIpc } from "../ipc/menu-ipc";
 
 import type { MenuPageId } from "../../../shared/types/menu";
 import { registerClickEvents } from "./click-events";
-import lucide from "../../script/icons";
+import lucide from "../../utils/icons";
 
 
 export async function renderMenu(pageId: MenuPageId) {

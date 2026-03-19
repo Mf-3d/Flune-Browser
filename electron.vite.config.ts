@@ -40,9 +40,7 @@ export default defineConfig({
           version: path.resolve(__dirname, "src/renderer/browser/version/index.html"),
           error: path.resolve(__dirname, "src/renderer/browser/error/error.html"),
           serverNotFound: path.resolve(__dirname, "src/renderer/browser/error/server-notfound.html"),
-          menuBookmarks: path.resolve(__dirname, "src/renderer/menu/bookmarks.html"),
-          menuTop: path.resolve(__dirname, "src/renderer/menu/index.html"),
-          optionMenu: path.resolve(__dirname, "src/renderer/menu/pages/index.html"),
+          optionMenu: path.resolve(__dirname, "src/renderer/menu/index.html"),
         }
       }
     }
