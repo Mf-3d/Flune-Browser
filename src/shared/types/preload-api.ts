@@ -1,4 +1,4 @@
-import type { MenuId, OptionMenuItem } from "./menu";
+import type { MenuActionDescriptor, OptionMenuItem } from "./menu";
 import type { Config } from "./config";
 import type { Path, PathValue } from "./path";
 
@@ -106,7 +106,7 @@ export type NavigationAPI = {
 export type MenuAPI = {
   open: () => void;
   close: () => void;
-  clickItem: (menuId: MenuId) => void;
+  clickItem: (action: MenuActionDescriptor) => void;
   bookmark: {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;

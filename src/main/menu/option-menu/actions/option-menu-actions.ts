@@ -1,49 +1,106 @@
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
-import type{ MenuActionDescriptor } from "@/shared/types/menu";
-import type { MenuAction, MenuActionContext } from "../templates/types";
+import type { ActionHandlerMap, MenuActionDescriptor, PayloadOf } from "@/shared/types/menu";
+import type { MenuActionContext } from "../templates/types";
 
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
-export function handleAction(
-  action: MenuActionDescriptor,
+export function handleAction<T extends MenuActionDescriptor>(
+  desc: T,
   context: MenuActionContext
 ) {
-  switch (action.type) {
-    case "new-tab": {
-      context.appService.createTab(context.window);
-      return;
-    }
-
-    case "open-bookmark": {
-      const tab = context.appService.createTab(context.window);
-      // tab.loadURL(getBookmark(context.id).url);
-      return;
-    }
-
-    case "open-bookmarks-page": {
-      // context.appService.showSettingsPage(context.window);
-    }
-
-    case "open-downloads-page": {
-      // window.tabManager.navigate();
-    }
-
-    case "open-settings-page": {
-      context.appService.showSettingsPage(context.window);
-    }
-
-    case "open-versions-page": {
-      context.appService.showVersionsPage(context.window);
-    }
-
-    case "quit": {
+  const handlers: ActionHandlerMap = {
+    quit: () => {
       context.appService.quit({
         forced: false,
         window: context.window
       });
-    }
+    },
+
+    "new-tab": () => {
+      context.appService.createTab(context.window);
+    },
+
+    "add-bookmark": () => {
+      context.appService.addActiveTabToBookmarks(context.window);
+    },
+
+    "open-bookmark": (payload) => {
+      if (!payload) return;
+
+      const tab = context.appService.createTab(context.window);
+      tab.loadURL(context.bookmarkService.getById(payload.id)!.url);
+    },
+
+    "open-history": (payload) => {
+      if (!payload) return;
+
+      const tab = context.appService.createTab(context.window);
+      // tab.loadURL(context.bookmarkService.getById(payload.id)!.url);
+    },
+
+    "open-bookmarks-page": () => {
+      // context.appService.showSettingsPage(context.window);
+    },
+
+    "open-downloads-page": () => {
+      // window.tabManager.navigate();
+    },
+
+    "open-histories-page": () => {
+      // window.tabManager.navigate();
+    },
+
+    "open-settings-page": () => {
+      context.appService.showSettingsPage(context.window);
+    },
+
+    "open-versions-page": () => {
+      context.appService.showVersionsPage(context.window);
+    },
+  };
+
+  switch (desc.type) {
+    case "quit":
+      handlers.quit(undefined);
+      break;
+
+    case "add-bookmark":
+      handlers["add-bookmark"](undefined);
+      break;
+
+    case "new-tab":
+      handlers["new-tab"](undefined);
+      break;
+
+    case "open-bookmark":
+      handlers["open-bookmark"](desc.payload);
+      break;
+    
+    case "open-history":
+      handlers["open-history"](desc.payload);
+      break;
+
+    case "open-bookmarks-page":
+      handlers["open-bookmarks-page"](undefined);
+      break;
+
+    case "open-downloads-page":
+      handlers["open-downloads-page"](undefined);
+      break;
+
+    case "open-histories-page":
+      handlers["open-histories-page"](undefined);
+      break;
+
+    case "open-versions-page": 
+      handlers["open-versions-page"](undefined);
+      break;
+
+    case "open-settings-page":
+      handlers["open-settings-page"](undefined);
+      break;
   }
 }
 

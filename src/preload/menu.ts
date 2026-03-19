@@ -27,8 +27,8 @@ export const MENU: MenuAPI = {
     ipcRenderer.invoke(IPC_INVOKE.MENU_CLOSE); // メニューを閉じる
   },
 
-  clickItem: (menuId) => {
-    ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICK, menuId); // メニューアイテムをクリック
+  clickItem: (action) => {
+    ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICK, action); // メニューアイテムをクリック
   },
 
   /**

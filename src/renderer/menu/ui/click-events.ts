@@ -1,4 +1,4 @@
-import { MenuId } from "../../../shared/types/menu";
+import { MenuActionDescriptor, MenuActionDescriptorType } from "../../../shared/types/menu";
 import { menuIpc } from "../ipc/menu-ipc";
 
 export function registerClickEvents() {
@@ -6,9 +6,12 @@ export function registerClickEvents() {
 
   menuItemElements.forEach((element) => {
     element.addEventListener("click", () => {
-      const menuId = element.getAttribute("id") as MenuId;
+      const menuAction: MenuActionDescriptor = {
+        type: element.dataset.action as MenuActionDescriptorType,
+        payload: JSON.parse(element.dataset.payload!)
+      };
 
-      menuIpc.clickItem(menuId);
+      menuIpc.clickItem(menuAction);
     });
   });
 }

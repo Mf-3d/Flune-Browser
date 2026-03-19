@@ -5,12 +5,14 @@ import type { OptionMenuView } from "../view/option-menu-view";
 import type { Window } from "@/main/window/window";
 import type { MenuActionDescriptor, OptionMenuItem } from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { BookmarkService } from "@/main/bookmark/service";
 
 type OptionMenuControllerOptions = {
   view: OptionMenuView;
   window: Window;
   fadeTime: number;
   appService: ApplicationService;
+  bookmarkService: BookmarkService;
 };
 
 type MenuState =
@@ -25,12 +27,14 @@ export class OptionMenuController {
   private readonly window;
   private readonly fadeTime;
   private readonly appService;
+  private readonly bookmarkService;
 
   constructor(options: OptionMenuControllerOptions) {
     this.view = options.view;
     this.window = options.window;
     this.fadeTime = options.fadeTime;
     this.appService = options.appService;
+    this.bookmarkService = options.bookmarkService;
 
     this.view.setVisible(false);
   }
@@ -44,6 +48,7 @@ export class OptionMenuController {
       action,
       {
         appService: this.appService,
+        bookmarkService: this.bookmarkService,
         window: this.window
       }
     );
@@ -100,7 +105,7 @@ export class OptionMenuController {
 
   buildMenuTemplate(): OptionMenuItem[] {
     return buildOptionMenuTemplate({
-      bookmarks: 
+      bookmarks: this.bookmarkService.getAll()
     });
   }
 }

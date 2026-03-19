@@ -1,4 +1,4 @@
-import { MenuId } from "../../../shared/types/menu";
+import { MenuActionDescriptor } from "../../../shared/types/menu";
 
 export const menuIpc = {
   open() {
@@ -9,7 +9,7 @@ export const menuIpc = {
     window.flune.menu?.close();
   },
 
-  clickItem(menuId: MenuId) {
-    window.flune.menu?.clickItem(menuId);
+  clickItem(action: MenuActionDescriptor) {
+    window.flune.menu?.clickItem(action);
   },
 };

@@ -5,7 +5,12 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
   const bookmarkMenuItem: OptionMenuItem[] = context.bookmarks.map((bookmark) => {
     return {
       type: "item",
-      action: { type: "open-bookmark", id: bookmark.id },
+      action: {
+        type: "open-bookmark",
+        payload: {
+          id: bookmark.id
+        }
+      },
       label: bookmark.title,
     };
   });
@@ -13,7 +18,10 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
   return [
     {
       type: "item",
-      action: { type: "add-bookmark" },
+      action: {
+        type: "add-bookmark",
+        payload: undefined
+      },
       label: "新しいブックマークを追加",
       accelerator: "Ctrl+D"
     },
@@ -22,7 +30,10 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
     },
     {
       type: "item",
-      action: { type: "open-bookmarks-page" },
+      action: {
+        type: "open-bookmarks-page",
+        payload: undefined
+      },
       label: "ブックマークをすべて表示",
       accelerator: "Ctrl+Shift+O"
     },

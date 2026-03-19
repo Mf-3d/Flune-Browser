@@ -7,7 +7,10 @@ export function buildOptionMenuTemplate(context: MenuTemplateContext): OptionMen
   return [
     {
       type: "item",
-      action: { type: "new-tab" },
+      action: {
+        type: "new-tab",
+        payload: undefined
+      },
       label: "新しいタブ",
       accelerator: "Ctrl+T"
     },
@@ -26,7 +29,10 @@ export function buildOptionMenuTemplate(context: MenuTemplateContext): OptionMen
     },
     {
       type: "item",
-      action: { type: "open-downloads-page" },
+      action: {
+        type: "open-downloads-page",
+        payload: undefined
+      },
       label: "ダウンロード",
       accelerator: "Ctrl+J"
     },
@@ -35,17 +41,26 @@ export function buildOptionMenuTemplate(context: MenuTemplateContext): OptionMen
     },
     {
       type: "item",
-      action: { type: "open-versions-page" },
+      action: {
+        type: "open-versions-page",
+        payload: undefined
+      },
       label: "バージョン情報",
     },
     {
       type: "item",
-      action: { type: "open-settings-page" },
+      action: {
+        type: "open-settings-page",
+        payload: undefined
+      },
       label: "設定",
     },
     {
       type: "item",
-      action: { type: "quit" },
+      action: {
+        type: "quit",
+        payload: undefined
+      },
       label: "終了",
     },
   ];

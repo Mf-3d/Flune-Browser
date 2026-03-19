@@ -80,7 +80,7 @@ function buildMenuItems() {
 
 // 開くアニメーション。
 window.addEventListener("load", () => {
-  document.querySelector("main>div#top").classList.remove("hidden");
+  document.querySelector("main").classList.remove("hidden");
 });
 
 // メニューのクリックイベントを設定。
@@ -127,7 +127,7 @@ function closeMenu() {
   flune.closeMenu();
 }
 
-flune.on("menu.close", () => {
+flune.menu.onClosing(() => {
   document.querySelector("main").classList.add("hidden");
   document.querySelector("#children-menu").classList.remove("visible");
 });
