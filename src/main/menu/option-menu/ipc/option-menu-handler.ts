@@ -2,17 +2,18 @@ import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { handle } from "@/main/ipc/handler";
 
 import type { WindowManager } from "@/main/window/window-manager";
-import type { MenuActionDescriptor } from "@/shared/types/menu";
+import type { MenuActionDescriptor, MenuPageId } from "@/shared/types/menu";
+import { buildOptionMenuPage } from "../templates";
 
 export function registerOptionMenuHandler(windowManager: WindowManager) {
-  handle(IPC_INVOKE.MENU_OPEN, (event) => {
+  handle(IPC_INVOKE.MENU_OPEN, async (event) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
 
-    window.optionMenuController.open();
+    await window.optionMenuController.open();
   });
 
   handle(IPC_INVOKE.MENU_CLOSE, (event) => {
@@ -25,17 +26,27 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
     window.optionMenuController.close();
   });
 
+  handle(IPC_INVOKE.MENU_GET_PAGE, (event, pageId: MenuPageId) => {
+    const window = windowManager.getWindowFromWebContents(event.sender);
+
+    if (!window) {
+      throw new Error("Window does not exist.");
+    }
+
+    return window.optionMenuController.getPage(pageId);
+  });
+
   handle(IPC_INVOKE.MENU_TOGGLE, (event) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
-    
+
     window.optionMenuController.toggle();
   });
 
-  handle(IPC_INVOKE.MENU_ITEM_CLICK, (event, action: MenuActionDescriptor) => {
+  handle(IPC_INVOKE.MENU_ITEM_CLICKED, (event, action: MenuActionDescriptor) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {

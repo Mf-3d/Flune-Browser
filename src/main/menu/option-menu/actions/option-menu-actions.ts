@@ -1,6 +1,6 @@
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
-import type { ActionHandlerMap, MenuActionDescriptor, PayloadOf } from "@/shared/types/menu";
+import type { ActionHandlerMap, MenuActionDescriptor } from "@/shared/types/menu";
 import type { MenuActionContext } from "../templates/types";
 
 

@@ -50,7 +50,8 @@ export class Tab {
     this.url = new URL(input);
   }
 
-  attachView(window: Window) {
+  attachView(window: Window, visible: boolean = false) {
+    this.setVisible(visible);
     window.win.contentView.addChildView(this.view);
 
     console.info(`Tab (${this.id}) has been attached to the window.`);

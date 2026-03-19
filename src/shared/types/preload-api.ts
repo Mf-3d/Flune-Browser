@@ -1,4 +1,4 @@
-import type { MenuActionDescriptor, OptionMenuItem } from "./menu";
+import type { MenuActionDescriptor, MenuPageId, OptionMenuItem } from "./menu";
 import type { Config } from "./config";
 import type { Path, PathValue } from "./path";
 
@@ -106,12 +106,13 @@ export type NavigationAPI = {
 export type MenuAPI = {
   open: () => void;
   close: () => void;
+  getPage: (pageId: MenuPageId) => Promise<OptionMenuItem[]>;
   clickItem: (action: MenuActionDescriptor) => void;
   bookmark: {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;
   };
-  onOpening: (callback: (event: Electron.IpcRendererEvent, template: OptionMenuItem[]) => void) => Electron.IpcRenderer;
+  onOpening: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
   onClosing: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
 };
 

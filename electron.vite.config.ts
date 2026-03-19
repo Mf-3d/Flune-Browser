@@ -42,6 +42,7 @@ export default defineConfig({
           serverNotFound: path.resolve(__dirname, "src/renderer/browser/error/server-notfound.html"),
           menuBookmarks: path.resolve(__dirname, "src/renderer/menu/bookmarks.html"),
           menuTop: path.resolve(__dirname, "src/renderer/menu/index.html"),
+          optionMenu: path.resolve(__dirname, "src/renderer/menu/pages/index.html"),
         }
       }
     }

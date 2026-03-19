@@ -45,11 +45,11 @@ export type MenuActionDescriptor =
   }
   | {
     type: "open-bookmark";
-    payload: { id: string }
+    payload: { id: string };
   }
   | {
     type: "open-history";
-    payload: { id: string }
+    payload: { id: string };
   };
 
 export type Submenu =
@@ -58,7 +58,8 @@ export type Submenu =
 
 export type OptionMenuItem =
   | MenuActionItem
-  | SubmenuItem
+  | MenuGoBackItem
+  | MenuNavigationItem
   | MenuSeparatorItem;
 
 type MenuActionItem = {
@@ -70,11 +71,21 @@ type MenuActionItem = {
   checked?: boolean;
 };
 
-type SubmenuItem = {
-  type: "submenu";
+type MenuGoBackItem = {
+  type: "go-back";
   label: string;
-  children: OptionMenuItem[];
 };
+
+type MenuNavigationItem = {
+  type: "navigation";
+  label: string;
+  target: MenuPageId;
+};
+
+export type MenuPageId =
+  | "root"
+  | "bookmarks"
+  | "history";
 
 type MenuSeparatorItem = {
   type: "separator";

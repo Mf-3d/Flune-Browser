@@ -1,11 +1,12 @@
 import { handleAction } from "../actions/option-menu-actions";
-import { buildOptionMenuTemplate } from "../templates/";
+import { buildOptionMenuPage } from "../templates/";
 
 import type { OptionMenuView } from "../view/option-menu-view";
 import type { Window } from "@/main/window/window";
-import type { MenuActionDescriptor, OptionMenuItem } from "@/shared/types/menu";
+import type { MenuActionDescriptor, MenuPageId, OptionMenuItem } from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
+
 
 type OptionMenuControllerOptions = {
   view: OptionMenuView;
@@ -49,12 +50,15 @@ export class OptionMenuController {
       {
         appService: this.appService,
         bookmarkService: this.bookmarkService,
-        window: this.window
+        window: this.window,
+        optionMenuManager: this
       }
     );
+
+    this.close();
   }
 
-  async open() {
+  async open(): Promise<void> {
     if (this.state === "open" || this.state === "opening") {
       return;
     }
@@ -68,13 +72,23 @@ export class OptionMenuController {
 
     this.view.show();
 
-    await this.view.openAnimation(this.buildMenuTemplate());
+    return new Promise(resolve => {
+      this.view.webContents.once("did-finish-load", async () => {
+        try {
+          this.view.sendOpening();
 
-    await new Promise(resolve => {
-      setTimeout(resolve, this.fadeTime);
+          await new Promise(resolve => {
+            setTimeout(resolve, this.fadeTime);
+          });
+
+          this.state = "open";
+        } catch (err) {
+          console.error("Failed to open Option Menu:", err); // ロガーはまだ入れていないので仮
+        }
+
+        resolve();
+      });
     });
-
-    this.state = "open";
   }
 
   async close() {
@@ -83,8 +97,8 @@ export class OptionMenuController {
     }
 
     this.state = "closing";
-    
-    await this.view.closeAnimation();
+
+    this.view.sendClosing();
 
     await new Promise(resolve => {
       setTimeout(resolve, this.fadeTime);
@@ -103,8 +117,8 @@ export class OptionMenuController {
     }
   }
 
-  buildMenuTemplate(): OptionMenuItem[] {
-    return buildOptionMenuTemplate({
+  getPage(pageId: MenuPageId): OptionMenuItem[] {
+    return buildOptionMenuPage(pageId, {
       bookmarks: this.bookmarkService.getAll()
     });
   }

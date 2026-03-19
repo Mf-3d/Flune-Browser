@@ -28,6 +28,10 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     });
   }
 
+  function onThemeChanged() {
+    updateTheme(options.tab.webContents, options.settings);
+  }
+
   function onTitleUpdated(
     _: Electron.Event,
     title: string
@@ -59,6 +63,11 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   ) {
     options.tab.url = new URL(url);
 
+    options.window.navigation.updateState({
+      canGoBack: options.tab.canGoBack,
+      canGoForward: options.tab.canGoForward,
+      input: options.tab.url?.toString(),
+    });
     // 履歴追加、ブックマークされているかの状態
   }
 
@@ -77,10 +86,6 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     options.tab.canGoForward = options.tab.webContents.navigationHistory.canGoForward();
 
     updateTheme(options.tab.webContents, options.settings);
-    options.eventBus.on(
-      "theme:updated",
-      () => updateTheme(options.tab.webContents, options.settings)
-    );
 
     options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
       id: options.tab.id,
@@ -145,6 +150,8 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     }
   }
 
+  options.eventBus.on("theme:updated", onThemeChanged);
+
   options.window.win.on("resize", onResize);
 
   webContents.on("page-title-updated", onTitleUpdated);
@@ -158,6 +165,8 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   webContents.on("will-prevent-unload", onBeforeUnload);
 
   return () => {
+    options.eventBus.off("theme:updated", onThemeChanged);
+
     options.window.win.off("resize", onResize);
 
     webContents.off("page-title-updated", onTitleUpdated);

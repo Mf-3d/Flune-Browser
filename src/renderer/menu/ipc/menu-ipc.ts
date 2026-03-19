@@ -1,4 +1,4 @@
-import { MenuActionDescriptor } from "../../../shared/types/menu";
+import type { MenuActionDescriptor, MenuPageId } from "../../../shared/types/menu";
 
 export const menuIpc = {
   open() {
@@ -7,6 +7,10 @@ export const menuIpc = {
 
   close() {
     window.flune.menu?.close();
+  },
+
+  async getPage(pageId: MenuPageId) {
+    return await window.flune.menu?.getPage(pageId);
   },
 
   clickItem(action: MenuActionDescriptor) {

@@ -1,6 +1,7 @@
 import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
+
 export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenuItem[] {
   const bookmarkMenuItem: OptionMenuItem[] = context.bookmarks.map((bookmark) => {
     return {
@@ -16,6 +17,13 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
   });
 
   return [
+    {
+      type: "go-back",
+      label: "戻る"
+    },
+    {
+      type: "separator"
+    },
     {
       type: "item",
       action: {

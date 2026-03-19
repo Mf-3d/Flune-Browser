@@ -1,7 +1,7 @@
 import path from "node:path";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
-import { WebContentsView } from "electron";
+import { WebContents, WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
 import type { ApplicationService } from "@/main/application/application-service";
@@ -27,6 +27,10 @@ export class OptionMenuView {
 
   private emit<K extends keyof OptionMenuEvents>(event: K) {
     this.events[event]?.()
+  }
+
+  get webContents(): WebContents {
+    return this.view.webContents;
   }
 
   constructor(
@@ -62,8 +66,8 @@ export class OptionMenuView {
       const windowBounds = this.window.getContentBounds();
       
       this.bounds = {
-        x: windowBounds.x,
-        y: windowBounds.y,
+        x: this.bounds.x,
+        y: this.bounds.y,
         width: windowBounds.width,
         height: windowBounds.height - this.window.viewY,
       };
@@ -92,10 +96,10 @@ export class OptionMenuView {
     this.setVisible(false);
   }
 
-  async openAnimation(template: OptionMenuItem[]) {
+  sendOpening() {
     this.view.webContents.send(IPC_NOTIFY.MENU_OPENING);
   }
-  async closeAnimation() {
+  sendClosing() {
     this.view.webContents.send(IPC_NOTIFY.MENU_CLOSING);
   }
 }

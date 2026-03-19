@@ -162,11 +162,11 @@ export class DataManager {
       return this.histories.getAll().find(history => history.url === url);
     },
     getByDate: (date: Date) => {
-      return this.histories.getAll().find(history => history.date === date);
+      return this.histories.getAll().find(history => history.date === date.toDateString());
     },
     getByDuration: (duration: [Date, Date]): History[] => {
       return this.histories.getAll().filter(history =>
-        duration[0].getTime() <= history.date.getTime() && history.date.getTime() <= duration[1].getTime()
+        duration[0].getTime() <= new Date(history.date).getTime() && new Date(history.date).getTime() <= duration[1].getTime()
       );
     },
 

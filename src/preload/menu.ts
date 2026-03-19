@@ -1,6 +1,7 @@
 import { MenuAPI } from "../shared/types/preload-api";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { MenuPageId } from "@/shared/types/menu";
 
 export function isMenuPage() {
   const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
@@ -28,7 +29,11 @@ export const MENU: MenuAPI = {
   },
 
   clickItem: (action) => {
-    ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICK, action); // メニューアイテムをクリック
+    ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICKED, action); // メニューアイテムをクリック
+  },
+
+  getPage: (menuId: MenuPageId) => {
+    return ipcRenderer.invoke(IPC_INVOKE.MENU_GET_PAGE, menuId);
   },
 
   /**
@@ -45,7 +50,7 @@ export const MENU: MenuAPI = {
 
   onOpening: (callback) => ipcRenderer.on(
     IPC_NOTIFY.MENU_OPENING,
-    (event, template) => callback(event, template)
+    (event) => callback(event)
   ),
   onClosing: (callback) => ipcRenderer.on(
     IPC_NOTIFY.MENU_CLOSING,

@@ -1,6 +1,7 @@
-import type { OptionMenuItem } from "@/shared/types/menu";
-import type { IpcRendererEvent } from "electron";
 import { renderMenu } from "../ui/render";
+
+import type { IpcRendererEvent } from "electron";
+
 
 export function registerMenuEvents() {
   if (!window.flune.menu) return;
@@ -9,9 +10,8 @@ export function registerMenuEvents() {
   window.flune.menu.onClosing(onClosing);
 }
 
-function onOpening(_: IpcRendererEvent, template: OptionMenuItem[]) {
-  const menuElement = document.querySelector("main>div")!;
-  menuElement.innerHTML = renderMenu(template);
+function onOpening(_: IpcRendererEvent) {
+  renderMenu("root");
 
   document.querySelector("main")?.classList.remove("hidden");
 }

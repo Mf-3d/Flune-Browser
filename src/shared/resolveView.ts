@@ -9,7 +9,8 @@ export const ROUTE_MAP = {
     notFound: "browser/error/server-notfound.html",
   },
   menu: {
-    generic: "menu/index.html",
+    // generic: "menu/index.html",
+    generic: "menu/pages/index.html",
     bookmarks: "menu/bookmarks.html",
   }
 } as const;

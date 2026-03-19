@@ -99,7 +99,7 @@ export class TabManager {
       beforeTabId: options?.beforeTabId,
     });
 
-    tab.attachView(this.window);
+    tab.attachView(this.window, );
 
     if (options?.isActive) this.activateTab(tab.id);
 
