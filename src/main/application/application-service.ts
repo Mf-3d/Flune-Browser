@@ -5,12 +5,15 @@ import type { Window } from "@/main/window/window";
 import type { QuitOptions } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
+import type { BookmarkService } from "../bookmark/service";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSIONS_URL = resolveView(ROUTE_MAP.version);
 
 export class ApplicationService {
-  constructor() { }
+  constructor(
+    private readonly bookmarkService: BookmarkService,
+  ) { }
 
   get name() {
     return app.name;
@@ -64,5 +67,22 @@ export class ApplicationService {
 
   showVersionsPage(window: Window) {
     window.tabManager.navigate(VERSIONS_URL);
+  }
+
+  addActiveTabToBookmarks(window: Window) {
+    const tab = window.tabManager.getActiveTab();
+
+    if (!tab) {
+      throw new Error("Tab does not exist.");
+    }
+
+    if (!tab.url) {
+      throw new Error(`Tab (${tab.id}) does not have URL.`);
+    }
+
+    this.bookmarkService.add({
+      title: tab.title,
+      url: tab.url.toString()
+    });
   }
 }

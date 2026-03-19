@@ -1,3 +1,5 @@
+import type { Bookmark } from "@/shared/types/data";
+
 export type EventMap = {
   /**
    * Fire when the application initialization begins.
@@ -15,6 +17,15 @@ export type EventMap = {
      * ID of the tab created.
      */
     tabId: string
+  };
+  /**
+   * Fire when a new tab is created.
+   */
+  "bookmark:created": {
+    /**
+     * ID of the tab created.
+     */
+    bookmark: Bookmark
   };
   /**
    * Fire when settings is updated.

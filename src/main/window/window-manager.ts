@@ -5,12 +5,14 @@ import { ApplicationMenuController } from "@/main/menu/application-menu/controll
 import type { Settings } from "@/main/settings/";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "../infrastructure/event/event-bus";
+import { BookmarkService } from "../bookmark/service";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
 
   constructor(
     private readonly appService: ApplicationService,
+    private readonly bookmarkService: BookmarkService,
     private readonly settings: Settings,
     private readonly eventBus: EventBus,
   ) { }
@@ -18,6 +20,7 @@ export class WindowManager {
   create() {
     this.baseWindow = new Window({
       appService: this.appService,
+      bookmarkService: this.bookmarkService,
       settings: this.settings,
       eventBus: this.eventBus,
     });

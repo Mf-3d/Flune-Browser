@@ -6,15 +6,17 @@ import * as packageJson from "@/../package.json";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "@/main/navigation/navigation-feature";
 import { TabCollection } from "@/main/tab/tab-collection";
+import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
+import { OptionMenuView } from "../menu/option-menu/view/option-menu-view";
 
 import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
-import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
-import { OptionMenuView } from "../menu/option-menu/view/option-menu-view";
+import type { BookmarkService } from "../bookmark/service";
 
 type WindowOptions = {
   appService: ApplicationService;
+  bookmarkService: BookmarkService;
   settings: Settings;
   eventBus: EventBus;
   bounds?: Electron.Rectangle;
@@ -29,6 +31,7 @@ export class Window {
   readonly navigation: Navigation;
   readonly optionMenuController: OptionMenuController;
   private readonly appService: ApplicationService;
+  private readonly bookmarkService: BookmarkService;
   private readonly settings: Settings;
   private readonly eventBus: EventBus;
   bounds: {
@@ -47,6 +50,7 @@ export class Window {
     if (options.bounds) this.bounds = options.bounds;
 
     this.appService = options.appService;
+    this.bookmarkService = options.bookmarkService;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
 
@@ -64,6 +68,7 @@ export class Window {
     );
     this.optionMenuController = new OptionMenuController({
       appService: this.appService,
+      bookmarkService: this.bookmarkService,
       view: optionMenuView,
       window: this,
       fadeTime: 400,

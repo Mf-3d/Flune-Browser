@@ -15,11 +15,13 @@ import { registerBookmarkHandler } from "./bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
 import { ApplicationService } from "./application/application-service";
 import { registerOptionMenuHandler } from "./menu/option-menu/ipc/option-menu-handler";
+import { DataStore } from "./infrastructure/storage/data-store";
+import { BookmarkRepository } from "./bookmark/repository";
 
 type Services = {
   settings: Settings;
   windowManager: WindowManager;
-  data: DataManager;
+  data: DataStore;
   eventBus: EventBus;
   bookmarkService: BookmarkService;
   appService: ApplicationService;
@@ -45,12 +47,16 @@ function registerAppEvents(services: Services) {
 }
 
 function initializeServices(): Services {
-  const data = new DataManager;
+  const data = new DataStore;
   const eventBus = new EventBus;
-  const appService = new ApplicationService;
+
+  const bookmarkRepository = new BookmarkRepository(data);
+
+  const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
+  const appService = new ApplicationService(bookmarkService);
+
   const settings = createSettings();
-  const windowManager = new WindowManager(appService, settings, eventBus);
-  const bookmarkService = new BookmarkService(data);
+  const windowManager = new WindowManager(appService, bookmarkService, settings, eventBus);
 
   return {
     settings,
@@ -68,7 +74,7 @@ function onReady(services: Services) {
   registerAppHandler(services.appService, services.windowManager);
   registerSettingsHandler(services.settings, services.eventBus);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
-  registerBookmarkHandler(services.windowManager, services.data);
+  registerBookmarkHandler(services.windowManager, services.bookmarkService);
   registerOptionMenuHandler(services.windowManager);
 
   services.eventBus.send("init");

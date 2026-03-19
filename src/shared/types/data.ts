@@ -19,7 +19,7 @@ export type BookmarkFolder = {
 export type History = {
   title: string;
   url: string;
-  date: Date;
+  date: string;
 };
 export type Download = {
   id: string;
@@ -42,4 +42,14 @@ export type BookmarkInput = {
    * Specify the ID of "root" or parent folder.
    */
   parentId?: FolderId;
+};
+
+export type Data = {
+  /**
+   * Config version.
+   * @example [3,0,0]
+   */
+  version: [number, number, number];
+  history: History[];
+  bookmark: Bookmark[];
 };
