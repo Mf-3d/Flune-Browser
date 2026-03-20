@@ -58,8 +58,10 @@ export class ApplicationService {
     };
   }
 
-  createTab(window: Window): Tab {
-    return window.tabManager.createTab();
+  createTab(window: Window, input?: string): Tab {
+    return window.tabManager.createTab({
+      input
+    });
   }
 
   showSettingsPage(window: Window) {
