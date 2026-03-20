@@ -1,6 +1,7 @@
-import { Configuration } from "electron-builder";
+import type { Configuration } from "electron-builder";
 
-export const config: Configuration = {
+
+const config: Configuration = {
   appId: "io.github.mf-3d.flune-browser",
   productName: "Flune-Browser",
   artifactName: "${productName}-${version}-${platform}-${arch}.${ext}",
@@ -9,7 +10,6 @@ export const config: Configuration = {
     "out/**/*"
   ],
   directories: {
-    output: "dist",
     buildResources: "assets"
   },
   publish: {
@@ -17,7 +17,7 @@ export const config: Configuration = {
     releaseType: "draft"
   },
   win: {
-    icon: "./assets/image/icon.png",
+    icon: "assets/image/icon.png",
     target: [
       "nsis",
       "zip"
@@ -27,10 +27,10 @@ export const config: Configuration = {
     }
   },
   nsis: {
-    "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
+    artifactName: "${productName}-${version}-${platform}-${arch}-installer.exe"
   },
   mac: {
-    icon: "./assets/image/icon.icns",
+    icon: "assets/image/icon.icns",
     category: "public.app-category.utilities",
     target: {
       target: "dmg",
@@ -39,10 +39,12 @@ export const config: Configuration = {
     identity: null
   },
   linux: {
-    icon: "./assets/image/icon.png",
+    icon: "assets/image/icon.png",
     target: [
       "AppImage"
     ],
     category: "Utility"
   }
 };
+
+export default config;
