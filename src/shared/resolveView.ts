@@ -8,11 +8,7 @@ export const ROUTE_MAP = {
     generic: "browser/error/error.html",
     notFound: "browser/error/server-notfound.html",
   },
-  menu: {
-    // generic: "menu/index.html",
-    generic: "menu/pages/index.html",
-    bookmarks: "menu/bookmarks.html",
-  }
+  menu: "menu/index.html",
 } as const;
 
 export type RouteKey = keyof typeof ROUTE_MAP;

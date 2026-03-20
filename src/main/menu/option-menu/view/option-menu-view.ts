@@ -5,29 +5,13 @@ import { WebContents, WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { Rect } from "@/shared/types/rect";
 
 
-const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
-
-type OptionMenuEvents = {
-  close: () => void,
-  open: () => void
-}
+const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu);
 
 export class OptionMenuView {
   readonly view: WebContentsView;
-  private events: Partial<OptionMenuEvents> = {}
-
-  on<K extends keyof OptionMenuEvents>(
-    event: K,
-    handler: OptionMenuEvents[K]
-  ) {
-    this.events[event] = handler
-  }
-
-  private emit<K extends keyof OptionMenuEvents>(event: K) {
-    this.events[event]?.()
-  }
 
   get webContents(): WebContents {
     return this.view.webContents;
@@ -36,12 +20,12 @@ export class OptionMenuView {
   constructor(
     private readonly appService: ApplicationService,
     private readonly window: Window,
-    private bounds: Electron.Rectangle
+    private bounds: Rect
   ) {
     this.view = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
-        transparent: true
+        transparent: true,
       }
     });
 
@@ -86,8 +70,7 @@ export class OptionMenuView {
 
   async show() {
     this.attach();
-    await this.view.webContents.loadURL(OPTION_MENU_PATH);
-    this.view.webContents.focus();
+    await this.webContents.loadURL(OPTION_MENU_PATH);
     this.setVisible(true);
   }
 

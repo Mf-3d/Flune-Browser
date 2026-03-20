@@ -63,11 +63,13 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   ) {
     options.tab.url = new URL(url);
 
-    options.window.navigation.updateState({
-      canGoBack: options.tab.canGoBack,
-      canGoForward: options.tab.canGoForward,
-      input: options.tab.url?.toString(),
-    });
+    if (options.isActiveTab(options.tab.id)) {
+      options.window.navigation.updateState({
+        canGoBack: options.tab.canGoBack,
+        canGoForward: options.tab.canGoForward,
+        input: options.tab.url?.toString(),
+      });
+    }
     // 履歴追加、ブックマークされているかの状態
   }
 
