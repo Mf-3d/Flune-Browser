@@ -7,6 +7,7 @@ const config: Config = {
   semi: true,
   trailingComma: "es5",
   singleAttributePerLine: true,
+  endOfLine: "lf",
 };
 
 export default config;
