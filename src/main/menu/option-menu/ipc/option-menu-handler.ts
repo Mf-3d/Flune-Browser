@@ -3,17 +3,17 @@ import { handle } from "@/main/ipc/handler";
 
 import type { WindowManager } from "@/main/window/window-manager";
 import type { MenuActionDescriptor, MenuPageId } from "@/shared/types/menu";
-import { buildOptionMenuPage } from "../templates";
+
 
 export function registerOptionMenuHandler(windowManager: WindowManager) {
-  handle(IPC_INVOKE.MENU_OPEN, async (event) => {
+  handle(IPC_INVOKE.MENU_OPEN, (event) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
 
-    await window.optionMenuController.open();
+    window.optionMenuController.open();
   });
 
   handle(IPC_INVOKE.MENU_CLOSE, (event) => {

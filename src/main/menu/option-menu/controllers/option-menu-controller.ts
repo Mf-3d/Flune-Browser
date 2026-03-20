@@ -1,3 +1,4 @@
+import { setTimeout } from "node:timers/promises";
 import { handleAction } from "../actions/option-menu-actions";
 import { buildOptionMenuPage } from "../templates/";
 
@@ -24,6 +25,7 @@ type MenuState =
 
 export class OptionMenuController {
   private state: MenuState = "closed";
+  private desiredState: "open" | "closed" = "closed";
   private readonly view;
   private readonly window;
   private readonly fadeTime;
@@ -58,40 +60,53 @@ export class OptionMenuController {
     this.close();
   }
 
-  async open(): Promise<void> {
+  open() {
+    this.desiredState = "open";
+    this.syncState();
+  }
+
+  close() {
+    this.desiredState = "closed";
+    this.syncState();
+  }
+
+  private syncState() {
+    if (this.desiredState === "open" && this.state !== "open") this.startOpen();
+    if (this.desiredState === "closed" && this.state !== "closed") this.startClose();
+  }
+
+  private async startOpen(): Promise<void> {
     if (this.state === "open" || this.state === "opening") {
       return;
     }
 
     if (this.state === "closing") {
-      await new Promise(resolve => {
-        setTimeout(resolve, this.fadeTime + 100);
-      });
+      await setTimeout(this.fadeTime + 100);
     }
     this.state = "opening";
 
     this.view.show();
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.view.webContents.once("did-finish-load", async () => {
         try {
           this.view.sendOpening();
 
-          await new Promise(resolve => {
-            setTimeout(resolve, this.fadeTime);
-          });
+          await setTimeout(this.fadeTime);
 
           this.state = "open";
+
+          resolve();
         } catch (err) {
           console.error("Failed to open Option Menu:", err); // ロガーはまだ入れていないので仮
-        }
 
-        resolve();
+          reject(err);
+        }
       });
     });
   }
 
-  async close() {
+  private async startClose() {
     if (this.state === "closed" || this.state === "closing") {
       return;
     }
@@ -100,21 +115,16 @@ export class OptionMenuController {
 
     this.view.sendClosing();
 
-    await new Promise(resolve => {
-      setTimeout(resolve, this.fadeTime);
-    });
+    await setTimeout(this.fadeTime);
 
     this.view.hide();
 
     this.state = "closed";
   }
 
-  async toggle() {
-    if (this.state === "open" || this.state === "opening") {
-      await this.close();
-    } else {
-      await this.open();
-    }
+  toggle() {
+    this.desiredState = (this.desiredState === "open") ? "closed" : "open";
+    this.syncState();
   }
 
   getPage(pageId: MenuPageId): OptionMenuItem[] {
