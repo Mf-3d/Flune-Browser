@@ -1,7 +1,7 @@
 import { _electron, test, expect, ElectronApplication } from "@playwright/test";
 import fs from "node:fs";
 
-test("packaged app launches and survives", async ({ }, testInfo) => {
+test("packaged app launches and survives", async ({}, testInfo) => {
   testInfo.setTimeout(120_000);
 
   let app: ElectronApplication | null = null;
@@ -27,7 +27,7 @@ test("packaged app launches and survives", async ({ }, testInfo) => {
     expect(window).toBeTruthy();
 
     // 3秒生存（即クラッシュ防止）
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
   } finally {
     if (app) {
       await app.close();

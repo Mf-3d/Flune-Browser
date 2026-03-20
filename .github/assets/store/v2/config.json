@@ -1,9 +1,6 @@
 {
   "window": {
-    "window_size": [
-      800,
-      600
-    ]
+    "window_size": [800, 600]
   },
   "settings": {
     "force_twemoji": false,

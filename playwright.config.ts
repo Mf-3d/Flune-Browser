@@ -1,5 +1,5 @@
-"use strict"
-Object.defineProperty(exports, "__esModule", { value: true});
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 
 const config = {
   testDir: "tests/e2e",
@@ -8,7 +8,7 @@ const config = {
     headless: true,
   },
   expect: {
-    timeout: 5000
+    timeout: 5000,
   },
 };
 exports.default = config;

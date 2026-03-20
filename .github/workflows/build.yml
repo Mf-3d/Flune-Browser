@@ -2,7 +2,7 @@ name: Build and release electron installer
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   release:
