@@ -13,7 +13,9 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   {
-    ignores: ["tests/**", "out/**"],
+    ignores: ["tests/**/*", "out/**/*"],
+  },
+  {
     languageOptions: {
       parser: tsparser,
     },
