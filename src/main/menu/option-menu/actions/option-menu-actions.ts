@@ -1,9 +1,5 @@
-import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
-
 import type { ActionHandlerMap, MenuActionDescriptor } from "@/shared/types/menu";
 import type { MenuActionContext } from "../templates/types";
-
-const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export function handleAction<T extends MenuActionDescriptor>(
   desc: T,

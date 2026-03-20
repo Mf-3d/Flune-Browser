@@ -63,7 +63,7 @@ export async function renderMenu(pageId: MenuPageId) {
           class="menu-item"
         >
           <span class="title">${item.label}</span>
-          <i data-lucide=\"chevron-right\"></i>
+          <i data-lucide="chevron-right"></i>
         </a>
         `;
         case "separator":

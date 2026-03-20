@@ -12,7 +12,7 @@ export const settingsIpc = {
     this.get("settings");
     return window.flune.settings?.set(key, value);
   },
-  async setAll(value?: any) {
+  async setAll(value?: Config) {
     return window.flune.settings?.setAll(value);
   },
 };

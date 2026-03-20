@@ -5,7 +5,7 @@ import type { Settings } from "..";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 
 export function registerSettingsHandler(settings: Settings, eventBus: EventBus) {
-  handle(IPC_INVOKE.STORE_GET_ALL, (_) => {
+  handle(IPC_INVOKE.STORE_GET_ALL, () => {
     return settings.store.getAll();
   });
   handle(IPC_INVOKE.STORE_GET, (_, key: string) => {

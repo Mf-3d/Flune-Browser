@@ -9,12 +9,12 @@ export function registerMenuEvents() {
   window.flune.menu.onClosing(onClosing);
 }
 
-function onOpening(_: IpcRendererEvent) {
+function onOpening() {
   renderMenu("root");
 
   document.querySelector("main")?.classList.remove("hidden");
 }
 
-function onClosing(_: IpcRendererEvent) {
+function onClosing() {
   document.querySelector("main")?.classList.add("hidden");
 }

@@ -1,5 +1,4 @@
 import path from "node:path";
-import { TabCollection } from "./tab-collection";
 import { Tab } from "./tab";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";

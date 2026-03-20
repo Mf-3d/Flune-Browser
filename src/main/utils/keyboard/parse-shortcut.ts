@@ -1,5 +1,5 @@
 function parseShortcut(accelerators: string): string[] {
-  const keys = accelerators.split("\+").map((acc) => {
+  const keys = accelerators.split("+").map((acc) => {
     switch (acc) {
       case "Command":
       case "Cmd":
@@ -16,9 +16,6 @@ function parseShortcut(accelerators: string): string[] {
       case "Alt":
       case "Option":
         return "Alt";
-
-      case "Shift":
-        return "Shift";
 
       case "Shift":
         return "Shift";

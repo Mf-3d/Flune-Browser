@@ -1,4 +1,4 @@
-import { protocol, net, app } from "electron";
+import { protocol, net } from "electron";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 

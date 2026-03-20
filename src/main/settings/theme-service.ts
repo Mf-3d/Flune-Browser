@@ -42,6 +42,6 @@ export class ThemeService {
   private resolveThemeUrl(url: string) {
     return url
       .replace(/@theme\//g, this.urlPrefix + path.join("theme", "/"))
-      .replace(/\\/g, "\/");
+      .replace(/\\/g, "/");
   }
 }
