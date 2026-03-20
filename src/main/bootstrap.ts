@@ -2,7 +2,6 @@ import { app } from "electron";
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
 import { Protocol } from "@/main/infrastructure/protocol";
 import { isArchitectureIntel } from "@/main/system/env";
-import { DataManager } from "@/main/lib/data";
 import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
 import { Settings, createSettings } from "./settings/";
@@ -55,7 +54,7 @@ function initializeServices(): Services {
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const appService = new ApplicationService(bookmarkService);
 
-  const settings = createSettings();
+  const settings = createSettings(appService);
   const windowManager = new WindowManager(appService, bookmarkService, settings, eventBus);
 
   return {

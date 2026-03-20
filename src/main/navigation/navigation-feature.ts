@@ -14,6 +14,7 @@ import type { NavigationInit, NavigationState } from "@/shared/types/preload-api
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Window } from "@/main/window/window";
 
+
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
 /**
@@ -65,7 +66,7 @@ export function createNavigationFeature(
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
   function attach() {
-    window.win.contentView.addChildView(view);
+    window.appendView(view);
   }
 
   function updateState(state: NavigationState) {

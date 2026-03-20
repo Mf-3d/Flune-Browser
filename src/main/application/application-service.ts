@@ -7,6 +7,7 @@ import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "../bookmark/service";
 
+
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSIONS_URL = resolveView(ROUTE_MAP.version);
 
@@ -15,7 +16,7 @@ export class ApplicationService {
     private readonly bookmarkService: BookmarkService,
   ) { }
 
-  get name() {
+  get name(): string {
     return app.name;
   }
 
@@ -30,7 +31,7 @@ export class ApplicationService {
         throw new Error("Window does not exist.");
       }
 
-      const choice = dialog.showMessageBoxSync(options.window.win, {
+      const choice = dialog.showMessageBoxSync(options.window.getNativeWindow(), {
         type: "question",
         message: "本当に終了しますか？",
         detail: `${options.window.tabManager.length}個のタブを閉じます。`,

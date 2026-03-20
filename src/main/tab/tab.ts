@@ -1,6 +1,7 @@
-import type { CloseOpts, OpenDevToolsOptions, Rectangle, WebContents, WebContentsView } from "electron";
+import type { CloseOpts, OpenDevToolsOptions, WebContents, WebContentsView } from "electron";
 import type { Window } from "@/main/window/window";
 import type { TabOptions } from "./types";
+import type { Rect } from "@/shared/types/rect";
 
 export class Tab {
   readonly id: string;
@@ -36,11 +37,11 @@ export class Tab {
     this.webContents.close(options);
   }
 
-  getBounds(): Rectangle {
+  getBounds(): Rect {
     return this.view.getBounds();
   }
 
-  setBounds(bounds: Rectangle) {
+  setBounds(bounds: Rect) {
     this.view.setBounds(bounds);
   }
 
@@ -52,7 +53,7 @@ export class Tab {
 
   attachView(window: Window, visible: boolean = false) {
     this.setVisible(visible);
-    window.win.contentView.addChildView(this.view);
+    window.appendView(this.view);
 
     console.info(`Tab (${this.id}) has been attached to the window.`);
   }

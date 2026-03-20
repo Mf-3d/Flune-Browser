@@ -5,7 +5,7 @@ import { WebContents, WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
 import type { ApplicationService } from "@/main/application/application-service";
-import type { OptionMenuItem } from "@/shared/types/menu";
+
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu.generic);
 
@@ -54,15 +54,15 @@ export class OptionMenuView {
   }
 
   attach() {
-    this.window.win.contentView.addChildView(this.view);
+    this.window.appendView(this.view);
   }
 
   detach() {
-    this.window.win.contentView.removeChildView(this.view);
+    this.window.dependView(this.view);
   }
 
   private registerEvents() {
-    this.window.win.on("resize", () => {
+    this.window.onResize(() => {
       const windowBounds = this.window.getContentBounds();
       
       this.bounds = {

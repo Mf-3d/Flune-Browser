@@ -41,7 +41,7 @@ export class WindowManager {
   }
 
   ensure() {
-    if (!this.baseWindow || this.baseWindow?.win?.isDestroyed())
+    if (!this.baseWindow || this.baseWindow.isDestroyed())
       this.baseWindow = this.create();
 
     return this.baseWindow;

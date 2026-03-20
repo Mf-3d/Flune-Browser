@@ -1,4 +1,4 @@
-import type { API } from "../../shared/types/preload-api";
+import type { API } from "../shared/types/preload-api";
 
 declare global {
   interface Window {

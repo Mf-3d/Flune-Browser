@@ -5,11 +5,13 @@ import { SettingsStore } from "./settings-store";
 import { ThemeService } from "./theme-service";
 import { SearchEngineService } from "./search-engine-service";
 
+import type { ApplicationService } from "../application/application-service";
+
 export type Settings = ReturnType<typeof createSettings>;
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
 
-export function createSettings() {
+export function createSettings(appService: ApplicationService) {
   const DEFAULT_CONFIG = JSON.parse(fs.readFileSync(DEFAULT_CONFIG_PATH, {
     encoding: "utf-8"
   }));
@@ -21,7 +23,7 @@ export function createSettings() {
 
   const store = new SettingsStore(config);
   const searchEngineService = new SearchEngineService(store);
-  const themeService = new ThemeService(store);
+  const themeService = new ThemeService(store, appService);
 
   return {
     store,

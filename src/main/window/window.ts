@@ -1,8 +1,7 @@
 import path from "node:path";
-import { BaseWindow, app } from "electron";
+import { BaseWindow } from "electron";
 
 import { TabManager } from "@/main/tab/tab-manager";
-import * as packageJson from "@/../package.json";
 import { registerWindowEvents } from "./window-events";
 import { createNavigationFeature, Navigation } from "@/main/navigation/navigation-feature";
 import { TabCollection } from "@/main/tab/tab-collection";
@@ -13,13 +12,14 @@ import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "../bookmark/service";
+import type { Rect } from "@/shared/types/rect";
 
 type WindowOptions = {
   appService: ApplicationService;
   bookmarkService: BookmarkService;
   settings: Settings;
   eventBus: EventBus;
-  bounds?: Electron.Rectangle;
+  bounds?: Rect;
 };
 
 export class Window {
@@ -27,7 +27,7 @@ export class Window {
   /**
    * @deprecated 非公開化する予定
    */
-  readonly win: BaseWindow;
+  private readonly win: BaseWindow;
   readonly navigation: Navigation;
   readonly optionMenuController: OptionMenuController;
   private readonly appService: ApplicationService;
@@ -44,7 +44,7 @@ export class Window {
       height: 600
     };
   readonly tabManager: TabManager;
-  // readonly optionMenuManager: OptionMenuManager;
+  
 
   constructor(options: WindowOptions) {
     if (options.bounds) this.bounds = options.bounds;
@@ -95,10 +95,11 @@ export class Window {
       minHeight: 300,
       x: this.bounds.x,
       y: this.bounds.y,
-      title: `${app.getName()} ${(packageJson.version ?? "3")
+      title: `${this.appService.name} ${
+        this.appService.getVersion()
         .replace("-beta.", " Beta ")
         .replace("-dev.", " Dev ")
-        }`,
+      }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
         color: "#0000",
@@ -138,16 +139,52 @@ export class Window {
     return navigation;
   }
 
-  getBounds(): Electron.Rectangle {
+  getBounds(): Rect {
     return this.win.getBounds();
   }
 
-  getContentBounds(): Electron.Rectangle {
+  getContentBounds(): Rect {
     return this.win.getContentBounds();
+  }
+
+  isDestroyed(): boolean {
+    return this.win.isDestroyed();
   }
 
   close() {
     this.tabManager.removeAll();
-    this.win?.close();
+    this.win.close();
+  }
+
+  setTitleBarOverlay(options: Electron.TitleBarOverlayOptions) {
+    this.win.setTitleBarOverlay(options);
+  }
+
+  getNativeWindow(): BaseWindow {
+    return this.win;
+  }
+
+  appendView(view: Electron.View) {
+    this.win.contentView.addChildView(view);
+  }
+
+  dependView(view: Electron.View) {
+    this.win.contentView.removeChildView(view);
+  }
+
+  onClose(listener: (event: Electron.Event) => void) {
+    this.win.on("close", listener);
+
+    return () => {
+      this.win.off("close", listener);
+    };
+  }
+
+  onResize(listener: () => void) {
+    this.win.on("resize", listener);
+
+    return () => {
+      this.win.off("resize", listener);
+    };
   }
 }

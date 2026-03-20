@@ -1,12 +1,19 @@
-import { app } from "electron";
 import path from "node:path";
-import { SettingsStore } from "./settings-store";
-import { Theme } from "@/shared/types/config";
 
-const URL_PREFIX = (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/` : "flune://";
+import type { SettingsStore } from "./settings-store";
+import type { Theme } from "@/shared/types/config";
+import type { ApplicationService } from "../application/application-service";
+
 
 export class ThemeService {
-  constructor(private store: SettingsStore) { }
+  private readonly urlPrefix: string;
+
+  constructor(
+    private readonly store: SettingsStore,
+    private readonly appService: ApplicationService,
+  ) {
+    this.urlPrefix = (!this.appService.isPackaged && process.env.ELECTRON_RENDERER_URL) ? `${process.env.ELECTRON_RENDERER_URL}/` : "flune://";
+  }
 
   getCurrentThemeId(): string {
     return this.store.get("settings").design.theme;
@@ -31,6 +38,6 @@ export class ThemeService {
   }
 
   private resolveThemeUrl(url: string) {
-    return url.replace(/@theme\//g, URL_PREFIX + path.join("style", "theme", "/")).replace(/\\/g, "\/");
+    return url.replace(/@theme\//g, this.urlPrefix + path.join("style", "theme", "/")).replace(/\\/g, "\/");
   }
 }

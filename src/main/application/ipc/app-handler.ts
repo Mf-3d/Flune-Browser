@@ -28,7 +28,7 @@ export function registerAppHandler(appService: ApplicationService, windowManager
         throw new Error("Window does not exist.");
       }
 
-      window.win.setTitleBarOverlay({
+      window.setTitleBarOverlay({
         symbolColor: color
       });
     }

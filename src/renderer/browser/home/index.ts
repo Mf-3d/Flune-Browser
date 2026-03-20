@@ -1,5 +1,5 @@
-import lucide from "../../script/icons.js";
-import { HomeActions } from "./actions/home-actions.js";
+import lucide from "../../utils/icons";
+import { HomeActions } from "./actions/home-actions";
 
 window.addEventListener("DOMContentLoaded", onInit);
 

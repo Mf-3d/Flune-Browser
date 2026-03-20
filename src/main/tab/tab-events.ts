@@ -17,7 +17,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   const webContents = options.tab.webContents;
 
   function onResize() {
-    const winBounds = options.window.win.getContentBounds();
+    const winBounds = options.window.getContentBounds();
     const tabBounds = options.tab.getBounds();
 
     options.tab.setBounds({
@@ -135,7 +135,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   function onBeforeUnload(
     event: Electron.Event
   ) {
-    const choice = dialog.showMessageBoxSync(options.window.win, {
+    const choice = dialog.showMessageBoxSync(options.window.getNativeWindow(), {
       type: "question",
       buttons: ["このページを離れる", "キャンセル"],
       title: "このページを離れますか？",
@@ -150,9 +150,9 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     }
   }
 
-  options.eventBus.on("theme:updated", onThemeChanged);
+  const cleanupOnThemeChanged = options.eventBus.on("theme:updated", onThemeChanged);
 
-  options.window.win.on("resize", onResize);
+  const cleanupOnResize = options.window.onResize(onResize);
 
   webContents.on("page-title-updated", onTitleUpdated);
   webContents.on("page-favicon-updated", onFaviconUpdated);
@@ -165,9 +165,9 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   webContents.on("will-prevent-unload", onBeforeUnload);
 
   return () => {
-    options.eventBus.off("theme:updated", onThemeChanged);
+    cleanupOnThemeChanged();
 
-    options.window.win.off("resize", onResize);
+    cleanupOnResize();
 
     webContents.off("page-title-updated", onTitleUpdated);
     webContents.off("page-favicon-updated", onFaviconUpdated);
