@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
+import tsparser from "@typescript-eslint/parser";
 
 export default defineConfig([
   {
@@ -14,7 +15,7 @@ export default defineConfig([
   {
     ignores: ["tests/**", "out/**"],
     languageOptions: {
-      parser: "@typescript-eslint/parser",
+      parser: tsparser,
     },
     rules: {
       "no-console": "warn",
