@@ -14,7 +14,7 @@ export function isSettingsPage() {
   } else {
     return (
       window.location.protocol === "flune:" &&
-      window.location.pathname.startsWith("/settings/")
+      window.location.pathname.startsWith("/browser/settings/")
     );
   }
 }
