@@ -27,7 +27,7 @@ function onDragOver(event: DragEvent) {
 
   if (!tabElement) return;
 
-  let rect = tabElement.getBoundingClientRect();
+  const rect = tabElement.getBoundingClientRect();
   if (event.clientX - rect.left < tabElement.clientWidth / 2) {
     //マウスカーソルの位置が要素の半分より左
     tabElement.classList.add("adding-left");
@@ -70,7 +70,7 @@ function onDrop(event: DragEvent) {
   const tabId = event.dataTransfer!.getData("text/plain");
   const draggedTab = tabContainer.querySelector(`.tab[data-id="${tabId}"]`)!;
 
-  let rect = tabElement.getBoundingClientRect();
+  const rect = tabElement.getBoundingClientRect();
   if (event.clientX - rect.left < tabElement.clientWidth / 2) {
     //マウスカーソルの位置が要素の半分より左
     tabElement.insertAdjacentElement("beforebegin", draggedTab);

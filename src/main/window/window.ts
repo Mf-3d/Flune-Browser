@@ -116,7 +116,7 @@ export class Window {
   }
 
   private setupNavigation(): Navigation {
-    let currentTheme = this.settings.themeService.getThemeById(
+    const currentTheme = this.settings.themeService.getThemeById(
       this.settings.themeService.getCurrentThemeId()
     );
 

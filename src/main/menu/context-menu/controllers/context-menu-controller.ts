@@ -52,7 +52,7 @@ export class ContextMenuController {
     actions: ContextMenuActions,
     source: ContextSource
   ) {
-    let sections: Electron.MenuItemConstructorOptions[][] = [];
+    const sections: Electron.MenuItemConstructorOptions[][] = [];
 
     if (params.isEditable && process.platform !== "linux") {
       sections.push(createEmojiMenuTemplate(actions));

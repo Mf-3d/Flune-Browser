@@ -1,4 +1,4 @@
-export function applyTheme(themeUrl: string, updateSymbolColor: Function) {
+export function applyTheme(themeUrl: string, updateSymbolColor: () => void) {
   const element = document.querySelector("#theme");
 
   if (element) {

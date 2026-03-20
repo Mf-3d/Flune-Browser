@@ -27,11 +27,11 @@ async function updateEnginesUI() {
   }));
 
   engines.forEach((engine) => {
-    let option = document.createElement("option");
-    option.value = engine.id;
-    option.innerHTML = engine.name;
+    const optionElement = document.createElement("option");
+    optionElement.value = engine.id;
+    optionElement.innerHTML = engine.name;
 
-    selectEnginesElement.appendChild(option);
+    selectEnginesElement.appendChild(optionElement);
   });
 }
 
