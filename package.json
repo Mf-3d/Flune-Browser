@@ -2,14 +2,15 @@
   "name": "flune-browser",
   "version": "3.0.0",
   "description": "Newer and more challenging than anyone else.",
-  "main": "src/main.js",
+  "main": "out/main/main.js",
   "scripts": {
     "test": "playwright test",
-    "start": "npm run build & electron .",
-    "build": "tsc",
-    "package": "electron-builder --dir",
-    "package:win": "electron-builder --win --x64",
-    "package:mac": "electron-builder --mac --x64"
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "prebuild": "electron-vite build",
+    "package": "npm run prebuild & electron-builder --dir --config electron-builder.config.ts",
+    "package:win": "npm run prebuild & electron-builder --win --x64 --config electron-builder.config.ts",
+    "package:mac": "npm run prebuild & electron-builder --mac --x64 --config electron-builder.config.ts"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -26,58 +27,14 @@
   "homepage": "https://github.com/mf-3d/flune-browser#readme",
   "dependencies": {
     "electron-store": "^8.2.0",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
-    "electron": "^39.2.7",
-    "electron-builder": "^26.4.0",
-    "playwright": "^1.57.0"
-  },
-  "build": {
-    "appId": "io.github.mf-3d.flune-browser",
-    "productName": "Flune-Browser",
-    "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}",
-    "files": [
-      "src/**/*",
-      "!src/**/*.ts"
-    ],
-    "directories": {
-      "output": "dist"
-    },
-    "publish": {
-      "provider": "github",
-      "releaseType": "draft"
-    },
-    "win": {
-      "icon": "./src/assets/image/icon.png",
-      "target": [
-        "nsis",
-        "zip"
-      ],
-      "signtoolOptions": {
-        "publisherName": "mf7cli"
-      }
-    },
-    "nsis": {
-      "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
-    },
-    "mac": {
-      "icon": "./src/assets/image/icon.icns",
-      "category": "public.app-category.utilities",
-      "target": {
-        "target": "dmg",
-        "arch": "universal"
-      },
-      "identity": null
-    },
-    "linux": {
-      "icon": "./src/assets/image/icon.png",
-      "target": [
-        "AppImage"
-      ],
-      "category": "Utility"
-    }
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "playwright": "^1.57.0",
+    "vite": "^7.3.1"
   }
 }
