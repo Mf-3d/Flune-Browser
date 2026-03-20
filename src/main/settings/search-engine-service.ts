@@ -1,5 +1,5 @@
-import { SettingsStore } from "./settings-store";
-import { SearchEngine } from "@/shared/types/config";
+import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
+import type { SearchEngine } from "@/shared/types/config";
 
 export class SearchEngineService {
   constructor(private store: SettingsStore) { }

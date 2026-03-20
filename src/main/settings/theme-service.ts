@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import type { SettingsStore } from "./settings-store";
+import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { Theme } from "@/shared/types/config";
-import type { ApplicationService } from "../application/application-service";
+import type { ApplicationService } from "@/main/application/application-service";
 
 
 export class ThemeService {
