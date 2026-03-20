@@ -24,7 +24,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
       x: tabBounds.x,
       y: tabBounds.y,
       width: winBounds.width,
-      height: winBounds.height,
+      height: winBounds.height - options.window.viewY,
     });
   }
 
