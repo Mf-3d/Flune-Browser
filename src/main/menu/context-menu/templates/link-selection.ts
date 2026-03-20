@@ -4,7 +4,7 @@ export function createLinkSelectionMenuTemplate(actions: ContextMenuActions): El
   return [
     {
       label: "新しいタブで開く",
-      click: actions.newTab
+      click: actions.openInNewTab
     },
     {
       label: "リンクのアドレスをコピー",

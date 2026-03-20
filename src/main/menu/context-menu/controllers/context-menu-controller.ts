@@ -14,7 +14,7 @@ import type { Tab } from "@/main/tab/tab";
 
 export type ContextMenuActions = {
   showEmojiPanel: () => void,
-  newTab: () => void,
+  openInNewTab: () => void,
   copyLinkURL: () => void,
   toggleNavigationDevTools: () => void,
   toggleDevTools: () => void,
@@ -98,7 +98,8 @@ export class ContextMenuController {
   private createActions(params: ContextMenuParams): ContextMenuActions {
     return {
       showEmojiPanel: () => app.showEmojiPanel(),
-      newTab: () => this.window.tabManager.createTab({
+      openInNewTab: () => this.window.tabManager.createTab({
+        input: params.linkURL,
         isActive: true
       }),
       copyLinkURL: () => {

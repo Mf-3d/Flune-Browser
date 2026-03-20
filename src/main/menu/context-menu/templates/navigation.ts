@@ -5,7 +5,7 @@ export function createNavigationMenuTemplate(actions: ContextMenuActions): Elect
     {
       label: "新しいタブ",
       accelerator: "Ctrl+T",
-      click: actions.newTab
+      click: actions.openInNewTab
     },
     {
       type: "separator"
