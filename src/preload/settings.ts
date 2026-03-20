@@ -9,14 +9,14 @@ export function isSettingsPage() {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
     return (
       window.location.host === devUrl.host &&
-      window.location.pathname.startsWith("/browser/settings")
+      window.location.pathname.startsWith("/browser/settings/")
+    );
+  } else {
+    return (
+      window.location.protocol === "flune:" &&
+      window.location.pathname.startsWith("/settings/")
     );
   }
-
-  return (
-    window.location.protocol === "flune:" &&
-    window.location.host.startsWith("settings")
-  );
 }
 
 export const SETTINGS: SettingsAPI = {

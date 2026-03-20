@@ -12,12 +12,12 @@ export function isMenuPage() {
       window.location.host === devUrl.host &&
       window.location.pathname.startsWith("/menu/")
     );
+  } else {
+    return (
+      window.location.protocol === "flune:" &&
+      window.location.pathname.startsWith("/menu/")
+    );
   }
-
-  return (
-    window.location.protocol === "flune:" &&
-    window.location.host.startsWith("menu/")
-  );
 }
 
 export const MENU: MenuAPI = {

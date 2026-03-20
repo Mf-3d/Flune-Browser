@@ -1,8 +1,8 @@
 export const ROUTE_MAP = {
-  navigation: "navigation/",
-  home: "browser/home/",
-  settings: "browser/settings/",
-  version: "browser/version/",
+  navigation: "navigation/index.html",
+  home: "browser/home/index.html",
+  settings: "browser/settings/index.html",
+  version: "browser/version/index.html",
   error: {
     directory: "browser/error/",
     generic: "browser/error/error.html",
@@ -31,5 +31,5 @@ export function resolveView(path: string) {
     return new URL(path, process.env.ELECTRON_RENDERER_URL).toString();
   }
 
-  return `flune://${path}`;
+  return `flune://app/${path}`;
 }

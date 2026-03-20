@@ -6,7 +6,6 @@
   <link rel="icon" href="/image/tab-error.png" />
   <link rel="stylesheet" href="/style/main.css" />
   <link rel="stylesheet" href="/style/browser.css" />
-  <script src="/script/browser.js"></script>
   <title>予期しないエラーが発生しました</title>
 </head>
 
@@ -14,18 +13,15 @@
   <div>
     <span style="user-select: none;">
       <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
-      <span class="flune-version">3</span>
+      <span class="flune-version">3.x.x</span>
     </span>
     <h2>予期しないエラーが発生しました</h2>
     エラーが未定義だったため、このページが表示されました。
     <br />
     <a href="/home">ホームに戻る</a>
   </div>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
-  <script src="/script/home.js"></script>
+
+  <script type="module" src="../index.ts"></script>
 </body>
 
 </html>

@@ -9,14 +9,14 @@ export function isNavigationPage() {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
     return (
       window.location.host === devUrl.host &&
-      window.location.pathname.startsWith("/navigation")
+      window.location.pathname.startsWith("/navigation/")
+    );
+  } else {
+    return (
+      window.location.protocol === "flune:" &&
+      window.location.pathname.startsWith("/navigation/")
     );
   }
-
-  return (
-    window.location.protocol === "flune:" &&
-    window.location.host.startsWith("navigation")
-  );
 }
 
 export const NAVIGATION: NavigationAPI = {

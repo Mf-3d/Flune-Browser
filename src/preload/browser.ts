@@ -11,12 +11,12 @@ export function isBrowserPage() {
       window.location.host === devUrl.host &&
       window.location.pathname.startsWith("/browser/")
     );
+  } else {
+    return (
+      window.location.protocol === "flune:" &&
+      window.location.pathname.startsWith("/browser/")
+    );
   }
-
-  return (
-    window.location.protocol === "flune:" &&
-    window.location.host.startsWith("browser/")
-  );
 }
 
 export const BROWSER: BrowserAPI = {

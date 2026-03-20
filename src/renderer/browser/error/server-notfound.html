@@ -3,10 +3,9 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="/image/tab-error.png" />
-  <link rel="stylesheet" href="/style/main.css" />
-  <link rel="stylesheet" href="/style/browser.css" />
-  <script src="/script/browser.js"></script>
+  <link rel="icon" data-url="/image/tab-error.png" />
+  <link rel="stylesheet" data-url="/style/main.css" />
+  <link rel="stylesheet" data-url="/style/browser.css" />
   <title>サーバーに接続できませんでした</title>
 </head>
 
@@ -14,18 +13,15 @@
   <div>
     <span style="user-select: none;">
       <h1 style="display: inline-block; user-select: none;">Flune-Browser</h1>
-      <span class="flune-version">3</span>
+      <span class="flune-version">3.x.x</span>
     </span>
     <h2>サーバーに接続できませんでした</h2>
     インターネット接続をご確認の上、もう一度URLをご確認ください。
     <br />
     <a href="/home">ホームに戻る</a>
   </div>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
-  <script src="/script/home.js"></script>
+  
+  <script type="module" src="../index.ts"></script>
 </body>
 
 </html>
