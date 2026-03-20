@@ -7,25 +7,25 @@ import { WebContentsView } from "electron";
 import { registerTabEvents } from "./tab-events";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
-import type { Settings } from "@/main/settings";
 import type { TabState } from "@/shared/types/preload-api";
-import type { Window } from "@/main/window/window";
 import type { TabManagerOptions } from "./types";
-import type { EventBus } from "@/main/infrastructure/event/event-bus";
+
 
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export class TabManager {
   private activeTabId?: string;
-  private readonly collection: TabCollection;
-  private readonly window: Window;
-  private readonly settings: Settings;
-  private readonly eventBus: EventBus;
-  private readonly contextMenuController: ContextMenuController;
+  private readonly collection;
+  private readonly window;
+  private readonly bookmarkService;
+  private readonly settings;
+  private readonly eventBus;
+  private readonly contextMenuController;
 
   constructor(options: TabManagerOptions) {
     this.collection = options.collection;
     this.window = options.window;
+    this.bookmarkService = options.bookmarkService;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
 
@@ -72,6 +72,7 @@ export class TabManager {
       isActiveTab: this.isActiveTab,
       window: this.window,
       settings: this.settings,
+      bookmarkService: this.bookmarkService,
       eventBus: this.eventBus
     });
     this.contextMenuController.register(tab.webContents, {
@@ -99,7 +100,7 @@ export class TabManager {
       beforeTabId: options?.beforeTabId,
     });
 
-    tab.attachView(this.window, );
+    tab.attachView(this.window);
 
     if (options?.isActive) this.activateTab(tab.id);
 
@@ -244,6 +245,9 @@ export class TabManager {
 
     this.window.navigation.updateState({
       input: activeTab.url?.toString(),
+      ...(activeTab.url ? {
+        isBookmarked: this.bookmarkService.isBookmarked(activeTab.url.toString()),
+      } : {}),
     });
 
     console.info(`Tab (${activeTab.id}) has activated.`);

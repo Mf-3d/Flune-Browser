@@ -67,6 +67,7 @@ export class Window {
       collection: tabCollection,
       settings: this.settings,
       window: this,
+      bookmarkService: this.bookmarkService,
       eventBus: this.eventBus
     });
 

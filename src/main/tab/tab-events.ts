@@ -68,9 +68,11 @@ export function registerTabEvents(options: TabEventOptions): () => void {
         canGoBack: options.tab.canGoBack,
         canGoForward: options.tab.canGoForward,
         input: options.tab.url?.toString(),
+        isBookmarked: options.bookmarkService.isBookmarked(options.tab.url.toString()),
       });
     }
-    // 履歴追加、ブックマークされているかの状態
+
+    // 履歴追加
   }
 
   function onDidStartLoading() {

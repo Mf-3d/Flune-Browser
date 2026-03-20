@@ -7,10 +7,12 @@ import type { Settings } from "@/main/settings";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { Tab } from "./tab";
 import type { Rect } from "@/shared/types/rect";
+import type { BookmarkService } from "@/main/bookmark/service";
 
 export type TabManagerOptions = {
   collection: TabCollection;
   window: Window;
+  bookmarkService: BookmarkService;
   settings: Settings;
   eventBus: EventBus;
 };
@@ -24,6 +26,7 @@ export type TabEventOptions = {
   tab: Tab;
   isActiveTab: (id: string) => boolean;
   window: Window;
+  bookmarkService: BookmarkService;
   settings: Settings;
   eventBus: EventBus;
 };
