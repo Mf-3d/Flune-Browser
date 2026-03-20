@@ -15,7 +15,7 @@ const icons: Record<string, string> = {
 
   // unused
   "sticky-note": `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sticky-note"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>`,
-}
+};
 
 function createIcons() {
   const iconElements = document.querySelectorAll("i[data-lucide]");
@@ -24,7 +24,8 @@ function createIcons() {
 
     if (Object.keys(icons).includes(iconName)) {
       const icon = icons[iconName] ?? "";
-      const svg = new DOMParser().parseFromString(icon, "text/html").body.firstElementChild!;
+      const svg = new DOMParser().parseFromString(icon, "text/html").body
+        .firstElementChild!;
       element.before(svg);
       element.remove();
     }
@@ -32,7 +33,7 @@ function createIcons() {
 }
 
 const lucide = {
-  createIcons
-}
+  createIcons,
+};
 
 export default lucide;

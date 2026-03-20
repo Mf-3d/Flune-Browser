@@ -59,6 +59,8 @@ function normalizeAccelerator(parsed: string[]) {
     meta: parsed.includes("Meta"),
     shift: parsed.includes("Shift"),
     alt: parsed.includes("Alt"),
-    code: parsed.find(k => k.startsWith("Key") || k.startsWith("Digit") || k.startsWith("Numpad")),
+    code: parsed.find(
+      (k) => k.startsWith("Key") || k.startsWith("Digit") || k.startsWith("Numpad")
+    ),
   };
 }

@@ -7,14 +7,11 @@ import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "../bookmark/service";
 
-
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSIONS_URL = resolveView(ROUTE_MAP.version);
 
 export class ApplicationService {
-  constructor(
-    private readonly bookmarkService: BookmarkService,
-  ) { }
+  constructor(private readonly bookmarkService: BookmarkService) {}
 
   get name(): string {
     return app.name;
@@ -60,7 +57,7 @@ export class ApplicationService {
 
   createTab(window: Window, input?: string): Tab {
     return window.tabManager.createTab({
-      input
+      input,
     });
   }
 
@@ -85,7 +82,7 @@ export class ApplicationService {
 
     this.bookmarkService.add({
       title: tab.title,
-      url: tab.url.toString()
+      url: tab.url.toString(),
     });
   }
 }

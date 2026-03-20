@@ -4,7 +4,8 @@ import { ipcRenderer } from "electron";
 import { MenuPageId } from "@/shared/types/menu";
 
 export function isMenuPage() {
-  const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+  const isDev =
+    !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
 
   if (isDev) {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
@@ -48,12 +49,8 @@ export const MENU: MenuAPI = {
     },
   },
 
-  onOpening: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.MENU_OPENING,
-    (event) => callback(event)
-  ),
-  onClosing: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.MENU_CLOSING,
-    (event) => callback(event)
-  ),
+  onOpening: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.MENU_OPENING, (event) => callback(event)),
+  onClosing: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.MENU_CLOSING, (event) => callback(event)),
 };

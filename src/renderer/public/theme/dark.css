@@ -1,21 +1,21 @@
 :root {
   /* 共通変数 */
   --text-color: #fff;
-  --background-color: #171A19;
+  --background-color: #171a19;
   --input-color: #202222;
-  --symbol-color: #6E9797;
+  --symbol-color: #6e9797;
   --hover-color: #a9fde3;
   --disabled-color: #868686;
-  
+
   /* ナビゲーションバー関連 */
   --tab-color: #202222;
   --opened-tab-color: #293939;
-  --tab-adding-color: #2582CF;
+  --tab-adding-color: #2582cf;
   --tab-text-color: #fff;
-  
+
   /* 内部ページ関連 */
   --panel-color: #111111a1;
   --background-image: url(/image/backgrounds/keith-camilleri-sV_3SBuiS4I-unsplash.jpg);
-  
+
   --text-color-red: #ff8f82;
 }

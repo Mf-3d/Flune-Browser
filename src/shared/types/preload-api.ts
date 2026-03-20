@@ -44,13 +44,12 @@ export type TabState = {
   isAudible: boolean;
 }>;
 
-export type API =
-  DefaultAPI & {
-    navigation?: NavigationAPI;
-    menu?: MenuAPI;
-    settings?: SettingsAPI;
-    browser?: BrowserAPI;
-  };
+export type API = DefaultAPI & {
+  navigation?: NavigationAPI;
+  menu?: MenuAPI;
+  settings?: SettingsAPI;
+  browser?: BrowserAPI;
+};
 
 export type DefaultAPI = {
   baseURL: string;
@@ -71,7 +70,9 @@ export type DefaultAPI = {
 export type BrowserAPI = {
   navigate: (input: string) => void;
 
-  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
+  onThemeChanged: (
+    callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void
+  ) => Electron.IpcRenderer;
 };
 
 export type NavigationAPI = {
@@ -82,25 +83,37 @@ export type NavigationAPI = {
     remove: (id: string) => void;
     move: (id: string, targetId: string, position: "before" | "after") => void;
     navigate: (id: string | undefined, input: string) => void;
-    reload: (options?: {
-      ignoringCache?: boolean | undefined;
-    }) => void;
+    reload: (options?: { ignoringCache?: boolean | undefined }) => void;
     goForward: () => void;
     goBack: () => void;
     goHome: () => void;
 
-    onCreated: (callback: (event: Electron.IpcRendererEvent, tab: CreatedTab) => void) => Electron.IpcRenderer;
-    onRemoved: (callback: (event: Electron.IpcRendererEvent, id: string) => void) => Electron.IpcRenderer;
-    onUpdated: (callback: (event: Electron.IpcRendererEvent, state: TabState) => void) => Electron.IpcRenderer;
+    onCreated: (
+      callback: (event: Electron.IpcRendererEvent, tab: CreatedTab) => void
+    ) => Electron.IpcRenderer;
+    onRemoved: (
+      callback: (event: Electron.IpcRendererEvent, id: string) => void
+    ) => Electron.IpcRenderer;
+    onUpdated: (
+      callback: (event: Electron.IpcRendererEvent, state: TabState) => void
+    ) => Electron.IpcRenderer;
 
-    onReordered: (callback: (event: Electron.IpcRendererEvent, order: string[]) => void) => Electron.IpcRenderer;
+    onReordered: (
+      callback: (event: Electron.IpcRendererEvent, order: string[]) => void
+    ) => Electron.IpcRenderer;
   };
   toggleBookmark: () => void;
   toggleOptionMenu: () => void;
   updateSymbolColor: (color: string) => void;
-  onStateUpdated: (callback: (event: Electron.IpcRendererEvent, state: NavigationState) => void) => Electron.IpcRenderer;
-  onInit: (callback: (event: Electron.IpcRendererEvent, state: NavigationInit) => void) => Electron.IpcRenderer;
-  onThemeChanged: (callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void) => Electron.IpcRenderer;
+  onStateUpdated: (
+    callback: (event: Electron.IpcRendererEvent, state: NavigationState) => void
+  ) => Electron.IpcRenderer;
+  onInit: (
+    callback: (event: Electron.IpcRendererEvent, state: NavigationInit) => void
+  ) => Electron.IpcRenderer;
+  onThemeChanged: (
+    callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void
+  ) => Electron.IpcRenderer;
 };
 
 export type MenuAPI = {
@@ -112,8 +125,12 @@ export type MenuAPI = {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;
   };
-  onOpening: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
-  onClosing: (callback: (event: Electron.IpcRendererEvent) => void) => Electron.IpcRenderer;
+  onOpening: (
+    callback: (event: Electron.IpcRendererEvent) => void
+  ) => Electron.IpcRenderer;
+  onClosing: (
+    callback: (event: Electron.IpcRendererEvent) => void
+  ) => Electron.IpcRenderer;
 };
 
 export type SettingsAPI = {

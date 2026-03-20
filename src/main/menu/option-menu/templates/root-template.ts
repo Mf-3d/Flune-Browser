@@ -1,19 +1,18 @@
 import type { OptionMenuItem } from "@/shared/types/menu";
 
-
 export function buildRootTemplate(): OptionMenuItem[] {
   return [
     {
       type: "item",
       action: {
         type: "new-tab",
-        payload: undefined
+        payload: undefined,
       },
       label: "新しいタブ",
-      accelerator: "Ctrl+T"
+      accelerator: "Ctrl+T",
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       type: "navigation",
@@ -29,19 +28,19 @@ export function buildRootTemplate(): OptionMenuItem[] {
       type: "item",
       action: {
         type: "open-downloads-page",
-        payload: undefined
+        payload: undefined,
       },
       label: "ダウンロード",
-      accelerator: "Ctrl+J"
+      accelerator: "Ctrl+J",
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       type: "item",
       action: {
         type: "open-versions-page",
-        payload: undefined
+        payload: undefined,
       },
       label: "バージョン情報",
     },
@@ -49,7 +48,7 @@ export function buildRootTemplate(): OptionMenuItem[] {
       type: "item",
       action: {
         type: "open-settings-page",
-        payload: undefined
+        payload: undefined,
       },
       label: "設定",
     },
@@ -57,7 +56,7 @@ export function buildRootTemplate(): OptionMenuItem[] {
       type: "item",
       action: {
         type: "quit",
-        payload: undefined
+        payload: undefined,
       },
       label: "終了",
     },

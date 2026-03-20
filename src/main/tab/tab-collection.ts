@@ -19,10 +19,15 @@ export class TabCollection {
   }
 
   move(fromIndex: number, toIndex: number) {
-    if (fromIndex < 0 || fromIndex >= this.tabs.length || toIndex < 0 || toIndex >= this.tabs.length) {
+    if (
+      fromIndex < 0 ||
+      fromIndex >= this.tabs.length ||
+      toIndex < 0 ||
+      toIndex >= this.tabs.length
+    ) {
       throw new Error("Invalid indices.");
     }
-    
+
     const [movedTab] = this.tabs.splice(fromIndex, 1);
 
     if (movedTab) {
@@ -33,7 +38,7 @@ export class TabCollection {
   }
 
   remove(id: string) {
-    this.tabs = this.tabs.filter(t => t.id !== id);
+    this.tabs = this.tabs.filter((t) => t.id !== id);
   }
 
   removeAll() {
@@ -45,14 +50,14 @@ export class TabCollection {
   }
 
   get(id: string): Tab | undefined {
-    return this.tabs.find(t => t.id === id);
+    return this.tabs.find((t) => t.id === id);
   }
 
   getIndex(id: string): number {
-    return this.tabs.findIndex(t => t.id === id);
+    return this.tabs.findIndex((t) => t.id === id);
   }
 
   getAll(): Tab[] {
     return this.tabs;
   }
-};
+}

@@ -3,7 +3,8 @@ import { ipcRenderer } from "electron";
 import { BrowserAPI } from "@/shared/types/preload-api";
 
 export function isBrowserPage() {
-  const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+  const isDev =
+    !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
 
   if (isDev) {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
@@ -23,9 +24,7 @@ export const BROWSER: BrowserAPI = {
   navigate: (input) => {
     ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, undefined, input); // ページをロードする
   },
-  
-  onThemeChanged: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.TAB_THEME,
-    (event, themeUrl) => callback(event, themeUrl)
-  ),
+
+  onThemeChanged: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.TAB_THEME, (event, themeUrl) => callback(event, themeUrl)),
 };

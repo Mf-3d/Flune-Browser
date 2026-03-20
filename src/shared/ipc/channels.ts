@@ -36,9 +36,7 @@ export const IPC_INVOKE = {
 } as const;
 
 // 一方向（レスポンスなし）
-export const IPC_EVENTS = {
-
-} as const;
+export const IPC_EVENTS = {} as const;
 
 export const IPC_NOTIFY = {
   NAVIGATION_INIT: "navigation:init",
@@ -56,11 +54,8 @@ export const IPC_NOTIFY = {
   MENU_CLOSING: "menu:closing",
 } as const;
 
-export type IpcInvoke =
-  typeof IPC_INVOKE[keyof typeof IPC_INVOKE];
+export type IpcInvoke = (typeof IPC_INVOKE)[keyof typeof IPC_INVOKE];
 
-export type IpcEvents =
-  typeof IPC_EVENTS[keyof typeof IPC_EVENTS];
+export type IpcEvents = (typeof IPC_EVENTS)[keyof typeof IPC_EVENTS];
 
-export type IpcNotify =
-  typeof IPC_NOTIFY[keyof typeof IPC_NOTIFY];
+export type IpcNotify = (typeof IPC_NOTIFY)[keyof typeof IPC_NOTIFY];

@@ -4,7 +4,15 @@ import fs from "node:fs";
 import path from "node:path";
 import Store from "electron-store";
 
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "config-3.json");
+const DEFAULT_CONFIG_PATH = path.join(
+  __dirname,
+  "..",
+  "..",
+  "assets",
+  "store",
+  "default",
+  "config-3.json"
+);
 
 export class SettingsStore {
   private readonly config: {
@@ -14,13 +22,15 @@ export class SettingsStore {
   };
 
   constructor() {
-    const DEFAULT_CONFIG = JSON.parse(fs.readFileSync(DEFAULT_CONFIG_PATH, {
-      encoding: "utf-8"
-    }));
-  
+    const DEFAULT_CONFIG = JSON.parse(
+      fs.readFileSync(DEFAULT_CONFIG_PATH, {
+        encoding: "utf-8",
+      })
+    );
+
     this.config = new Store<Config>({
       name: "config-3",
-      defaults: DEFAULT_CONFIG
+      defaults: DEFAULT_CONFIG,
     });
   }
 

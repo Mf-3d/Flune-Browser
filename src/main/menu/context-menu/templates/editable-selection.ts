@@ -1,39 +1,41 @@
-export function createEditableSelectionMenuTemplate(selectionText: string): Electron.MenuItemConstructorOptions[] {
+export function createEditableSelectionMenuTemplate(
+  selectionText: string
+): Electron.MenuItemConstructorOptions[] {
   return [
     {
       label: "元に戻す",
-      role: "undo"
+      role: "undo",
     },
     {
       label: "やり直す",
-      role: "redo"
+      role: "redo",
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       label: "すべて選択",
       role: "selectAll",
-      enabled: selectionText !== ""
+      enabled: selectionText !== "",
     },
     {
       label: "切り取り",
       role: "cut",
-      enabled: selectionText !== ""
+      enabled: selectionText !== "",
     },
     {
       label: "コピー",
       role: "copy",
-      enabled: selectionText !== ""
+      enabled: selectionText !== "",
     },
     {
       label: "貼り付け",
-      role: "paste"
+      role: "paste",
     },
     {
       label: "削除",
       role: "delete",
-      enabled: selectionText !== ""
+      enabled: selectionText !== "",
     },
   ];
 }

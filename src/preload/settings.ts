@@ -3,7 +3,8 @@ import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
 
 export function isSettingsPage() {
-  const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+  const isDev =
+    !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
 
   if (isDev) {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);

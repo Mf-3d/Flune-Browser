@@ -3,7 +3,6 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import type { ActionHandlerMap, MenuActionDescriptor } from "@/shared/types/menu";
 import type { MenuActionContext } from "../templates/types";
 
-
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export function handleAction<T extends MenuActionDescriptor>(
@@ -14,7 +13,7 @@ export function handleAction<T extends MenuActionDescriptor>(
     quit: () => {
       context.appService.quit({
         forced: false,
-        window: context.window
+        window: context.window,
       });
     },
 
@@ -77,7 +76,7 @@ export function handleAction<T extends MenuActionDescriptor>(
     case "open-bookmark":
       handlers["open-bookmark"](desc.payload);
       break;
-    
+
     case "open-history":
       handlers["open-history"](desc.payload);
       break;
@@ -94,7 +93,7 @@ export function handleAction<T extends MenuActionDescriptor>(
       handlers["open-histories-page"](undefined);
       break;
 
-    case "open-versions-page": 
+    case "open-versions-page":
       handlers["open-versions-page"](undefined);
       break;
 

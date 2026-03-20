@@ -4,7 +4,13 @@ import type { Settings } from "@/main/settings";
 import type { TabManager } from "@/main/tab/tab-manager";
 import type { EventBus } from "../infrastructure/event/event-bus";
 
-export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigation, tabManager: TabManager, eventBus: EventBus, settings: Settings) {
+export function registerWindowEvents(
+  baseWindow: BaseWindow,
+  navigation: Navigation,
+  tabManager: TabManager,
+  eventBus: EventBus,
+  settings: Settings
+) {
   baseWindow.on("resize", () => {
     const bounds = baseWindow.getContentBounds();
 
@@ -25,7 +31,7 @@ export function registerWindowEvents(baseWindow: BaseWindow, navigation: Navigat
   });
   eventBus.on("settings:updated", () => {
     navigation.updateState({
-      showHomeButton: settings.store.get("settings").design.showHomeButton
+      showHomeButton: settings.store.get("settings").design.showHomeButton,
     });
   });
 }

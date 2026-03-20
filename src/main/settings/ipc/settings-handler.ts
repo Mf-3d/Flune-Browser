@@ -4,7 +4,6 @@ import { IPC_INVOKE } from "@/shared/ipc/channels";
 import type { Settings } from "..";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 
-
 export function registerSettingsHandler(settings: Settings, eventBus: EventBus) {
   handle(IPC_INVOKE.STORE_GET_ALL, (_) => {
     return settings.store.getAll();
@@ -21,8 +20,9 @@ export function registerSettingsHandler(settings: Settings, eventBus: EventBus) 
     settings.store.set(key, value);
 
     eventBus.send("settings:updated");
-    if (key === "settings.design.theme") eventBus.send("theme:updated", {
-      themeId: value
-    });
+    if (key === "settings.design.theme")
+      eventBus.send("theme:updated", {
+        themeId: value,
+      });
   });
 }

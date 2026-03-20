@@ -1,4 +1,9 @@
-import type { CloseOpts, OpenDevToolsOptions, WebContents, WebContentsView } from "electron";
+import type {
+  CloseOpts,
+  OpenDevToolsOptions,
+  WebContents,
+  WebContentsView,
+} from "electron";
 import type { Window } from "@/main/window/window";
 import type { TabOptions } from "./types";
 import type { Rect } from "@/shared/types/rect";
@@ -59,21 +64,21 @@ export class Tab {
   }
 
   goBack() {
-    if (this.canGoBack)
-      this.webContents.navigationHistory.goBack();
+    if (this.canGoBack) this.webContents.navigationHistory.goBack();
   }
 
   goForward() {
-    if (this.canGoForward)
-      this.webContents.navigationHistory.goForward();
+    if (this.canGoForward) this.webContents.navigationHistory.goForward();
   }
 
-  reload(options?: Partial<{
-    /**
-     * @default false
-     */
-    ignoreCache: boolean;
-  }>) {
+  reload(
+    options?: Partial<{
+      /**
+       * @default false
+       */
+      ignoreCache: boolean;
+    }>
+  ) {
     if (!options?.ignoreCache) this.webContents.reload();
     else this.webContents.reloadIgnoringCache();
   }

@@ -2,7 +2,6 @@ import { renderMenu } from "../ui/render";
 
 import type { IpcRendererEvent } from "electron";
 
-
 export function registerMenuEvents() {
   if (!window.flune.menu) return;
 

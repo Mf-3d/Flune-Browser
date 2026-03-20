@@ -1,6 +1,6 @@
 /**
  * "navigation-feature.ts"
- * 
+ *
  * ナビゲーション
  */
 
@@ -14,7 +14,6 @@ import type { NavigationInit, NavigationState } from "@/shared/types/preload-api
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Window } from "@/main/window/window";
 
-
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
 /**
@@ -22,11 +21,11 @@ export type Navigation = ReturnType<typeof createNavigationFeature>;
  * - ビューを作成
  * - アタッチする関数
  * - 状態とテーマを更新する関数
- * 
+ *
  * @param baseWindow ベースとなるウィンドウ
  * @param settings ナビゲーションを作成するときに必要なパラメータ
  * @param onLoaded ロードされたときにコールバック関数を実行する
- * @returns 
+ * @returns
  */
 export function createNavigationFeature(
   appService: ApplicationService,
@@ -43,15 +42,13 @@ export function createNavigationFeature(
   const view = new WebContentsView({
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
-      additionalArguments: [
-        `--is-packaged=${appService.isPackaged}`
-      ]
-    }
+      additionalArguments: [`--is-packaged=${appService.isPackaged}`],
+    },
   });
 
   const contextMenuController = new ContextMenuController(window);
   contextMenuController.register(view.webContents, {
-    area: "navigation"
+    area: "navigation",
   });
 
   view.setBounds({
@@ -83,7 +80,7 @@ export function createNavigationFeature(
     // channel: IpcNotify & IpcEvents,
     ...args: any[]
   ) {
-    view.webContents.send(channel, ...args)
+    view.webContents.send(channel, ...args);
   }
 
   function setWidth(width: number) {
@@ -102,14 +99,14 @@ export function createNavigationFeature(
     updateTheme,
     setWidth,
     send,
-  }
+  };
 }
 
 function registerWebContentsEvents(
   view: WebContentsView,
   settings: {
-    themeUrl: string,
-    showHomeButton: boolean,
+    themeUrl: string;
+    showHomeButton: boolean;
   },
   onLoaded?: () => void
 ) {

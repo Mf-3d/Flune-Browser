@@ -14,8 +14,8 @@ export class WindowManager {
     private readonly appService: ApplicationService,
     private readonly bookmarkService: BookmarkService,
     private readonly settings: Settings,
-    private readonly eventBus: EventBus,
-  ) { }
+    private readonly eventBus: EventBus
+  ) {}
 
   create() {
     this.baseWindow = new Window({
@@ -27,13 +27,14 @@ export class WindowManager {
 
     this.eventBus.once("navigation:init", () => {
       this.baseWindow?.tabManager.createTab({
-        isActive: true
+        isActive: true,
       });
     });
 
-    if (!this.appService.isPackaged) this.baseWindow.navigation?.view.webContents.openDevTools({
-      mode: "detach"
-    });
+    if (!this.appService.isPackaged)
+      this.baseWindow.navigation?.view.webContents.openDevTools({
+        mode: "detach",
+      });
 
     this.initializeControllers();
 
@@ -63,24 +64,24 @@ export class WindowManager {
   }
 
   private setupApplicationMenu() {
-    const applicationMenuController = new ApplicationMenuController(
-      this.appService,
-      {
-        newTab: () => this.baseWindow?.tabManager.createTab(),
-        reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
-        reloadTabIgnoringCache: () => this.baseWindow?.tabManager.getActiveTab()?.reload({
-          ignoreCache: true
+    const applicationMenuController = new ApplicationMenuController(this.appService, {
+      newTab: () => this.baseWindow?.tabManager.createTab(),
+      reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
+      reloadTabIgnoringCache: () =>
+        this.baseWindow?.tabManager.getActiveTab()?.reload({
+          ignoreCache: true,
         }),
-        toggleDevTools: () => this.baseWindow?.tabManager.getActiveTab()?.toggleDevTools({
-          mode: "right"
+      toggleDevTools: () =>
+        this.baseWindow?.tabManager.getActiveTab()?.toggleDevTools({
+          mode: "right",
         }),
-        focusSearchBar: () => {
-          this.baseWindow?.navigation?.view.webContents.focus();
-          this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
-        },
-        reportIssue: () => shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`)
-      }
-    );
+      focusSearchBar: () => {
+        this.baseWindow?.navigation?.view.webContents.focus();
+        this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
+      },
+      reportIssue: () =>
+        shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`),
+    });
 
     applicationMenuController.setup();
   }

@@ -3,7 +3,8 @@ import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
 import { NavigationAPI } from "../shared/types/preload-api.js";
 
 export function isNavigationPage() {
-  const isDev = !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+  const isDev =
+    !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
 
   if (isDev) {
     const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
@@ -53,23 +54,15 @@ export const NAVIGATION: NavigationAPI = {
       ipcRenderer.invoke(IPC_INVOKE.TAB_GO_HOME); // ホームを開く
     },
 
-    onCreated: (callback) => ipcRenderer.on(
-      IPC_NOTIFY.TAB_CREATED,
-      (event, tab) => callback(event, tab)
-    ),
-    onRemoved: (callback) => ipcRenderer.on(
-      IPC_NOTIFY.TAB_REMOVED,
-      (event, id) => callback(event, id)
-    ),
-    onUpdated: (callback) => ipcRenderer.on(
-      IPC_NOTIFY.TAB_UPDATED,
-      (event, state) => callback(event, state)
-    ),
+    onCreated: (callback) =>
+      ipcRenderer.on(IPC_NOTIFY.TAB_CREATED, (event, tab) => callback(event, tab)),
+    onRemoved: (callback) =>
+      ipcRenderer.on(IPC_NOTIFY.TAB_REMOVED, (event, id) => callback(event, id)),
+    onUpdated: (callback) =>
+      ipcRenderer.on(IPC_NOTIFY.TAB_UPDATED, (event, state) => callback(event, state)),
 
-    onReordered: (callback) => ipcRenderer.on(
-      IPC_NOTIFY.TABS_REORDERED,
-      (event, state) => callback(event, state)
-    ),
+    onReordered: (callback) =>
+      ipcRenderer.on(IPC_NOTIFY.TABS_REORDERED, (event, state) => callback(event, state)),
   },
 
   toggleBookmark: () => {
@@ -82,16 +75,14 @@ export const NAVIGATION: NavigationAPI = {
     ipcRenderer.invoke(IPC_INVOKE.APP_UPDATE_SYMBOL_COLOR, color); // シンボルカラーを変更する
   },
 
-  onStateUpdated: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.NAVIGATION_UPDATE,
-    (event, state) => callback(event, state)
-  ),
-  onInit: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.NAVIGATION_INIT,
-    (event, state) => callback(event, state)
-  ),
-  onThemeChanged: (callback) => ipcRenderer.on(
-    IPC_NOTIFY.NAVIGATION_THEME,
-    (event, themeUrl) => callback(event, themeUrl)
-  ),
+  onStateUpdated: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.NAVIGATION_UPDATE, (event, state) =>
+      callback(event, state)
+    ),
+  onInit: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.NAVIGATION_INIT, (event, state) => callback(event, state)),
+  onThemeChanged: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.NAVIGATION_THEME, (event, themeUrl) =>
+      callback(event, themeUrl)
+    ),
 };

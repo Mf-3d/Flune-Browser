@@ -4,7 +4,10 @@ import { handle } from "@/main/ipc/handler";
 import type { ApplicationService } from "../application-service";
 import type { WindowManager } from "@/main/window/window-manager";
 
-export function registerAppHandler(appService: ApplicationService, windowManager: WindowManager) {
+export function registerAppHandler(
+  appService: ApplicationService,
+  windowManager: WindowManager
+) {
   handle(IPC_INVOKE.APP_GET_VERSION, () => {
     return appService.getVersion();
   });
@@ -29,7 +32,7 @@ export function registerAppHandler(appService: ApplicationService, windowManager
       }
 
       window.setTitleBarOverlay({
-        symbolColor: color
+        symbolColor: color,
       });
     }
   });
@@ -57,7 +60,7 @@ export function registerAppHandler(appService: ApplicationService, windowManager
   handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
     if (forced === true) {
       appService.quit({
-        forced: true
+        forced: true,
       });
     } else {
       const window = windowManager.getWindowFromWebContents(event.sender);
@@ -68,7 +71,7 @@ export function registerAppHandler(appService: ApplicationService, windowManager
 
       appService.quit({
         forced: false,
-        window
+        window,
       });
     }
   });

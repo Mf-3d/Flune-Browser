@@ -15,15 +15,17 @@ export class Protocol {
 
     this.router.register(createStaticHandler(baseDir));
 
-    protocol.registerSchemesAsPrivileged([{
-      scheme: this.name,
-      privileges: {
-        standard: true,
-        secure: true,
-        supportFetchAPI: true,
-        corsEnabled: true,
+    protocol.registerSchemesAsPrivileged([
+      {
+        scheme: this.name,
+        privileges: {
+          standard: true,
+          secure: true,
+          supportFetchAPI: true,
+          corsEnabled: true,
+        },
       },
-    }]);
+    ]);
   }
 
   handle() {
@@ -38,10 +40,8 @@ export class Protocol {
         query: url.searchParams,
       });
     });
-
   }
 }
-
 
 function createStaticHandler(baseDir: string): Route {
   return {
@@ -50,6 +50,6 @@ function createStaticHandler(baseDir: string): Route {
     handle: async (ctx) => {
       const filePath = path.join(baseDir, ctx.path).replace(urlPrefix, "");
       return net.fetch(pathToFileURL(filePath).toString());
-    }
+    },
   };
 }

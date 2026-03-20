@@ -28,7 +28,7 @@ function onDragOver(event: DragEvent) {
   if (!tabElement) return;
 
   let rect = tabElement.getBoundingClientRect();
-  if ((event.clientX - rect.left) < (tabElement.clientWidth / 2)) {
+  if (event.clientX - rect.left < tabElement.clientWidth / 2) {
     //マウスカーソルの位置が要素の半分より左
     tabElement.classList.add("adding-left");
     tabElement.classList.remove("adding-right");
@@ -71,14 +71,22 @@ function onDrop(event: DragEvent) {
   const draggedTab = tabContainer.querySelector(`.tab[data-id="${tabId}"]`)!;
 
   let rect = tabElement.getBoundingClientRect();
-  if ((event.clientX - rect.left) < (tabElement.clientWidth / 2)) {
+  if (event.clientX - rect.left < tabElement.clientWidth / 2) {
     //マウスカーソルの位置が要素の半分より左
     tabElement.insertAdjacentElement("beforebegin", draggedTab);
-    window.flune.navigation?.tab.move(tabId, tabElement.getAttribute("data-id")!, "before");
+    window.flune.navigation?.tab.move(
+      tabId,
+      tabElement.getAttribute("data-id")!,
+      "before"
+    );
   } else {
     //マウスカーソルの位置が要素の半分より右
     tabElement.insertAdjacentElement("afterend", draggedTab);
-    window.flune.navigation?.tab.move(tabId, tabElement.getAttribute("data-id")!, "after");
+    window.flune.navigation?.tab.move(
+      tabId,
+      tabElement.getAttribute("data-id")!,
+      "after"
+    );
   }
 
   tabContainer.querySelectorAll(".tab").forEach((el) => {

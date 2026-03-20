@@ -1,11 +1,13 @@
 import { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
-export function createEmojiMenuTemplate(actions: ContextMenuActions): Electron.MenuItemConstructorOptions[] {
+export function createEmojiMenuTemplate(
+  actions: ContextMenuActions
+): Electron.MenuItemConstructorOptions[] {
   return [
     {
       label: "絵文字",
       accelerator: process.platform === "win32" ? "Super+." : undefined,
-      click: actions.showEmojiPanel
+      click: actions.showEmojiPanel,
     },
   ];
 }

@@ -1,7 +1,6 @@
 import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
-
 export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenuItem[] {
   const bookmarkMenuItem: OptionMenuItem[] = context.bookmarks.map((bookmark) => {
     return {
@@ -9,8 +8,8 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
       action: {
         type: "open-bookmark",
         payload: {
-          id: bookmark.id
-        }
+          id: bookmark.id,
+        },
       },
       label: bookmark.title,
     };
@@ -19,35 +18,35 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
   return [
     {
       type: "go-back",
-      label: "戻る"
+      label: "戻る",
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       type: "item",
       action: {
         type: "add-bookmark",
-        payload: undefined
+        payload: undefined,
       },
       label: "新しいブックマークを追加",
-      accelerator: "Ctrl+D"
+      accelerator: "Ctrl+D",
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       type: "item",
       action: {
         type: "open-bookmarks-page",
-        payload: undefined
+        payload: undefined,
       },
       label: "ブックマークをすべて表示",
-      accelerator: "Ctrl+Shift+O"
+      accelerator: "Ctrl+Shift+O",
     },
     {
-      type: "separator"
+      type: "separator",
     },
-    ...bookmarkMenuItem
+    ...bookmarkMenuItem,
   ];
 }

@@ -3,7 +3,7 @@ import { MenuState } from "../types";
 import { renderMenu } from "./render";
 
 const state: MenuState = {
-  pageStack: ["root"]
+  pageStack: ["root"],
 };
 
 export function getCurrentPage(): MenuPageId | undefined {

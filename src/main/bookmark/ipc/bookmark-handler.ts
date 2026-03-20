@@ -4,7 +4,10 @@ import { IPC_INVOKE } from "@/shared/ipc/channels";
 import type { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "../service";
 
-export function registerBookmarkHandler(windowManager: WindowManager, bookmarkService: BookmarkService) {
+export function registerBookmarkHandler(
+  windowManager: WindowManager,
+  bookmarkService: BookmarkService
+) {
   try {
     handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
       const window = windowManager.getWindowFromWebContents(event.sender);
@@ -17,7 +20,7 @@ export function registerBookmarkHandler(windowManager: WindowManager, bookmarkSe
       const tabTitle = tabCurrent?.webContents.getTitle();
       const tabURL = tabCurrent?.webContents.getURL();
 
-      if (!tabTitle || !tabURL) throw new Error;
+      if (!tabTitle || !tabURL) throw new Error();
 
       bookmarkService.toggle({
         title: tabTitle,

@@ -1,11 +1,11 @@
 import { navigationActions } from "../actions/navigation-actions";
 
-export function registerInputEvents () {
+export function registerInputEvents() {
   if (!window.flune.navigation) return;
 
   const input = document.querySelector("#search-bar")! as HTMLElement;
   let originalValue = ""; // 検索バーの変更前の値
-  let isDirty = false;    // 検索バーが変更されているか
+  let isDirty = false; // 検索バーが変更されているか
 
   input.addEventListener("keydown", (event: KeyboardEvent) => {
     if (!event.isComposing && event.key === "Enter") {
@@ -27,7 +27,7 @@ export function registerInputEvents () {
   // Escには２段階ある。
   input.addEventListener("keydown", (event: KeyboardEvent) => {
     if (!window.flune.navigation) return;
-    
+
     if (event.key !== "Escape") return;
 
     if (isDirty) {

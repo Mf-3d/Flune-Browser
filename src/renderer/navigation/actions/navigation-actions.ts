@@ -9,9 +9,7 @@ export const navigationActions = {
     navigationIpc.removeTab(id);
   },
 
-  reloadTab(options?: {
-    ignoringCache: boolean;
-  }) {
+  reloadTab(options?: { ignoringCache: boolean }) {
     navigationIpc.reloadTab(options);
   },
 
@@ -54,5 +52,5 @@ export const navigationActions = {
     navigationIpc.navigate(activeTab.getAttribute("data-id")!, input.value);
     input.value = ""; // ロードされたらすぐに値が代入されるが、念のため一度リセットする。
     input.blur();
-  }
+  },
 };

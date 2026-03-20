@@ -24,7 +24,7 @@ export type Config = {
         height: number;
         x: number | null;
         y: number | null;
-      }
+      };
     };
     search: {
       /**

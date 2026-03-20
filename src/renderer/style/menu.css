@@ -1,18 +1,20 @@
 body {
-  background: transparent!important;
+  background: transparent !important;
   overflow: hidden;
   margin: 0;
   font-size: smaller;
 }
 
-body>#toggle {
+body > #toggle {
   background-color: #0006;
   width: 100vw;
   height: 100vh;
 
-  transition: background-color .2s ease, height .3s ease;
+  transition:
+    background-color 0.2s ease,
+    height 0.3s ease;
 }
-body:has(.hidden)>#toggle {
+body:has(.hidden) > #toggle {
   background-color: transparent;
   height: 0vh;
 }
@@ -29,7 +31,8 @@ main:not(:has(#top)) {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--text-color) 10%, transparent) color-mix(in srgb, var(--text-color) 10%, transparent);
+  scrollbar-color: color-mix(in srgb, var(--text-color) 10%, transparent)
+    color-mix(in srgb, var(--text-color) 10%, transparent);
 }
 main:has(#top) {
   position: absolute;
@@ -40,22 +43,22 @@ main:has(#top) {
   max-height: calc(100vh - 16px);
   border: color-mix(in srgb, var(--disabled-color) 10%, transparent) 2px solid;
   border-top: none;
-  border-radius: 0 0 calc(.5em + 8px) calc(.5em + 8px);
+  border-radius: 0 0 calc(0.5em + 8px) calc(0.5em + 8px);
 
-  transition: top .8s ease;
+  transition: top 0.8s ease;
 }
 main:has(#top).hidden {
   top: -100vh;
 }
 
-main>div:not(#children-menu) {
-  padding: .5em;
+main > div:not(#children-menu) {
+  padding: 0.5em;
 }
-main>div#children-menu>a {
-  margin: .5em;
+main > div#children-menu > a {
+  margin: 0.5em;
 }
 
-main>div a {
+main > div a {
   user-select: none;
   -webkit-user-drag: none;
   color: var(--text-color);
@@ -71,37 +74,38 @@ main>div a {
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  transition: background-color .2s linear,
-              outline-width 0.3s linear,
-              outline-color 0.3s linear;
+  transition:
+    background-color 0.2s linear,
+    outline-width 0.3s linear,
+    outline-color 0.3s linear;
 }
-main>div a:nth-of-type(even) {
+main > div a:nth-of-type(even) {
   background-color: color-mix(in srgb, var(--text-color) 2%, transparent);
 }
-main>div a:hover {
+main > div a:hover {
   background-color: color-mix(in srgb, var(--hover-color) 15%, transparent);
   outline-width: 3px;
 }
-main>div a:active {
+main > div a:active {
   background-color: color-mix(in srgb, var(--hover-color) 35%, transparent);
   outline-width: 6px;
 }
-main>div a:focus {
-  outline-color: color-mix(in srgb, #2582CF 35%, transparent);
+main > div a:focus {
+  outline-color: color-mix(in srgb, #2582cf 35%, transparent);
   outline-width: 2px;
 }
-main>div a>.title {
+main > div a > .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-main>div a>.accel {
-  padding-right: .5em;
+main > div a > .accel {
+  padding-right: 0.5em;
   float: right;
   font-weight: bold;
   color: color-mix(in srgb, var(--text-color) 50%, transparent);
 }
-main>div a>svg {
+main > div a > svg {
   width: 20px;
   height: 20px;
   stroke-width: 3px;
@@ -122,9 +126,11 @@ hr {
   height: 100%;
   opacity: 0;
 
-  transition: left .3s ease, opacity .3s linear;
+  transition:
+    left 0.3s ease,
+    opacity 0.3s linear;
 }
-#children-menu>iframe {
+#children-menu > iframe {
   display: inline-block;
   width: 100%;
   height: 100%;

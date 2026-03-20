@@ -4,7 +4,6 @@ import { SearchEngineService } from "./search-engine-service";
 
 import type { ApplicationService } from "@/main/application/application-service";
 
-
 export type Settings = ReturnType<typeof createSettings>;
 
 export function createSettings(appService: ApplicationService) {

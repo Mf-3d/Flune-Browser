@@ -35,7 +35,7 @@
 :root {
   --tab-color: #202222;
   --opened-tab-color: #293939;
-  --tab-adding-color: #2582CF;
+  --tab-adding-color: #2582cf;
   --tab-text-color: #fff;
 }
 
@@ -81,16 +81,20 @@ nav a {
   cursor: pointer;
 }
 
-nav a>svg {
+nav a > svg {
   width: 20px;
   height: 20px;
   stroke: var(--symbol-color);
   stroke-width: 3px;
 
-  transition: stroke .2s, stroke-width .5s, filter .5s, fill .2s;
+  transition:
+    stroke 0.2s,
+    stroke-width 0.5s,
+    filter 0.5s,
+    fill 0.2s;
 }
 
-nav a>svg:hover {
+nav a > svg:hover {
   stroke: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
   stroke-width: 4px;
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
@@ -100,7 +104,7 @@ nav a.disabled {
   pointer-events: none;
 }
 
-nav a.disabled>svg {
+nav a.disabled > svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
@@ -111,7 +115,7 @@ nav a.invisible {
   visibility: hidden;
 }
 
-nav>div {
+nav > div {
   display: inline-block;
   background-color: var(--input-color);
   border: none;
@@ -122,11 +126,11 @@ nav>div {
   top: -0.5px;
   padding: 3px;
 }
-:has(#go-home:not(.invisible)) nav>div {
+:has(#go-home:not(.invisible)) nav > div {
   width: calc(100% - 28px * 5 + 6px);
 }
 
-input[type=text] {
+input[type="text"] {
   width: calc(100% - 60px);
   height: 16px;
   line-height: 16px;
@@ -165,7 +169,10 @@ input[type=text] {
   text-align: center;
   padding: 2px;
 
-  transition: filter .5s, border-right .5s, border-left .5s;
+  transition:
+    filter 0.5s,
+    border-right 0.5s,
+    border-left 0.5s;
 }
 
 .tab#opened {
@@ -213,38 +220,44 @@ input[type=text] {
   height: 20px;
   height: 20px;
   display: inline-block;
-  transition: all .5s;
+  transition: all 0.5s;
 
   animation-name: fadeIn;
-  animation-duration: .2s;
+  animation-duration: 0.2s;
   animation-fill-mode: forwards;
 }
 
-#tabs a>svg {
+#tabs a > svg {
   width: 20px;
   height: 20px;
   /* stroke: color-mix(in srgb, var(--symbol-color), #fff 50%); */
   stroke: var(--symbol-color);
   stroke-width: 2px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition:
+    stroke 0.5s,
+    stroke-width 0.5s,
+    filter 0.5s;
 }
 
 #tabs a:not(.close-button).disabled {
   cursor: default;
 
   animation-name: fadeOut;
-  animation-duration: .1s;
+  animation-duration: 0.1s;
   animation-fill-mode: forwards;
 }
 
-.tab#opened a>svg {
+.tab#opened a > svg {
   width: 20px;
   height: 20px;
   stroke: var(--tab-text-color);
   stroke-width: 2px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition:
+    stroke 0.5s,
+    stroke-width 0.5s,
+    filter 0.5s;
 }
 
 #tabs p {
@@ -252,7 +265,7 @@ input[type=text] {
   width: 100%;
 }
 
-#tabs>.right {
+#tabs > .right {
   transform: translate(0, 10%);
   width: 20px;
   height: 20px;
@@ -260,7 +273,7 @@ input[type=text] {
   margin-right: 2px;
 }
 
-.tab>.right {
+.tab > .right {
   text-align: right;
   position: absolute;
   top: 50%;
@@ -284,8 +297,8 @@ span.right {
   cursor: pointer;
 }
 
-#tabs a.loading>svg {
-  animation: .5s ease-in infinite rotation;
+#tabs a.loading > svg {
+  animation: 0.5s ease-in infinite rotation;
   pointer-events: none;
 }
 

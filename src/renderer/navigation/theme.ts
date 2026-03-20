@@ -4,7 +4,7 @@ export function applyTheme(themeUrl: string, updateSymbolColor: Function) {
   if (element) {
     element.remove();
   }
-  
+
   const themeElement = createThemeElement(themeUrl);
 
   themeElement.addEventListener("load", () => {

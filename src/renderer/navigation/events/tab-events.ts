@@ -25,11 +25,11 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
 
   const faviconElement = document.createElement("img");
   faviconElement.classList.add("favicon");
-  faviconElement.onerror = () => faviconElement.src= "/image/tab-no-favicon.png";
+  faviconElement.onerror = () => (faviconElement.src = "/image/tab-no-favicon.png");
 
   const isLoadingElement = document.createElement("a");
   isLoadingElement.classList.add("loading", "diabled");
-  isLoadingElement.innerHTML = "<i data-lucide=\"loader-circle\"></i>";
+  isLoadingElement.innerHTML = '<i data-lucide="loader-circle"></i>';
 
   const titleElement = document.createElement("p");
   titleElement.classList.add("title");
@@ -40,11 +40,11 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
 
   const isDownloadingElement = document.createElement("a");
   isDownloadingElement.classList.add("downloading", "disabled");
-  isDownloadingElement.innerHTML = "<i data-lucide=\"download\"></i>";
+  isDownloadingElement.innerHTML = '<i data-lucide="download"></i>';
 
   const isAudibleElement = document.createElement("a");
   isAudibleElement.classList.add("audible", "disabled");
-  isAudibleElement.innerHTML = "<i data-lucide=\"volume-2\"></i>";
+  isAudibleElement.innerHTML = '<i data-lucide="volume-2"></i>';
 
   rightElements.appendChild(isDownloadingElement);
   rightElements.appendChild(isAudibleElement);
@@ -52,7 +52,7 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   // TODO: rightElementsにまとめる
   const closeButtonElement = document.createElement("a");
   closeButtonElement.classList.add("close-button", "right");
-  closeButtonElement.innerHTML = "<i data-lucide=\"x\"></i>";
+  closeButtonElement.innerHTML = '<i data-lucide="x"></i>';
 
   tabElement.appendChild(faviconElement);
   tabElement.appendChild(isLoadingElement);
@@ -86,12 +86,14 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   } else {
     tabContainer.querySelector(`.tab[data-id="${tab.beforeTabId}"]`)?.after(tabElement);
   }
-  
+
   if (tab.active) {
     const tabElements = tabContainer.querySelectorAll(".tab");
-    
-    tabElements.forEach(tabElement => {
-      tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
+
+    tabElements.forEach((tabElement) => {
+      tabElement.getAttribute("data-id") === tab.id
+        ? (tabElement.id = "opened")
+        : (tabElement.id = "");
     });
   }
 
@@ -102,7 +104,7 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
   const tabContainer = document.getElementById("tabs")!;
   const tabElements = tabContainer.querySelectorAll(".tab");
 
-  tabElements.forEach(tabElement => {
+  tabElements.forEach((tabElement) => {
     if (tabElement.getAttribute("data-id") === id) tabElement.remove();
   });
 
@@ -113,7 +115,7 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   console.info("The tab has been updated.", tab.id);
 
   if (isDragging) return;
-  
+
   const tabContainer = document.getElementById("tabs")!;
   const tabElements = tabContainer.querySelectorAll(".tab");
 
@@ -150,8 +152,10 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   });
 
   if (tab.active !== undefined) {
-    tabElements.forEach(tabElement => {
-      tabElement.getAttribute("data-id") === tab.id ? tabElement.id = "opened" : tabElement.id = "";
+    tabElements.forEach((tabElement) => {
+      tabElement.getAttribute("data-id") === tab.id
+        ? (tabElement.id = "opened")
+        : (tabElement.id = "");
     });
   }
 
@@ -165,7 +169,7 @@ function onReordered(_: Electron.IpcRendererEvent, order: string[]) {
     const tabElement = document.querySelector(`[data-id="${id}"]`);
     if (tabElement) tabContainer.appendChild(tabElement);
   }
-  
+
   // 最後に追加
   const newButton = tabContainer.querySelector(".new-button")!;
   tabContainer.appendChild(newButton);

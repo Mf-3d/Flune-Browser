@@ -4,7 +4,7 @@ export function buildHistoryTemplate(): OptionMenuItem[] {
   return [
     {
       type: "go-back",
-      label: "戻る"
+      label: "戻る",
     },
   ];
 }

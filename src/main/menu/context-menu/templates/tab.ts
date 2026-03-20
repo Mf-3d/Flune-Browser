@@ -10,31 +10,31 @@ export function createTabMenuTemplate(
       label: "戻る",
       accelerator: "Alt+Left",
       enabled: tab.canGoBack,
-      click: actions.goBack
+      click: actions.goBack,
     },
     {
       label: "進む",
       accelerator: "Alt+Right",
       enabled: tab.canGoForward,
-      click: actions.goForward
+      click: actions.goForward,
     },
     {
       label: "再読み込み",
       accelerator: "CmdOrCtrl+R",
-      click: actions.reloadTab
+      click: actions.reloadTab,
     },
     {
-      type: "separator"
+      type: "separator",
     },
     {
       label: "ページのソースを表示",
       accelerator: "Ctrl+U",
-      click: actions.viewSource
+      click: actions.viewSource,
     },
     {
       label: "開発者ツールを表示",
       accelerator: process.platform === "darwin" ? "Cmd+Option+I" : "F12",
-      click: actions.toggleDevTools
-    }
+      click: actions.toggleDevTools,
+    },
   ];
 }

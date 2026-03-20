@@ -7,7 +7,6 @@ import type { Window } from "@/main/window/window";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Rect } from "@/shared/types/rect";
 
-
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu);
 
 export class OptionMenuView {
@@ -26,7 +25,7 @@ export class OptionMenuView {
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
         transparent: true,
-      }
+      },
     });
 
     this.view.setBounds(this.bounds);
@@ -48,7 +47,7 @@ export class OptionMenuView {
   private registerEvents() {
     this.window.onResize(() => {
       const windowBounds = this.window.getContentBounds();
-      
+
       this.bounds = {
         x: this.bounds.x,
         y: this.bounds.y,

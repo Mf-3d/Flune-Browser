@@ -4,7 +4,15 @@ import fs from "node:fs";
 import path from "node:path";
 import Store from "electron-store";
 
-const DEFAULT_DATA_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
+const DEFAULT_DATA_PATH = path.join(
+  __dirname,
+  "..",
+  "..",
+  "assets",
+  "store",
+  "default",
+  "data-3.json"
+);
 
 export class DataStore {
   private readonly config: {
@@ -14,13 +22,15 @@ export class DataStore {
   };
 
   constructor() {
-    const DEFAULT_DATA = JSON.parse(fs.readFileSync(DEFAULT_DATA_PATH, {
-      encoding: "utf-8"
-    }));
-  
+    const DEFAULT_DATA = JSON.parse(
+      fs.readFileSync(DEFAULT_DATA_PATH, {
+        encoding: "utf-8",
+      })
+    );
+
     this.config = new Store<Data>({
       name: "data-3",
-      defaults: DEFAULT_DATA
+      defaults: DEFAULT_DATA,
     });
   }
 

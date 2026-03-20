@@ -21,7 +21,9 @@ export function registerClickEvents() {
 
   reloadButton?.addEventListener("click", () => navigationActions.reloadTab());
 
-  toggleBookmarkButton?.addEventListener("click", () => navigationActions.toggleBookmark());
+  toggleBookmarkButton?.addEventListener("click", () =>
+    navigationActions.toggleBookmark()
+  );
 
   searchButton?.addEventListener("click", () => navigationActions.search());
 

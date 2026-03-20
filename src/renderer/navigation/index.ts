@@ -5,7 +5,6 @@ import { registerNavigationEvents } from "./events/navigation-events";
 import { registerTabEvents } from "./events/tab-events";
 import { registerTabDragEvents } from "./ui/tab-drag-events.js";
 
-
 window.addEventListener("DOMContentLoaded", navigationInit);
 
 function navigationInit() {

@@ -1,11 +1,15 @@
 import { menuIpc } from "../ipc/menu-ipc";
 import { goBack, navigateTo } from "./navigate";
 
-import type { MenuActionDescriptor, MenuActionDescriptorType, MenuPageId } from "../../../shared/types/menu";
-
+import type {
+  MenuActionDescriptor,
+  MenuActionDescriptorType,
+  MenuPageId,
+} from "../../../shared/types/menu";
 
 export function registerClickEvents() {
-  const menuItemElements: NodeListOf<HTMLAnchorElement> = document.querySelectorAll("a.menu-item");
+  const menuItemElements: NodeListOf<HTMLAnchorElement> =
+    document.querySelectorAll("a.menu-item");
 
   menuItemElements.forEach((element) => {
     element.addEventListener("click", () => {
@@ -20,7 +24,7 @@ export function registerClickEvents() {
         default:
           const menuAction: MenuActionDescriptor = {
             type: element.dataset.action as MenuActionDescriptorType,
-            payload: JSON.parse(element.dataset.payload!)
+            payload: JSON.parse(element.dataset.payload!),
           };
 
           menuIpc.clickItem(menuAction);

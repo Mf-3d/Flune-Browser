@@ -14,7 +14,7 @@ if (isNavigationPage()) {
 
 if (isMenuPage()) {
   api.menu = MENU;
-} 
+}
 
 if (isSettingsPage()) {
   api.settings = SETTINGS;

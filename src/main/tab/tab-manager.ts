@@ -10,7 +10,6 @@ import { ContextMenuController } from "@/main/menu/context-menu/controllers/cont
 import type { TabState } from "@/shared/types/preload-api";
 import type { TabManagerOptions } from "./types";
 
-
 const HOME_URL = resolveView(ROUTE_MAP.home);
 
 export class TabManager {
@@ -38,23 +37,25 @@ export class TabManager {
 
   /**
    * Creates a new tab.
-   * @param options 
+   * @param options
    * @returns The new tab
    */
-  createTab(options?: Partial<{
-    input: string;
-    /**
-     * @default false
-     */
-    isActive: boolean;
-    beforeTabId: string;
-  }>): Tab {
+  createTab(
+    options?: Partial<{
+      input: string;
+      /**
+       * @default false
+       */
+      isActive: boolean;
+      beforeTabId: string;
+    }>
+  ): Tab {
     const view = new WebContentsView({
       webPreferences: {
         preload: path.join(__dirname, "..", "preload", "index.js"),
         contextIsolation: true,
         scrollBounce: true,
-      }
+      },
     });
 
     const tab = new Tab({
@@ -73,7 +74,7 @@ export class TabManager {
       window: this.window,
       settings: this.settings,
       bookmarkService: this.bookmarkService,
-      eventBus: this.eventBus
+      eventBus: this.eventBus,
     });
     this.contextMenuController.register(tab.webContents, {
       area: "tab",
@@ -88,7 +89,7 @@ export class TabManager {
       tab.loadURL(details.url);
 
       return {
-        action: "deny"
+        action: "deny",
       };
     });
 
@@ -163,7 +164,7 @@ export class TabManager {
   moveTab(from: number, to: number) {
     this.collection.move(from, to);
 
-    const order = this.collection.getAll().map(t => t.id);
+    const order = this.collection.getAll().map((t) => t.id);
     this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
   }
 
@@ -172,21 +173,16 @@ export class TabManager {
     const to = this.collection.getIndex(beforeTabId);
     this.collection.move(from, to);
 
-    const order = this.collection.getAll().map(t => t.id);
+    const order = this.collection.getAll().map((t) => t.id);
     this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
   }
 
   moveAfter(id: string, afterTabId: string) {
     const from = this.collection.getIndex(id);
     const to = this.collection.getIndex(afterTabId);
-    this.collection.move(
-      from,
-      from < to
-        ? to
-        : to + 1
-    );
+    this.collection.move(from, from < to ? to : to + 1);
 
-    const order = this.collection.getAll().map(t => t.id);
+    const order = this.collection.getAll().map((t) => t.id);
     this.window.navigation.send(IPC_NOTIFY.TABS_REORDERED, order);
   }
 
@@ -195,17 +191,15 @@ export class TabManager {
    * @param tabId Tab ID to navigate to.
    */
   navigate(input: string, tabId?: string) {
-    const tab =
-      tabId
-        ? this.collection.get(tabId)
-        : this.getActiveTab();
+    const tab = tabId ? this.collection.get(tabId) : this.getActiveTab();
 
     if (!tab) throw new Error("Tab does not exist.");
 
     if (URL.canParse(input)) {
       tab.loadURL(input);
     } else {
-      const engineIdCurrent = this.settings.searchEngineService.getCurrentSearchEngineId();
+      const engineIdCurrent =
+        this.settings.searchEngineService.getCurrentSearchEngineId();
       const engine = this.settings.searchEngineService.getEngineById(engineIdCurrent);
 
       if (!engine) throw new Error("Engine does not exist.");
@@ -223,9 +217,7 @@ export class TabManager {
     this.activeTabId = id;
 
     this.collection.getAll().forEach((tab) => {
-      tab.id === id
-        ? tab.setVisible(true)
-        : tab.setVisible(false);
+      tab.id === id ? tab.setVisible(true) : tab.setVisible(false);
     });
 
     const activeTab: Tab | undefined = this.getActiveTab();
@@ -245,18 +237,18 @@ export class TabManager {
 
     this.window.navigation.updateState({
       input: activeTab.url?.toString(),
-      ...(activeTab.url ? {
-        isBookmarked: this.bookmarkService.isBookmarked(activeTab.url.toString()),
-      } : {}),
+      ...(activeTab.url
+        ? {
+            isBookmarked: this.bookmarkService.isBookmarked(activeTab.url.toString()),
+          }
+        : {}),
     });
 
     console.info(`Tab (${activeTab.id}) has activated.`);
   }
 
   getActiveTab(): Tab | undefined {
-    return this.activeTabId ?
-      this.collection.get(this.activeTabId) :
-      undefined;
+    return this.activeTabId ? this.collection.get(this.activeTabId) : undefined;
   }
 
   getActiveIndex(): number {

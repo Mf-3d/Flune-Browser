@@ -4,7 +4,6 @@ import { handle } from "@/main/ipc/handler";
 import type { WindowManager } from "@/main/window/window-manager";
 import type { MenuActionDescriptor, MenuPageId } from "@/shared/types/menu";
 
-
 export function registerOptionMenuHandler(windowManager: WindowManager) {
   handle(IPC_INVOKE.MENU_OPEN, (event) => {
     const window = windowManager.getWindowFromWebContents(event.sender);

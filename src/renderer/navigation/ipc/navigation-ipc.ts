@@ -11,9 +11,7 @@ export const navigationIpc = {
     window.flune.navigation?.tab.activate(id);
   },
 
-  reloadTab(options?: {
-    ignoringCache: boolean;
-  }) {
+  reloadTab(options?: { ignoringCache: boolean }) {
     window.flune.navigation?.tab.reload(options);
   },
 
@@ -43,5 +41,5 @@ export const navigationIpc = {
 
   updateSymbolColor(color: string) {
     window.flune.navigation?.updateSymbolColor(color);
-  }
+  },
 };

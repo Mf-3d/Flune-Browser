@@ -3,10 +3,10 @@ import type { BookmarkRepository } from "./repository";
 import { EventBus } from "../infrastructure/event/event-bus";
 
 export class BookmarkService {
-  constructor (
+  constructor(
     private readonly repository: BookmarkRepository,
-    private readonly eventBus: EventBus,
-  ) { }
+    private readonly eventBus: EventBus
+  ) {}
 
   add(input: BookmarkInput) {
     const bookmark: Bookmark = {
@@ -15,7 +15,7 @@ export class BookmarkService {
       title: input.title,
       url: input.url,
       tag: input.tag ?? [],
-      parentId: input.parentId ?? "root"
+      parentId: input.parentId ?? "root",
     };
 
     return this.repository.save(bookmark);
@@ -24,13 +24,13 @@ export class BookmarkService {
   toggle(input: BookmarkInput) {
     if (this.isBookmarked(input.url)) {
       const bookmark = this.repository.getByUrl(input.url);
-      
+
       if (bookmark) this.repository.delete(bookmark.id);
     } else {
       const bookmark = this.add(input);
 
       this.eventBus.send("bookmark:created", {
-        bookmark
+        bookmark,
       });
     }
   }

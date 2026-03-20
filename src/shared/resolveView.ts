@@ -18,7 +18,7 @@ export type RouteKey = keyof typeof ROUTE_MAP;
 /**
  * @param path Route of View to resolve to
  * @returns Resolved Path
- * 
+ *
  * ```js
  * resolveView(ROUTE_MAP.menu.generic);
  * // -> "flune://menu/index.html" or "http://localhost:0000/menu/index.html"

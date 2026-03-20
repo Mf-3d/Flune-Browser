@@ -1,9 +1,24 @@
 import path from "node:path";
 import fs from "node:fs";
 import Store from "electron-store";
-import { Bookmark, BookmarkFolder, History, Download, FolderId, BookmarkInput } from "@/shared/types/data";
+import {
+  Bookmark,
+  BookmarkFolder,
+  History,
+  Download,
+  FolderId,
+  BookmarkInput,
+} from "@/shared/types/data";
 
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "..", "assets", "store", "default", "data-3.json");
+const DEFAULT_CONFIG_PATH = path.join(
+  __dirname,
+  "..",
+  "..",
+  "assets",
+  "store",
+  "default",
+  "data-3.json"
+);
 
 type ConfigType = {
   version: [number, number, number];
@@ -20,9 +35,11 @@ export class DataManager {
   readonly config;
 
   constructor() {
-    const DEFAULT_CONFIG = JSON.parse(fs.readFileSync(DEFAULT_CONFIG_PATH, {
-      encoding: "utf-8"
-    }));
+    const DEFAULT_CONFIG = JSON.parse(
+      fs.readFileSync(DEFAULT_CONFIG_PATH, {
+        encoding: "utf-8",
+      })
+    );
 
     this.config = new Store<ConfigType>({
       name: "data-3",
@@ -39,8 +56,12 @@ export class DataManager {
      */
     folders: {
       getStuff: (folderId: FolderId): (Bookmark | BookmarkFolder)[] => {
-        let bookmarks = this.bookmarks.getAll().filter(bookmark => bookmark.parentId === folderId);
-        let folders = this.bookmarks.folders.getAll().filter(folder => folder.parentId === folderId);
+        let bookmarks = this.bookmarks
+          .getAll()
+          .filter((bookmark) => bookmark.parentId === folderId);
+        let folders = this.bookmarks.folders
+          .getAll()
+          .filter((folder) => folder.parentId === folderId);
 
         return [...bookmarks, ...folders];
       },
@@ -48,17 +69,13 @@ export class DataManager {
         return this.config.get("bookmarkFolders");
       },
       getById: (folderId: FolderId) => {
-        return this.bookmarks.folders.getAll().find(folder => folder.id === folderId);
+        return this.bookmarks.folders.getAll().find((folder) => folder.id === folderId);
       },
       exist: (folderId: FolderId): boolean => {
         if (folderId === "root") return true;
         return this.bookmarks.folders.getById(folderId) !== undefined;
       },
-      create: (folder: {
-        title: string;
-        tag: string[];
-        parentId: FolderId;
-      }) => {
+      create: (folder: { title: string; tag: string[]; parentId: FolderId }) => {
         if (!this.bookmarks.folders.exist(folder.parentId)) {
           console.error("Could not create folder: The folder does not exist.");
           return;
@@ -88,26 +105,26 @@ export class DataManager {
      * @returns Bookmark.
      */
     getById: (id: string) => {
-      return this.bookmarks.getAll().find(bookmark => bookmark.id === id);
+      return this.bookmarks.getAll().find((bookmark) => bookmark.id === id);
     },
     /**
      * Get a bookmark by URL.
      * @returns Bookmark.
      */
     getByUrl: (url: string) => {
-      return this.bookmarks.getAll().find(bookmark => bookmark.url === url);
+      return this.bookmarks.getAll().find((bookmark) => bookmark.url === url);
     },
     /**
      * Get a bookmark by tag.
      * @returns Bookmark.
      */
     getByTag: (tag: string): Bookmark[] => {
-      return this.bookmarks.getAll().filter(bookmark => bookmark.tag.includes(tag));
+      return this.bookmarks.getAll().filter((bookmark) => bookmark.tag.includes(tag));
     },
     /**
      * Check for the existence of a bookmark by ID.
-     * @param id 
-     * @returns 
+     * @param id
+     * @returns
      */
     existById: (id: string): boolean => {
       return this.bookmarks.getById(id) !== undefined;
@@ -122,7 +139,7 @@ export class DataManager {
     },
     /**
      * Register a bookmark.
-     * 
+     *
      * @param input Bookmark data to add.
      * @returns New bookmark
      */
@@ -150,8 +167,11 @@ export class DataManager {
       return newBookmark;
     },
     remove: (id: string) => {
-      this.config.set("bookmarks", this.bookmarks.getAll().filter(bookmark => bookmark.id !== id));
-    }
+      this.config.set(
+        "bookmarks",
+        this.bookmarks.getAll().filter((bookmark) => bookmark.id !== id)
+      );
+    },
   };
 
   histories = {
@@ -159,15 +179,21 @@ export class DataManager {
       return this.config.get("history");
     },
     getByUrl: (url: string) => {
-      return this.histories.getAll().find(history => history.url === url);
+      return this.histories.getAll().find((history) => history.url === url);
     },
     getByDate: (date: Date) => {
-      return this.histories.getAll().find(history => history.date === date.toDateString());
+      return this.histories
+        .getAll()
+        .find((history) => history.date === date.toDateString());
     },
     getByDuration: (duration: [Date, Date]): History[] => {
-      return this.histories.getAll().filter(history =>
-        duration[0].getTime() <= new Date(history.date).getTime() && new Date(history.date).getTime() <= duration[1].getTime()
-      );
+      return this.histories
+        .getAll()
+        .filter(
+          (history) =>
+            duration[0].getTime() <= new Date(history.date).getTime() &&
+            new Date(history.date).getTime() <= duration[1].getTime()
+        );
     },
 
     add: (data: History) => {
@@ -180,7 +206,7 @@ export class DataManager {
       this.config.set("history", histories);
 
       return data;
-    }
+    },
   };
 
   downloads = {
@@ -188,19 +214,28 @@ export class DataManager {
       return this.config.get("downloads");
     },
     getById: (id: string): Download => {
-      return this.downloads.getAll().find(download => download.id === id);
+      return this.downloads.getAll().find((download) => download.id === id);
     },
     getByDate: (date: Date): Download => {
-      return this.downloads.getAll().find(download => download.date === date);
+      return this.downloads.getAll().find((download) => download.date === date);
     },
     getByDuration: (duration: [Date, Date]): Download[] => {
-      return this.downloads.getAll().filter(download =>
-        duration[0].getTime() <= download.date.getTime() && download.date.getTime() <= duration[1].getTime()
-      );
+      return this.downloads
+        .getAll()
+        .filter(
+          (download) =>
+            duration[0].getTime() <= download.date.getTime() &&
+            download.date.getTime() <= duration[1].getTime()
+        );
     },
 
     add: (data: {
-      state: "progressing" | "interrupted" | "interrupted-done" | "completed" | "cancelled";
+      state:
+        | "progressing"
+        | "interrupted"
+        | "interrupted-done"
+        | "completed"
+        | "cancelled";
       url: string;
       filePath: string;
       date: Date;
@@ -208,10 +243,9 @@ export class DataManager {
       receivedSize: number | null;
       percentComplete: number | null;
     }): Download => {
-
       let download: Download = {
         id: crypto.randomUUID(),
-        ...data
+        ...data,
       };
       const downloads = this.downloads.getAll();
       downloads.push(download);
@@ -226,7 +260,7 @@ export class DataManager {
       downloads[ids.indexOf(id)] = data;
 
       this.config.set("downloads", downloads);
-    }
+    },
   };
 }
 export * from "../../shared/types/data";

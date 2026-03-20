@@ -3,11 +3,14 @@ import { buildOptionMenuPage } from "../templates/";
 
 import type { OptionMenuView } from "../view/option-menu-view";
 import type { Window } from "@/main/window/window";
-import type { MenuActionDescriptor, MenuPageId, OptionMenuItem } from "@/shared/types/menu";
+import type {
+  MenuActionDescriptor,
+  MenuPageId,
+  OptionMenuItem,
+} from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
 import { wait } from "@/main/utils/wait";
-
 
 type OptionMenuControllerOptions = {
   view: OptionMenuView;
@@ -17,11 +20,7 @@ type OptionMenuControllerOptions = {
   bookmarkService: BookmarkService;
 };
 
-type MenuState =
-  | "closed"
-  | "opening"
-  | "open"
-  | "closing";
+type MenuState = "closed" | "opening" | "open" | "closing";
 
 export class OptionMenuController {
   private state: MenuState = "closed";
@@ -32,7 +31,6 @@ export class OptionMenuController {
   private readonly fadeTime;
   private readonly appService;
   private readonly bookmarkService;
-
 
   constructor(options: OptionMenuControllerOptions) {
     this.view = options.view;
@@ -49,15 +47,12 @@ export class OptionMenuController {
   }
 
   handleClick(action: MenuActionDescriptor) {
-    handleAction(
-      action,
-      {
-        appService: this.appService,
-        bookmarkService: this.bookmarkService,
-        window: this.window,
-        optionMenuManager: this
-      }
-    );
+    handleAction(action, {
+      appService: this.appService,
+      bookmarkService: this.bookmarkService,
+      window: this.window,
+      optionMenuManager: this,
+    });
 
     this.close();
   }
@@ -84,7 +79,8 @@ export class OptionMenuController {
 
   toggle() {
     if (this.eventTimeout) clearTimeout(this.eventTimeout);
-    this.desiredState = (this.desiredState === "open" && this.state === "open") ? "closed" : "open";
+    this.desiredState =
+      this.desiredState === "open" && this.state === "open" ? "closed" : "open";
 
     this.eventTimeout = setTimeout(() => {
       this.eventTimeout = undefined;
@@ -106,7 +102,7 @@ export class OptionMenuController {
       if (retry) await wait(this.fadeTime + 100);
       else return;
     }
-    
+
     this.state = "opening";
 
     this.view.show();
@@ -147,7 +143,7 @@ export class OptionMenuController {
 
   getPage(pageId: MenuPageId): OptionMenuItem[] {
     return buildOptionMenuPage(pageId, {
-      bookmarks: this.bookmarkService.getAll()
+      bookmarks: this.bookmarkService.getAll(),
     });
   }
 }

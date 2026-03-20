@@ -9,9 +9,15 @@ export const SettingsActions = {
     console.info("Option saved:", key, value);
   },
   async saveAll() {
-    const inputElements = document.querySelectorAll(".content input") as NodeListOf<HTMLInputElement>;
-    const selectElements = document.querySelectorAll(".content select") as NodeListOf<HTMLSelectElement>;
-    const formElements = document.querySelectorAll(".content form") as NodeListOf<HTMLFormElement>;
+    const inputElements = document.querySelectorAll(
+      ".content input"
+    ) as NodeListOf<HTMLInputElement>;
+    const selectElements = document.querySelectorAll(
+      ".content select"
+    ) as NodeListOf<HTMLSelectElement>;
+    const formElements = document.querySelectorAll(
+      ".content form"
+    ) as NodeListOf<HTMLFormElement>;
 
     inputElements.forEach(async (element) => {
       const id = element.id;
@@ -36,13 +42,14 @@ export const SettingsActions = {
       }
     });
 
-    const themeElement = 
-      document.querySelector("input[type=radio][name=theme]:checked") as HTMLInputElement;
+    const themeElement = document.querySelector(
+      "input[type=radio][name=theme]:checked"
+    ) as HTMLInputElement;
 
     this.save("settings.design.theme", themeElement.id.replace("theme-", ""));
 
     console.info("All settings have been saved.");
 
     // each();
-  }
-}
+  },
+};

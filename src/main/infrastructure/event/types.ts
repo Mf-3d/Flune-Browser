@@ -16,7 +16,7 @@ export type EventMap = {
     /**
      * ID of the tab created.
      */
-    tabId: string
+    tabId: string;
   };
   /**
    * Fire when a new tab is created.
@@ -25,7 +25,7 @@ export type EventMap = {
     /**
      * ID of the tab created.
      */
-    bookmark: Bookmark
+    bookmark: Bookmark;
   };
   /**
    * Fire when settings is updated.
@@ -35,4 +35,4 @@ export type EventMap = {
    * Fire when theme is updated.
    */
   "theme:updated": { themeId: string };
-}
+};

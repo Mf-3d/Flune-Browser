@@ -6,11 +6,11 @@ import type { Settings } from "@/main/settings";
 import type { TabEventOptions } from "./types";
 
 /**
- * @param tab 
- * @param isActiveTab 
- * @param window 
- * @param settings 
- * @param event 
+ * @param tab
+ * @param isActiveTab
+ * @param window
+ * @param settings
+ * @param event
  * @returns Cleanup function.
  */
 export function registerTabEvents(options: TabEventOptions): () => void {
@@ -23,7 +23,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
       input: options.tab.url?.toString(),
       isBookmarked: options.bookmarkService.isBookmarked(options.tab.url!.toString()),
     });
-}
+  }
 
   function onResize() {
     const winBounds = options.window.getContentBounds();
@@ -41,10 +41,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     updateTheme(options.tab.webContents, options.settings);
   }
 
-  function onTitleUpdated(
-    _: Electron.Event,
-    title: string
-  ) {
+  function onTitleUpdated(_: Electron.Event, title: string) {
     options.tab.title = title;
 
     options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
@@ -53,23 +50,17 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     });
   }
 
-  function onFaviconUpdated(
-    _: Electron.Event,
-    favicons: string[]
-  ) {
+  function onFaviconUpdated(_: Electron.Event, favicons: string[]) {
     const favicon = favicons[0];
     options.tab.favicon = favicon;
 
     options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
       id: options.tab.id,
-      favicon
+      favicon,
     });
   }
 
-  function onDidNavigate(
-    _: Electron.Event,
-    url: string
-  ) {
+  function onDidNavigate(_: Electron.Event, url: string) {
     options.tab.url = new URL(url);
 
     if (options.isActiveTab(options.tab.id)) {
@@ -89,7 +80,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
 
     options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
       id: options.tab.id,
-      isLoading: true
+      isLoading: true,
     });
   }
 
@@ -102,7 +93,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
 
     options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
       id: options.tab.id,
-      isLoading: false
+      isLoading: false,
     });
 
     if (options.isActiveTab(options.tab.id)) {
@@ -114,15 +105,13 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     }
   }
 
-  function onDidFailLoad(
-    _: Electron.Event,
-    errCode: number
-  ) {
+  function onDidFailLoad(_: Electron.Event, errCode: number) {
     // 無限ループが発生するのを防ぐ
-    if (options.tab.url && options.tab.url.toString().startsWith(ERR_PAGES.directory)) return;
+    if (options.tab.url && options.tab.url.toString().startsWith(ERR_PAGES.directory))
+      return;
 
     switch (errCode) {
-      case (ERR_CODES["server-notfound"]): {
+      case ERR_CODES["server-notfound"]: {
         options.tab.loadURL(ERR_PAGES["server-notfound"]);
         break;
       }
@@ -145,19 +134,17 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     });
   }
 
-  function onBeforeUnload(
-    event: Electron.Event
-  ) {
+  function onBeforeUnload(event: Electron.Event) {
     const choice = dialog.showMessageBoxSync(options.window.getNativeWindow(), {
       type: "question",
       buttons: ["このページを離れる", "キャンセル"],
       title: "このページを離れますか？",
-      message: '変更内容が保存されない可能性があります。',
+      message: "変更内容が保存されない可能性があります。",
       defaultId: 0,
-      cancelId: 1
+      cancelId: 1,
     });
 
-    const leave = (choice === 0);
+    const leave = choice === 0;
     if (leave) {
       event.preventDefault();
     }

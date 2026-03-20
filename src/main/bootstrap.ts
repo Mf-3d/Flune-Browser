@@ -29,7 +29,8 @@ type Services = {
 
 export function bootstrap() {
   app.setName("Flune-Browser");
-  if (process.platform === "darwin" && isArchitectureIntel()) app.disableHardwareAcceleration();
+  if (process.platform === "darwin" && isArchitectureIntel())
+    app.disableHardwareAcceleration();
 
   registerCrashHandler();
   const services = initializeServices();
@@ -40,7 +41,7 @@ function registerAppEvents(services: Services) {
   app.on("ready", () => {
     onReady(services);
   });
-  
+
   app.on("window-all-closed", () => {
     handleWindowAllClosed();
   });
@@ -48,8 +49,8 @@ function registerAppEvents(services: Services) {
 
 function initializeServices(): Services {
   const protocol = new Protocol("flune");
-  const data = new DataStore;
-  const eventBus = new EventBus;
+  const data = new DataStore();
+  const eventBus = new EventBus();
 
   const bookmarkRepository = new BookmarkRepository(data);
 
@@ -57,7 +58,12 @@ function initializeServices(): Services {
   const appService = new ApplicationService(bookmarkService);
 
   const settings = createSettings(appService);
-  const windowManager = new WindowManager(appService, bookmarkService, settings, eventBus);
+  const windowManager = new WindowManager(
+    appService,
+    bookmarkService,
+    settings,
+    eventBus
+  );
 
   return {
     protocol,

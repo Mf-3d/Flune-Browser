@@ -8,5 +8,5 @@ export const HomeActions = {
 
     browserIpc.navigate(inputElement.value);
     inputElement.blur();
-  }
-}
+  },
+};

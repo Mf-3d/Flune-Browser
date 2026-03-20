@@ -13,7 +13,7 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       }
 
       window.tabManager.createTab({
-        isActive: true
+        isActive: true,
       });
     });
 
@@ -47,31 +47,40 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       window.tabManager.activateTab(id);
     });
 
-    handle(IPC_INVOKE.TAB_RELOAD, (event, options?: Partial<{
-      ignoreCache: boolean
-    }>) => {
-      const window = windowManager.getWindowFromWebContents(event.sender);
+    handle(
+      IPC_INVOKE.TAB_RELOAD,
+      (
+        event,
+        options?: Partial<{
+          ignoreCache: boolean;
+        }>
+      ) => {
+        const window = windowManager.getWindowFromWebContents(event.sender);
 
-      if (!window) {
-        throw new Error("Window does not exist.");
+        if (!window) {
+          throw new Error("Window does not exist.");
+        }
+
+        window.tabManager.getActiveTab()?.reload(options);
       }
-      
-      window.tabManager.getActiveTab()?.reload(options);
-    });
+    );
 
-    handle(IPC_INVOKE.TAB_MOVE, (event, id: string, targetId: string, position: "before" | "after") => {
-      const window = windowManager.getWindowFromWebContents(event.sender);
+    handle(
+      IPC_INVOKE.TAB_MOVE,
+      (event, id: string, targetId: string, position: "before" | "after") => {
+        const window = windowManager.getWindowFromWebContents(event.sender);
 
-      if (!window) {
-        throw new Error("Window does not exist.");
+        if (!window) {
+          throw new Error("Window does not exist.");
+        }
+
+        if (position === "after") {
+          window.tabManager.moveAfter(id, targetId);
+        } else {
+          window.tabManager.moveBefore(id, targetId);
+        }
       }
-
-      if (position === "after") {
-        window.tabManager.moveAfter(id, targetId);
-      } else {
-        window.tabManager.moveBefore(id, targetId);
-      }
-    });
+    );
 
     handle(IPC_INVOKE.TAB_GO_BACK, (event) => {
       const window = windowManager.getWindowFromWebContents(event.sender);
@@ -79,7 +88,7 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       if (!window) {
         throw new Error("Window does not exist.");
       }
-      
+
       window.tabManager.getActiveTab()?.goBack();
     });
 
@@ -89,7 +98,7 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       if (!window) {
         throw new Error("Window does not exist.");
       }
-      
+
       window.tabManager.getActiveTab()?.goForward();
     });
 
@@ -99,7 +108,7 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       if (!window) {
         throw new Error("Window does not exist.");
       }
-      
+
       window.tabManager.navigate(homeUrl);
     });
 
@@ -109,7 +118,7 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       if (!window) {
         throw new Error("Window does not exist.");
       }
-      
+
       window.tabManager.getActiveTab()?.webContents.focus();
     });
   } catch (err) {

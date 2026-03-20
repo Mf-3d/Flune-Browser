@@ -9,10 +9,10 @@ export const settingsIpc = {
     return await window.flune.settings?.getAll();
   },
   async set<P extends Path<Config>>(key: P, value?: PathValue<Config, P> | undefined) {
-    this.get("settings")
+    this.get("settings");
     return window.flune.settings?.set(key, value);
   },
   async setAll(value?: any) {
     return window.flune.settings?.setAll(value);
-  }
+  },
 };

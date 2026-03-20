@@ -4,7 +4,6 @@ import type { MenuPageId } from "../../../shared/types/menu";
 import { registerClickEvents } from "./click-events";
 import lucide from "../../utils/icons";
 
-
 export async function renderMenu(pageId: MenuPageId) {
   const template = await menuIpc.getPage(pageId);
 
@@ -12,10 +11,11 @@ export async function renderMenu(pageId: MenuPageId) {
     return;
   }
 
-  const result = template.map((item) => {
-    switch (item.type) {
-      case "item":
-        return `
+  const result = template
+    .map((item) => {
+      switch (item.type) {
+        case "item":
+          return `
         <a
           href="#"
           role="menuitem"
@@ -26,19 +26,22 @@ export async function renderMenu(pageId: MenuPageId) {
           class="menu-item ${(item.enabled ?? false) ? "" : "disabled"}"
         >
           <span class="title">${item.label}</span>
-          ${item.accelerator ?
-            `
+          ${
+            item.accelerator
+              ? `
           <span class="accel">
-            ${item.accelerator?.split("+").map((acc) => `<kbd>${acc}</kbd>`).join("+")}
+            ${item.accelerator
+              ?.split("+")
+              .map((acc) => `<kbd>${acc}</kbd>`)
+              .join("+")}
           </span>
           `
-            :
-            ""
+              : ""
           }
         </a>
         `;
-      case "go-back":
-        return `
+        case "go-back":
+          return `
         <a
           href="#"
           role="menuitem"
@@ -49,8 +52,8 @@ export async function renderMenu(pageId: MenuPageId) {
           <span class="title">${item.label}</span>
         </a>
         `;
-      case "navigation":
-        return `
+        case "navigation":
+          return `
         <a
           href="#"
           role="menuitem"
@@ -63,10 +66,11 @@ export async function renderMenu(pageId: MenuPageId) {
           <i data-lucide=\"chevron-right\"></i>
         </a>
         `;
-      case "separator":
-        return "<hr />";
-    }
-  }).join("");
+        case "separator":
+          return "<hr />";
+      }
+    })
+    .join("");
 
   const menuElement = document.querySelector("main>div")!;
   menuElement.innerHTML = result;
