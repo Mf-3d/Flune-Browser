@@ -21,6 +21,7 @@ export function registerCrashHandler() {
  * @deprecated
  */
 export function log(message: string) {
+  console.error(message);
   fs.appendFileSync(
     LOG_FILE,
     `[${new Date().toISOString()}] ${message}\n`
