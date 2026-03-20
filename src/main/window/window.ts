@@ -14,7 +14,7 @@ import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "../bookmark/service";
 import type { Rect } from "@/shared/types/rect";
 
-type WindowOptions = {
+type WindowContext = {
   appService: ApplicationService;
   bookmarkService: BookmarkService;
   settings: Settings;
@@ -24,9 +24,7 @@ type WindowOptions = {
 
 export class Window {
   viewY: number = 66;
-  /**
-   * @deprecated 非公開化する予定
-   */
+
   private readonly win: BaseWindow;
   readonly navigation: Navigation;
   readonly optionMenuController: OptionMenuController;
@@ -34,27 +32,17 @@ export class Window {
   private readonly bookmarkService: BookmarkService;
   private readonly settings: Settings;
   private readonly eventBus: EventBus;
-  bounds: {
-    width: number;
-    height: number;
-    x?: number;
-    y?: number;
-  } = {
-      width: 800,
-      height: 600
-    };
+
   readonly tabManager: TabManager;
-  
 
-  constructor(options: WindowOptions) {
-    if (options.bounds) this.bounds = options.bounds;
 
+  constructor(options: WindowContext) {
     this.appService = options.appService;
     this.bookmarkService = options.bookmarkService;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
 
-    this.win = new BaseWindow(this.createWindowConstructorOptions());
+    this.win = new BaseWindow(this.createWindowConstructorOptions(options.bounds));
 
     const optionMenuView = new OptionMenuView(
       this.appService,
@@ -62,8 +50,8 @@ export class Window {
       {
         x: 0,
         y: this.viewY,
-        width: this.bounds.width,
-        height: this.bounds.height,
+        width: options.bounds ? options.bounds.width : this.getBounds().width,
+        height: options.bounds ? options.bounds.height : this.getBounds().height,
       }
     );
     this.optionMenuController = new OptionMenuController({
@@ -87,19 +75,24 @@ export class Window {
     registerWindowEvents(this.win, this.navigation, this.tabManager, this.eventBus, this.settings);
   }
 
-  private createWindowConstructorOptions(): Electron.BaseWindowConstructorOptions {
+  private createWindowConstructorOptions(bounds?: Partial<Rect>): Electron.BaseWindowConstructorOptions {
     return {
-      width: this.bounds.width,
-      height: this.bounds.height,
+      ...(
+        bounds ?
+        {
+          width: bounds.width,
+          height: bounds.height,
+          x: bounds.x,
+          y: bounds.y,
+        } :
+        {}
+      ),
       minWidth: 300,
       minHeight: 300,
-      x: this.bounds.x,
-      y: this.bounds.y,
-      title: `${this.appService.name} ${
-        this.appService.getVersion()
-        .replace("-beta.", " Beta ")
-        .replace("-dev.", " Dev ")
-      }`,
+      title: `${this.appService.name} ${this.appService.getVersion()
+          .replace("-beta.", " Beta ")
+          .replace("-dev.", " Dev ")
+        }`,
       titleBarStyle: "hidden",
       titleBarOverlay: process.platform === "darwin" ? true : {
         color: "#0000",
@@ -140,7 +133,18 @@ export class Window {
   }
 
   getBounds(): Rect {
-    return this.win.getBounds();
+    return this.win ?
+      this.win.getBounds() :
+      {
+        x: 0,
+        y: 0,
+        width: 800,
+        height: 600
+      };
+  }
+
+  setBounds(rect: Partial<Rect>) {
+    this.win.setBounds(rect);
   }
 
   getContentBounds(): Rect {

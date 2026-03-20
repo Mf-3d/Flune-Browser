@@ -62,8 +62,8 @@ export class TabManager {
       bounds: {
         x: 0,
         y: this.window.viewY,
-        width: this.window.bounds.width,
-        height: this.window.bounds.height,
+        width: this.window.getBounds().width,
+        height: this.window.getBounds().height - this.window.viewY,
       },
     });
 
