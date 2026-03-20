@@ -16,6 +16,15 @@ import type { TabEventOptions } from "./types";
 export function registerTabEvents(options: TabEventOptions): () => void {
   const webContents = options.tab.webContents;
 
+  function onInit() {
+    options.window.navigation.updateState({
+      canGoBack: options.tab.canGoBack,
+      canGoForward: options.tab.canGoForward,
+      input: options.tab.url?.toString(),
+      isBookmarked: options.bookmarkService.isBookmarked(options.tab.url!.toString()),
+    });
+}
+
   function onResize() {
     const winBounds = options.window.getContentBounds();
     const tabBounds = options.tab.getBounds();
@@ -158,6 +167,10 @@ export function registerTabEvents(options: TabEventOptions): () => void {
 
   const cleanupOnResize = options.window.onResize(onResize);
 
+  // 初期化イベント
+  webContents.once("did-finish-load", onInit);
+
+  // 通常イベント
   webContents.on("page-title-updated", onTitleUpdated);
   webContents.on("page-favicon-updated", onFaviconUpdated);
   webContents.on("did-navigate", onDidNavigate);
