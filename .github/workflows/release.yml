@@ -28,6 +28,6 @@ jobs:
         run: npm run prebuild
 
       - name: Package
-        run: npm run package --publish always
+        run: npm run package
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
