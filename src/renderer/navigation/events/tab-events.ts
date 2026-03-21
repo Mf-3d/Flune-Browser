@@ -13,7 +13,7 @@ export function registerTabEvents() {
 }
 
 function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
-  defaultIpc.log.info(`New tab is created: Tab ID: ${tab.id}`);
+  defaultIpc.log.info(`New tab is created: Tab ID: "${tab.id}"`);
 
   const tabContainer = document.getElementById("tabs")!;
   const newButton = tabContainer.querySelector(".new-button")!;
@@ -115,7 +115,7 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
 }
 
 function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
-  defaultIpc.log.info(`The tab has been updated: Tab ID: ${tab.id}`);
+  defaultIpc.log.info(`Tab has been updated: Tab ID: "${tab.id}"`);
 
   if (isDragging) return;
 
@@ -126,13 +126,13 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
     if (tabElement.getAttribute("data-id") !== tab.id) return;
 
     if (tab.title !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: title: ${tab.title}`);
+      defaultIpc.log.info(`Navigation state changed: title: "${tab.title}"`);
       const titleElement = tabElement.querySelector("p.title")! as HTMLElement;
       titleElement.innerText = tab.title;
     }
 
     if (tab.favicon !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: favicon: ${tab.favicon}`);
+      defaultIpc.log.info(`Navigation state changed: favicon: "${tab.favicon}"`);
       const faviconElement = tabElement.querySelector("img.favicon")! as HTMLElement;
       faviconElement.setAttribute("src", tab.favicon);
     }
