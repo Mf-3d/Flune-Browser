@@ -12,6 +12,10 @@ export function registerCrashHandler() {
     log(`UNCAUGHT: ${err.stack ?? err.message}`);
   });
 
+  app.on("child-process-gone", (_event, details) => {
+    log(`CHILD PROCESS GONE: ${details.reason}`);
+  });
+
   app.on("render-process-gone", (_event, _webContents, details) => {
     log(`RENDERER GONE: ${details.reason}`);
   });
