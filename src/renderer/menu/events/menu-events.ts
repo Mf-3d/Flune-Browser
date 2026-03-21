@@ -1,6 +1,5 @@
 import { renderMenu } from "../ui/render";
 
-
 export function registerMenuEvents() {
   if (!window.flune.menu) return;
 

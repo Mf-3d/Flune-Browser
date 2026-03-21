@@ -1,10 +1,7 @@
 import { menuIpc } from "../ipc/menu-ipc";
 import { goBack, navigateTo } from "./navigate";
 
-import type {
-  MenuActionDescriptorType,
-  MenuPageId,
-} from "../../../shared/types/menu";
+import type { MenuActionDescriptorType, MenuPageId } from "../../../shared/types/menu";
 
 export function registerClickEvents() {
   const menuItemElements: NodeListOf<HTMLAnchorElement> =
