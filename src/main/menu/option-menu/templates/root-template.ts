@@ -32,6 +32,7 @@ export function buildRootTemplate(): OptionMenuItem[] {
       },
       label: "ダウンロード",
       accelerator: "Ctrl+J",
+      enabled: false,
     },
     {
       type: "separator",

@@ -73,6 +73,7 @@ main > div a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-style: bold;
 
   transition:
     background-color 0.2s linear,
@@ -82,15 +83,15 @@ main > div a {
 main > div a:nth-of-type(even) {
   background-color: color-mix(in srgb, var(--text-color) 2%, transparent);
 }
-main > div a:hover {
+main > div a:hover:not(.disabled) {
   background-color: color-mix(in srgb, var(--hover-color) 15%, transparent);
   outline-width: 3px;
 }
-main > div a:active {
+main > div a:active:not(.disabled) {
   background-color: color-mix(in srgb, var(--hover-color) 35%, transparent);
   outline-width: 6px;
 }
-main > div a:focus {
+main > div a:focus:not(.disabled) {
   outline-color: color-mix(in srgb, #2582cf 35%, transparent);
   outline-width: 2px;
 }
@@ -110,6 +111,11 @@ main > div a > svg {
   height: 20px;
   stroke-width: 3px;
   float: right;
+}
+main > div a.disabled {
+  color: color-mix(in srgb, var(--text-color) 30%, var(--disabled-color));
+  font-style: unset;
+  cursor: default;
 }
 
 hr {

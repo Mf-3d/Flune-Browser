@@ -61,9 +61,18 @@ export type OptionMenuItem =
 type MenuActionItem = {
   type: "item";
   label: string;
+  /**
+   * @example "CmdOrCtrl+R"
+   */
   accelerator?: string;
   action: MenuActionDescriptor;
+  /**
+   * @default true
+   */
   enabled?: boolean;
+  /**
+   * **Unused.**
+   */
   checked?: boolean;
 };
 

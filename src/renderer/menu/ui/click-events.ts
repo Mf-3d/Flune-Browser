@@ -9,6 +9,8 @@ export function registerClickEvents() {
 
   menuItemElements.forEach((element) => {
     element.addEventListener("click", () => {
+      if (element.classList.contains("disabled")) return;
+
       switch (element.dataset.action) {
         case "navigate":
           navigateTo(element.dataset.target as MenuPageId);

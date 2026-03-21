@@ -5,6 +5,7 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
   const bookmarkMenuItem: OptionMenuItem[] = context.bookmarks.map((bookmark) => {
     return {
       type: "item",
+      enabled: false,
       action: {
         type: "open-bookmark",
         payload: {
@@ -41,6 +42,7 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
         type: "open-bookmarks-page",
         payload: undefined,
       },
+      enabled: false,
       label: "ブックマークをすべて表示",
       accelerator: "Ctrl+Shift+O",
     },
