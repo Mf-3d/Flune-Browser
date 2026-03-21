@@ -8,10 +8,10 @@ const config: Configuration = {
   directories: {
     buildResources: "assets",
   },
-  publish: {
-    provider: "github",
-    releaseType: "draft",
-  },
+  // publish: {
+  //   provider: "github",
+  //   releaseType: "draft",
+  // },
   win: {
     icon: "assets/image/icon.png",
     target: ["nsis", "zip"],
