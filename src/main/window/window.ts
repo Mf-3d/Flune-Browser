@@ -164,6 +164,7 @@ export class Window {
   }
 
   close() {
+    this.navigation.close();
     this.tabManager.removeAll();
     this.win.close();
   }
