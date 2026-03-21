@@ -33,5 +33,5 @@ function validateSender(frame: WebFrameMain): boolean {
 
   if (!app.isPackaged && process.env.ELECTRON_RENDERER_URL)
     return frameUrl.toString().includes(process.env.ELECTRON_RENDERER_URL);
-  else return frameUrl.protocol === config.protocol;
+  else return frameUrl.protocol === `${config.protocol}:`;
 }
