@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "prebuild": "electron-vite build",
     "package": "electron-builder build --dir --config electron-builder.config.ts",
+    "package:publish": "electron-builder build --publish --dir --config electron-builder.config.ts",
     "package:win": "electron-builder build --win --x64 --config electron-builder.config.ts",
     "package:mac": "electron-builder build --mac --x64 --config electron-builder.config.ts"
   },
