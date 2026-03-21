@@ -20,7 +20,10 @@ jobs:
 
       - run: npm ci
 
-      - name: Package app
+      - name: Build
+        run: npm run prebuild
+
+      - name: Package
         run: npm run package
         shell: bash
 
