@@ -1,4 +1,5 @@
 import { app } from "electron";
+
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
 import { Protocol } from "./protocols/AppProtocol";
 import { isArchitectureIntel } from "@/main/system/env";
@@ -6,18 +7,23 @@ import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
 import { Settings, createSettings } from "./settings/";
 import { EventBus } from "./infrastructure/event/event-bus";
+import { Logger } from "@/main/utils/logger";
+import { config } from "@/app.config";
 
+import { createRuntimeContext } from "./application/runtime-context";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
-import { registerSettingsHandler } from "./settings/ipc/settings-handler";
-import { registerBookmarkHandler } from "./bookmark/ipc/bookmark-handler";
+import { registerSettingsHandler } from "@/main/settings/ipc/settings-handler";
+import { registerBookmarkHandler } from "@/main/bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
-import { ApplicationService } from "./application/application-service";
-import { registerOptionMenuHandler } from "./menu/option-menu/ipc/option-menu-handler";
-import { DataStore } from "./infrastructure/storage/data-store";
-import { BookmarkRepository } from "./bookmark/repository";
+import { ApplicationService } from "@/main/application/application-service";
+import { registerOptionMenuHandler } from "@/main/menu/option-menu/ipc/option-menu-handler";
+import { DataStore } from "@/main/infrastructure/storage/data-store";
+import { BookmarkRepository } from "@/main/bookmark/repository";
+import type { RuntimeContext } from "./application/types";
 
 type Services = {
+  logger: Logger;
   protocol: Protocol;
   settings: Settings;
   windowManager: WindowManager;
@@ -28,12 +34,15 @@ type Services = {
 };
 
 export function bootstrap() {
-  app.setName("Flune-Browser");
-  if (process.platform === "darwin" && isArchitectureIntel())
+  const runtime = createRuntimeContext();
+
+  app.setName(config.productName);
+  if (process.platform === "darwin" && isArchitectureIntel()) {
     app.disableHardwareAcceleration();
+  }
 
   registerCrashHandler();
-  const services = initializeServices();
+  const services = initializeServices(runtime);
   registerAppEvents(services);
 }
 
@@ -47,8 +56,9 @@ function registerAppEvents(services: Services) {
   });
 }
 
-function initializeServices(): Services {
-  const protocol = new Protocol("flune");
+function initializeServices(runtime: RuntimeContext): Services {
+  const logger = new Logger(runtime.logFilePath);
+  const protocol = new Protocol(config.protocol);
   const data = new DataStore();
   const eventBus = new EventBus();
 
@@ -66,6 +76,7 @@ function initializeServices(): Services {
   );
 
   return {
+    logger,
     protocol,
     settings,
     windowManager,
@@ -83,6 +94,7 @@ function onReady(services: Services) {
   registerBookmarkHandler(services.windowManager, services.bookmarkService);
   registerOptionMenuHandler(services.windowManager);
 
+  services.logger.setLogLevel("info");
   services.eventBus.send("init");
   services.protocol.handle();
   services.windowManager.create();

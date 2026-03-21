@@ -1,7 +1,9 @@
-import { MenuAPI } from "../shared/types/preload-api";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
 import { MenuPageId } from "@/shared/types/menu";
+import { config } from "@/app.config";
+
+import type { MenuAPI } from "../shared/types/preload-api";
 
 export function isMenuPage() {
   const isDev =
@@ -15,7 +17,7 @@ export function isMenuPage() {
     );
   } else {
     return (
-      window.location.protocol === "flune:" &&
+      window.location.protocol === `${config.protocol}:` &&
       window.location.pathname.startsWith("/menu/")
     );
   }

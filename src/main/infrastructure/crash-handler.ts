@@ -19,6 +19,9 @@ export function registerCrashHandler() {
   app.on("render-process-gone", (_event, _webContents, details) => {
     log(`RENDERER GONE: ${details.reason}`);
   });
+
+  // app.commandLine.appendSwitch("enable-logging");
+  // app.commandLine.appendSwitch("v", "1");
 }
 
 /**

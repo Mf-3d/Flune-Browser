@@ -1,3 +1,5 @@
+import { config } from "@/app.config";
+
 export const ROUTE_MAP = {
   navigation: "navigation/index.html",
   home: "browser/home/index.html",
@@ -31,5 +33,5 @@ export function resolveView(path: string) {
     return new URL(path, process.env.ELECTRON_RENDERER_URL).toString();
   }
 
-  return `flune://app/${path}`;
+  return `${config.protocol}://app/${path}`;
 }

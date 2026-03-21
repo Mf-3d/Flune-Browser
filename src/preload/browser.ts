@@ -1,6 +1,8 @@
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
-import { BrowserAPI } from "@/shared/types/preload-api";
+import { config } from "@/app.config";
+
+import type { BrowserAPI } from "@/shared/types/preload-api";
 
 export function isBrowserPage() {
   const isDev =
@@ -14,7 +16,7 @@ export function isBrowserPage() {
     );
   } else {
     return (
-      window.location.protocol === "flune:" &&
+      window.location.protocol === `${config.protocol}:` &&
       window.location.pathname.startsWith("/browser/")
     );
   }

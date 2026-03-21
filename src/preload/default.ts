@@ -1,13 +1,15 @@
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
-import { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";
+import { config } from "@/app.config";
+
+import type { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";
 
 // TODO: 公開するべきか検討する
 export const DEFAULT: DefaultAPI = {
   baseURL:
     !process.argv.includes("--is-packaged=true") && process.env.ELECTRON_RENDERER_URL
       ? process.env.ELECTRON_RENDERER_URL
-      : "flune://",
+      : `${config.protocol}://`,
 
   getVersion: async () => {
     return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_VERSION); // バージョン取得

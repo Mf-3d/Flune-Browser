@@ -1,6 +1,8 @@
 import { ipcRenderer } from "electron";
 import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
-import { NavigationAPI } from "../shared/types/preload-api.js";
+import { config } from "@/app.config";
+
+import type { NavigationAPI } from "../shared/types/preload-api.js";
 
 export function isNavigationPage() {
   const isDev =
@@ -14,7 +16,7 @@ export function isNavigationPage() {
     );
   } else {
     return (
-      window.location.protocol === "flune:" &&
+      window.location.protocol === `${config.protocol}:` &&
       window.location.pathname.startsWith("/navigation/")
     );
   }

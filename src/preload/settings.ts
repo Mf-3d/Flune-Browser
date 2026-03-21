@@ -1,6 +1,8 @@
-import { SettingsAPI } from "../shared/types/preload-api";
 import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { config } from "@/app.config";
+
+import type { SettingsAPI } from "../shared/types/preload-api";
 
 export function isSettingsPage() {
   const isDev =
@@ -14,7 +16,7 @@ export function isSettingsPage() {
     );
   } else {
     return (
-      window.location.protocol === "flune:" &&
+      window.location.protocol === `${config.protocol}:` &&
       window.location.pathname.startsWith("/browser/settings/")
     );
   }

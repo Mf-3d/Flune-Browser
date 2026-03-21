@@ -1,4 +1,5 @@
 import path from "node:path";
+import { config } from "@/app.config";
 
 import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { Theme } from "@/shared/types/config";
@@ -14,7 +15,7 @@ export class ThemeService {
     this.urlPrefix =
       !this.appService.isPackaged && process.env.ELECTRON_RENDERER_URL
         ? `${process.env.ELECTRON_RENDERER_URL}/`
-        : "flune://";
+        : `${config.protocol}://`;
   }
 
   getCurrentThemeId(): string {

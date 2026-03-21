@@ -1,11 +1,12 @@
 import { app, dialog } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { config } from "@/app.config";
 
 import type { Window } from "@/main/window/window";
 import type { QuitOptions } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
-import type { BookmarkService } from "../bookmark/service";
+import type { BookmarkService } from "@/main/bookmark/service";
 
 const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
 const VERSIONS_URL = resolveView(ROUTE_MAP.version);
@@ -14,7 +15,7 @@ export class ApplicationService {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
   get name(): string {
-    return app.name;
+    return config.name;
   }
 
   get isPackaged() {
