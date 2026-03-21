@@ -83,8 +83,8 @@ function onReady(services: Services) {
   registerBookmarkHandler(services.windowManager, services.bookmarkService);
   registerOptionMenuHandler(services.windowManager);
 
-  services.protocol.handle();
   services.eventBus.send("init");
+  services.protocol.handle();
   services.windowManager.create();
 
   app.on("activate", () => {
