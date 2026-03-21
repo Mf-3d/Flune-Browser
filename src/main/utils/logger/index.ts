@@ -10,13 +10,10 @@ export class Logger {
   private formatter: Formatter;
   private writers: Writer[];
 
-  constructor (filePath: string) {
+  constructor(filePath: string) {
     this.normalizer = new Normalizer();
     this.formatter = new Formatter();
-    this.writers = [
-      new ConsoleWriter(),
-      new FileWriter(filePath)
-    ];
+    this.writers = [new ConsoleWriter(), new FileWriter(filePath)];
   }
 
   setLogLevel(level: LogLevel) {
@@ -24,51 +21,51 @@ export class Logger {
   }
 
   private shouldLog(level: LogLevel): boolean {
-    return (
-      LOG_LEVEL_PRIORITY[level] >=
-      LOG_LEVEL_PRIORITY[this.currentLogLevel]
-    );
+    return LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this.currentLogLevel];
   }
 
   /**
    * @param level Log Level.
    * @param normalized Normalized Log.
-   * @returns 
+   * @returns
    */
-  private output (level: LogLevel, normalized: NormalizedLog) {
+  private output(level: LogLevel, normalized: NormalizedLog) {
     if (!this.shouldLog(level)) return;
 
-    const formatted = this.formatter.format(level, normalized.stack ?? normalized.message);
-    this.writers.forEach(writer => writer.write(level, formatted));
+    const formatted = this.formatter.format(
+      level,
+      normalized.stack ?? normalized.message
+    );
+    this.writers.forEach((writer) => writer.write(level, formatted));
   }
 
-  info (message: string) {
+  info(message: string) {
     try {
       const normalized = this.normalizer.normalize(message);
       this.output("info", normalized);
     } catch (err) {
       // eslint-disable-next-line
-      console.error(styleText([ "red", "bold" ], "Failed to output log:"), err);
+      console.error(styleText(["red", "bold"], "Failed to output log:"), err);
     }
   }
 
-  warn (message: string) {
+  warn(message: string) {
     try {
       const normalized = this.normalizer.normalize(message);
       this.output("warn", normalized);
     } catch (err) {
       // eslint-disable-next-line
-      console.error(styleText([ "red", "bold" ], "Failed to output log:"), err);
+      console.error(styleText(["red", "bold"], "Failed to output log:"), err);
     }
   }
 
-  error (message: string | Error) {
+  error(message: string | Error) {
     try {
       const normalized = this.normalizer.normalize(message);
       this.output("error", normalized);
     } catch (err) {
       // eslint-disable-next-line
-      console.error(styleText([ "red", "bold" ], "Failed to output log:"), err);
+      console.error(styleText(["red", "bold"], "Failed to output log:"), err);
     }
   }
 }

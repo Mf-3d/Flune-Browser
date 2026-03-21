@@ -1,6 +1,6 @@
 export type NormalizedLog = {
   message: string;
-  stack?: string
+  stack?: string;
 };
 
 export class Normalizer {
@@ -9,11 +9,11 @@ export class Normalizer {
       return {
         message: err.message,
         stack: err.stack,
-      }
+      };
     } else {
       return {
         message: err,
-      }
+      };
     }
   }
 }
