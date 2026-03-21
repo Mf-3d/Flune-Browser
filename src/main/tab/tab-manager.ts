@@ -9,8 +9,6 @@ import { ContextMenuController } from "@/main/menu/context-menu/controllers/cont
 import type { TabState } from "@/shared/types/preload-api";
 import type { TabManagerOptions } from "./types";
 
-const HOME_URL = resolveView(ROUTE_MAP.home);
-
 export class TabManager {
   private activeTabId?: string;
   private readonly collection;
@@ -104,7 +102,7 @@ export class TabManager {
 
     if (options?.isActive) this.activateTab(tab.id);
 
-    this.navigate(options?.input ?? HOME_URL, tab.id);
+    this.navigate(options?.input ?? resolveView(ROUTE_MAP.home), tab.id);
 
     return tab;
   }

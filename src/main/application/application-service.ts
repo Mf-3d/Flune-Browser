@@ -8,9 +8,6 @@ import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
 
-const SETTINGS_URL = resolveView(ROUTE_MAP.settings);
-const VERSIONS_URL = resolveView(ROUTE_MAP.version);
-
 export class ApplicationService {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
@@ -63,11 +60,11 @@ export class ApplicationService {
   }
 
   showSettingsPage(window: Window) {
-    window.tabManager.navigate(SETTINGS_URL);
+    window.tabManager.navigate(resolveView(ROUTE_MAP.settings));
   }
 
   showVersionsPage(window: Window) {
-    window.tabManager.navigate(VERSIONS_URL);
+    window.tabManager.navigate(resolveView(ROUTE_MAP.version));
   }
 
   addActiveTabToBookmarks(window: Window) {
