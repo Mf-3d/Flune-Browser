@@ -1,12 +1,12 @@
 import { app } from "electron";
 
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
-import { Protocol } from "./protocols/AppProtocol";
+import { Protocol } from "@/main/protocols/AppProtocol";
 import { isArchitectureIntel } from "@/main/system/env";
 import { WindowManager } from "@/main/window/window-manager";
 import { BookmarkService } from "@/main/bookmark/service";
-import { Settings, createSettings } from "./settings/";
-import { EventBus } from "./infrastructure/event/event-bus";
+import { Settings, createSettings } from "@/main/settings/";
+import { EventBus } from "@/main/infrastructure/event/event-bus";
 import { Logger } from "@/main/utils/logger";
 import { config } from "@/app.config";
 
