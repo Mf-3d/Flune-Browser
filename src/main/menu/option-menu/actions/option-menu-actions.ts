@@ -31,7 +31,7 @@ export function handleAction<T extends MenuActionDescriptor>(
     "open-history": (payload) => {
       if (!payload) return;
 
-      const tab = context.appService.createTab(context.window);
+      // const tab = context.appService.createTab(context.window);
       // tab.loadURL(context.bookmarkService.getById(payload.id)!.url);
     },
 

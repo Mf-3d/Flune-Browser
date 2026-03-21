@@ -91,9 +91,11 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
     const tabElements = tabContainer.querySelectorAll(".tab");
 
     tabElements.forEach((tabElement) => {
-      tabElement.getAttribute("data-id") === tab.id
-        ? (tabElement.id = "opened")
-        : (tabElement.id = "");
+      if (tabElement.getAttribute("data-id") === tab.id) {
+        tabElement.id = "opened";
+      } else {
+        tabElement.id = "";
+      }
     });
   }
 
@@ -153,9 +155,11 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
 
   if (tab.active !== undefined) {
     tabElements.forEach((tabElement) => {
-      tabElement.getAttribute("data-id") === tab.id
-        ? (tabElement.id = "opened")
-        : (tabElement.id = "");
+      if (tabElement.getAttribute("data-id") === tab.id) {
+        tabElement.id = "opened";
+      } else {
+        tabElement.id = "";
+      }
     });
   }
 

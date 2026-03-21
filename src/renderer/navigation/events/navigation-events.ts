@@ -14,9 +14,11 @@ function onInit(_: Electron.IpcRendererEvent, state: NavigationState) {
   if (state.showHomeButton !== undefined) {
     const homeButton = document.getElementById("go-home")!;
 
-    state.showHomeButton
-      ? homeButton.classList.remove("invisible")
-      : homeButton.classList.add("invisible");
+    if (state.showHomeButton) {
+      homeButton.classList.remove("invisible");
+    } else {
+      homeButton.classList.add("invisible");
+    }
   }
 }
 
@@ -24,9 +26,11 @@ function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
   if (state.showHomeButton !== undefined) {
     const homeButton = document.getElementById("go-home")!;
 
-    state.showHomeButton
-      ? homeButton.classList.remove("invisible")
-      : homeButton.classList.add("invisible");
+    if (state.showHomeButton) {
+      homeButton.classList.remove("invisible");
+    } else {
+      homeButton.classList.add("invisible");
+    }
   }
 
   if (state.input !== undefined) {

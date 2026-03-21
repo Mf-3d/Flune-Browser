@@ -88,9 +88,12 @@ export class Tab {
   }
 
   toggleDevTools(options?: OpenDevToolsOptions) {
-    this.webContents.isDevToolsOpened()
-      ? this.webContents.closeDevTools()
-      : this.webContents.openDevTools(options);
+    if (this.webContents.isDevToolsOpened()) {
+      this.webContents.closeDevTools();
+    } else {
+      // ここでoptionsを渡したいのでWebContents.toggleDevTools()は使えない。
+      this.webContents.openDevTools(options);
+    }
   }
 
   setVisible(visible: boolean) {

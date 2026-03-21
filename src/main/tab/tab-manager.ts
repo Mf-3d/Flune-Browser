@@ -216,7 +216,7 @@ export class TabManager {
     this.activeTabId = id;
 
     this.collection.getAll().forEach((tab) => {
-      tab.id === id ? tab.setVisible(true) : tab.setVisible(false);
+      tab.setVisible(tab.id === id);
     });
 
     const activeTab: Tab | undefined = this.getActiveTab();
