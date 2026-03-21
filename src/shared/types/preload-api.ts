@@ -16,6 +16,7 @@ export type ComputerInfo = {
 };
 
 export type NavigationInit = {
+  isMac: boolean;
   showHomeButton: boolean;
 };
 

@@ -1,4 +1,4 @@
-import { NavigationState } from "@/shared/types/preload-api";
+import { NavigationInit, NavigationState } from "@/shared/types/preload-api";
 import { applyTheme } from "../theme";
 import { navigationActions } from "../actions/navigation-actions";
 
@@ -10,15 +10,16 @@ export function registerNavigationEvents() {
   window.flune.navigation.onThemeChanged(onThemeChanged);
 }
 
-function onInit(_: Electron.IpcRendererEvent, state: NavigationState) {
-  if (state.showHomeButton !== undefined) {
-    const homeButton = document.getElementById("go-home")!;
+function onInit(_: Electron.IpcRendererEvent, state: NavigationInit) {
+  const homeButton = document.getElementById("go-home")!;
 
-    if (state.showHomeButton) {
-      homeButton.classList.remove("invisible");
-    } else {
-      homeButton.classList.add("invisible");
-    }
+  if (state.isMac) {
+    document.body.classList.add("mac");
+  }
+  if (state.showHomeButton) {
+    homeButton.classList.remove("invisible");
+  } else {
+    homeButton.classList.add("invisible");
   }
 }
 
