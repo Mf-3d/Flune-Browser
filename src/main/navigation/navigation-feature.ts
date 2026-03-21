@@ -37,8 +37,6 @@ export function createNavigationFeature(
   },
   onLoaded?: () => void
 ) {
-  let currentState: NavigationState = {};
-
   const view = new WebContentsView({
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
@@ -67,7 +65,6 @@ export function createNavigationFeature(
   }
 
   function updateState(state: NavigationState) {
-    currentState = state;
     view.webContents.send(IPC_NOTIFY.NAVIGATION_UPDATE, state);
   }
 
