@@ -28,7 +28,7 @@ jobs:
         run: npm run prebuild
 
       - name: Package
-        run: npm run package:publish
+        run: npm run package
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,7 +41,6 @@ jobs:
             dist/*.exe
             dist/*.zip
 
-      # ② Releaseにアップロード（本命）
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
