@@ -15,6 +15,11 @@ export default defineConfig({
     },
   },
   preload: {
+    resolve: {
+      alias: {
+        "@": path.resolve("src/"),
+      },
+    },
     build: {
       lib: {
         entry: "src/preload/index.ts",
@@ -30,6 +35,11 @@ export default defineConfig({
   },
   renderer: {
     root: "src/renderer",
+    resolve: {
+      alias: {
+        "@": path.resolve("src/"),
+      },
+    },
     build: {
       rollupOptions: {
         input: {
