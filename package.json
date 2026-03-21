@@ -7,6 +7,7 @@
     "test": "playwright test",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
+    "check": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
