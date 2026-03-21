@@ -36,7 +36,10 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: app
-          path: dist/**
+          path: |
+            dist/*.dmg
+            dist/*.exe
+            dist/*.zip
 
       # ② Releaseにアップロード（本命）
       - name: Upload to Release
