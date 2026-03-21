@@ -12,7 +12,7 @@ export class ApplicationService {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
   get name(): string {
-    return config.name;
+    return config.productName;
   }
 
   get isPackaged() {
