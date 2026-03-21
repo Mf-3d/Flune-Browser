@@ -56,15 +56,24 @@ export function createNavigationFeature(
     y: 0,
   });
 
+  view.webContents.session.setCertificateVerifyProc((_, callback) => {
+    callback(-3);
+  });
+
   registerWebContentsEvents(view, settings, onLoaded);
 
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
+
+  function shouldClearNavigation(url: string): boolean {
+    return url === resolveView(ROUTE_MAP.home);
+  }
 
   function attach() {
     window.appendView(view);
   }
 
   function updateState(state: NavigationState) {
+    if (state.input && shouldClearNavigation(state.input)) state.input = "";
     view.webContents.send(IPC_NOTIFY.NAVIGATION_UPDATE, state);
   }
 
