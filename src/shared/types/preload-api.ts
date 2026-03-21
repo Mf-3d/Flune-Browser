@@ -53,6 +53,11 @@ export type API = DefaultAPI & {
 
 export type DefaultAPI = {
   baseURL: string;
+  log: {
+    info: (message: string) => void;
+    warn: (message: string) => void;
+    error: (message: string | Error) => void;
+  };
   getVersion: () => Promise<any>;
   getVersions: () => Promise<Versions>;
   getComputerInfo: () => Promise<ComputerInfo>;

@@ -2,11 +2,13 @@ import { handle } from "@/main/ipc/handler";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 import type { WindowManager } from "@/main/window/window-manager";
-import { BookmarkService } from "../service";
+import type { BookmarkService } from "../service";
+import type { Logger } from "@/main/utils/logger";
 
 export function registerBookmarkHandler(
   windowManager: WindowManager,
-  bookmarkService: BookmarkService
+  bookmarkService: BookmarkService,
+  logger: Logger
 ) {
   try {
     handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
@@ -30,6 +32,6 @@ export function registerBookmarkHandler(
       });
     });
   } catch (err) {
-    console.error("Failed to register bookmarkHandler:", err); // ロガーはまだ入れていないので仮
+    logger.error(`Failed to register bookmarkHandler: ${err}`); // ロガーはまだ入れていないので仮
   }
 }

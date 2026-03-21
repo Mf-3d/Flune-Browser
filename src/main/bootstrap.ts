@@ -21,6 +21,7 @@ import { registerOptionMenuHandler } from "@/main/menu/option-menu/ipc/option-me
 import { DataStore } from "@/main/infrastructure/storage/data-store";
 import { BookmarkRepository } from "@/main/bookmark/repository";
 import type { RuntimeContext } from "./application/types";
+import { registerLogHandler } from "./logger/ipc/log-handler";
 
 type Services = {
   logger: Logger;
@@ -41,7 +42,6 @@ export function bootstrap() {
     app.disableHardwareAcceleration();
   }
 
-  registerCrashHandler();
   const services = initializeServices(runtime);
   registerAppEvents(services);
 }
@@ -67,7 +67,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const appService = new ApplicationService(bookmarkService);
 
-  const settings = createSettings(appService);
+  const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(
     appService,
     bookmarkService,
@@ -88,10 +88,16 @@ function initializeServices(runtime: RuntimeContext): Services {
 }
 
 function onReady(services: Services) {
+  registerCrashHandler(services.logger);
+  registerLogHandler(services.logger);
   registerAppHandler(services.appService, services.windowManager);
   registerSettingsHandler(services.settings, services.eventBus);
   registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
-  registerBookmarkHandler(services.windowManager, services.bookmarkService);
+  registerBookmarkHandler(
+    services.windowManager,
+    services.bookmarkService,
+    services.logger
+  );
   registerOptionMenuHandler(services.windowManager);
 
   services.logger.setLogLevel("info");

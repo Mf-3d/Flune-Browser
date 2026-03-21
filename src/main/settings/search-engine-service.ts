@@ -1,8 +1,12 @@
 import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { SearchEngine } from "@/shared/types/config";
+import type { Logger } from "../utils/logger";
 
 export class SearchEngineService {
-  constructor(private store: SettingsStore) {}
+  constructor(
+    private readonly store: SettingsStore,
+    private readonly logger: Logger
+  ) {}
 
   getCurrentSearchEngineId(): string {
     return this.store.get("settings").search.engine;
@@ -17,7 +21,7 @@ export class SearchEngineService {
     const engine = engines.find((engine) => engine.id === id);
 
     if (!engine) {
-      console.warn(`Theme not found: ${id}, falling back to default`);
+      this.logger.warn(`Theme not found: ${id}, falling back to default`);
       return engines[0]; // 0番目をデフォルトに
     }
 

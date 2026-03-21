@@ -2,11 +2,12 @@ import { settingsIpc } from "../../ipc/settings-ipc";
 
 import type { Path, PathValue } from "../../../../shared/types/path";
 import type { Config } from "../../../../shared/types/config";
+import { defaultIpc } from "@/renderer/ipc/default-ipc";
 
 export const SettingsActions = {
   save<P extends Path<Config>>(key: P, value?: PathValue<Config, P> | undefined) {
     settingsIpc.set(key, value);
-    console.info("Option saved:", key, value);
+    defaultIpc.log.info(`Option saved: "${key}": "${value}"`);
   },
   async saveAll() {
     const inputElements = document.querySelectorAll(
@@ -48,7 +49,7 @@ export const SettingsActions = {
 
     this.save("settings.design.theme", themeElement.id.replace("theme-", ""));
 
-    console.info("All settings have been saved.");
+    defaultIpc.log.info("All settings have been saved.");
 
     // each();
   },

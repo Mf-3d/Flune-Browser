@@ -1,5 +1,5 @@
 import { applyTheme } from "./theme";
-import { browserIpc } from "./ipc/browser-ipc";
+import { defaultIpc } from "../ipc/default-ipc";
 
 window.addEventListener("DOMContentLoaded", () => {
   if (!window.flune.browser) return;
@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 async function onInit() {
-  const fluneVersion = (await browserIpc.getVersion())
+  const fluneVersion = (await defaultIpc.getVersion())
     .replace("-beta.", " Beta ")
     .replace("-dev.", " Dev ");
 

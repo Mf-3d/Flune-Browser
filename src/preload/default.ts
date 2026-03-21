@@ -11,6 +11,17 @@ export const DEFAULT: DefaultAPI = {
       ? process.env.ELECTRON_RENDERER_URL
       : `${config.protocol}://`,
 
+  log: {
+    info: (message) => {
+      ipcRenderer.invoke(IPC_INVOKE.LOG_INFO, message);
+    },
+    warn: (message) => {
+      ipcRenderer.invoke(IPC_INVOKE.LOG_WARN, message);
+    },
+    error: (message) => {
+      ipcRenderer.invoke(IPC_INVOKE.LOG_ERROR, message);
+    },
+  },
   getVersion: async () => {
     return await ipcRenderer.invoke(IPC_INVOKE.APP_GET_VERSION); // バージョン取得
   },

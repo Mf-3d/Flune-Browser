@@ -1,4 +1,8 @@
 export const IPC_INVOKE = {
+  LOG_INFO: "log:info",
+  LOG_WARN: "log:warn",
+  LOG_ERROR: "log:error",
+
   APP_GET_VERSION: "app:get-version",
   APP_GET_VERSIONS: "app:get-versions",
   APP_GET_COMPUTER_INFO: "app:get-computer-info",

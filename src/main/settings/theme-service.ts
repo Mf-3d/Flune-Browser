@@ -4,13 +4,15 @@ import { config } from "@/app.config";
 import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { Theme } from "@/shared/types/config";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { Logger } from "../utils/logger";
 
 export class ThemeService {
   private readonly urlPrefix: string;
 
   constructor(
     private readonly store: SettingsStore,
-    private readonly appService: ApplicationService
+    private readonly appService: ApplicationService,
+    private readonly logger: Logger
   ) {
     this.urlPrefix =
       !this.appService.isPackaged && process.env.ELECTRON_RENDERER_URL
@@ -31,7 +33,7 @@ export class ThemeService {
     const theme = themes.find((theme) => theme.id === id);
 
     if (!theme) {
-      console.warn(`Theme not found: ${id}, falling back to default`);
+      this.logger.warn(`Theme not found: ${id}, falling back to default`);
       return themes[0]; // 0番目をデフォルトに
     }
 

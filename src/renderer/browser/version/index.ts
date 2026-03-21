@@ -1,9 +1,9 @@
-import { browserIpc } from "../ipc/browser-ipc";
+import { defaultIpc } from "@/renderer/ipc/default-ipc";
 
 window.addEventListener("DOMContentLoaded", onInit);
 
 async function onInit() {
-  const versions = await browserIpc.getVersions();
+  const versions = await defaultIpc.getVersions();
 
   document.querySelectorAll(".version-flune").forEach((element) => {
     element.classList.remove("undefined");

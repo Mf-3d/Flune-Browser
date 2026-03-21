@@ -1,6 +1,7 @@
 import { CreatedTab, TabState } from "@/shared/types/preload-api";
 import { updateTabsUI } from "..";
 import { isDragging } from "../ui/tab-drag-events";
+import { defaultIpc } from "@/renderer/ipc/default-ipc";
 
 export function registerTabEvents() {
   if (!window.flune.navigation) return;
@@ -12,7 +13,7 @@ export function registerTabEvents() {
 }
 
 function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
-  console.info("New tab is created.", tab.id);
+  defaultIpc.log.info(`New tab is created: Tab ID: ${tab.id}`);
 
   const tabContainer = document.getElementById("tabs")!;
   const newButton = tabContainer.querySelector(".new-button")!;
@@ -114,7 +115,7 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
 }
 
 function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
-  console.info("The tab has been updated.", tab.id);
+  defaultIpc.log.info(`The tab has been updated: Tab ID: ${tab.id}`);
 
   if (isDragging) return;
 
@@ -125,19 +126,19 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
     if (tabElement.getAttribute("data-id") !== tab.id) return;
 
     if (tab.title !== undefined) {
-      console.info("(change-state) title:", tab.title);
+      defaultIpc.log.info(`Navigation state changed: title: ${tab.title}`);
       const titleElement = tabElement.querySelector("p.title")! as HTMLElement;
       titleElement.innerText = tab.title;
     }
 
     if (tab.favicon !== undefined) {
-      console.info("(change-state) favicon:", tab.favicon);
+      defaultIpc.log.info(`Navigation state changed: favicon: ${tab.favicon}`);
       const faviconElement = tabElement.querySelector("img.favicon")! as HTMLElement;
       faviconElement.setAttribute("src", tab.favicon);
     }
 
     if (tab.isLoading !== undefined) {
-      console.info("(change-state) loading:", tab.isLoading);
+      defaultIpc.log.info(`Navigation state changed: isLoading: ${tab.isLoading}`);
       const loadingElement = tabElement.querySelector("a.loading")! as HTMLElement;
 
       if (tab.isLoading) loadingElement.classList.remove("disabled");
@@ -145,7 +146,7 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
     }
 
     if (tab.isAudible !== undefined) {
-      console.info("(change-state) audible:", tab.isAudible);
+      defaultIpc.log.info(`Navigation state changed: isAudible: ${tab.isAudible}`);
       const audibleElement = tabElement.querySelector("a.audible")! as HTMLElement;
 
       if (tab.isAudible) audibleElement.classList.remove("disabled");
