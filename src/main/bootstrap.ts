@@ -88,8 +88,13 @@ function initializeServices(runtime: RuntimeContext): Services {
 }
 
 function onReady(services: Services) {
-  services.logger.setLogLevel("info");
-  
+  if (services.appService.isPackaged) {
+    services.logger.info("Application is packaged.");
+    services.logger.setLogLevel("warn");
+  } else {
+    services.logger.setLogLevel("info");
+  }
+
   services.protocol.handle();
 
   registerCrashHandler(services.logger);
