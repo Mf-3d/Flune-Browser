@@ -88,6 +88,10 @@ function initializeServices(runtime: RuntimeContext): Services {
 }
 
 function onReady(services: Services) {
+  services.logger.setLogLevel("info");
+  
+  services.protocol.handle();
+
   registerCrashHandler(services.logger);
   registerLogHandler(services.logger);
   registerAppHandler(services.appService, services.windowManager);
@@ -100,9 +104,7 @@ function onReady(services: Services) {
   );
   registerOptionMenuHandler(services.windowManager);
 
-  services.logger.setLogLevel("info");
   services.eventBus.send("init");
-  services.protocol.handle();
   services.windowManager.create();
 
   app.on("activate", () => {
