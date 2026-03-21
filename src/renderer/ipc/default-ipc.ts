@@ -14,7 +14,7 @@ export const defaultIpc = {
       // eslint-disable-next-line
       console.error(message);
       window.flune.log.error(message);
-    }
+    },
   },
   async getVersion() {
     return await window.flune.getVersion();
