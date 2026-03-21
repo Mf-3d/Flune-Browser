@@ -98,6 +98,10 @@ export function createNavigationFeature(
     });
   }
 
+  function close() {
+    view.webContents.close();
+  }
+
   return {
     view,
     attach,
@@ -105,6 +109,7 @@ export function createNavigationFeature(
     updateTheme,
     setWidth,
     send,
+    close,
   };
 }
 
@@ -117,6 +122,7 @@ function registerWebContentsEvents(
   onLoaded?: () => void
 ) {
   const initOptions: NavigationInit = {
+    isMac: process.platform === "darwin",
     showHomeButton: settings.showHomeButton,
   };
 
