@@ -69,7 +69,7 @@ export class TabManager {
 
     tab.cleanupEvents = registerTabEvents({
       tab,
-      isActiveTab: this.isActiveTab,
+      isActiveTab: (id) => this.isActiveTab(id),
       window: this.window,
       settings: this.settings,
       bookmarkService: this.bookmarkService,
