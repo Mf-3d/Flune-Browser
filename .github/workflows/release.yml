@@ -1,4 +1,4 @@
-name: Build and release electron installer
+name: Build and release application
 on:
   push:
     tags:
@@ -21,10 +21,13 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build/release Electron app
-        # uses: samuelmeuli/action-electron-builder@v1
-        uses: johannesjo/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
+      - name: Install dependencies
+        run: npm ci
 
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      - name: Build
+        run: npm run prebuild
+
+      - name: Package
+        run: npm run package --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
