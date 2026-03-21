@@ -1,4 +1,4 @@
-function parseShortcut(accelerators: string): string[] {
+export function parseShortcut(accelerators: string): string[] {
   const keys = accelerators.split("+").map((acc) => {
     switch (acc) {
       case "Command":
@@ -50,7 +50,7 @@ function parseShortcut(accelerators: string): string[] {
   return keys;
 }
 
-function normalizeAccelerator(parsed: string[]) {
+export function normalizeAccelerator(parsed: string[]) {
   return {
     ctrl: parsed.includes("Control"),
     meta: parsed.includes("Meta"),
