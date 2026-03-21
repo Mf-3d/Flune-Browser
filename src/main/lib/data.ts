@@ -56,10 +56,10 @@ export class DataManager {
      */
     folders: {
       getStuff: (folderId: FolderId): (Bookmark | BookmarkFolder)[] => {
-        let bookmarks = this.bookmarks
+        const bookmarks = this.bookmarks
           .getAll()
           .filter((bookmark) => bookmark.parentId === folderId);
-        let folders = this.bookmarks.folders
+        const folders = this.bookmarks.folders
           .getAll()
           .filter((folder) => folder.parentId === folderId);
 
@@ -152,7 +152,7 @@ export class DataManager {
       }
 
       const bookmarks = this.bookmarks.getAll();
-      let newBookmark: Bookmark = {
+      const newBookmark: Bookmark = {
         type: "bookmark",
         id: crypto.randomUUID(),
         title: input.title,
@@ -198,7 +198,7 @@ export class DataManager {
 
     add: (data: History) => {
       const histories = this.histories.getAll();
-      let latestHistory = histories.at(-1);
+      const latestHistory = histories.at(-1);
       if (latestHistory && latestHistory.url === data.url) return;
 
       histories.push(data);
@@ -243,7 +243,7 @@ export class DataManager {
       receivedSize: number | null;
       percentComplete: number | null;
     }): Download => {
-      let download: Download = {
+      const download: Download = {
         id: crypto.randomUUID(),
         ...data,
       };
@@ -255,8 +255,8 @@ export class DataManager {
       return download;
     },
     edit: (id: string, data: Download) => {
-      let downloads = this.downloads.getAll();
-      let ids: string[] = downloads.map((download) => download.id);
+      const downloads = this.downloads.getAll();
+      const ids: string[] = downloads.map((download) => download.id);
       downloads[ids.indexOf(id)] = data;
 
       this.config.set("downloads", downloads);
