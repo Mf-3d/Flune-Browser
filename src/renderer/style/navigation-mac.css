@@ -2,7 +2,3 @@
   margin-right: 2px;
   margin-left: 66px;
 }
-
-input[type=text] {
-  width: calc(100% - 35px);
-}

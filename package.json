@@ -1,13 +1,21 @@
 {
   "name": "flune-browser",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "description": "Newer and more challenging than anyone else.",
-  "main": "src/main.js",
+  "main": "out/main/main.js",
   "scripts": {
-    "test": "npm run build & npx electron .",
-    "build": "npx tsc",
-    "build:win": "npm run build & npx electron-builder --win --x64",
-    "build:mac": "npm run build & npx electron-builder --mac --x64"
+    "test": "playwright test",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "check": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prebuild": "electron-vite build",
+    "package": "npm run prebuild & electron-builder --dir --config electron-builder.config.ts",
+    "package:win": "npm run prebuild & electron-builder --win --x64 --config electron-builder.config.ts",
+    "package:mac": "npm run prebuild & electron-builder --mac --x64 --config electron-builder.config.ts"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -23,57 +31,22 @@
   },
   "homepage": "https://github.com/mf-3d/flune-browser#readme",
   "dependencies": {
+    "chalk": "4.1.2",
     "electron-store": "^8.2.0",
-    "ts-node": "^10.9.2",
+    "strip-ansi": "6.0.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "electron": "^39.2.7",
-    "electron-builder": "^25.1.8"
-  },
-  "build": {
-    "appId": "io.github.mf-3d.flune-browser",
-    "productName": "Flune-Browser",
-    "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}",
-    "files": [
-      "src/**/*",
-      "!src/**/*.ts"
-    ],
-    "directories": {
-      "output": "dist"
-    },
-    "publish": {
-      "provider": "github",
-      "releaseType": "draft"
-    },
-    "win": {
-      "icon": "./src/assets/image/icon.png",
-      "target": [
-        "nsis",
-        "zip"
-      ],
-      "signtoolOptions": {
-        "publisherName": "mf7cli"
-      }
-    },
-    "nsis": {
-      "artifactName": "${productName}-${version}-${platform}-${arch}-installer.exe"
-    },
-    "mac": {
-      "icon": "./src/assets/image/icon.png",
-      "category": "public.app-category.utilities",
-      "target": {
-        "target": "dmg",
-        "arch": "universal"
-      },
-      "identity": null
-    },
-    "linux": {
-      "icon": "./src/assets/image/icon.png",
-      "target": [
-        "AppImage"
-      ],
-      "category": "Utility"
-    }
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.57.0",
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "playwright": "^1.57.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.57.1",
+    "vite": "^7.3.1"
   }
 }

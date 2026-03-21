@@ -1,10 +1,12 @@
 :root {
   --text-color: #fff;
-  --background-color: #171A19;
+  --background-color: #171a19;
   --input-color: #202222;
-  --symbol-color: #6E9797;
+  --symbol-color: #6e9797;
   --hover-color: #a9fde3;
   --disabled-color: #868686;
+
+  --text-color-red: #ff8f82;
 }
 
 body {
@@ -14,7 +16,7 @@ body {
   color: var(--text-color);
 }
 
-input[type=text] {
+input[type="text"] {
   color: var(--text-color);
   background: none;
   border: none;
@@ -22,6 +24,10 @@ input[type=text] {
   vertical-align: middle;
 }
 
-input[type=text]:focus {
+input[type="text"]:focus {
   outline: none;
+}
+
+.text-red {
+  color: var(--text-color-red);
 }

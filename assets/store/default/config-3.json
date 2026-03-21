@@ -1,0 +1,55 @@
+{
+  "version": [3, 0, 0],
+  "settings": {
+    "autoSave": true,
+    "window": {
+      "bounds": {
+        "width": 800,
+        "height": 600,
+        "x": null,
+        "y": null
+      }
+    },
+    "search": {
+      "engine": "google"
+    },
+    "design": {
+      "theme": "dark",
+      "showHomeButton": false
+    }
+  },
+  "themes": [
+    {
+      "id": "dark",
+      "name": "Flutical Dark",
+      "url": "@theme/dark.css"
+    },
+    {
+      "id": "light",
+      "name": "Flutical Light",
+      "url": "@theme/light.css"
+    }
+  ],
+  "searchEngines": [
+    {
+      "id": "google",
+      "name": "Google",
+      "url": "https://google.com/search?q=%s"
+    },
+    {
+      "id": "yahoo-jp",
+      "name": "Yahoo! JAPAN",
+      "url": "https://search.yahoo.co.jp/search?p=%s"
+    },
+    {
+      "id": "bing",
+      "name": "Bing",
+      "url": "https://www.bing.com/search?q=%s"
+    },
+    {
+      "id": "ddg",
+      "name": "DuckDuckGo",
+      "url": "https://duckduckgo.com/?q=%s"
+    }
+  ]
+}

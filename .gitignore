@@ -1,6 +1,8 @@
 /src/**/*.js
 /src/**/*.js.map
 !/src/renderer/**/*.js
+test-results/
+artifacts
 
 # Logs
 logs

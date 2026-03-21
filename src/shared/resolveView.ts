@@ -1,0 +1,37 @@
+import { config } from "@/app.config";
+
+export const ROUTE_MAP = {
+  navigation: "navigation/index.html",
+  home: "browser/home/index.html",
+  settings: "browser/settings/index.html",
+  version: "browser/version/index.html",
+  error: {
+    directory: "browser/error/",
+    generic: "browser/error/error.html",
+    notFound: "browser/error/server-notfound.html",
+  },
+  menu: "menu/index.html",
+} as const;
+
+export type RouteKey = keyof typeof ROUTE_MAP;
+
+// 開発サーバー上とアプリ内プロトコルのパスが違うため解決する必要がある
+
+/**
+ * @param path Route of View to resolve to
+ * @returns Resolved Path
+ *
+ * ```js
+ * resolveView(ROUTE_MAP.menu.generic);
+ * // -> "flune://menu/index.html" or "http://localhost:0000/menu/index.html"
+ * ```
+ */
+export function resolveView(path: string) {
+  const isDev = !!process.env.ELECTRON_RENDERER_URL;
+
+  if (isDev) {
+    return new URL(path, process.env.ELECTRON_RENDERER_URL).toString();
+  }
+
+  return `${config.protocol}://app/${path}`;
+}

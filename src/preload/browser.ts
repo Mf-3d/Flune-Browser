@@ -1,33 +1,32 @@
-import { contextBridge, ipcRenderer, webFrame } from "electron";
+import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
+import { ipcRenderer } from "electron";
+import { config } from "@/app.config";
 
-contextBridge.exposeInMainWorld("flune", {
-  getVersion: async () => {
-    return await ipcRenderer.invoke("flune.get-version"); // バージョン取得
-  },
-  getVersions: async () => {
-    return await ipcRenderer.invoke("flune.get-versions"); // ElectronやChromeのバージョンも取得
-  },
-  toggleBookmark: (data: {
-    session: number,
-    url: string,
-    title: string,
-  }) => {
-    if (data.session === webFrame.routingId) ipcRenderer.invoke("tab.toggle-bookmark", {
-      url: data.url,
-      title: data.title
-    });
-  },
-  load: (word: string) => {
-    ipcRenderer.invoke("tab.load", undefined, word); // ページをロードする
-  },
-});
+import type { BrowserAPI } from "@/shared/types/preload-api";
 
-ipcRenderer.on("nav.toggle-bookmark", (event) => {
-  webFrame.executeJavaScript(`
-  flune.toggleBookmark({
-    session: ${webFrame.routingId},
-    url: location.href,
-    title: document.head.getElementsByTagName('title')[0].innerText,
-  });
-  `)
-});
+export function isBrowserPage() {
+  const isDev =
+    !process.argv.includes("--is-packaged=true") && !!process.env.ELECTRON_RENDERER_URL;
+
+  if (isDev) {
+    const devUrl = new URL(process.env.ELECTRON_RENDERER_URL!);
+    return (
+      window.location.host === devUrl.host &&
+      window.location.pathname.startsWith("/browser/")
+    );
+  } else {
+    return (
+      window.location.protocol === `${config.protocol}:` &&
+      window.location.pathname.startsWith("/browser/")
+    );
+  }
+}
+
+export const BROWSER: BrowserAPI = {
+  navigate: (input) => {
+    ipcRenderer.invoke(IPC_INVOKE.TAB_NAVIGATE, undefined, input); // ページをロードする
+  },
+
+  onThemeChanged: (callback) =>
+    ipcRenderer.on(IPC_NOTIFY.TAB_THEME, (event, themeUrl) => callback(event, themeUrl)),
+};

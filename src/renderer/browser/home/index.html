@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="icon"
+      href="/image/icon.png"
+    />
+    <link
+      rel="stylesheet"
+      href="/style/main.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/style/browser.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/style/home.css"
+    />
+    <title>新しいタブ - Flune-Browser</title>
+  </head>
+
+  <body class="bg-image">
+    <div>
+      <span style="user-select: none">
+        <h1 style="display: inline-block; user-select: none">Flune-Browser</h1>
+        <span class="flune-version">3</span>
+      </span>
+      <br />
+      <span id="address-box">
+        <input
+          id="search-bar"
+          type="text"
+          placeholder="検索する単語を入力"
+          style="-webkit-app-region: no-drag"
+        />
+        <a
+          id="search-button"
+          class="border"
+          ><i data-lucide="search"></i
+        ></a>
+      </span>
+      <br />
+      <div id="links"></div>
+    </div>
+
+    <script
+      type="module"
+      src="./index.ts"
+    ></script>
+    <script
+      type="module"
+      src="../index.ts"
+    ></script>
+  </body>
+</html>

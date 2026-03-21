@@ -1,6 +1,8 @@
 name: 🐛 バグ報告
 description: バグを報告する
+title: "🐛 "
 labels: ["bug"]
+type: bug
 body:
   - type: markdown
     attributes:
@@ -11,6 +13,8 @@ body:
     attributes:
       label: バグの説明
       description: バグの内容を明確かつ簡潔に説明してください。
+      placeholder: |
+        ...が正常な動作をしない。
     validations:
       required: true
 

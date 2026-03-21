@@ -35,7 +35,7 @@
 :root {
   --tab-color: #202222;
   --opened-tab-color: #293939;
-  --tab-adding-color: #2582CF;
+  --tab-adding-color: #2582cf;
   --tab-text-color: #fff;
 }
 
@@ -60,6 +60,7 @@ nav {
   height: 50%;
   user-select: none;
   cursor: default;
+  display: inline-flexbox;
 }
 
 nav * {
@@ -72,19 +73,28 @@ nav a.right {
 }
 
 nav a {
+  margin-bottom: 4px;
+  width: 20px;
+  height: 20px;
   vertical-align: middle;
+  display: inline-flex;
+  cursor: pointer;
 }
 
-nav a>svg {
+nav a > svg {
   width: 20px;
-  height: auto;
+  height: 20px;
   stroke: var(--symbol-color);
   stroke-width: 3px;
 
-  transition: stroke .2s, stroke-width .5s, filter .5s, fill .2s;
+  transition:
+    stroke 0.2s,
+    stroke-width 0.5s,
+    filter 0.5s,
+    fill 0.2s;
 }
 
-nav a>svg:hover {
+nav a > svg:hover {
   stroke: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
   stroke-width: 4px;
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
@@ -94,7 +104,7 @@ nav a.disabled {
   pointer-events: none;
 }
 
-nav a.disabled>svg {
+nav a.disabled > svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
@@ -105,7 +115,7 @@ nav a.invisible {
   visibility: hidden;
 }
 
-nav>div {
+nav > div {
   display: inline-block;
   background-color: var(--input-color);
   border: none;
@@ -116,11 +126,11 @@ nav>div {
   top: -0.5px;
   padding: 3px;
 }
-:has(.go-home:not(.invisible)) nav>div {
+:has(#go-home:not(.invisible)) nav > div {
   width: calc(100% - 28px * 5 + 6px);
 }
 
-input[type=text] {
+input[type="text"] {
   width: calc(100% - 60px);
   height: 16px;
   line-height: 16px;
@@ -142,7 +152,7 @@ input[type=text] {
   -webkit-app-region: no-drag;
 }
 
-#tabs>span {
+.tab {
   display: flex;
   align-items: center;
   background-color: var(--tab-color);
@@ -159,10 +169,13 @@ input[type=text] {
   text-align: center;
   padding: 2px;
 
-  transition: filter .5s, border-right .5s, border-left .5s;
+  transition:
+    filter 0.5s,
+    border-right 0.5s,
+    border-left 0.5s;
 }
 
-#tabs>span#opened {
+.tab#opened {
   background-color: var(--opened-tab-color);
 }
 
@@ -184,21 +197,21 @@ input[type=text] {
   color: var(--tab-text-color);
 }
 
-#tabs span:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
-#tabs span:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
+.tab:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
+.tab:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
   width: calc(100% - 72px);
 }
 
-#tabs span:not(:has(.right .disabled)) .title {
+.tab:not(:has(.right .disabled)) .title {
   width: calc(100% - 96px);
 }
 
-#tabs>span.adding-left {
+.tab.adding-left {
   border-left: solid 3px var(--tab-adding-color);
   filter: drop-shadow(-2em 0 2rem var(--tab-adding-color));
 }
 
-#tabs>span.adding-right {
+.tab.adding-right {
   border-right: solid 3px var(--tab-adding-color);
   filter: drop-shadow(2em 0 2rem var(--tab-adding-color));
 }
@@ -207,38 +220,44 @@ input[type=text] {
   height: 20px;
   height: 20px;
   display: inline-block;
-  transition: all .5s;
+  transition: all 0.5s;
 
   animation-name: fadeIn;
-  animation-duration: .2s;
+  animation-duration: 0.2s;
   animation-fill-mode: forwards;
 }
 
-#tabs a>svg {
+#tabs a > svg {
   width: 20px;
   height: 20px;
   /* stroke: color-mix(in srgb, var(--symbol-color), #fff 50%); */
   stroke: var(--symbol-color);
   stroke-width: 2px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition:
+    stroke 0.5s,
+    stroke-width 0.5s,
+    filter 0.5s;
 }
 
 #tabs a:not(.close-button).disabled {
   cursor: default;
 
   animation-name: fadeOut;
-  animation-duration: .1s;
+  animation-duration: 0.1s;
   animation-fill-mode: forwards;
 }
 
-#tabs>span#opened a>svg {
+.tab#opened a > svg {
   width: 20px;
   height: 20px;
   stroke: var(--tab-text-color);
   stroke-width: 2px;
 
-  transition: stroke .5s, stroke-width .5s, filter .5s;
+  transition:
+    stroke 0.5s,
+    stroke-width 0.5s,
+    filter 0.5s;
 }
 
 #tabs p {
@@ -246,7 +265,7 @@ input[type=text] {
   width: 100%;
 }
 
-#tabs>.right {
+#tabs > .right {
   transform: translate(0, 10%);
   width: 20px;
   height: 20px;
@@ -254,7 +273,7 @@ input[type=text] {
   margin-right: 2px;
 }
 
-#tabs span>.right {
+.tab > .right {
   text-align: right;
   position: absolute;
   top: 50%;
@@ -275,17 +294,21 @@ span.right {
   transform: translate(0, -50%);
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 
-#tabs a.loading>svg {
-  animation: .5s ease-in infinite rotation;
+#tabs a.loading > svg {
+  animation: 0.5s ease-in infinite rotation;
   pointer-events: none;
 }
 
-/*  */
-.bookmark.active > svg {
+#toggle-bookmark.active > svg {
   fill: var(--symbol-color);
 }
-.bookmark.active > svg:hover {
+#toggle-bookmark.active > svg:hover {
   fill: color-mix(in srgb, var(--symbol-color), var(--hover-color) 60%);
+}
+
+.new-button {
+  cursor: pointer;
 }

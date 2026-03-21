@@ -1,0 +1,45 @@
+name: Packaged App Test
+
+on: [push, pull_request]
+
+jobs:
+  packaged-launch:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Package app
+        run: npm run package
+        shell: bash
+
+      - run: npx playwright install
+
+      - name: Run packaged launch test
+        env:
+          ELECTRON_EXECUTABLE_PATH: |
+            ${{ matrix.os == 'windows-latest'
+            && './dist/win-unpacked/Flune-Browser.exe'
+            || './dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
+        run: npx playwright test tests/e2e/packaged-launch.test.ts
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-logs
+          path: |
+            ${{ matrix.os == 'window-latest' 
+              && 'C:\Users\runneradmin\AppData\Roaming\Flune-Browser\app.log' 
+              || '/Users/runner/Library/Application Support/Flune-Browser/app.log' }}
