@@ -16,7 +16,8 @@ export type BookmarkFolder = {
   tag: string[];
   parentId: string;
 };
-export type History = {
+export type HistoryItem = {
+  id: string;
   title: string;
   url: string;
   date: string;
@@ -43,6 +44,10 @@ export type BookmarkInput = {
    */
   parentId?: FolderId;
 };
+export type HistoryInput = {
+  title: string;
+  url: string;
+};
 
 export type Data = {
   /**
@@ -50,6 +55,6 @@ export type Data = {
    * @example [3,0,0]
    */
   version: [number, number, number];
-  history: History[];
+  history: HistoryItem[];
   bookmark: Bookmark[];
 };
