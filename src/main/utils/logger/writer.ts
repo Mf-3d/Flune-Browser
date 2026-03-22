@@ -23,7 +23,7 @@ export class ConsoleWriter implements Writer {
         console.warn(colored);
       } else {
         // eslint-disable-next-line
-        console.log(colored);
+        console.info(colored);
       }
     } catch (err) {
       // eslint-disable-next-line
