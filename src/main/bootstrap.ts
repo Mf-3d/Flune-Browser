@@ -101,9 +101,9 @@ function initializeServices(runtime: RuntimeContext): Services {
 function onReady(services: Services) {
   if (services.appService.isPackaged) {
     services.logger.info("Application is packaged.");
-    services.logger.setLogLevel("warn");
-  } else {
     services.logger.setLogLevel("info");
+  } else {
+    services.logger.setLogLevel("debug");
   }
 
   services.protocol.handle();

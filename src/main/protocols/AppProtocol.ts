@@ -34,14 +34,14 @@ export class Protocol {
   }
 
   handle() {
-    this.logger.info(`Protocol (${this.name}) handled.`);
+    this.logger.info(`Protocol ("${this.name}") handled.`);
 
     protocol.handle(this.name, (req) => {
       const url = new URL(req.url);
       url.hostname = path.join(urlPrefix, url.hostname);
       const pathname = path.join(url.hostname, url.pathname);
 
-      this.logger.info(`Protocol accessed: "${pathname}"`);
+      this.logger.debug(`Protocol accessed: "${pathname}"`);
 
       return this.router.handle({
         url,

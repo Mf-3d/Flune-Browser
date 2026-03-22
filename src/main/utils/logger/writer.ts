@@ -21,9 +21,15 @@ export class ConsoleWriter implements Writer {
       } else if (level === "warn") {
         // eslint-disable-next-line
         console.warn(colored);
-      } else {
+      } else if (level === "info") {
         // eslint-disable-next-line
         console.info(colored);
+      } else if (level === "debug") {
+        // eslint-disable-next-line
+        console.debug(colored);
+      } else {
+        // eslint-disable-next-line
+        console.log(colored);
       }
     } catch (err) {
       // eslint-disable-next-line
