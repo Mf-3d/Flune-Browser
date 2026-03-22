@@ -25,10 +25,14 @@ const config: Configuration = {
   mac: {
     icon: "assets/image/icon.icns",
     category: "public.app-category.utilities",
-    target: {
-      target: "dmg",
-      arch: "universal",
-    },
+    target: [
+      // 自分のMacBook Airでは動かないみたい。
+      {
+        target: "dmg",
+        arch: "universal",
+      },
+      // "zip"
+    ],
     identity: null,
   },
   linux: {
