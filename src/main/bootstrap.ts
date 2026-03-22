@@ -64,7 +64,7 @@ function registerAppEvents(services: Services) {
 
 function initializeServices(runtime: RuntimeContext): Services {
   const logger = new Logger(runtime.logFilePath);
-  const protocol = new Protocol(config.protocol);
+  const protocol = new Protocol(config.protocol, logger);
   const data = new DataStore();
   const eventBus = new EventBus();
 
@@ -73,7 +73,7 @@ function initializeServices(runtime: RuntimeContext): Services {
 
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const historyService = new HistoryService(historyRepository);
-  
+
   const appService = new ApplicationService(bookmarkService);
 
   const settings = createSettings(appService, logger);
