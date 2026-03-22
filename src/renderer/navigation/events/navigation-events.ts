@@ -1,6 +1,7 @@
 import { NavigationInit, NavigationState } from "@/shared/types/preload-api";
 import { applyTheme } from "../theme";
 import { navigationActions } from "../actions/navigation-actions";
+import { IpcRendererEvent } from "electron";
 
 export function registerNavigationEvents() {
   if (!window.flune.navigation) return;
@@ -10,7 +11,7 @@ export function registerNavigationEvents() {
   window.flune.navigation.onThemeChanged(onThemeChanged);
 }
 
-function onInit(_: Electron.IpcRendererEvent, state: NavigationInit) {
+function onInit(_: IpcRendererEvent, state: NavigationInit) {
   const homeButton = document.getElementById("go-home")!;
 
   if (state.isMac) {
@@ -23,7 +24,7 @@ function onInit(_: Electron.IpcRendererEvent, state: NavigationInit) {
   }
 }
 
-function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
+function onStateUpdated(_: IpcRendererEvent, state: NavigationState) {
   if (state.showHomeButton !== undefined) {
     const homeButton = document.getElementById("go-home")!;
 
@@ -71,6 +72,6 @@ function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
   }
 }
 
-function onThemeChanged(_: Electron.IpcRendererEvent, themeUrl: string) {
+function onThemeChanged(_: IpcRendererEvent, themeUrl: string) {
   applyTheme(themeUrl, navigationActions.updateSymbolColor);
 }

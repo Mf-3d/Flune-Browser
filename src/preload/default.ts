@@ -1,4 +1,4 @@
-import { IPC_INVOKE } from "../shared/ipc/channels";
+import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { ipcRenderer } from "electron";
 import { config } from "@/app.config";
 

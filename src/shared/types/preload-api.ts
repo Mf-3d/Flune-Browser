@@ -1,6 +1,7 @@
 import type { MenuActionDescriptor, MenuPageId, OptionMenuItem } from "./menu";
 import type { Config } from "./config";
 import type { Path, PathValue } from "./path";
+import { IpcRenderer, IpcRendererEvent } from "electron";
 
 export type Versions = {
   flune: string;
@@ -77,8 +78,8 @@ export type BrowserAPI = {
   navigate: (input: string) => void;
 
   onThemeChanged: (
-    callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent, themeUrl: string) => void
+  ) => IpcRenderer;
 };
 
 export type NavigationAPI = {
@@ -95,31 +96,31 @@ export type NavigationAPI = {
     goHome: () => void;
 
     onCreated: (
-      callback: (event: Electron.IpcRendererEvent, tab: CreatedTab) => void
-    ) => Electron.IpcRenderer;
+      callback: (event: IpcRendererEvent, tab: CreatedTab) => void
+    ) => IpcRenderer;
     onRemoved: (
-      callback: (event: Electron.IpcRendererEvent, id: string) => void
-    ) => Electron.IpcRenderer;
+      callback: (event: IpcRendererEvent, id: string) => void
+    ) => IpcRenderer;
     onUpdated: (
-      callback: (event: Electron.IpcRendererEvent, state: TabState) => void
-    ) => Electron.IpcRenderer;
+      callback: (event: IpcRendererEvent, state: TabState) => void
+    ) => IpcRenderer;
 
     onReordered: (
-      callback: (event: Electron.IpcRendererEvent, order: string[]) => void
-    ) => Electron.IpcRenderer;
+      callback: (event: IpcRendererEvent, order: string[]) => void
+    ) => IpcRenderer;
   };
   toggleBookmark: () => void;
   toggleOptionMenu: () => void;
   updateSymbolColor: (color: string) => void;
   onStateUpdated: (
-    callback: (event: Electron.IpcRendererEvent, state: NavigationState) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent, state: NavigationState) => void
+  ) => IpcRenderer;
   onInit: (
-    callback: (event: Electron.IpcRendererEvent, state: NavigationInit) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent, state: NavigationInit) => void
+  ) => IpcRenderer;
   onThemeChanged: (
-    callback: (event: Electron.IpcRendererEvent, themeUrl: string) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent, themeUrl: string) => void
+  ) => IpcRenderer;
 };
 
 export type MenuAPI = {
@@ -132,11 +133,11 @@ export type MenuAPI = {
     add: () => void;
   };
   onOpening: (
-    callback: (event: Electron.IpcRendererEvent) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent) => void
+  ) => IpcRenderer;
   onClosing: (
-    callback: (event: Electron.IpcRendererEvent) => void
-  ) => Electron.IpcRenderer;
+    callback: (event: IpcRendererEvent) => void
+  ) => IpcRenderer;
 };
 
 export type SettingsAPI = {

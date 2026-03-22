@@ -1,5 +1,6 @@
 import { applyTheme } from "./theme";
 import { defaultIpc } from "../ipc/default-ipc";
+import { IpcRendererEvent } from "electron";
 
 window.addEventListener("DOMContentLoaded", () => {
   if (!window.flune.browser) return;
@@ -19,6 +20,6 @@ async function onInit() {
   });
 }
 
-function onThemeChanged(_: Electron.IpcRendererEvent, themeUrl: string) {
+function onThemeChanged(_: IpcRendererEvent, themeUrl: string) {
   applyTheme(themeUrl);
 }

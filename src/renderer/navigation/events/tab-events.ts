@@ -1,7 +1,8 @@
 import { CreatedTab, TabState } from "@/shared/types/preload-api";
-import { updateTabsUI } from "..";
+import { updateTabsUI } from "../index";
 import { isDragging } from "../ui/tab-drag-events";
 import { defaultIpc } from "@/renderer/ipc/default-ipc";
+import { IpcRendererEvent } from "electron";
 
 export function registerTabEvents() {
   if (!window.flune.navigation) return;
@@ -12,7 +13,7 @@ export function registerTabEvents() {
   window.flune.navigation.tab.onReordered(onReordered);
 }
 
-function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
+function onCreated(_: IpcRendererEvent, tab: CreatedTab) {
   defaultIpc.log.info(`New tab is created: Tab ID: "${tab.id}"`);
 
   const tabContainer = document.getElementById("tabs")!;
@@ -103,7 +104,7 @@ function onCreated(_: Electron.IpcRendererEvent, tab: CreatedTab) {
   updateTabsUI();
 }
 
-function onRemoved(_: Electron.IpcRendererEvent, id: string) {
+function onRemoved(_: IpcRendererEvent, id: string) {
   const tabContainer = document.getElementById("tabs")!;
   const tabElements = tabContainer.querySelectorAll(".tab");
 
@@ -114,7 +115,7 @@ function onRemoved(_: Electron.IpcRendererEvent, id: string) {
   updateTabsUI();
 }
 
-function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
+function OnUpdated(_: IpcRendererEvent, tab: TabState) {
   defaultIpc.log.info(`Tab has been updated: Tab ID: "${tab.id}"`);
 
   if (isDragging) return;
@@ -167,7 +168,7 @@ function OnUpdated(_: Electron.IpcRendererEvent, tab: TabState) {
   updateTabsUI();
 }
 
-function onReordered(_: Electron.IpcRendererEvent, order: string[]) {
+function onReordered(_: IpcRendererEvent, order: string[]) {
   const tabContainer = document.getElementById("tabs")!;
 
   for (const id of order) {
