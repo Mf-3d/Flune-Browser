@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 
 import { type Route, Router } from "./Router";
 
-const urlPrefix = "app\\";
+const urlPrefix = process.platform === "win32" ? "app\\" : "app/";
 const baseDir = path.resolve(__dirname, "../../out/renderer");
 
 export class Protocol {
@@ -31,7 +31,7 @@ export class Protocol {
   handle() {
     protocol.handle(this.name, (req) => {
       const url = new URL(req.url);
-      url.hostname = urlPrefix.concat(url.hostname);
+      url.hostname = path.join(urlPrefix, url.hostname);
       const pathname = path.join(url.hostname, url.pathname);
 
       return this.router.handle({
