@@ -124,8 +124,8 @@ hr {
 }
 
 main > div div.header {
-  margin: .1em;
-  margin-left: .5em;
+  margin: 0.1em;
+  margin-left: 0.5em;
   color: color-mix(in srgb, var(--background-color) 60%, var(--disabled-color));
   font-weight: bolder;
 }

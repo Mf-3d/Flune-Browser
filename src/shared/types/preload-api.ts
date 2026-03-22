@@ -98,9 +98,7 @@ export type NavigationAPI = {
     onCreated: (
       callback: (event: IpcRendererEvent, tab: CreatedTab) => void
     ) => IpcRenderer;
-    onRemoved: (
-      callback: (event: IpcRendererEvent, id: string) => void
-    ) => IpcRenderer;
+    onRemoved: (callback: (event: IpcRendererEvent, id: string) => void) => IpcRenderer;
     onUpdated: (
       callback: (event: IpcRendererEvent, state: TabState) => void
     ) => IpcRenderer;
@@ -132,12 +130,8 @@ export type MenuAPI = {
     getByFolderId: (folderId: string) => Promise<any>;
     add: () => void;
   };
-  onOpening: (
-    callback: (event: IpcRendererEvent) => void
-  ) => IpcRenderer;
-  onClosing: (
-    callback: (event: IpcRendererEvent) => void
-  ) => IpcRenderer;
+  onOpening: (callback: (event: IpcRendererEvent) => void) => IpcRenderer;
+  onClosing: (callback: (event: IpcRendererEvent) => void) => IpcRenderer;
 };
 
 export type SettingsAPI = {

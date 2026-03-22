@@ -26,8 +26,6 @@ export function buildHistoryTemplate(context: MenuTemplateContext): OptionMenuIt
     );
   }
 
-  // historyItems = historyItems.reverse();
-
   return [
     {
       type: "go-back",
