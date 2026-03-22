@@ -54,6 +54,7 @@ export class OptionMenuController {
     handleAction(action, {
       appService: this.appService,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       window: this.window,
       optionMenuManager: this,
     });
@@ -148,7 +149,7 @@ export class OptionMenuController {
   getPage(pageId: MenuPageId): OptionMenuItem[] {
     return buildOptionMenuPage(pageId, {
       bookmarks: this.bookmarkService.getAll(),
-      history: this.historyService.getAll(),
+      groupedHistory: this.historyService.groupByDate(this.historyService.getRecent(10)),
     });
   }
 }

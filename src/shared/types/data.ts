@@ -58,3 +58,14 @@ export type Data = {
   history: HistoryItem[];
   bookmark: Bookmark[];
 };
+
+export type Favicon = {
+  url: string;        // faviconのURL（キー）
+  data: Buffer;       // 画像データ
+  updatedAt: number;
+};
+
+export type GroupedHistory = {
+  date: Date;
+  items: HistoryItem[];
+};

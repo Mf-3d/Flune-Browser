@@ -31,8 +31,13 @@ export function handleAction<T extends MenuActionDescriptor>(
     "open-history": (payload) => {
       if (!payload) return;
 
-      // const tab = context.appService.createTab(context.window);
-      // tab.loadURL(context.bookmarkService.getById(payload.id)!.url);
+      const historyItem = context.historyService.getById(payload.id);
+
+      if (!historyItem) {
+        throw new Error(`History (${payload.id}) does not exist.`);
+      }
+
+      context.window.tabManager.navigate(historyItem.url);
     },
 
     "open-bookmarks-page": () => {

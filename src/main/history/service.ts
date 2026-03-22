@@ -1,4 +1,4 @@
-import type { HistoryInput, HistoryItem } from "@/shared/types/data";
+import type { GroupedHistory, HistoryInput, HistoryItem } from "@/shared/types/data";
 import type { HistoryRepository } from "./repository";
 
 export class HistoryService {
@@ -36,8 +36,36 @@ export class HistoryService {
     return this.repository.getByUrl(url);
   }
 
+  getById(id: string): HistoryItem | undefined {
+    return this.repository.getById(id);
+  }
+
   getLatest(): HistoryItem | undefined {
-    return this.repository.getAll().at(-1);
+    return this.repository.getRecent(1).at(-1);
+  }
+
+  getRecent(limit: number): HistoryItem[] {
+    return this.repository.getRecent(limit);
+  }
+
+  groupByDate(items: HistoryItem[]): GroupedHistory[] {
+    const map = new Map<string, HistoryItem[]>();
+
+    for (const item of items) {
+      const date = new Date(item.date);
+      const key = date.toDateString();
+
+      if (!map.has(key)) {
+        map.set(key, []);
+      }
+
+      map.get(key)!.push(item);
+    }
+
+    return Array.from(map.entries()).map(([key, items]) => ({
+      date: new Date(key),
+      items,
+    }));
   }
 
   clearAll() {

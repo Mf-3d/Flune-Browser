@@ -8,6 +8,11 @@ export class HistoryRepository {
     return this.store.get("history");
   }
 
+  getRecent(limit: number) {
+    const history = this.getAll();
+    return history.slice(history.length - limit <= 0 ? 0 : history.length - limit);
+  }
+
   /**
    * **Gets item by ID.**
    *

@@ -2,16 +2,19 @@ import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
 export function buildHistoryTemplate(context: MenuTemplateContext): OptionMenuItem[] {
-  const historyItems = context.history
-    .slice(
-      context.history.length - 10 <= 0
-        ? 0
-        : context.history.length - 10
-    )
-    .map((item) => {
-      return {
+  let historyItems: OptionMenuItem[] = [];
+
+  context.groupedHistory.reverse();
+
+  for (const item of context.groupedHistory) {
+    historyItems.push({
+      type: "header",
+      label: new Date(item.date).toLocaleDateString(),
+    });
+
+    historyItems.push(
+      ...(item.items.map((item) => ({
         type: "item",
-        enabled: false,
         action: {
           type: "open-history",
           payload: {
@@ -19,9 +22,11 @@ export function buildHistoryTemplate(context: MenuTemplateContext): OptionMenuIt
           },
         },
         label: item.title,
-      };
-    })
-    .reverse() as OptionMenuItem[];
+      })) as OptionMenuItem[])
+    );
+  }
+
+  // historyItems = historyItems.reverse();
 
   return [
     {

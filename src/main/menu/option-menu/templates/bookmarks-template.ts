@@ -2,8 +2,10 @@ import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
 export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenuItem[] {
+  const max: number = 10;
+
   const bookmarkItems: OptionMenuItem[] = context.bookmarks
-    .slice(context.history.length - 10)
+    .slice(context.bookmarks.length - max <= 0 ? 0 : context.bookmarks.length - max)
     .map((bookmark) => {
       return {
         type: "item",
