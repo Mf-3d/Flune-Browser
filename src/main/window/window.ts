@@ -9,17 +9,19 @@ import {
 } from "@/main/navigation/navigation-feature";
 import { TabCollection } from "@/main/tab/tab-collection";
 import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
-import { OptionMenuView } from "../menu/option-menu/view/option-menu-view";
+import { OptionMenuView } from "@/main/menu/option-menu/view/option-menu-view";
 
 import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
-import type { BookmarkService } from "../bookmark/service";
+import type { BookmarkService } from "@/main/bookmark/service";
+import type { HistoryService } from "@/main/history/service";
 import type { Rect } from "@/shared/types/rect";
 
 type WindowContext = {
   appService: ApplicationService;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
   settings: Settings;
   eventBus: EventBus;
   bounds?: Rect;
@@ -28,19 +30,21 @@ type WindowContext = {
 export class Window {
   viewY: number = 66;
 
-  private readonly win: BaseWindow;
-  readonly navigation: Navigation;
-  readonly optionMenuController: OptionMenuController;
-  private readonly appService: ApplicationService;
-  private readonly bookmarkService: BookmarkService;
-  private readonly settings: Settings;
-  private readonly eventBus: EventBus;
+  private readonly win;
+  readonly navigation;
+  readonly optionMenuController;
+  private readonly appService;
+  private readonly bookmarkService;
+  private readonly historyService;
+  private readonly settings;
+  private readonly eventBus;
 
   readonly tabManager: TabManager;
 
   constructor(options: WindowContext) {
     this.appService = options.appService;
     this.bookmarkService = options.bookmarkService;
+    this.historyService = options.historyService;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
 
@@ -55,6 +59,7 @@ export class Window {
     this.optionMenuController = new OptionMenuController({
       appService: this.appService,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       view: optionMenuView,
       window: this,
       fadeTime: 400,
@@ -66,6 +71,7 @@ export class Window {
       settings: this.settings,
       window: this,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       eventBus: this.eventBus,
     });
 

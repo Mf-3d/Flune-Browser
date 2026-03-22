@@ -1,6 +1,6 @@
 import type { Bookmark, BookmarkInput } from "@/shared/types/data";
 import type { BookmarkRepository } from "./repository";
-import { EventBus } from "../infrastructure/event/event-bus";
+import { EventBus } from "@/main/infrastructure/event/event-bus";
 
 export class BookmarkService {
   constructor(

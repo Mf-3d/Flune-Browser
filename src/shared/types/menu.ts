@@ -26,7 +26,7 @@ export type MenuActionDescriptor =
       payload: undefined;
     }
   | {
-      type: "open-histories-page";
+      type: "open-history-page";
       payload: undefined;
     }
   | {

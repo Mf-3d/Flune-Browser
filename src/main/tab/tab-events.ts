@@ -48,6 +48,9 @@ export function registerTabEvents(options: TabEventOptions): () => void {
       id: options.tab.id,
       title,
     });
+
+    if (options.tab.url)
+      options.historyService.updateTitle(options.tab.url.toString(), options.tab.title);
   }
 
   function onFaviconUpdated(_: Electron.Event, favicons: string[]) {
@@ -62,6 +65,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
 
   function onDidNavigate(_: Electron.Event, url: string) {
     options.tab.url = new URL(url);
+    options.tab.title = options.tab.webContents.getTitle();
 
     if (options.isActiveTab(options.tab.id)) {
       options.window.navigation.updateState({
@@ -72,7 +76,10 @@ export function registerTabEvents(options: TabEventOptions): () => void {
       });
     }
 
-    // 履歴追加
+    options.historyService.add({
+      title: options.tab.title,
+      url: options.tab.url.toString(),
+    });
   }
 
   function onDidStartLoading() {

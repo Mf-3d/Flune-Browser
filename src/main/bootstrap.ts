@@ -1,27 +1,32 @@
 import { app } from "electron";
 
-import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
-import { Protocol } from "@/main/protocols/AppProtocol";
+import { config } from "@/app.config";
 import { isArchitectureIntel } from "@/main/system/env";
+import { createRuntimeContext } from "./application/runtime-context";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
+import { DataStore } from "@/main/infrastructure/storage/data-store";
+import { Protocol } from "@/main/protocols/AppProtocol";
 import { WindowManager } from "@/main/window/window-manager";
-import { BookmarkService } from "@/main/bookmark/service";
 import { Settings, createSettings } from "@/main/settings/";
 import { EventBus } from "@/main/infrastructure/event/event-bus";
 import { Logger } from "@/main/utils/logger";
-import { config } from "@/app.config";
 
-import { createRuntimeContext } from "./application/runtime-context";
-import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+import { ApplicationService } from "@/main/application/application-service";
+import { BookmarkService } from "@/main/bookmark/service";
+import { BookmarkRepository } from "@/main/bookmark/repository";
+import { HistoryService } from "@/main/history/service";
+import { HistoryRepository } from "@/main/history/repository";
+
+import { registerLogHandler } from "@/main/logger/ipc/log-handler";
+import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
 import { registerTabHandler } from "@/main/tab/ipc/tab-handler";
 import { registerSettingsHandler } from "@/main/settings/ipc/settings-handler";
 import { registerBookmarkHandler } from "@/main/bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
-import { ApplicationService } from "@/main/application/application-service";
 import { registerOptionMenuHandler } from "@/main/menu/option-menu/ipc/option-menu-handler";
-import { DataStore } from "@/main/infrastructure/storage/data-store";
-import { BookmarkRepository } from "@/main/bookmark/repository";
-import type { RuntimeContext } from "./application/types";
-import { registerLogHandler } from "./logger/ipc/log-handler";
+
+import type { RuntimeContext } from "@/main/application/types";
 
 type Services = {
   logger: Logger;
@@ -31,6 +36,7 @@ type Services = {
   data: DataStore;
   eventBus: EventBus;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
   appService: ApplicationService;
 };
 
@@ -63,14 +69,18 @@ function initializeServices(runtime: RuntimeContext): Services {
   const eventBus = new EventBus();
 
   const bookmarkRepository = new BookmarkRepository(data);
+  const historyRepository = new HistoryRepository(data);
 
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
+  const historyService = new HistoryService(historyRepository);
+  
   const appService = new ApplicationService(bookmarkService);
 
   const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(
     appService,
     bookmarkService,
+    historyService,
     settings,
     eventBus
   );
@@ -83,6 +93,7 @@ function initializeServices(runtime: RuntimeContext): Services {
     data,
     eventBus,
     bookmarkService,
+    historyService,
     appService,
   };
 }

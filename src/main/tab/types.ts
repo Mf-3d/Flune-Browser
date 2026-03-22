@@ -8,11 +8,13 @@ import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { Tab } from "./tab";
 import type { Rect } from "@/shared/types/rect";
 import type { BookmarkService } from "@/main/bookmark/service";
+import type { HistoryService } from "@/main/history/service";
 
 export type TabManagerOptions = {
   collection: TabCollection;
   window: Window;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
   settings: Settings;
   eventBus: EventBus;
 };
@@ -27,6 +29,7 @@ export type TabEventOptions = {
   isActiveTab: (id: string) => boolean;
   window: Window;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
   settings: Settings;
   eventBus: EventBus;
 };

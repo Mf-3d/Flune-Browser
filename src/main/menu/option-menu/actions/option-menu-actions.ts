@@ -43,7 +43,7 @@ export function handleAction<T extends MenuActionDescriptor>(
       // window.tabManager.navigate();
     },
 
-    "open-histories-page": () => {
+    "open-history-page": () => {
       // window.tabManager.navigate();
     },
 
@@ -85,8 +85,8 @@ export function handleAction<T extends MenuActionDescriptor>(
       handlers["open-downloads-page"](undefined);
       break;
 
-    case "open-histories-page":
-      handlers["open-histories-page"](undefined);
+    case "open-history-page":
+      handlers["open-history-page"](undefined);
       break;
 
     case "open-versions-page":

@@ -14,6 +14,7 @@ export class TabManager {
   private readonly collection;
   private readonly window;
   private readonly bookmarkService;
+  private readonly historyService;
   private readonly settings;
   private readonly eventBus;
   private readonly contextMenuController;
@@ -22,6 +23,7 @@ export class TabManager {
     this.collection = options.collection;
     this.window = options.window;
     this.bookmarkService = options.bookmarkService;
+    this.historyService = options.historyService;
     this.settings = options.settings;
     this.eventBus = options.eventBus;
 
@@ -71,6 +73,7 @@ export class TabManager {
       window: this.window,
       settings: this.settings,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       eventBus: this.eventBus,
     });
     this.contextMenuController.register(tab.webContents, {

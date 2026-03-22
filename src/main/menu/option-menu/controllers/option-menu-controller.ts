@@ -1,3 +1,4 @@
+import { wait } from "@/main/utils/wait";
 import { handleAction } from "../actions/option-menu-actions";
 import { buildOptionMenuPage } from "../templates/";
 
@@ -10,7 +11,7 @@ import type {
 } from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
-import { wait } from "@/main/utils/wait";
+import type { HistoryService } from "@/main/history/service";
 
 type OptionMenuControllerOptions = {
   view: OptionMenuView;
@@ -18,6 +19,7 @@ type OptionMenuControllerOptions = {
   fadeTime: number;
   appService: ApplicationService;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
 };
 
 type MenuState = "closed" | "opening" | "open" | "closing";
@@ -31,6 +33,7 @@ export class OptionMenuController {
   private readonly fadeTime;
   private readonly appService;
   private readonly bookmarkService;
+  private readonly historyService;
 
   constructor(options: OptionMenuControllerOptions) {
     this.view = options.view;
@@ -38,6 +41,7 @@ export class OptionMenuController {
     this.fadeTime = options.fadeTime;
     this.appService = options.appService;
     this.bookmarkService = options.bookmarkService;
+    this.historyService = options.historyService;
 
     this.view.setVisible(false);
   }
@@ -144,6 +148,7 @@ export class OptionMenuController {
   getPage(pageId: MenuPageId): OptionMenuItem[] {
     return buildOptionMenuPage(pageId, {
       bookmarks: this.bookmarkService.getAll(),
+      history: this.historyService.getAll(),
     });
   }
 }
