@@ -21,6 +21,14 @@ export type BookmarkInput = {
    */
   parentId?: FolderId;
 };
+export type BookmarkFolderInput = {
+  title: string;
+  tag?: string[];
+  /**
+   * Specify the ID of "root" or parent folder.
+   */
+  parentId?: FolderId;
+};
 export type HistoryInput = {
   title: string;
   url: string;

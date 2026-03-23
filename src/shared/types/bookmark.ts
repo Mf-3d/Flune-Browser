@@ -6,6 +6,7 @@ export type Bookmark = {
   title: string;
   url: string;
   tag: string[];
+  createdAt: string;
   /**
    * Specify the ID of "root" or parent folder.
    */
@@ -19,3 +20,7 @@ export type BookmarkFolder = {
   parentId: FolderId;
 };
 export type BookmarkNode = Bookmark | BookmarkFolder;
+
+export type BookmarkNodeWithChildren = BookmarkNode & {
+  children: BookmarkNodeWithChildren[];
+};

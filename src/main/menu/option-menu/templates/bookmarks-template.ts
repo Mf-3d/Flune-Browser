@@ -4,20 +4,39 @@ import type { MenuTemplateContext } from "./types";
 export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenuItem[] {
   const max: number = 10;
 
-  const bookmarkItems: OptionMenuItem[] = context.bookmarks
-    .slice(context.bookmarks.length - max <= 0 ? 0 : context.bookmarks.length - max)
-    .map((bookmark) => {
-      return {
-        type: "item",
-        enabled: false,
-        action: {
-          type: "open-bookmark",
-          payload: {
-            id: bookmark.id,
-          },
-        },
-        label: bookmark.title,
-      };
+  const bookmarkItems: OptionMenuItem[] = context.bookmarkNodes
+    .slice(
+      context.bookmarkNodes.length - max <= 0 ? 0 : context.bookmarkNodes.length - max
+    )
+    .map((node) => {
+      switch (node.type) {
+        case "bookmark":
+        default:
+          return {
+            type: "item",
+            enabled: false,
+            action: {
+              type: "open-bookmark",
+              payload: {
+                id: node.id,
+              },
+            },
+            label: node.title,
+          };
+        // case "folder":
+        //   return {
+        //     type: "item",
+        //     enabled: false,
+        //     action: {
+        //       type: "open-bookmark-folder",
+        //       payload: {
+        //         id: node.id,
+        //         children: node.children,
+        //       },
+        //     },
+        //     label: node.title,
+        //   };
+      }
     });
 
   return [

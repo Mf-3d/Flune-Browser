@@ -148,7 +148,7 @@ export class OptionMenuController {
 
   getPage(pageId: MenuPageId): OptionMenuItem[] {
     return buildOptionMenuPage(pageId, {
-      bookmarks: this.bookmarkService.getAll(),
+      bookmarkNodes: this.bookmarkService.getTree(),
       groupedHistory: this.historyService.groupByDate(this.historyService.getRecent(10)),
     });
   }

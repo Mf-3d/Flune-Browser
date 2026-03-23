@@ -4,7 +4,7 @@ import type { Window } from "@/main/window/window";
 import type { OptionMenuController } from "../controllers/option-menu-controller";
 import type { HistoryService } from "@/main/history/service";
 import type { GroupedHistory } from "@/shared/types/history";
-import type { BookmarkNode } from "@/shared/types/bookmark";
+import type { BookmarkNodeWithChildren } from "@/shared/types/bookmark";
 
 export type MenuActionContext = {
   appService: ApplicationService;
@@ -15,7 +15,7 @@ export type MenuActionContext = {
 };
 
 export type MenuTemplateContext = {
-  bookmarks: BookmarkNode[];
+  bookmarkNodes: BookmarkNodeWithChildren[];
   groupedHistory: GroupedHistory[];
 };
 

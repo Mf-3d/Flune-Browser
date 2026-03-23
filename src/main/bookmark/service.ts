@@ -1,7 +1,12 @@
-import type { BookmarkInput, FolderId } from "@/shared/types/data";
+import type { BookmarkFolderInput, BookmarkInput, FolderId } from "@/shared/types/data";
 import type { BookmarkRepository } from "./repository";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
-import type { Bookmark, BookmarkNode } from "@/shared/types/bookmark";
+import type {
+  Bookmark,
+  BookmarkFolder,
+  BookmarkNode,
+  BookmarkNodeWithChildren,
+} from "@/shared/types/bookmark";
 
 export class BookmarkService {
   constructor(
@@ -10,16 +15,29 @@ export class BookmarkService {
   ) {}
 
   add(input: BookmarkInput) {
-    const bookmark: BookmarkNode = {
+    const bookmark: Bookmark = {
       type: "bookmark",
       id: crypto.randomUUID(),
       title: input.title,
       url: input.url,
       tag: input.tag ?? [],
+      createdAt: new Date().toISOString(),
       parentId: input.parentId ?? "root",
     };
 
     return this.repository.save(bookmark);
+  }
+
+  createFolder(input: BookmarkFolderInput) {
+    const folder: BookmarkFolder = {
+      type: "folder",
+      id: crypto.randomUUID(),
+      title: input.title,
+      tag: input.tag ?? [],
+      parentId: input.parentId ?? "root",
+    };
+
+    return this.repository.save(folder);
   }
 
   toggle(input: BookmarkInput) {
@@ -56,8 +74,36 @@ export class BookmarkService {
   }
 
   getChildren(parentId: FolderId): BookmarkNode[] {
-    const bookmarks = this.repository.getAll();
+    const nodes = this.repository.getAll();
 
-    return bookmarks.filter((bookmark) => bookmark.parentId === parentId);
+    return nodes.filter((bookmark) => bookmark.parentId === parentId);
+  }
+
+  buildTree(nodes: BookmarkNode[]) {
+    const map = new Map<string, BookmarkNodeWithChildren>();
+    const roots: BookmarkNodeWithChildren[] = [];
+
+    for (const node of nodes) {
+      map.set(node.id, { ...node, children: [] });
+    }
+
+    for (const node of nodes) {
+      const item = map.get(node.id)!;
+
+      if (node.parentId === "root") {
+        roots.push(item);
+      } else {
+        const parent = map.get(node.parentId);
+        parent?.children.push(item);
+      }
+    }
+
+    return roots;
+  }
+
+  getTree() {
+    const nodes = this.repository.getAll();
+
+    return this.buildTree(nodes);
   }
 }
