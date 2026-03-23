@@ -1,5 +1,5 @@
-import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { config } from "@/app.config";
 
 import type { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";

@@ -1,8 +1,8 @@
 import { ipcRenderer } from "electron";
-import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels.js";
+import { IPC_INVOKE, IPC_NOTIFY } from "@/shared/ipc/channels";
 import { config } from "@/app.config";
 
-import type { NavigationAPI } from "../shared/types/preload-api.js";
+import type { NavigationAPI } from "@/shared/types/preload-api";
 
 export function isNavigationPage() {
   const isDev =

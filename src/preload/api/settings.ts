@@ -1,8 +1,8 @@
-import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { config } from "@/app.config";
 
-import type { SettingsAPI } from "../shared/types/preload-api";
+import type { SettingsAPI } from "@/shared/types/preload-api";
 
 export function isSettingsPage() {
   const isDev =
