@@ -20,7 +20,6 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
                 id: node.id,
               },
             },
-            icon: node.favicon?.data.toDataURL(),
             label: node.title,
           };
         case "folder":

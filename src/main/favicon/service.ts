@@ -8,14 +8,16 @@ export class FaviconService {
   constructor() {}
 
   async get(url: string): Promise<Favicon | undefined> {
-    if (new URL(url).protocol === `${config.protocol}`) {
+    if (new URL(url).protocol === `${config.protocol}:`) {
       return;
     }
+
+    console.log(new URL(url).protocol, `${config.protocol}:`, url);
 
     if (this.cache.has(url)) {
       return {
         url,
-        data: this.cache.get(url)!,
+        dataUrl: this.cache.get(url)?.toDataURL()!,
       };
     }
 
@@ -27,7 +29,7 @@ export class FaviconService {
 
     const favicon: Favicon = {
       url,
-      data
+      dataUrl: data.toDataURL(),
     };
     if (favicon) {
       this.cache.set(url, data);
@@ -40,9 +42,9 @@ export class FaviconService {
     const res = await fetch(url, {
       method: "GET",
       mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
     });
 
     return nativeImage.createFromDataURL(URL.createObjectURL(await res.blob()));
