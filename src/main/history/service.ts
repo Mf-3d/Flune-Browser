@@ -1,5 +1,6 @@
-import type { GroupedHistory, HistoryInput, HistoryItem } from "@/shared/types/data";
+import type { HistoryInput } from "@/shared/types/data";
 import type { HistoryRepository } from "./repository";
+import type { GroupedHistory, HistoryItem } from "@/shared/types/history";
 
 export class HistoryService {
   constructor(private readonly repository: HistoryRepository) {}

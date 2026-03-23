@@ -1,6 +1,7 @@
-import type { Bookmark, BookmarkInput } from "@/shared/types/data";
+import type { BookmarkInput, FolderId } from "@/shared/types/data";
 import type { BookmarkRepository } from "./repository";
-import { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { Bookmark, BookmarkNode } from "@/shared/types/bookmark";
 
 export class BookmarkService {
   constructor(
@@ -9,7 +10,7 @@ export class BookmarkService {
   ) {}
 
   add(input: BookmarkInput) {
-    const bookmark: Bookmark = {
+    const bookmark: BookmarkNode = {
       type: "bookmark",
       id: crypto.randomUUID(),
       title: input.title,
@@ -39,15 +40,24 @@ export class BookmarkService {
     return Boolean(this.repository.getByUrl(url));
   }
 
-  getAll(): Bookmark[] {
+  getAll(): BookmarkNode[] {
     return this.repository.getAll();
   }
 
-  getById(id: string): Bookmark | undefined {
-    return this.repository.getById(id);
+  getBookmarkById(id: string): Bookmark | undefined {
+    const bookmark = this.repository.getById(id);
+
+    if (bookmark && bookmark.type === "bookmark") return bookmark;
+    else return undefined;
   }
 
   getByUrl(url: string): Bookmark | undefined {
     return this.repository.getByUrl(url);
+  }
+
+  getChildren(parentId: FolderId): BookmarkNode[] {
+    const bookmarks = this.repository.getAll();
+
+    return bookmarks.filter((bookmark) => bookmark.parentId === parentId);
   }
 }

@@ -1,5 +1,5 @@
 import type { DataStore } from "@/main/infrastructure/storage/data-store";
-import type { HistoryItem } from "@/shared/types/data";
+import type { HistoryItem } from "@/shared/types/history";
 
 export class HistoryRepository {
   constructor(private readonly store: DataStore) {}
