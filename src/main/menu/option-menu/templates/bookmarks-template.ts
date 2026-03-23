@@ -11,7 +11,6 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
     .map((node) => {
       switch (node.type) {
         case "bookmark":
-        default:
           return {
             type: "item",
             enabled: false,
@@ -21,21 +20,22 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
                 id: node.id,
               },
             },
+            icon: node.favicon?.data.toDataURL(),
             label: node.title,
           };
-        // case "folder":
-        //   return {
-        //     type: "item",
-        //     enabled: false,
-        //     action: {
-        //       type: "open-bookmark-folder",
-        //       payload: {
-        //         id: node.id,
-        //         children: node.children,
-        //       },
-        //     },
-        //     label: node.title,
-        //   };
+        case "folder":
+          return {
+            type: "item",
+            enabled: false,
+            action: {
+              type: "open-bookmark",
+              payload: {
+                id: node.id,
+                children: node.children,
+              },
+            },
+            label: node.title,
+          };
       }
     });
 

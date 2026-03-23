@@ -84,7 +84,14 @@ export class BookmarkService {
     const roots: BookmarkNodeWithChildren[] = [];
 
     for (const node of nodes) {
-      map.set(node.id, { ...node, children: [] });
+      switch (node.type) {
+        case "bookmark":
+          map.set(node.id, node);
+          break;
+        case "folder":
+          map.set(node.id, { ...node, children: [] });
+          break;
+      }
     }
 
     for (const node of nodes) {
@@ -94,7 +101,7 @@ export class BookmarkService {
         roots.push(item);
       } else {
         const parent = map.get(node.parentId);
-        parent?.children.push(item);
+        if (parent?.type === "folder") parent?.children.push(item);
       }
     }
 

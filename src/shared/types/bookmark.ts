@@ -21,6 +21,7 @@ export type BookmarkFolder = {
 };
 export type BookmarkNode = Bookmark | BookmarkFolder;
 
-export type BookmarkNodeWithChildren = BookmarkNode & {
-  children: BookmarkNodeWithChildren[];
-};
+export type BookmarkNodeWithChildren = Bookmark |
+  (BookmarkFolder & {
+    children: BookmarkNodeWithChildren[];
+  });

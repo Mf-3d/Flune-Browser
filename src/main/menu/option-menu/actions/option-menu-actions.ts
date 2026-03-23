@@ -28,6 +28,10 @@ export function handleAction<T extends MenuActionDescriptor>(
       tab.loadURL(context.bookmarkService.getBookmarkById(payload.id)!.url);
     },
 
+    "open-bookmark-folder": (preload) => {
+      //
+    },
+
     "open-history": (payload) => {
       if (!payload) return;
 

@@ -48,6 +48,10 @@ export type MenuActionDescriptor =
       payload: { id: string };
     }
   | {
+      type: "open-bookmark-folder";
+      payload: { id: string };
+    }
+  | {
       type: "open-history";
       payload: { id: string };
     };
