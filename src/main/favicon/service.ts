@@ -17,7 +17,7 @@ export class FaviconService {
     if (this.cache.has(url)) {
       return {
         url,
-        dataUrl: this.cache.get(url)?.toDataURL()!,
+        data: this.cache.get(url)!,
       };
     }
 
@@ -29,7 +29,8 @@ export class FaviconService {
 
     const favicon: Favicon = {
       url,
-      dataUrl: data.toDataURL(),
+      data,
+      // dataUrl: data.toDataURL(),
     };
     if (favicon) {
       this.cache.set(url, data);

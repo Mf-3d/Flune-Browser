@@ -2,7 +2,7 @@ import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
 export function buildHistoryTemplate(context: MenuTemplateContext): OptionMenuItem[] {
-  let historyItems: OptionMenuItem[] = [];
+  const historyItems: OptionMenuItem[] = [];
 
   context.groupedHistory.reverse();
 
