@@ -1,5 +1,5 @@
-import { BookmarkNode } from "./bookmark";
-import { HistoryItem } from "./history";
+import type { BookmarkNode } from "./bookmark";
+import type { HistoryItem } from "./history";
 
 export type Download = {
   id: string;
@@ -46,5 +46,5 @@ export type Data = {
 
 export type Favicon = {
   url: string; // faviconのURL（キー）
-  data: Buffer; // 画像データ
+  data: NativeImage; // 画像データ
 };
