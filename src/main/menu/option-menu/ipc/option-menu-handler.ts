@@ -25,14 +25,14 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
     window.optionMenuController.close();
   });
 
-  handle(IPC_INVOKE.MENU_GET_PAGE, (event, pageId: MenuPageId) => {
+  handle(IPC_INVOKE.MENU_GET_PAGE, async (event, pageId: MenuPageId) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
 
-    return window.optionMenuController.getPage(pageId);
+    return await window.optionMenuController.getPage(pageId);
   });
 
   handle(IPC_INVOKE.MENU_TOGGLE, (event) => {

@@ -11,7 +11,7 @@ export class HistoryService {
         id: crypto.randomUUID(),
         title: input.title,
         url: input.url,
-        date: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
 
       this.repository.save(item);
@@ -53,7 +53,7 @@ export class HistoryService {
     const map = new Map<string, HistoryItem[]>();
 
     for (const item of items) {
-      const date = new Date(item.date);
+      const date = new Date(item.createdAt);
       const key = date.toDateString();
 
       if (!map.has(key)) {

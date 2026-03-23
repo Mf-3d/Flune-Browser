@@ -42,8 +42,8 @@ export class HistoryRepository {
   getByPeriod(period: [Date, Date]): HistoryItem[] {
     return this.getAll().filter(
       (history) =>
-        period[0].getTime() <= new Date(history.date).getTime() &&
-        new Date(history.date).getTime() <= period[1].getTime()
+        period[0].getTime() <= new Date(history.createdAt).getTime() &&
+        new Date(history.createdAt).getTime() <= period[1].getTime()
     );
   }
 
@@ -61,7 +61,7 @@ export class HistoryRepository {
     this.store.set(
       "history",
       history.map((item) => {
-        if (item.id === updated.id && item.date === updated.date) {
+        if (item.id === updated.id && item.createdAt === updated.createdAt) {
           return updated;
         } else {
           return item;
@@ -82,8 +82,8 @@ export class HistoryRepository {
     history.filter(
       (item) =>
         !(
-          period[0].getTime() <= new Date(item.date).getTime() &&
-          new Date(item.date).getTime() <= period[1].getTime()
+          period[0].getTime() <= new Date(item.createdAt).getTime() &&
+          new Date(item.createdAt).getTime() <= period[1].getTime()
         )
     );
 

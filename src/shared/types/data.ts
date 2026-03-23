@@ -47,5 +47,4 @@ export type Data = {
 export type Favicon = {
   url: string; // faviconのURL（キー）
   data: Buffer; // 画像データ
-  updatedAt: number;
 };

@@ -13,7 +13,7 @@ import type { ApplicationService } from "@/main/application/application-service"
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
 
-type OptionMenuControllerOptions = {
+type OptionMenuControllerContext = {
   view: OptionMenuView;
   window: Window;
   fadeTime: number;
@@ -35,13 +35,13 @@ export class OptionMenuController {
   private readonly bookmarkService;
   private readonly historyService;
 
-  constructor(options: OptionMenuControllerOptions) {
-    this.view = options.view;
-    this.window = options.window;
-    this.fadeTime = options.fadeTime;
-    this.appService = options.appService;
-    this.bookmarkService = options.bookmarkService;
-    this.historyService = options.historyService;
+  constructor(context: OptionMenuControllerContext) {
+    this.view = context.view;
+    this.window = context.window;
+    this.fadeTime = context.fadeTime;
+    this.appService = context.appService;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
 
     this.view.setVisible(false);
   }

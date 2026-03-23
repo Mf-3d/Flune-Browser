@@ -41,20 +41,20 @@ export class Window {
 
   readonly tabManager: TabManager;
 
-  constructor(options: WindowContext) {
-    this.appService = options.appService;
-    this.bookmarkService = options.bookmarkService;
-    this.historyService = options.historyService;
-    this.settings = options.settings;
-    this.eventBus = options.eventBus;
+  constructor(context: WindowContext) {
+    this.appService = context.appService;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
+    this.settings = context.settings;
+    this.eventBus = context.eventBus;
 
-    this.win = new BaseWindow(this.createWindowConstructorOptions(options.bounds));
+    this.win = new BaseWindow(this.createWindowConstructorOptions(context.bounds));
 
     const optionMenuView = new OptionMenuView(this.appService, this, {
       x: 0,
       y: this.viewY,
-      width: options.bounds ? options.bounds.width : this.getBounds().width,
-      height: options.bounds ? options.bounds.height : this.getBounds().height,
+      width: context.bounds ? context.bounds.width : this.getBounds().width,
+      height: context.bounds ? context.bounds.height : this.getBounds().height,
     });
     this.optionMenuController = new OptionMenuController({
       appService: this.appService,

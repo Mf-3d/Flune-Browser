@@ -35,8 +35,8 @@ export const MENU: MenuAPI = {
     ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICKED, action); // メニューアイテムをクリック
   },
 
-  getPage: (menuId: MenuPageId) => {
-    return ipcRenderer.invoke(IPC_INVOKE.MENU_GET_PAGE, menuId);
+  getPage: async (menuId: MenuPageId) => {
+    return await ipcRenderer.invoke(IPC_INVOKE.MENU_GET_PAGE, menuId);
   },
 
   /**
