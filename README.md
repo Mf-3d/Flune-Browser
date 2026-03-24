@@ -1,6 +1,6 @@
 # 🌐 Flune-Browser 3.0.0
 
-> [!WARNING]
+> [!NOTE]
 > 紹介されている要素は最終リリース前に変更される可能性があります。
 
 Flune-Browserが生まれ変わりました！
