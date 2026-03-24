@@ -17,12 +17,14 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   const webContents = options.tab.webContents;
 
   function onInit() {
-    options.window.navigation.updateState({
-      canGoBack: options.tab.canGoBack,
-      canGoForward: options.tab.canGoForward,
-      input: options.tab.url?.toString(),
-      isBookmarked: options.bookmarkService.isBookmarked(options.tab.url!.toString()),
-    });
+    if (options.isActiveTab(options.tab.id)) {
+      options.window.navigation.updateState({
+        canGoBack: options.tab.canGoBack,
+        canGoForward: options.tab.canGoForward,
+        input: options.tab.url?.toString(),
+        isBookmarked: options.bookmarkService.isBookmarked(options.tab.url!.toString()),
+      });
+    }
   }
 
   function onResize() {
