@@ -24,11 +24,16 @@ export function handleAction<T extends MenuActionDescriptor>(
     "open-bookmark": (payload) => {
       if (!payload) return;
 
-      const tab = context.appService.createTab(context.window);
-      tab.loadURL(context.bookmarkService.getBookmarkById(payload.id)!.url);
+      const bookmark = context.bookmarkService.getBookmarkById(payload.id);
+
+      if (!bookmark) {
+        throw new Error(`Bookmark ${payload.id} does not exist.`);
+      }
+
+      context.window.tabManager.navigate(bookmark.url);
     },
 
-    "open-bookmark-folder": (preload) => {
+    "open-bookmark-folder": (payload) => {
       //
     },
 

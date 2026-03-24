@@ -13,7 +13,6 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
         case "bookmark":
           return {
             type: "item",
-            enabled: false,
             action: {
               type: "open-bookmark",
               payload: {
@@ -27,7 +26,7 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
             type: "item",
             enabled: false,
             action: {
-              type: "open-bookmark",
+              type: "open-bookmark-folder",
               payload: {
                 id: node.id,
                 children: node.children,
