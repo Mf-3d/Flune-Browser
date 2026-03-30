@@ -7,11 +7,14 @@ export function createRuntimeContext(): RuntimeContext {
   const sessionId = new Date().toISOString().replace(/[:.]/g, "-");
 
   const logDir = path.join(app.getPath("userData"), "logs", sessionId);
-  const logFilePath = path.join(logDir, "app.log");
 
   return {
     sessionId,
     logDir,
-    logFilePath,
+    log: {
+      app: path.join(logDir, "app.log"),
+      chromium: path.join(logDir, "chromium.log"),
+      chromiumNet: path.join(logDir, "chromium-net.log"),
+    },
   };
 }

@@ -3,7 +3,11 @@ import type { Window } from "@/main/window/window";
 export type RuntimeContext = {
   sessionId: string;
   logDir: string;
-  logFilePath: string;
+  log: {
+    app: string;
+    chromium: string;
+    chromiumNet: string;
+  };
 };
 
 export type QuitOptions =

@@ -49,12 +49,12 @@ export function bootstrap() {
   }
 
   const services = initializeServices(runtime);
-  registerAppEvents(services);
+  registerAppEvents(services, runtime);
 }
 
-function registerAppEvents(services: Services) {
+function registerAppEvents(services: Services, runtime: RuntimeContext) {
   app.on("ready", () => {
-    onReady(services);
+    onReady(services, runtime);
   });
 
   app.on("window-all-closed", () => {
@@ -63,7 +63,7 @@ function registerAppEvents(services: Services) {
 }
 
 function initializeServices(runtime: RuntimeContext): Services {
-  const logger = new Logger(runtime.logFilePath);
+  const logger = new Logger(runtime.log.app);
   const protocol = new Protocol(config.protocol, logger);
   const data = new DataStore();
   const eventBus = new EventBus();
@@ -98,7 +98,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   };
 }
 
-function onReady(services: Services) {
+function onReady(services: Services, runtime: RuntimeContext) {
   if (services.appService.isPackaged) {
     services.logger.info("Application is packaged.");
     services.logger.setLogLevel("info");
@@ -108,7 +108,7 @@ function onReady(services: Services) {
 
   services.protocol.handle();
 
-  registerCrashHandler(services.logger);
+  registerCrashHandler(services.logger, runtime);
   registerLogHandler(services.logger);
   registerAppHandler(services.appService, services.windowManager);
   registerSettingsHandler(services.settings, services.eventBus);
