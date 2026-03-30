@@ -1,4 +1,4 @@
-import type { Bookmark } from "@/shared/types/data";
+import type { Bookmark } from "@/shared/types/bookmark";
 
 export type EventMap = {
   /**

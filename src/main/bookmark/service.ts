@@ -25,7 +25,9 @@ export class BookmarkService {
       parentId: input.parentId ?? "root",
     };
 
-    return this.repository.save(bookmark);
+    this.repository.save(bookmark);
+
+    return bookmark;
   }
 
   createFolder(input: BookmarkFolderInput) {

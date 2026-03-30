@@ -1,3 +1,4 @@
+import type { NativeImage } from "electron";
 import type { BookmarkNode } from "./bookmark";
 import type { HistoryItem } from "./history";
 
