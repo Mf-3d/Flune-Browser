@@ -1,5 +1,6 @@
 import pkg from "../package.json";
-import { AppMetadata } from "@/shared/types/app-metadata";
+
+import type { AppMetadata } from "@/shared/types/app-metadata";
 
 export const config: AppMetadata = {
   name: pkg.name,
