@@ -3,7 +3,7 @@ import type { Favicon } from "@/shared/types/data";
 import { config } from "@/app.config";
 
 export class FaviconService {
-  private cache = new Map<string, NativeImage>();
+  private cache = new Map<string, string>();
 
   constructor() {}
 
@@ -17,7 +17,7 @@ export class FaviconService {
     if (this.cache.has(url)) {
       return {
         url,
-        data: this.cache.get(url)!,
+        dataUrl: this.cache.get(url)!,
       };
     }
 
@@ -27,13 +27,14 @@ export class FaviconService {
       throw new Error("Failed to fetch favicon.");
     }
 
+    const dataUrl = data.toDataURL();
+
     const favicon: Favicon = {
       url,
-      data,
-      // dataUrl: data.toDataURL(),
+      dataUrl,
     };
     if (favicon) {
-      this.cache.set(url, data);
+      this.cache.set(url, dataUrl);
     }
 
     return favicon;

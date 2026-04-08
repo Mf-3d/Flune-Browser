@@ -17,6 +17,7 @@ import { BookmarkService } from "@/main/bookmark/service";
 import { BookmarkRepository } from "@/main/bookmark/repository";
 import { HistoryService } from "@/main/history/service";
 import { HistoryRepository } from "@/main/history/repository";
+import { FaviconService } from "./favicon/service";
 
 import { registerLogHandler } from "@/main/logger/ipc/log-handler";
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
@@ -37,6 +38,7 @@ type Services = {
   eventBus: EventBus;
   bookmarkService: BookmarkService;
   historyService: HistoryService;
+  // faviconService: FaviconService;
   appService: ApplicationService;
 };
 
@@ -71,6 +73,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   const bookmarkRepository = new BookmarkRepository(data);
   const historyRepository = new HistoryRepository(data);
 
+  // const faviconService = new FaviconService();
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const historyService = new HistoryService(historyRepository);
 
@@ -79,6 +82,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(
     appService,
+    // faviconService,
     bookmarkService,
     historyService,
     settings,
@@ -94,6 +98,7 @@ function initializeServices(runtime: RuntimeContext): Services {
     eventBus,
     bookmarkService,
     historyService,
+    // faviconService,
     appService,
   };
 }
