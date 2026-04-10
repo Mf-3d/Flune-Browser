@@ -2,6 +2,8 @@ name: Packaged App Test
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
 jobs:
   packaged-launch:
     strategy:
