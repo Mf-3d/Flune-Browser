@@ -1,4 +1,4 @@
-import { NavigationInit, NavigationState } from "@/shared/types/preload-api";
+import { NavigationContext, NavigationState } from "@/shared/types/preload-api";
 import { applyTheme } from "../theme";
 import { navigationActions } from "../actions/navigation-actions";
 import { IpcRendererEvent } from "electron";
@@ -11,7 +11,7 @@ export function registerNavigationEvents() {
   window.flune.navigation.onThemeChanged(onThemeChanged);
 }
 
-function onInit(_: IpcRendererEvent, state: NavigationInit) {
+function onInit(_: IpcRendererEvent, state: NavigationContext) {
   const homeButton = document.getElementById("go-home")!;
 
   if (state.isMac) {

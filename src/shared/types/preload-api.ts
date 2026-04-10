@@ -16,7 +16,7 @@ export type ComputerInfo = {
   platform: string;
 };
 
-export type NavigationInit = {
+export type NavigationContext = {
   isMac: boolean;
   showHomeButton: boolean;
 };
@@ -115,7 +115,7 @@ export type NavigationAPI = {
     callback: (event: IpcRendererEvent, state: NavigationState) => void
   ) => IpcRenderer;
   onInit: (
-    callback: (event: IpcRendererEvent, state: NavigationInit) => void
+    callback: (event: IpcRendererEvent, state: NavigationContext) => void
   ) => IpcRenderer;
   onThemeChanged: (
     callback: (event: IpcRendererEvent, themeUrl: string) => void

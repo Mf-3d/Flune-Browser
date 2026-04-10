@@ -3,7 +3,7 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { config } from "@/app.config";
 
 import type { Window } from "@/main/window/window";
-import type { QuitOptions } from "./types";
+import type { QuitContext } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
@@ -19,7 +19,7 @@ export class ApplicationService {
     return app.isPackaged;
   }
 
-  quit(options: QuitOptions) {
+  quit(options: QuitContext) {
     if (options.forced) app.quit();
     else {
       if (!options.window) {

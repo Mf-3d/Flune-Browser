@@ -3,7 +3,7 @@ import { ERR_CODES, ERR_PAGES } from "./types";
 import { dialog, WebContents } from "electron";
 
 import type { Settings } from "@/main/settings";
-import type { TabEventOptions } from "./types";
+import type { TabEventContext } from "./types";
 
 /**
  * @param tab
@@ -13,120 +13,120 @@ import type { TabEventOptions } from "./types";
  * @param event
  * @returns Cleanup function.
  */
-export function registerTabEvents(options: TabEventOptions): () => void {
-  const webContents = options.tab.webContents;
+export function registerTabEvents(context: TabEventContext): () => void {
+  const webContents = context.tab.webContents;
 
   function onInit() {
-    if (options.isActiveTab(options.tab.id)) {
-      options.window.navigation.updateState({
-        canGoBack: options.tab.canGoBack,
-        canGoForward: options.tab.canGoForward,
-        input: options.tab.url?.toString(),
-        isBookmarked: options.bookmarkService.isBookmarked(options.tab.url!.toString()),
+    if (context.isActiveTab(context.tab.id)) {
+      context.window.navigation.updateState({
+        canGoBack: context.tab.canGoBack,
+        canGoForward: context.tab.canGoForward,
+        input: context.tab.url?.toString(),
+        isBookmarked: context.bookmarkService.isBookmarked(context.tab.url!.toString()),
       });
     }
   }
 
   function onResize() {
-    const winBounds = options.window.getContentBounds();
-    const tabBounds = options.tab.getBounds();
+    const winBounds = context.window.getContentBounds();
+    const tabBounds = context.tab.getBounds();
 
-    options.tab.setBounds({
+    context.tab.setBounds({
       x: tabBounds.x,
       y: tabBounds.y,
       width: winBounds.width,
-      height: winBounds.height - options.window.viewY,
+      height: winBounds.height - context.window.viewY,
     });
   }
 
   function onThemeChanged() {
-    updateTheme(options.tab.webContents, options.settings);
+    updateTheme(context.tab.webContents, context.settings);
   }
 
   function onTitleUpdated(_: Electron.Event, title: string) {
-    options.tab.title = title;
+    context.tab.title = title;
 
-    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: options.tab.id,
+    context.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: context.tab.id,
       title,
     });
 
-    if (options.tab.url)
-      options.historyService.updateTitle(options.tab.url.toString(), options.tab.title);
+    if (context.tab.url)
+      context.historyService.updateTitle(context.tab.url.toString(), context.tab.title);
   }
 
   function onFaviconUpdated(_: Electron.Event, favicons: string[]) {
     const favicon = favicons[0];
-    options.tab.favicon = favicon;
+    context.tab.favicon = favicon;
 
-    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: options.tab.id,
+    context.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: context.tab.id,
       favicon,
     });
   }
 
   function onDidNavigate(_: Electron.Event, url: string) {
-    options.tab.url = new URL(url);
-    options.tab.title = options.tab.webContents.getTitle();
+    context.tab.url = new URL(url);
+    context.tab.title = context.tab.webContents.getTitle();
 
-    if (options.isActiveTab(options.tab.id)) {
-      options.window.navigation.updateState({
-        canGoBack: options.tab.canGoBack,
-        canGoForward: options.tab.canGoForward,
-        input: options.tab.url?.toString(),
-        isBookmarked: options.bookmarkService.isBookmarked(options.tab.url.toString()),
+    if (context.isActiveTab(context.tab.id)) {
+      context.window.navigation.updateState({
+        canGoBack: context.tab.canGoBack,
+        canGoForward: context.tab.canGoForward,
+        input: context.tab.url?.toString(),
+        isBookmarked: context.bookmarkService.isBookmarked(context.tab.url.toString()),
       });
     }
 
-    options.historyService.add({
-      title: options.tab.title,
-      url: options.tab.url.toString(),
+    context.historyService.add({
+      title: context.tab.title,
+      url: context.tab.url.toString(),
     });
   }
 
   function onDidStartLoading() {
-    options.tab.isLoading = true;
+    context.tab.isLoading = true;
 
-    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: options.tab.id,
+    context.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: context.tab.id,
       isLoading: true,
     });
   }
 
   function onDidStopLoading() {
-    options.tab.isLoading = false;
-    options.tab.canGoBack = options.tab.webContents.navigationHistory.canGoBack();
-    options.tab.canGoForward = options.tab.webContents.navigationHistory.canGoForward();
+    context.tab.isLoading = false;
+    context.tab.canGoBack = context.tab.webContents.navigationHistory.canGoBack();
+    context.tab.canGoForward = context.tab.webContents.navigationHistory.canGoForward();
 
-    updateTheme(options.tab.webContents, options.settings);
+    updateTheme(context.tab.webContents, context.settings);
 
-    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: options.tab.id,
+    context.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: context.tab.id,
       isLoading: false,
     });
 
-    if (options.isActiveTab(options.tab.id)) {
-      options.window.navigation.updateState({
-        canGoBack: options.tab.canGoBack,
-        canGoForward: options.tab.canGoForward,
-        input: options.tab.url?.toString(),
+    if (context.isActiveTab(context.tab.id)) {
+      context.window.navigation.updateState({
+        canGoBack: context.tab.canGoBack,
+        canGoForward: context.tab.canGoForward,
+        input: context.tab.url?.toString(),
       });
     }
   }
 
   function onDidFailLoad(_: Electron.Event, errCode: number) {
     // 無限ループが発生するのを防ぐ
-    if (options.tab.url && options.tab.url.toString().startsWith(ERR_PAGES.directory))
+    if (context.tab.url && context.tab.url.toString().startsWith(ERR_PAGES.directory))
       return;
 
     switch (errCode) {
       case ERR_CODES["server-notfound"]: {
-        options.tab.loadURL(ERR_PAGES["server-notfound"]);
+        context.tab.loadURL(ERR_PAGES["server-notfound"]);
         break;
       }
       default: {
-        options.tab.loadURL(ERR_PAGES.generic);
-        options.logger.warn(`Undefined error code: ${errCode}`);
+        context.tab.loadURL(ERR_PAGES.generic);
+        context.logger.warn(`Undefined error code: ${errCode}`);
         break;
       }
     }
@@ -135,16 +135,16 @@ export function registerTabEvents(options: TabEventOptions): () => void {
   function onAudioStateChanged(
     event: Electron.Event<Electron.WebContentsAudioStateChangedEventParams>
   ) {
-    options.tab.isAudible = event.audible;
+    context.tab.isAudible = event.audible;
 
-    options.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
-      id: options.tab.id,
-      isAudible: options.tab.isAudible,
+    context.window.navigation.send(IPC_NOTIFY.TAB_UPDATED, {
+      id: context.tab.id,
+      isAudible: context.tab.isAudible,
     });
   }
 
   function onBeforeUnload(event: Electron.Event) {
-    const choice = dialog.showMessageBoxSync(options.window.getNativeWindow(), {
+    const choice = dialog.showMessageBoxSync(context.window.getNativeWindow(), {
       type: "question",
       buttons: ["このページを離れる", "キャンセル"],
       title: "このページを離れますか？",
@@ -159,9 +159,9 @@ export function registerTabEvents(options: TabEventOptions): () => void {
     }
   }
 
-  const cleanupOnThemeChanged = options.eventBus.on("theme:updated", onThemeChanged);
+  const cleanupOnThemeChanged = context.eventBus.on("theme:updated", onThemeChanged);
 
-  const cleanupOnResize = options.window.onResize(onResize);
+  const cleanupOnResize = context.window.onResize(onResize);
 
   // 初期化イベント
   webContents.once("did-finish-load", onInit);

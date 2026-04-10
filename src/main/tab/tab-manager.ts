@@ -7,7 +7,7 @@ import { registerTabEvents } from "./tab-events";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { TabState } from "@/shared/types/preload-api";
-import type { TabManagerOptions } from "./types";
+import type { TabManagerContext } from "./types";
 
 export class TabManager {
   private activeTabId?: string;
@@ -20,14 +20,14 @@ export class TabManager {
   private readonly eventBus;
   private readonly contextMenuController;
 
-  constructor(options: TabManagerOptions) {
-    this.logger = options.logger;
-    this.collection = options.collection;
-    this.window = options.window;
-    this.bookmarkService = options.bookmarkService;
-    this.historyService = options.historyService;
-    this.settings = options.settings;
-    this.eventBus = options.eventBus;
+  constructor(context: TabManagerContext) {
+    this.logger = context.logger;
+    this.collection = context.collection;
+    this.window = context.window;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
+    this.settings = context.settings;
+    this.eventBus = context.eventBus;
 
     this.contextMenuController = new ContextMenuController(this.window);
   }

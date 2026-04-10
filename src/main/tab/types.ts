@@ -11,7 +11,7 @@ import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
 import type { Logger } from "@/main/utils/logger";
 
-export type TabManagerOptions = {
+export type TabManagerContext = {
   logger: Logger,
   collection: TabCollection;
   window: Window;
@@ -21,13 +21,13 @@ export type TabManagerOptions = {
   eventBus: EventBus;
 };
 
-export type TabOptions = {
+export type TabContext = {
   logger: Logger;
   view: WebContentsView;
   bounds: Rect;
 };
 
-export type TabEventOptions = {
+export type TabEventContext = {
   logger: Logger,
   tab: Tab;
   isActiveTab: (id: string) => boolean;

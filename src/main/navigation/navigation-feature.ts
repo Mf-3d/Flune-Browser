@@ -10,7 +10,7 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
-import type { NavigationInit, NavigationState } from "@/shared/types/preload-api";
+import type { NavigationContext, NavigationState } from "@/shared/types/preload-api";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Window } from "@/main/window/window";
 
@@ -121,7 +121,7 @@ function registerWebContentsEvents(
   },
   onLoaded?: () => void
 ) {
-  const initOptions: NavigationInit = {
+  const context: NavigationContext = {
     isMac: process.platform === "darwin",
     showHomeButton: settings.showHomeButton,
   };
@@ -129,7 +129,7 @@ function registerWebContentsEvents(
   // ナビゲーションが読み込まれたらコールバックを返してIPCを送信する。
   view.webContents.on("did-finish-load", () => {
     onLoaded?.();
-    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, initOptions);
+    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, context);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
   });
 }

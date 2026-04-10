@@ -10,7 +10,7 @@ export type RuntimeContext = {
   };
 };
 
-export type QuitOptions =
+export type QuitContext =
   | {
       forced: false;
       window: Window;

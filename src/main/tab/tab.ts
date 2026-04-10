@@ -5,7 +5,7 @@ import type {
   WebContentsView,
 } from "electron";
 import type { Window } from "@/main/window/window";
-import type { TabOptions } from "./types";
+import type { TabContext } from "./types";
 import type { Rect } from "@/shared/types/rect";
 
 export class Tab {
@@ -26,14 +26,14 @@ export class Tab {
 
   cleanupEvents?: () => void;
 
-  constructor(options: TabOptions) {
-    this.logger = options.logger;
-    this.view = options.view;
+  constructor(context: TabContext) {
+    this.logger = context.logger;
+    this.view = context.view;
 
     this.id = crypto.randomUUID();
     this.title = this.view.webContents.getTitle();
 
-    this.setBounds(options.bounds);
+    this.setBounds(context.bounds);
   }
 
   get webContents(): WebContents {
