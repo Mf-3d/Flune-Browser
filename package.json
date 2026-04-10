@@ -44,7 +44,7 @@
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
     "playwright": "^1.58.2",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.2",
     "vite": "^7.3.2"
