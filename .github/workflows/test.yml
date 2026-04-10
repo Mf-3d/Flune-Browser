@@ -12,13 +12,16 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Check out Git repository
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v6
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run prebuild
@@ -27,7 +30,8 @@ jobs:
         run: npm run package
         shell: bash
 
-      - run: npx playwright install
+      - name: Install Playwright
+        run: npx playwright install
 
       - name: Run packaged launch test
         env:
