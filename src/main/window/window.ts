@@ -142,6 +142,7 @@ export class Window {
         themeUrl: currentTheme.url,
         showHomeButton: this.settings.store.get("settings").design.showHomeButton,
       },
+      this.logger,
       () => {
         this.eventBus.send("navigation:init");
       }

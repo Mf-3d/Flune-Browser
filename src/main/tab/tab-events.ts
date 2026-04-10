@@ -159,6 +159,14 @@ export function registerTabEvents(context: TabEventContext): () => void {
     }
   }
 
+  function onWebRequestErrorOccurred(details: Electron.OnErrorOccurredListenerDetails) {
+    context.logger.error(
+      new Error(`An error occurred in webRequest; URL: "${details.url}" ERROR: "${details.error}".`, {
+        cause: details.error,
+      })
+    );
+  }
+
   const cleanupOnThemeChanged = context.eventBus.on("theme:updated", onThemeChanged);
 
   const cleanupOnResize = context.window.onResize(onResize);
@@ -176,6 +184,7 @@ export function registerTabEvents(context: TabEventContext): () => void {
   webContents.on("did-fail-load", onDidFailLoad);
   webContents.on("audio-state-changed", onAudioStateChanged);
   webContents.on("will-prevent-unload", onBeforeUnload);
+  webContents.session.webRequest.onErrorOccurred(onWebRequestErrorOccurred);
 
   return () => {
     cleanupOnThemeChanged();

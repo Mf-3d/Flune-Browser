@@ -13,6 +13,7 @@ import { ContextMenuController } from "@/main/menu/context-menu/controllers/cont
 import type { NavigationContext, NavigationState } from "@/shared/types/preload-api";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Window } from "@/main/window/window";
+import type { Logger } from "@/main/utils/logger";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -35,6 +36,7 @@ export function createNavigationFeature(
     themeUrl: string;
     showHomeButton: boolean;
   },
+  logger: Logger,
   onLoaded?: () => void
 ) {
   const view = new WebContentsView({
@@ -60,7 +62,7 @@ export function createNavigationFeature(
     callback(-3);
   });
 
-  registerWebContentsEvents(view, settings, onLoaded);
+  registerWebContentsEvents(view, settings, logger, onLoaded);
 
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
@@ -119,7 +121,8 @@ function registerWebContentsEvents(
     themeUrl: string;
     showHomeButton: boolean;
   },
-  onLoaded?: () => void
+  logger: Logger,
+  onLoaded?: () => void,
 ) {
   const context: NavigationContext = {
     isMac: process.platform === "darwin",
@@ -131,5 +134,13 @@ function registerWebContentsEvents(
     onLoaded?.();
     view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, context);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
+  });
+
+  view.webContents.session.webRequest.onErrorOccurred((details) => {
+    logger.error(
+      new Error(`An error occurred in webRequest; URL: "${details.url}" ERROR: "${details.error}".`, {
+        cause: details.error,
+      })
+    );
   });
 }
