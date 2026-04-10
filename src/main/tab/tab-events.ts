@@ -161,7 +161,7 @@ export function registerTabEvents(context: TabEventContext): () => void {
 
   function onWebRequestErrorOccurred(details: Electron.OnErrorOccurredListenerDetails) {
     context.logger.error(
-      new Error(`An error occurred in webRequest; URL: "${details.url}" ERROR: "${details.error}".`, {
+      new Error(`An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`, {
         cause: details.error,
       })
     );

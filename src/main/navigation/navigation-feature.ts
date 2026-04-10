@@ -138,7 +138,7 @@ function registerWebContentsEvents(
 
   view.webContents.session.webRequest.onErrorOccurred((details) => {
     logger.error(
-      new Error(`An error occurred in webRequest; URL: "${details.url}" ERROR: "${details.error}".`, {
+      new Error(`An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`, {
         cause: details.error,
       })
     );
