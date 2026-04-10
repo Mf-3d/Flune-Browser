@@ -159,6 +159,14 @@ export function registerTabEvents(context: TabEventContext): () => void {
     }
   }
 
+  function onWebRequestBeforeRequest(details: Electron.OnBeforeRequestListenerDetails, callback: (response: Electron.CallbackResponse) => void) {
+    context.logger.debug(`Before WebRequest: ${details.url}`);
+
+    callback({
+      cancel: false,
+    });
+  }
+
   function onWebRequestErrorOccurred(details: Electron.OnErrorOccurredListenerDetails) {
     context.logger.error(
       new Error(`An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`, {
@@ -184,6 +192,8 @@ export function registerTabEvents(context: TabEventContext): () => void {
   webContents.on("did-fail-load", onDidFailLoad);
   webContents.on("audio-state-changed", onAudioStateChanged);
   webContents.on("will-prevent-unload", onBeforeUnload);
+
+  webContents.session.webRequest.onBeforeRequest(onWebRequestBeforeRequest);
   webContents.session.webRequest.onErrorOccurred(onWebRequestErrorOccurred);
 
   return () => {
