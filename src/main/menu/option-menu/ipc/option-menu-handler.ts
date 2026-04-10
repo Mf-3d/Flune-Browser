@@ -3,8 +3,11 @@ import { handle } from "@/main/ipc/handler";
 
 import type { WindowManager } from "@/main/window/window-manager";
 import type { MenuActionDescriptor, MenuPageId } from "@/shared/types/menu";
+import type { Logger } from "@/main/utils/logger";
 
-export function registerOptionMenuHandler(windowManager: WindowManager) {
+export function registerOptionMenuHandler(logger: Logger, windowManager: WindowManager) {
+  logger.info("Option menu IPC handler registration has started.");
+
   handle(IPC_INVOKE.MENU_OPEN, (event) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
@@ -25,14 +28,14 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
     window.optionMenuController.close();
   });
 
-  handle(IPC_INVOKE.MENU_GET_PAGE, async (event, pageId: MenuPageId) => {
+  handle(IPC_INVOKE.MENU_GET_PAGE, (event, pageId: MenuPageId) => {
     const window = windowManager.getWindowFromWebContents(event.sender);
 
     if (!window) {
       throw new Error("Window does not exist.");
     }
 
-    return await window.optionMenuController.getPage(pageId);
+    return window.optionMenuController.getPage(pageId);
   });
 
   handle(IPC_INVOKE.MENU_TOGGLE, (event) => {
@@ -54,4 +57,6 @@ export function registerOptionMenuHandler(windowManager: WindowManager) {
 
     window.optionMenuController.handleClick(action);
   });
+
+  logger.info("Option menu IPC handler registration has completed.");
 }

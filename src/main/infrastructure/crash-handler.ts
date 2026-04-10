@@ -4,6 +4,8 @@ import type { Logger } from "@/main/utils/logger";
 import type { RuntimeContext } from "@/main/application/types";
 
 export function registerCrashHandler(logger: Logger, runtime: RuntimeContext) {
+  logger.info("Crash handler registration has started.");
+
   // クラッシュ時にログを保存する。
 
   process.on("uncaughtException", (err) => {
@@ -21,4 +23,6 @@ export function registerCrashHandler(logger: Logger, runtime: RuntimeContext) {
   app.commandLine.appendSwitch("enable-logging", runtime.log.chromium);
   app.commandLine.appendSwitch("log-net-log", runtime.log.chromiumNet);
   app.commandLine.appendSwitch("v", "1");
+
+  logger.info("Crash handler registration has completed.");
 }

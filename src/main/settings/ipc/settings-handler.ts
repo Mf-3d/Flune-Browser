@@ -3,8 +3,11 @@ import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 import type { Settings } from "..";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { Logger } from "@/main/utils/logger";
 
-export function registerSettingsHandler(settings: Settings, eventBus: EventBus) {
+export function registerSettingsHandler(logger: Logger, settings: Settings, eventBus: EventBus) {
+  logger.info("Settings IPC handler registration has started.");
+
   handle(IPC_INVOKE.STORE_GET_ALL, () => {
     return settings.store.getAll();
   });
@@ -25,4 +28,6 @@ export function registerSettingsHandler(settings: Settings, eventBus: EventBus) 
         themeId: value,
       });
   });
+  
+  logger.info("Settings IPC handler registration has completed.");
 }

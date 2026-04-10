@@ -51,6 +51,9 @@ export function bootstrap() {
   }
 
   const services = initializeServices(runtime);
+  services.logger.info("The services have been initialized.");
+
+  services.logger.info("Application events are registering...");
   registerAppEvents(services, runtime);
 }
 
@@ -60,7 +63,7 @@ function registerAppEvents(services: Services, runtime: RuntimeContext) {
   });
 
   app.on("window-all-closed", () => {
-    handleWindowAllClosed();
+    onWindowAllClosed(services.logger);
   });
 }
 
@@ -104,6 +107,8 @@ function initializeServices(runtime: RuntimeContext): Services {
 }
 
 function onReady(services: Services, runtime: RuntimeContext) {
+  services.logger.info('Event "ready" has started.');
+
   if (services.appService.isPackaged) {
     services.logger.info("Application is packaged.");
     services.logger.setLogLevel("info");
@@ -111,29 +116,49 @@ function onReady(services: Services, runtime: RuntimeContext) {
     services.logger.setLogLevel("debug");
   }
 
-  services.protocol.handle();
+  try {
+    services.protocol.handle();
 
-  registerCrashHandler(services.logger, runtime);
-  registerLogHandler(services.logger);
-  registerAppHandler(services.appService, services.windowManager);
-  registerSettingsHandler(services.settings, services.eventBus);
-  registerTabHandler(services.windowManager, resolveView(ROUTE_MAP.home));
-  registerBookmarkHandler(
-    services.windowManager,
-    services.bookmarkService,
-    services.logger
-  );
-  registerOptionMenuHandler(services.windowManager);
+    registerCrashHandler(services.logger, runtime);
+    registerLogHandler(services.logger);
+    registerAppHandler(services.logger, services.appService, services.windowManager);
+    registerSettingsHandler(services.logger, services.settings, services.eventBus);
+    registerTabHandler(
+      services.logger,
+      services.windowManager,
+      resolveView(ROUTE_MAP.home)
+    );
+    registerBookmarkHandler(
+      services.windowManager,
+      services.bookmarkService,
+      services.logger
+    );
+    registerOptionMenuHandler(services.logger, services.windowManager);
 
-  services.eventBus.send("init");
-  services.windowManager.create();
+    services.eventBus.send("init");
+    services.windowManager.create();
 
-  app.on("activate", () => {
-    services.windowManager.ensure();
-  });
+    app.on("activate", () => {
+      onActivate(services.logger, services.windowManager);
+    });
+
+    services.logger.info('Event "ready" has fired sucessfully.');
+  } catch (err) {
+    services.logger.error(
+      new Error('An error occurred during the execution of Event "ready".')
+    );
+  }
 }
 
-function handleWindowAllClosed() {
+function onActivate(logger: Logger, windowManager: WindowManager) {
+  logger.info('Event "activate" has started.');
+
+  windowManager.ensure();
+}
+
+function onWindowAllClosed(logger: Logger) {
+  logger.info('Event "window-all-closed" has started.');
+
   if (process.platform !== "darwin") {
     app.quit();
   }

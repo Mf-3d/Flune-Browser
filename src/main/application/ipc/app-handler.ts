@@ -3,11 +3,15 @@ import { handle } from "@/main/ipc/handler";
 
 import type { ApplicationService } from "../application-service";
 import type { WindowManager } from "@/main/window/window-manager";
+import type { Logger } from "@/main/utils/logger";
 
 export function registerAppHandler(
+  logger: Logger,
   appService: ApplicationService,
   windowManager: WindowManager
 ) {
+  logger.info("Application IPC handler registration has started.");
+
   handle(IPC_INVOKE.APP_GET_VERSION, () => {
     return appService.getVersion();
   });
@@ -75,4 +79,6 @@ export function registerAppHandler(
       });
     }
   });
+
+  logger.info("Application IPC handler registration has completed.");
 }
