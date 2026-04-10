@@ -186,7 +186,7 @@ export class Window {
     this.win.setTitleBarOverlay(options);
   }
 
-  getNativeWindow(): BaseWindow {
+  getNativeWindow(): Electron.BaseWindow {
     return this.win;
   }
 

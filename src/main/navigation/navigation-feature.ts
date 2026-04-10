@@ -5,7 +5,7 @@
  */
 
 import path from "node:path";
-import { WebContentsView } from "electron";
+import { dialog, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
@@ -130,10 +130,23 @@ function registerWebContentsEvents(
   };
 
   // ナビゲーションが読み込まれたらコールバックを返してIPCを送信する。
-  view.webContents.on("did-finish-load", () => {
+  view.webContents.once("did-finish-load", () => {
     onLoaded?.();
     view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, context);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
+  });
+
+  view.webContents.on("did-fail-load", (_, errCode, desc) => {
+    logger.error(
+      new Error(`Navigation did fail load; CODE: ${errCode} DESC: ${desc}`)
+    );
+
+    dialog.showMessageBoxSync({
+      type: "error",
+      title: "The app cannot be launched properly.",
+      message: "Navigation did fail load!",
+      detail: "Please close and restart the app."
+    });
   });
 
   view.webContents.session.webRequest.onErrorOccurred((details) => {
