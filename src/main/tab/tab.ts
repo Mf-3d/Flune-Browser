@@ -10,6 +10,8 @@ import type { Rect } from "@/shared/types/rect";
 
 export class Tab {
   readonly id: string;
+
+  private readonly logger;
   private readonly view: WebContentsView;
 
   url?: URL;
@@ -25,6 +27,7 @@ export class Tab {
   cleanupEvents?: () => void;
 
   constructor(options: TabOptions) {
+    this.logger = options.logger;
     this.view = options.view;
 
     this.id = crypto.randomUUID();
@@ -60,7 +63,7 @@ export class Tab {
     this.setVisible(visible);
     window.appendView(this.view);
 
-    console.info(`Tab (${this.id}) has been attached to the window.`);
+    this.logger.info(`Tab (${this.id}) has been attached to the window.`);
   }
 
   goBack() {

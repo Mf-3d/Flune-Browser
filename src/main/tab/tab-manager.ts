@@ -11,6 +11,7 @@ import type { TabManagerOptions } from "./types";
 
 export class TabManager {
   private activeTabId?: string;
+  private readonly logger;
   private readonly collection;
   private readonly window;
   private readonly bookmarkService;
@@ -20,6 +21,7 @@ export class TabManager {
   private readonly contextMenuController;
 
   constructor(options: TabManagerOptions) {
+    this.logger = options.logger;
     this.collection = options.collection;
     this.window = options.window;
     this.bookmarkService = options.bookmarkService;
@@ -59,6 +61,7 @@ export class TabManager {
 
     const tab = new Tab({
       view,
+      logger: this.logger,
       bounds: {
         x: 0,
         y: this.window.viewY,
@@ -70,6 +73,7 @@ export class TabManager {
     tab.cleanupEvents = registerTabEvents({
       tab,
       isActiveTab: (id) => this.isActiveTab(id),
+      logger: this.logger,
       window: this.window,
       settings: this.settings,
       bookmarkService: this.bookmarkService,
@@ -244,7 +248,7 @@ export class TabManager {
         : {}),
     });
 
-    console.info(`Tab (${activeTab.id}) has activated.`);
+    this.logger.info(`Tab (${activeTab.id}) has activated.`);
   }
 
   getActiveTab(): Tab | undefined {

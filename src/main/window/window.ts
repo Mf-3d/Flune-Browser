@@ -17,8 +17,10 @@ import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
 import type { Rect } from "@/shared/types/rect";
+import type { Logger } from "@/main/utils/logger";
 
 type WindowContext = {
+  logger: Logger;
   appService: ApplicationService;
   bookmarkService: BookmarkService;
   historyService: HistoryService;
@@ -30,6 +32,7 @@ type WindowContext = {
 export class Window {
   viewY: number = 66;
 
+  private readonly logger;
   private readonly win;
   readonly navigation;
   readonly optionMenuController;
@@ -42,6 +45,7 @@ export class Window {
   readonly tabManager: TabManager;
 
   constructor(context: WindowContext) {
+    this.logger = context.logger;
     this.appService = context.appService;
     this.bookmarkService = context.bookmarkService;
     this.historyService = context.historyService;
@@ -57,6 +61,7 @@ export class Window {
       height: context.bounds ? context.bounds.height : this.getBounds().height,
     });
     this.optionMenuController = new OptionMenuController({
+      logger: this.logger,
       appService: this.appService,
       bookmarkService: this.bookmarkService,
       historyService: this.historyService,
@@ -67,6 +72,7 @@ export class Window {
 
     const tabCollection = new TabCollection();
     this.tabManager = new TabManager({
+      logger: this.logger,
       collection: tabCollection,
       settings: this.settings,
       window: this,

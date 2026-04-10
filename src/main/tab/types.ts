@@ -9,8 +9,10 @@ import type { Tab } from "./tab";
 import type { Rect } from "@/shared/types/rect";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
+import type { Logger } from "@/main/utils/logger";
 
 export type TabManagerOptions = {
+  logger: Logger,
   collection: TabCollection;
   window: Window;
   bookmarkService: BookmarkService;
@@ -20,11 +22,13 @@ export type TabManagerOptions = {
 };
 
 export type TabOptions = {
+  logger: Logger;
   view: WebContentsView;
   bounds: Rect;
 };
 
 export type TabEventOptions = {
+  logger: Logger,
   tab: Tab;
   isActiveTab: (id: string) => boolean;
   window: Window;

@@ -7,11 +7,13 @@ import type { ApplicationService } from "@/main/application/application-service"
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
+import type { Logger } from "@/main/utils/logger";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
 
   constructor(
+    private readonly logger: Logger,
     private readonly appService: ApplicationService,
     private readonly bookmarkService: BookmarkService,
     private readonly historyService: HistoryService,
@@ -21,6 +23,7 @@ export class WindowManager {
 
   create() {
     this.baseWindow = new Window({
+      logger: this.logger,
       appService: this.appService,
       bookmarkService: this.bookmarkService,
       historyService: this.historyService,

@@ -84,6 +84,7 @@ function initializeServices(runtime: RuntimeContext): Services {
 
   const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(
+    logger,
     appService,
     // faviconService,
     bookmarkService,

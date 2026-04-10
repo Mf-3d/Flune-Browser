@@ -12,8 +12,10 @@ import type {
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
+import type{ Logger } from "@/main/utils/logger";
 
 type OptionMenuControllerContext = {
+  logger: Logger;
   view: OptionMenuView;
   window: Window;
   fadeTime: number;
@@ -28,6 +30,7 @@ export class OptionMenuController {
   private state: MenuState = "closed";
   private desiredState: "open" | "closed" = "closed";
   private eventTimeout?: NodeJS.Timeout;
+  private readonly logger;
   private readonly view;
   private readonly window;
   private readonly fadeTime;
@@ -36,6 +39,7 @@ export class OptionMenuController {
   private readonly historyService;
 
   constructor(context: OptionMenuControllerContext) {
+    this.logger = context.logger;
     this.view = context.view;
     this.window = context.window;
     this.fadeTime = context.fadeTime;
@@ -122,7 +126,9 @@ export class OptionMenuController {
           this.state = "open";
           resolve();
         } catch (err) {
-          console.error("Failed to open Option Menu:", err); // ロガーはまだ入れていないので仮
+          this.logger.error(new Error("Failed to open Option Menu:", {
+            cause: err,
+          }));
 
           reject(err);
         }

@@ -126,7 +126,7 @@ export function registerTabEvents(options: TabEventOptions): () => void {
       }
       default: {
         options.tab.loadURL(ERR_PAGES.generic);
-        console.warn("Undefined error code:", errCode);
+        options.logger.warn(`Undefined error code: ${errCode}`);
         break;
       }
     }
