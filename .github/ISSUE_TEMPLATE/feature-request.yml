@@ -10,7 +10,7 @@ body:
   - type: textarea
     id: problem
     attributes:
-      label: 関連する問題
+      label: ❓ 関連する問題
       description: この機能リクエストに関連する問題を説明してください。
       placeholder: ...までのアクセスが面倒。
     validations:
@@ -19,7 +19,7 @@ body:
   - type: textarea
     id: solution
     attributes:
-      label: 提案する解決策
+      label: 🌕 提案する解決策
       description: 考えられる解決策を説明してください。
     validations:
       required: true
@@ -27,7 +27,7 @@ body:
   - type: textarea
     id: alternatives
     attributes:
-      label: 代替案
+      label: 🌚 代替案
       description: 検討した他の解決策があれば記述してください。
     validations:
       required: false
@@ -35,7 +35,7 @@ body:
   - type: textarea
     id: additional
     attributes:
-      label: その他の情報
+      label: ➕ その他の情報
       description: スクリーンショットや参考資料などがあれば追加してください。
     validations:
       required: false
