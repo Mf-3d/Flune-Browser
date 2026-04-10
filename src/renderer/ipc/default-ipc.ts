@@ -1,19 +1,24 @@
 export const defaultIpc = {
-  log: {
+  logger: {
+    debug(message: string) {
+      // eslint-disable-next-line
+      console.debug(message);
+      window.flune.logger.debug(message);
+    },
     info(message: string) {
       // eslint-disable-next-line
       console.info(message);
-      window.flune.log.info(message);
+      window.flune.logger.info(message);
     },
     warn(message: string) {
       // eslint-disable-next-line
       console.warn(message);
-      window.flune.log.warn(message);
+      window.flune.logger.warn(message);
     },
     error(message: string | Error) {
       // eslint-disable-next-line
       console.error(message);
-      window.flune.log.error(message);
+      window.flune.logger.error(message);
     },
   },
   async getVersion() {

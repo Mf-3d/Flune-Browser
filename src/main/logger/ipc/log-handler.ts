@@ -6,6 +6,10 @@ import type { Logger } from "@/main/utils/logger";
 export function registerLogHandler(logger: Logger) {
   logger.info("Log IPC handler registration has started.");
 
+  handle(IPC_INVOKE.LOG_DEBUG, (_, message: string) => {
+    logger.debug(`RENDERER: ${message}`);
+  });
+
   handle(IPC_INVOKE.LOG_INFO, (_, message: string) => {
     logger.info(`RENDERER: ${message}`);
   });

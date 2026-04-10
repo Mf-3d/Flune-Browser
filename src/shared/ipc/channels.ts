@@ -1,4 +1,5 @@
 export const IPC_INVOKE = {
+  LOG_DEBUG: "log:debug",
   LOG_INFO: "log:info",
   LOG_WARN: "log:warn",
   LOG_ERROR: "log:error",

@@ -11,7 +11,10 @@ export const DEFAULT: DefaultAPI = {
       ? process.env.ELECTRON_RENDERER_URL
       : `${config.protocol}://`,
 
-  log: {
+  logger: {
+    debug: (message) => {
+      ipcRenderer.invoke(IPC_INVOKE.LOG_DEBUG, message);
+    },
     info: (message) => {
       ipcRenderer.invoke(IPC_INVOKE.LOG_INFO, message);
     },

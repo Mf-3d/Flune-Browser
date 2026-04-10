@@ -7,7 +7,7 @@ import { defaultIpc } from "@/renderer/ipc/default-ipc";
 export const SettingsActions = {
   save<P extends Path<Config>>(key: P, value?: PathValue<Config, P> | undefined) {
     settingsIpc.set(key, value);
-    defaultIpc.log.info(`Option saved: "${key}": "${value}"`);
+    defaultIpc.logger.info(`Option saved: "${key}": "${value}"`);
   },
   async saveAll() {
     const inputElements = document.querySelectorAll(
@@ -49,7 +49,7 @@ export const SettingsActions = {
 
     this.save("settings.design.theme", themeElement.id.replace("theme-", ""));
 
-    defaultIpc.log.info("All settings have been saved.");
+    defaultIpc.logger.info("All settings have been saved.");
 
     // each();
   },

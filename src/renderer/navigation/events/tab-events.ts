@@ -14,7 +14,7 @@ export function registerTabEvents() {
 }
 
 function onCreated(_: IpcRendererEvent, tab: CreatedTab) {
-  defaultIpc.log.info(`New tab is created: Tab ID: "${tab.id}"`);
+  defaultIpc.logger.info(`New tab is created: Tab ID: "${tab.id}"`);
 
   const tabContainer = document.getElementById("tabs")!;
   const newButton = tabContainer.querySelector(".new-button")!;
@@ -116,7 +116,7 @@ function onRemoved(_: IpcRendererEvent, id: string) {
 }
 
 function OnUpdated(_: IpcRendererEvent, tab: TabState) {
-  defaultIpc.log.info(`Tab has been updated: Tab ID: "${tab.id}"`);
+  defaultIpc.logger.debug(`Tab has been updated: Tab ID: "${tab.id}"`);
 
   if (isDragging) return;
 
@@ -127,19 +127,19 @@ function OnUpdated(_: IpcRendererEvent, tab: TabState) {
     if (tabElement.getAttribute("data-id") !== tab.id) return;
 
     if (tab.title !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: title: "${tab.title}"`);
+      defaultIpc.logger.debug(`Navigation state changed: title: "${tab.title}"`);
       const titleElement = tabElement.querySelector("p.title")! as HTMLElement;
       titleElement.innerText = tab.title;
     }
 
     if (tab.favicon !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: favicon: "${tab.favicon}"`);
+      defaultIpc.logger.debug(`Navigation state changed: favicon: "${tab.favicon}"`);
       const faviconElement = tabElement.querySelector("img.favicon")! as HTMLElement;
       faviconElement.setAttribute("src", tab.favicon);
     }
 
     if (tab.isLoading !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: isLoading: ${tab.isLoading}`);
+      defaultIpc.logger.debug(`Navigation state changed: isLoading: ${tab.isLoading}`);
       const loadingElement = tabElement.querySelector("a.loading")! as HTMLElement;
 
       if (tab.isLoading) loadingElement.classList.remove("disabled");
@@ -147,7 +147,7 @@ function OnUpdated(_: IpcRendererEvent, tab: TabState) {
     }
 
     if (tab.isAudible !== undefined) {
-      defaultIpc.log.info(`Navigation state changed: isAudible: ${tab.isAudible}`);
+      defaultIpc.logger.debug(`Navigation state changed: isAudible: ${tab.isAudible}`);
       const audibleElement = tabElement.querySelector("a.audible")! as HTMLElement;
 
       if (tab.isAudible) audibleElement.classList.remove("disabled");

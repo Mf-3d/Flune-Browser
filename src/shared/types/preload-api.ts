@@ -55,7 +55,8 @@ export type API = DefaultAPI & {
 
 export type DefaultAPI = {
   baseURL: string;
-  log: {
+  logger: {
+    debug: (message: string) => void;
     info: (message: string) => void;
     warn: (message: string) => void;
     error: (message: string | Error) => void;
