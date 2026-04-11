@@ -11,7 +11,6 @@ export function handleAction<T extends MenuActionDescriptor>(
     quit: () => {
       context.appService.quit({
         forced: false,
-        window: context.window,
       });
     },
 

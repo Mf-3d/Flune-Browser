@@ -63,23 +63,10 @@ export function registerAppHandler(
     window.tabManager.navigate(resolveView(ROUTE_MAP.version));
   });
 
-  handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
-    if (forced === true) {
-      appService.quit({
-        forced: true,
-      });
-    } else {
-      const window = windowManager.getWindowFromWebContents(event.sender);
-
-      if (!window) {
-        throw new Error("Window does not exist.");
-      }
-
-      appService.quit({
-        forced: false,
-        window,
-      });
-    }
+  handle(IPC_INVOKE.APP_QUIT, (_, forced: boolean) => {
+    appService.quit({
+      forced
+    });
   });
 
   logger.info("Application IPC handler registration has completed.");

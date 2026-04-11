@@ -1,13 +1,6 @@
-import type { Window } from "@/main/window/window";
-
-export type QuitContext =
-  | {
-      forced: false;
-      window: Window;
-    }
-  | {
-      forced: true;
-    };
+export type QuitContext = {
+  forced: boolean;
+};
 
 export type RelaunchOptions =
   | {

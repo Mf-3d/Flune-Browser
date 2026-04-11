@@ -65,14 +65,10 @@ export class ApplicationService {
   quit(context: QuitContext) {
     if (context.forced) app.quit();
     else {
-      if (!context.window) {
-        throw new Error("Window does not exist.");
-      }
-
-      const choice = dialog.showMessageBoxSync(context.window.getNativeWindow(), {
+      const choice = dialog.showMessageBoxSync({
         type: "question",
         message: "本当に終了しますか？",
-        detail: `${context.window.tabManager.length}個のタブを閉じます。`,
+        detail: "すべてのタブを閉じます。",
         buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
