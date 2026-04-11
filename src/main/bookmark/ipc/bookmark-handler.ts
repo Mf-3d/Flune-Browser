@@ -34,9 +34,11 @@ export function registerBookmarkHandler(
       });
     });
   } catch (err) {
-    logger.error(new Error("Failed to register Bookmark IPC handler.", {
-      cause: err,
-    }));
+    logger.error(
+      new Error("Failed to register Bookmark IPC handler.", {
+        cause: err,
+      })
+    );
   }
 
   logger.info("Bookmark IPC handler registration has completed.");

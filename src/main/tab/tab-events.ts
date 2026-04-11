@@ -159,7 +159,10 @@ export function registerTabEvents(context: TabEventContext): () => void {
     }
   }
 
-  function onWebRequestBeforeRequest(details: Electron.OnBeforeRequestListenerDetails, callback: (response: Electron.CallbackResponse) => void) {
+  function onWebRequestBeforeRequest(
+    details: Electron.OnBeforeRequestListenerDetails,
+    callback: (response: Electron.CallbackResponse) => void
+  ) {
     context.logger.debug(`Before WebRequest: ${details.url}`);
 
     callback({
@@ -169,9 +172,12 @@ export function registerTabEvents(context: TabEventContext): () => void {
 
   function onWebRequestErrorOccurred(details: Electron.OnErrorOccurredListenerDetails) {
     context.logger.error(
-      new Error(`An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`, {
-        cause: details.error,
-      })
+      new Error(
+        `An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`,
+        {
+          cause: details.error,
+        }
+      )
     );
   }
 

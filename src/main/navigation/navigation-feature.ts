@@ -122,7 +122,7 @@ function registerWebContentsEvents(
     showHomeButton: boolean;
   },
   logger: Logger,
-  onLoaded?: () => void,
+  onLoaded?: () => void
 ) {
   const context: NavigationContext = {
     isMac: process.platform === "darwin",
@@ -147,30 +147,31 @@ function registerWebContentsEvents(
           type: "warning",
           title: "The app cannot be launched properly.",
           message: "The navigation may not have loaded correctly.",
-          detail: "Please close and restart the app."
+          detail: "Please close and restart the app.",
         });
       }
     }, 2000);
   });
 
   view.webContents.on("did-fail-load", (_, errCode, desc) => {
-    logger.error(
-      new Error(`Navigation did fail load; CODE: ${errCode} DESC: ${desc}`)
-    );
+    logger.error(new Error(`Navigation did fail load; CODE: ${errCode} DESC: ${desc}`));
 
     dialog.showMessageBoxSync({
       type: "error",
       title: "The app cannot be launched properly.",
       message: "Navigation did fail load!",
-      detail: "Please close and restart the app."
+      detail: "Please close and restart the app.",
     });
   });
 
   view.webContents.session.webRequest.onErrorOccurred((details) => {
     logger.error(
-      new Error(`An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`, {
-        cause: details.error,
-      })
+      new Error(
+        `An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`,
+        {
+          cause: details.error,
+        }
+      )
     );
   });
 }

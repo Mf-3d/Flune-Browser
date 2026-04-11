@@ -10,7 +10,10 @@ import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
 
 export class ApplicationService {
-  constructor(private readonly bookmarkService: BookmarkService, private readonly runtime: RuntimeContext) {}
+  constructor(
+    private readonly bookmarkService: BookmarkService,
+    private readonly runtime: RuntimeContext
+  ) {}
 
   get name(): string {
     return config.productName;

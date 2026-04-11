@@ -12,7 +12,7 @@ import type { HistoryService } from "@/main/history/service";
 import type { Logger } from "@/main/utils/logger";
 
 export type TabManagerContext = {
-  logger: Logger,
+  logger: Logger;
   collection: TabCollection;
   window: Window;
   bookmarkService: BookmarkService;
@@ -28,7 +28,7 @@ export type TabContext = {
 };
 
 export type TabEventContext = {
-  logger: Logger,
+  logger: Logger;
   tab: Tab;
   isActiveTab: (id: string) => boolean;
   window: Window;

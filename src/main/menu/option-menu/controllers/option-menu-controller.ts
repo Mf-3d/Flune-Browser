@@ -12,7 +12,7 @@ import type {
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
-import type{ Logger } from "@/main/utils/logger";
+import type { Logger } from "@/main/utils/logger";
 
 type OptionMenuControllerContext = {
   logger: Logger;
@@ -126,9 +126,11 @@ export class OptionMenuController {
           this.state = "open";
           resolve();
         } catch (err) {
-          this.logger.error(new Error("Failed to open Option Menu:", {
-            cause: err,
-          }));
+          this.logger.error(
+            new Error("Failed to open Option Menu:", {
+              cause: err,
+            })
+          );
 
           reject(err);
         }

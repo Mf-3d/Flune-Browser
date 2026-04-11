@@ -8,7 +8,12 @@ import type { ApplicationService } from "@/main/application/application-service"
 import type { Config } from "@/shared/types/config";
 import type { Path, PathValue } from "@/shared/types/path";
 
-export function registerSettingsHandler(logger: Logger, settings: Settings, eventBus: EventBus, appService: ApplicationService) {
+export function registerSettingsHandler(
+  logger: Logger,
+  settings: Settings,
+  eventBus: EventBus,
+  appService: ApplicationService
+) {
   logger.info("Settings IPC handler registration has started.");
 
   handle(IPC_INVOKE.STORE_GET_ALL, () => {
@@ -22,25 +27,33 @@ export function registerSettingsHandler(logger: Logger, settings: Settings, even
 
     eventBus.send("settings:updated");
   });
-  handle(IPC_INVOKE.STORE_SET, <P extends Path<Config>>(_: Electron.IpcMainInvokeEvent, key: P, value?: PathValue<Config, P>) => {
-    settings.store.set(key, value);
+  handle(
+    IPC_INVOKE.STORE_SET,
+    <P extends Path<Config>>(
+      _: Electron.IpcMainInvokeEvent,
+      key: P,
+      value?: PathValue<Config, P>
+    ) => {
+      settings.store.set(key, value);
 
-    eventBus.send("settings:updated");
+      eventBus.send("settings:updated");
 
-    switch (key) {
-      case "settings.design.theme":
-        eventBus.send("theme:updated", {
-          themeId: settings.themeService.getCurrentThemeId(),
-        });
-        break;
-      case "settings.hardwareAcceleration":
-        appService.relaunch({
-          forced: false,
-          reason: "ハードウェアアクセラレーションの設定の変更を適用するには再起動が必要です。"
-        });
-        break;
+      switch (key) {
+        case "settings.design.theme":
+          eventBus.send("theme:updated", {
+            themeId: settings.themeService.getCurrentThemeId(),
+          });
+          break;
+        case "settings.hardwareAcceleration":
+          appService.relaunch({
+            forced: false,
+            reason:
+              "ハードウェアアクセラレーションの設定の変更を適用するには再起動が必要です。",
+          });
+          break;
+      }
     }
-  });
-  
+  );
+
   logger.info("Settings IPC handler registration has completed.");
 }
