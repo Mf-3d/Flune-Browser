@@ -61,7 +61,7 @@ export type DefaultAPI = {
     warn: (message: string) => void;
     error: (message: string | Error) => void;
   };
-  getVersion: () => Promise<any>;
+  getVersion: () => Promise<string>;
   getVersions: () => Promise<Versions>;
   getComputerInfo: () => Promise<ComputerInfo>;
   /**
@@ -128,7 +128,13 @@ export type MenuAPI = {
   getPage: (pageId: MenuPageId) => Promise<OptionMenuItem[]>;
   clickItem: (action: MenuActionDescriptor) => void;
   bookmark: {
+    /**
+     * @deprecated
+     */
     getByFolderId: (folderId: string) => Promise<any>;
+    /**
+     * @deprecated
+     */
     add: () => void;
   };
   onOpening: (callback: (event: IpcRendererEvent) => void) => IpcRenderer;

@@ -2,14 +2,13 @@ import { app, ipcMain } from "electron";
 import path from "node:path";
 import { config } from "@/app.config";
 
-import type { IpcMainInvokeEvent, WebFrameMain } from "electron";
 import type { IpcInvoke } from "@/shared/ipc/channels";
 
 export function handle(
   channel: IpcInvoke,
-  handler: (event: IpcMainInvokeEvent, ...args: any[]) => any
+  handler: (event: Electron.IpcMainInvokeEvent, ...args: any[]) => unknown // eslint-disable-line @typescript-eslint/no-explicit-any
 ) {
-  ipcMain.handle(channel, (event, ...args: any[]) => {
+  ipcMain.handle(channel, (event, ...args) => {
     if (!event.senderFrame) return null;
     if (!validateSender(event.senderFrame)) return null;
 
@@ -23,7 +22,7 @@ export function handle(
  * @param frame
  * @returns { boolean }
  */
-function validateSender(frame: WebFrameMain): boolean {
+function validateSender(frame: Electron.WebFrameMain): boolean {
   const frameUrl = new URL(frame.url.toLowerCase());
   const appDir = path.dirname(app.getAppPath()).replace(/\\/g, "/").toLowerCase();
 

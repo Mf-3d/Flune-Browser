@@ -5,6 +5,8 @@ import type { Settings } from "..";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { Logger } from "@/main/utils/logger";
 import type { ApplicationService } from "@/main/application/application-service";
+import type { Config } from "@/shared/types/config";
+import type { Path, PathValue } from "@/shared/types/path";
 
 export function registerSettingsHandler(logger: Logger, settings: Settings, eventBus: EventBus, appService: ApplicationService) {
   logger.info("Settings IPC handler registration has started.");
@@ -20,7 +22,7 @@ export function registerSettingsHandler(logger: Logger, settings: Settings, even
 
     eventBus.send("settings:updated");
   });
-  handle(IPC_INVOKE.STORE_SET, (_, key: string, value?: any) => {
+  handle(IPC_INVOKE.STORE_SET, <P extends Path<Config>>(_: Electron.IpcMainInvokeEvent, key: P, value?: PathValue<Config, P>) => {
     settings.store.set(key, value);
 
     eventBus.send("settings:updated");
@@ -28,7 +30,7 @@ export function registerSettingsHandler(logger: Logger, settings: Settings, even
     switch (key) {
       case "settings.design.theme":
         eventBus.send("theme:updated", {
-          themeId: value,
+          themeId: settings.themeService.getCurrentThemeId(),
         });
         break;
       case "settings.hardwareAcceleration":

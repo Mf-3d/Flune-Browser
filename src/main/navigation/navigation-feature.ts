@@ -86,7 +86,7 @@ export function createNavigationFeature(
   function send(
     channel: IpcNotify,
     // channel: IpcNotify & IpcEvents,
-    ...args: any[]
+    ...args: unknown[]
   ) {
     view.webContents.send(channel, ...args);
   }

@@ -34,7 +34,6 @@ export class ApplicationService {
     options?: RelaunchOptions
   ) {
     if (options && !options.forced) {
-      options?.reason;
       const choice = dialog.showMessageBoxSync({
         type: "question",
         message: "本当に再起動しますか？",
