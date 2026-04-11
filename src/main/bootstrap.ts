@@ -42,16 +42,24 @@ type Services = {
   appService: ApplicationService;
 };
 
-export function bootstrap() {
+export async function bootstrap() {
   const runtime = createRuntimeContext();
 
   app.setName(config.productName);
+
   if (process.platform === "darwin" && isArchitectureIntel()) {
     app.disableHardwareAcceleration();
   }
 
   const services = initializeServices(runtime);
   services.logger.info("The services have been initialized.");
+
+  if (!services.settings.store.get("settings.hardwareAcceleration")) {
+    services.appService.disableHardwareAcceleration();
+    services.logger.info("Hardware acceleration is disabled.");
+  } else {
+    services.logger.info("Hardware acceleration will be enabled.");
+  }
 
   services.logger.info("Application events are registering...");
   registerAppEvents(services, runtime);
@@ -123,7 +131,7 @@ function onReady(services: Services, runtime: RuntimeContext) {
     registerCrashHandler(services.logger, runtime);
     registerLogHandler(services.logger);
     registerAppHandler(services.logger, services.appService, services.windowManager);
-    registerSettingsHandler(services.logger, services.settings, services.eventBus);
+    registerSettingsHandler(services.logger, services.settings, services.eventBus, services.appService);
     registerTabHandler(
       services.logger,
       services.windowManager,

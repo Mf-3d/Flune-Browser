@@ -79,12 +79,13 @@ async function updateOptionsUI() {
 
     switch (id) {
       case "setting-auto-save":
-        element.checked = (await window.flune.settings.get("settings")).autoSave;
+        element.checked = (await window.flune.settings.get("settings.autoSave"));
         break;
       case "toggle-home-button":
-        element.checked = (
-          await window.flune.settings.get("settings")
-        ).design.showHomeButton;
+        element.checked = await window.flune.settings.get("settings.design.showHomeButton");
+        break;
+      case "hardware-acceleration":
+        element.checked = (await window.flune.settings.get("settings.hardwareAcceleration"));
         break;
     }
   });

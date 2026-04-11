@@ -18,3 +18,12 @@ export type QuitContext =
   | {
       forced: true;
     };
+
+export type RelaunchOptions =
+  | {
+      forced: false;
+      reason?: string;
+    }
+  | {
+      forced: true;
+    };

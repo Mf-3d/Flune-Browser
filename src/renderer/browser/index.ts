@@ -1,3 +1,4 @@
+import lucide from "../utils/icons";
 import { applyTheme } from "./theme";
 import { defaultIpc } from "../ipc/default-ipc";
 import { IpcRendererEvent } from "electron";
@@ -18,6 +19,8 @@ async function onInit() {
   document.querySelectorAll(".flune-version").forEach((element) => {
     element.innerHTML = fluneVersion;
   });
+
+  lucide.createIcons();
 }
 
 function onThemeChanged(_: IpcRendererEvent, themeUrl: string) {

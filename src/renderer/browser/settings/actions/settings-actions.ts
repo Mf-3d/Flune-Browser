@@ -30,6 +30,9 @@ export const SettingsActions = {
         case "toggle-home-button":
           this.save("settings.design.showHomeButton", element.checked);
           break;
+        case "hardware-acceleration":
+          this.save("settings.hardwareAcceleration", element.checked);
+          break;
       }
     });
 

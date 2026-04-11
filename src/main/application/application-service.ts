@@ -3,7 +3,7 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { config } from "@/app.config";
 
 import type { Window } from "@/main/window/window";
-import type { QuitContext } from "./types";
+import type { QuitContext, RelaunchOptions } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
@@ -17,6 +17,41 @@ export class ApplicationService {
 
   get isPackaged() {
     return app.isPackaged;
+  }
+
+  disableHardwareAcceleration() {
+    if (!app.isReady()) app.disableHardwareAcceleration();
+  }
+
+  relaunch(
+    /**
+     * @default 
+     * ```ts
+     * { forced: true }
+     * ```
+     */
+    options?: RelaunchOptions
+  ) {
+    if (options && !options.forced) {
+      options?.reason
+      const choice = dialog.showMessageBoxSync({
+        type: "question",
+        message: "本当に再起動しますか？",
+        detail: `${options?.reason + "\n"}再起動するとすべてのタブを閉じます。`,
+        buttons: ["再起動する", "キャンセル"],
+        defaultId: 0,
+        cancelId: 1,
+      });
+
+      if (choice === 0) {
+        app.relaunch();
+        app.exit(0);
+      }
+    }
+    else {
+      app.relaunch();
+      app.exit(0);
+    }
   }
 
   quit(options: QuitContext) {
