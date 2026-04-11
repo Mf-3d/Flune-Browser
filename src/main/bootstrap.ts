@@ -2,7 +2,7 @@ import { app } from "electron";
 
 import { config } from "@/app.config";
 import { isArchitectureIntel } from "@/main/system/env";
-import { createRuntimeContext } from "./application/runtime-context";
+import { RuntimeContext } from "@/main/application/runtime-context";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import { DataStore } from "@/main/infrastructure/storage/data-store";
@@ -27,8 +27,6 @@ import { registerBookmarkHandler } from "@/main/bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
 import { registerOptionMenuHandler } from "@/main/menu/option-menu/ipc/option-menu-handler";
 
-import type { RuntimeContext } from "@/main/application/types";
-
 type Services = {
   logger: Logger;
   protocol: Protocol;
@@ -43,7 +41,7 @@ type Services = {
 };
 
 export async function bootstrap() {
-  const runtime = createRuntimeContext();
+  const runtime = new RuntimeContext();
 
   app.setName(config.productName);
 

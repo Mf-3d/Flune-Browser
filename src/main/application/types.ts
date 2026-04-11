@@ -1,5 +1,8 @@
 import type { Window } from "@/main/window/window";
 
+/**
+ * @deprecated
+ */
 export type RuntimeContext = {
   runtime: "vite-server" | "vite-preview" | "production" | "dev";
   sessionId: string;

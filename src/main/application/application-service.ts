@@ -4,10 +4,11 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { config } from "@/app.config";
 
 import type { Window } from "@/main/window/window";
-import type { QuitContext, RelaunchOptions, RuntimeContext } from "./types";
+import type { QuitContext, RelaunchOptions } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
+import type { RuntimeContext } from "./runtime-context";
 
 export class ApplicationService {
   constructor(

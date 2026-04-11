@@ -1,7 +1,7 @@
 import { app } from "electron";
 
 import type { Logger } from "@/main/utils/logger";
-import type { RuntimeContext } from "@/main/application/types";
+import type { RuntimeContext } from "@/main/application/runtime-context";
 
 export function registerCrashHandler(logger: Logger, runtime: RuntimeContext) {
   logger.info("Crash handler registration has started.");
