@@ -6,6 +6,7 @@ import { WebContents, WebContentsView } from "electron";
 import type { Window } from "@/main/window/window";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { Rect } from "@/shared/types/rect";
+import type { IRuntimeContext } from "@/main/application/runtime-context";
 
 const OPTION_MENU_PATH = resolveView(ROUTE_MAP.menu);
 
@@ -17,7 +18,7 @@ export class OptionMenuView {
   }
 
   constructor(
-    private readonly appService: ApplicationService,
+    private readonly runtime: IRuntimeContext,
     private readonly window: Window,
     private bounds: Rect
   ) {
@@ -30,7 +31,7 @@ export class OptionMenuView {
 
     this.view.setBounds(this.bounds);
 
-    if (!this.appService.isPackaged) this.view.webContents.openDevTools();
+    if (!this.runtime.isPackaged) this.view.webContents.openDevTools();
     this.view.webContents.loadURL(OPTION_MENU_PATH);
 
     this.registerEvents();

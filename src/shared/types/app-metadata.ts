@@ -3,6 +3,12 @@ export type AppMetadata = {
    * @example "flune-browser"
    */
   name: string;
+  versions: {
+    app: string;
+    electron: string;
+    node: string;
+    chrome: string;
+  };
   /**
    * @example "3.0.0-beta.1"
    */

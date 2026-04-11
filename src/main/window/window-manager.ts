@@ -27,7 +27,7 @@ export class WindowManager {
   create() {
     this.baseWindow = new Window({
       logger: this.logger,
-      appService: this.appService,
+      runtime: this.runtime,
       bookmarkService: this.bookmarkService,
       historyService: this.historyService,
       settings: this.settings,

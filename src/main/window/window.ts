@@ -11,18 +11,19 @@ import { TabCollection } from "@/main/tab/tab-collection";
 import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
 import { OptionMenuView } from "@/main/menu/option-menu/view/option-menu-view";
 import { config } from "@/app.config";
+import { formatVersion } from "@/shared/format/version-formatter";
 
 import type { Settings } from "@/main/settings";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
 import type { Rect } from "@/shared/types/rect";
 import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "@/main/application/runtime-context";
 
 type WindowContext = {
   logger: Logger;
-  appService: ApplicationService;
+  runtime: IRuntimeContext;
   bookmarkService: BookmarkService;
   historyService: HistoryService;
   settings: Settings;
@@ -33,11 +34,11 @@ type WindowContext = {
 export class Window {
   viewY: number = 66;
 
+  private readonly runtime;
   private readonly logger;
   private readonly win;
   readonly navigation;
   readonly optionMenuController;
-  private readonly appService;
   private readonly bookmarkService;
   private readonly historyService;
   private readonly settings;
@@ -47,6 +48,7 @@ export class Window {
 
   constructor(context: WindowContext) {
     this.logger = context.logger;
+    this.runtime = context.runtime;
     // this.appService = context.appService;
     this.bookmarkService = context.bookmarkService;
     this.historyService = context.historyService;
@@ -55,7 +57,7 @@ export class Window {
 
     this.win = new BaseWindow(this.createWindowConstructorOptions(context.bounds));
 
-    const optionMenuView = new OptionMenuView(this.appService, this, {
+    const optionMenuView = new OptionMenuView(this.runtime, this, {
       x: 0,
       y: this.viewY,
       width: context.bounds ? context.bounds.width : this.getBounds().width,
@@ -107,10 +109,7 @@ export class Window {
         : {}),
       minWidth: 300,
       minHeight: 300,
-      title: `${config.name} ${this.appService
-        .getVersion()
-        .replace("-beta.", " Beta ")
-        .replace("-dev.", " Dev ")}`,
+      title: `${config.name} ${formatVersion(config.version)}`,
       titleBarStyle: "hidden",
       titleBarOverlay:
         process.platform === "darwin"
@@ -136,7 +135,7 @@ export class Window {
     if (!currentTheme) throw new Error();
 
     const navigation = createNavigationFeature(
-      this.appService,
+      this.runtime,
       this,
       {
         viewY: this.viewY,

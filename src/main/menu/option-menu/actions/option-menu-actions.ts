@@ -1,3 +1,5 @@
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
+
 import type { ActionHandlerMap, MenuActionDescriptor } from "@/shared/types/menu";
 import type { MenuActionContext } from "../templates/types";
 
@@ -14,11 +16,26 @@ export function handleAction<T extends MenuActionDescriptor>(
     },
 
     "new-tab": () => {
-      context.appService.createTab(context.window);
+      context.window.tabManager.createTab({
+        isActive: true,
+      });
     },
 
     "add-bookmark": () => {
-      context.appService.addActiveTabToBookmarks(context.window);
+      const tab = context.window.tabManager.getActiveTab();
+
+      if (!tab) {
+        throw new Error("Tab does not exist.");
+      }
+
+      if (!tab.url) {
+        throw new Error(`Tab (${tab.id}) does not have URL.`);
+      }
+      
+      context.bookmarkService.add({
+        title: tab.title,
+        url: tab.url.toString(),
+      });
     },
 
     "open-bookmark": (payload) => {
@@ -62,11 +79,11 @@ export function handleAction<T extends MenuActionDescriptor>(
     },
 
     "open-settings-page": () => {
-      context.appService.showSettingsPage(context.window);
+      context.window.tabManager.navigate(resolveView(ROUTE_MAP.settings));
     },
 
     "open-versions-page": () => {
-      context.appService.showVersionsPage(context.window);
+      context.window.tabManager.navigate(resolveView(ROUTE_MAP.version));
     },
   };
 
@@ -112,38 +129,3 @@ export function handleAction<T extends MenuActionDescriptor>(
       break;
   }
 }
-
-/*
-export function createOptionMenuActions(): Record<MenuId, MenuAction> {
-  return {
-    "new-tab": (context) => {
-      const tab = context.appService.createTab(context.window);
-      tab.loadURL(HOME_URL);
-    },
-    "add-bookmark": (context) => {
-      // context.appService.addBookmark(context.payload?.url);
-    },
-    "open-bookmark": (context) => {
-      // context.appService.openBookmark(context.payload?.url);
-    },
-    "open-bookmarks": (context) => {
-      // context.appService.showSettingsPage(context.window);
-    },
-    "open-settings": (context) => {
-      context.appService.showSettingsPage(context.window);
-    },
-    "open-downloads": (context) => {
-      // window.tabManager.navigate();
-    },
-    "open-versions": (context) => {
-      context.appService.showVersionsPage(context.window);
-    },
-    "quit": (context) => {
-      context.appService.quit({
-        forced: false,
-        window: context.window
-      });
-    }
-  };
-}
-*/

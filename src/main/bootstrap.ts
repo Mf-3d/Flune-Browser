@@ -92,7 +92,7 @@ function initializeServices(): Services {
 
   const appService = new ApplicationService(bookmarkService, runtime);
 
-  const settings = createSettings(appService, logger);
+  const settings = createSettings(runtime, logger);
   const windowManager = new WindowManager(
     logger,
     runtime,

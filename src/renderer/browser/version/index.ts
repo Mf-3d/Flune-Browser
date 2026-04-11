@@ -7,7 +7,7 @@ async function onInit() {
 
   document.querySelectorAll(".version-flune").forEach((element) => {
     element.classList.remove("undefined");
-    element.innerHTML = versions.flune;
+    element.innerHTML = versions.app;
   });
 
   document.querySelectorAll(".version-electron").forEach((element) => {

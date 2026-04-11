@@ -4,7 +4,7 @@ import type { Path, PathValue } from "./path";
 import { IpcRenderer, IpcRendererEvent } from "electron";
 
 export type Versions = {
-  flune: string;
+  app: string;
   electron: string;
   node: string;
   chrome: string;

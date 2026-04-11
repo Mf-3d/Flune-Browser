@@ -11,9 +11,9 @@ import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { NavigationContext, NavigationState } from "@/shared/types/preload-api";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { Window } from "@/main/window/window";
 import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "@/main/application/runtime-context";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -29,7 +29,7 @@ export type Navigation = ReturnType<typeof createNavigationFeature>;
  * @returns
  */
 export function createNavigationFeature(
-  appService: ApplicationService,
+  runtime: IRuntimeContext,
   window: Window,
   settings: {
     viewY: number;
@@ -42,7 +42,7 @@ export function createNavigationFeature(
   const view = new WebContentsView({
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
-      additionalArguments: [`--is-packaged=${appService.isPackaged}`],
+      additionalArguments: [`--is-packaged=${runtime.isPackaged}`],
     },
   });
 
