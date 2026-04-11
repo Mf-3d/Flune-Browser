@@ -88,7 +88,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const historyService = new HistoryService(historyRepository);
 
-  const appService = new ApplicationService(bookmarkService);
+  const appService = new ApplicationService(bookmarkService, runtime);
 
   const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(

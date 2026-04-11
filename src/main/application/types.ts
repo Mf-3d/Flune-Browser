@@ -1,7 +1,11 @@
 import type { Window } from "@/main/window/window";
 
 export type RuntimeContext = {
+  runtime: "vite-server" | "vite-preview" | "production" | "dev";
   sessionId: string;
+  /**
+   * Returns the output location for the log file in the current session.
+   */
   logDir: string;
   log: {
     app: string;

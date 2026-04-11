@@ -5,8 +5,8 @@
   "main": "out/main/main.js",
   "scripts": {
     "test": "playwright test",
-    "start": "electron-vite preview",
-    "dev": "electron-vite dev",
+    "start": "npm run check & electron-vite preview -- --runtime=vite-preview",
+    "dev": "npm run check & electron-vite dev -- --runtime=vite-server",
     "check": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

@@ -1,15 +1,16 @@
+import { spawn } from "node:child_process";
 import { app, dialog } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { config } from "@/app.config";
 
 import type { Window } from "@/main/window/window";
-import type { QuitContext, RelaunchOptions } from "./types";
+import type { QuitContext, RelaunchOptions, RuntimeContext } from "./types";
 import type { Versions } from "@/shared/types/preload-api";
 import type { Tab } from "@/main/tab/tab";
 import type { BookmarkService } from "@/main/bookmark/service";
 
 export class ApplicationService {
-  constructor(private readonly bookmarkService: BookmarkService) {}
+  constructor(private readonly bookmarkService: BookmarkService, private readonly runtime: RuntimeContext) {}
 
   get name(): string {
     return config.productName;
@@ -25,7 +26,7 @@ export class ApplicationService {
 
   relaunch(
     /**
-     * @default 
+     * @default
      * ```ts
      * { forced: true }
      * ```
@@ -33,7 +34,7 @@ export class ApplicationService {
     options?: RelaunchOptions
   ) {
     if (options && !options.forced) {
-      options?.reason
+      options?.reason;
       const choice = dialog.showMessageBoxSync({
         type: "question",
         message: "本当に再起動しますか？",
@@ -43,14 +44,33 @@ export class ApplicationService {
         cancelId: 1,
       });
 
-      if (choice === 0) {
-        app.relaunch();
+      if (choice === 0) this.relaunchApp();
+    } else this.relaunchApp();
+  }
+
+  private relaunchApp() {
+    switch (this.runtime.runtime) {
+      case "vite-server":
+        spawn("npm", ["run", "dev"], {
+          detached: true,
+          stdio: "ignore",
+          shell: true,
+        }).unref();
         app.exit(0);
-      }
-    }
-    else {
-      app.relaunch();
-      app.exit(0);
+        break;
+      case "vite-preview":
+        spawn("npm", ["run", "start"], {
+          detached: true,
+          stdio: "ignore",
+          shell: true,
+        }).unref();
+        app.exit(0);
+        break;
+      case "production":
+      case "dev":
+        app.relaunch({ args: process.argv.slice(1).concat(["--relaunch"]) });
+        app.exit(0);
+        break;
     }
   }
 
