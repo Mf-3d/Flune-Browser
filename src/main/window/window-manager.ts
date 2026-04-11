@@ -10,6 +10,7 @@ import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";
 import type { Logger } from "@/main/utils/logger";
 import type { IRuntimeContext } from "../application/runtime-context";
+import { ApplicationService } from "../application/application-service";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
@@ -17,6 +18,7 @@ export class WindowManager {
   constructor(
     private readonly logger: Logger,
     private readonly runtime: IRuntimeContext,
+    private readonly appService: ApplicationService,
     private readonly bookmarkService: BookmarkService,
     private readonly historyService: HistoryService,
     private readonly settings: Settings,
@@ -27,6 +29,7 @@ export class WindowManager {
     this.baseWindow = new Window({
       logger: this.logger,
       runtime: this.runtime,
+      appService: this.appService,
       bookmarkService: this.bookmarkService,
       historyService: this.historyService,
       settings: this.settings,

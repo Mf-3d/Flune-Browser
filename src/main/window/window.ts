@@ -20,10 +20,12 @@ import type { HistoryService } from "@/main/history/service";
 import type { Rect } from "@/shared/types/rect";
 import type { Logger } from "@/main/utils/logger";
 import type { IRuntimeContext } from "@/main/application/runtime-context";
+import type { ApplicationService } from "../application/application-service";
 
 type WindowContext = {
   logger: Logger;
   runtime: IRuntimeContext;
+  appService: ApplicationService;
   bookmarkService: BookmarkService;
   historyService: HistoryService;
   settings: Settings;
@@ -34,6 +36,7 @@ type WindowContext = {
 export class Window {
   viewY: number = 66;
 
+  private readonly appService;
   private readonly runtime;
   private readonly logger;
   private readonly win;
@@ -49,7 +52,7 @@ export class Window {
   constructor(context: WindowContext) {
     this.logger = context.logger;
     this.runtime = context.runtime;
-    // this.appService = context.appService;
+    this.appService = context.appService;
     this.bookmarkService = context.bookmarkService;
     this.historyService = context.historyService;
     this.settings = context.settings;

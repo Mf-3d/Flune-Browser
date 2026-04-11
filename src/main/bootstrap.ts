@@ -90,13 +90,14 @@ function initializeServices(): Services {
   const bookmarkService = new BookmarkService(bookmarkRepository, eventBus);
   const historyService = new HistoryService(historyRepository);
 
-  const appService = new ApplicationService(bookmarkService, runtime);
+  const appService = new ApplicationService(runtime);
 
   const settings = createSettings(runtime, logger);
   const windowManager = new WindowManager(
     logger,
     runtime,
     // faviconService,
+    appService,
     bookmarkService,
     historyService,
     settings,
