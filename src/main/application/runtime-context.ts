@@ -1,7 +1,6 @@
 import path from "path";
 import { app } from "electron";
 
-import type { RuntimeContext as R } from "./types";
 import { parseRuntimeType, type RuntimeType } from "./runtime-types";
 
 export class RuntimeContext {
@@ -41,26 +40,4 @@ export class RuntimeContext {
       chromiumNet: path.join(logDir, "chromium-net.log"),
     };
   }
-}
-
-/**
- * @deprecated
- */
-export function createRuntimeContext(): R {
-  const runtime = (process.argv.find((a) => a.startsWith("--runtime=")) ??
-    (app.isPackaged ? "production" : "dev")) as R["runtime"];
-  const sessionId = new Date().toISOString().replace(/[:.]/g, "-");
-
-  const logDir = path.join(app.getPath("userData"), "logs", sessionId);
-
-  return {
-    runtime,
-    sessionId,
-    logDir,
-    log: {
-      app: path.join(logDir, "app.log"),
-      chromium: path.join(logDir, "chromium.log"),
-      chromiumNet: path.join(logDir, "chromium-net.log"),
-    },
-  };
 }
