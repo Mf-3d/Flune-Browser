@@ -31,7 +31,7 @@ export function handleAction<T extends MenuActionDescriptor>(
       if (!tab.url) {
         throw new Error(`Tab (${tab.id}) does not have URL.`);
       }
-      
+
       context.bookmarkService.add({
         title: tab.title,
         url: tab.url.toString(),
