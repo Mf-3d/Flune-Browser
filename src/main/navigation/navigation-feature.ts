@@ -134,6 +134,23 @@ function registerWebContentsEvents(
     onLoaded?.();
     view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, context);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
+
+    setTimeout(async () => {
+      const isBlank = await view.webContents.executeJavaScript(`
+        document.body && document.body.innerText.trim().length === 0
+      `);
+
+      if (isBlank) {
+        logger.warn("The navigation may not have loaded correctly.");
+
+        dialog.showMessageBoxSync({
+          type: "warning",
+          title: "The app cannot be launched properly.",
+          message: "The navigation may not have loaded correctly.",
+          detail: "Please close and restart the app."
+        });
+      }
+    }, 2000);
   });
 
   view.webContents.on("did-fail-load", (_, errCode, desc) => {
