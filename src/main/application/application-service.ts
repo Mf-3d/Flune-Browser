@@ -76,17 +76,17 @@ export class ApplicationService {
     }
   }
 
-  quit(options: QuitContext) {
-    if (options.forced) app.quit();
+  quit(context: QuitContext) {
+    if (context.forced) app.quit();
     else {
-      if (!options.window) {
+      if (!context.window) {
         throw new Error("Window does not exist.");
       }
 
-      const choice = dialog.showMessageBoxSync(options.window.getNativeWindow(), {
+      const choice = dialog.showMessageBoxSync(context.window.getNativeWindow(), {
         type: "question",
         message: "本当に終了しますか？",
-        detail: `${options.window.tabManager.length}個のタブを閉じます。`,
+        detail: `${context.window.tabManager.length}個のタブを閉じます。`,
         buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
