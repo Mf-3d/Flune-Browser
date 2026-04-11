@@ -1,21 +1,19 @@
-import path from "path";
 import { app } from "electron";
 
 import { parseRuntimeType, type RuntimeType } from "./runtime-types";
 
-export class RuntimeContext {
+export interface IRuntimeContext {
   readonly runtime: RuntimeType;
-  readonly sessionId: string;
-  readonly log: {
-    app: string;
-    chromium: string;
-    chromiumNet: string;
-  };
+  readonly isPackaged: boolean;
+}
+
+export class RuntimeContext implements IRuntimeContext {
+  readonly runtime;
+  readonly isPackaged;
 
   constructor() {
     this.runtime = this.detectRuntime();
-    this.sessionId = this.generateSessionId();
-    this.log = this.generateLogPathes();
+    this.isPackaged = app.isPackaged;
   }
 
   private detectRuntime(): RuntimeType {
@@ -26,18 +24,14 @@ export class RuntimeContext {
       return app.isPackaged ? "production" : "dev";
     }
   }
-
-  private generateSessionId(): string {
-    return new Date().toISOString().replace(/[:.]/g, "-");
-  }
-
-  private generateLogPathes() {
-    const logDir = path.join(app.getPath("userData"), "logs", this.sessionId);
-
-    return {
-      app: path.join(logDir, "app.log"),
-      chromium: path.join(logDir, "chromium.log"),
-      chromiumNet: path.join(logDir, "chromium-net.log"),
-    };
-  }
 }
+
+// export function createMockRuntimeContext(
+//   override?: Partial<IRuntimeContext>
+// ): IRuntimeContext {
+//   return {
+//     runtime: "test",
+//     isPackaged: false,
+//     ...override
+//   }
+// }

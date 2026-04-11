@@ -1,4 +1,10 @@
-export const RUNTIME_TYPES = ["vite-server", "vite-preview", "production", "dev"] as const;
+export const RUNTIME_TYPES = [
+  "vite-server",
+  "vite-preview",
+  "production",
+  "dev",
+  "test",
+] as const;
 
 export type RuntimeType = (typeof RUNTIME_TYPES)[number];
 

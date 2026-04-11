@@ -10,6 +10,7 @@ import {
 import { TabCollection } from "@/main/tab/tab-collection";
 import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
 import { OptionMenuView } from "@/main/menu/option-menu/view/option-menu-view";
+import { config } from "@/app.config";
 
 import type { Settings } from "@/main/settings";
 import type { ApplicationService } from "@/main/application/application-service";
@@ -46,7 +47,7 @@ export class Window {
 
   constructor(context: WindowContext) {
     this.logger = context.logger;
-    this.appService = context.appService;
+    // this.appService = context.appService;
     this.bookmarkService = context.bookmarkService;
     this.historyService = context.historyService;
     this.settings = context.settings;
@@ -106,7 +107,7 @@ export class Window {
         : {}),
       minWidth: 300,
       minHeight: 300,
-      title: `${this.appService.name} ${this.appService
+      title: `${config.name} ${this.appService
         .getVersion()
         .replace("-beta.", " Beta ")
         .replace("-dev.", " Dev ")}`,

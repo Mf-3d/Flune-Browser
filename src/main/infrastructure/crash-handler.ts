@@ -1,9 +1,9 @@
 import { app } from "electron";
 
 import type { Logger } from "@/main/utils/logger";
-import type { RuntimeContext } from "@/main/application/runtime-context";
+import type { ISessionService } from "@/main/infrastructure/session/session-service";
 
-export function registerCrashHandler(logger: Logger, runtime: RuntimeContext) {
+export function registerCrashHandler(logger: Logger, sessionService: ISessionService) {
   logger.info("Crash handler registration has started.");
 
   // クラッシュ時にログを保存する。
@@ -20,8 +20,8 @@ export function registerCrashHandler(logger: Logger, runtime: RuntimeContext) {
     logger.error(`RENDERER GONE: ${details.reason}`);
   });
 
-  app.commandLine.appendSwitch("enable-logging", runtime.log.chromium);
-  app.commandLine.appendSwitch("log-net-log", runtime.log.chromiumNet);
+  app.commandLine.appendSwitch("enable-logging", sessionService.getChromiumLogPath());
+  app.commandLine.appendSwitch("log-net-log", sessionService.getChromiumNetLogPath());
   app.commandLine.appendSwitch("v", "1");
 
   logger.info("Crash handler registration has completed.");

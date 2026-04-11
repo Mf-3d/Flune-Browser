@@ -17,7 +17,7 @@ import { BookmarkService } from "@/main/bookmark/service";
 import { BookmarkRepository } from "@/main/bookmark/repository";
 import { HistoryService } from "@/main/history/service";
 import { HistoryRepository } from "@/main/history/repository";
-import { FaviconService } from "./favicon/service";
+// import { FaviconService } from "./favicon/service";
 
 import { registerLogHandler } from "@/main/logger/ipc/log-handler";
 import { registerCrashHandler } from "@/main/infrastructure/crash-handler";
@@ -26,8 +26,11 @@ import { registerSettingsHandler } from "@/main/settings/ipc/settings-handler";
 import { registerBookmarkHandler } from "@/main/bookmark/ipc/bookmark-handler";
 import { registerAppHandler } from "@/main/application/ipc/app-handler";
 import { registerOptionMenuHandler } from "@/main/menu/option-menu/ipc/option-menu-handler";
+import { SessionService } from "./infrastructure/session/session-service";
 
 type Services = {
+  runtime: RuntimeContext;
+  sessionService: SessionService;
   logger: Logger;
   protocol: Protocol;
   settings: Settings;
@@ -41,15 +44,13 @@ type Services = {
 };
 
 export async function bootstrap() {
-  const runtime = new RuntimeContext();
-
   app.setName(config.productName);
 
   if (process.platform === "darwin" && isArchitectureIntel()) {
     app.disableHardwareAcceleration();
   }
 
-  const services = initializeServices(runtime);
+  const services = initializeServices();
   services.logger.info("The services have been initialized.");
 
   if (!services.settings.store.get("settings.hardwareAcceleration")) {
@@ -60,12 +61,12 @@ export async function bootstrap() {
   }
 
   services.logger.info("Application events are registering...");
-  registerAppEvents(services, runtime);
+  registerAppEvents(services);
 }
 
-function registerAppEvents(services: Services, runtime: RuntimeContext) {
+function registerAppEvents(services: Services) {
   app.on("ready", () => {
-    onReady(services, runtime);
+    onReady(services, services.runtime);
   });
 
   app.on("window-all-closed", () => {
@@ -73,8 +74,11 @@ function registerAppEvents(services: Services, runtime: RuntimeContext) {
   });
 }
 
-function initializeServices(runtime: RuntimeContext): Services {
-  const logger = new Logger(runtime.log.app);
+function initializeServices(): Services {
+  const sessionService = new SessionService();
+  const runtime = new RuntimeContext();
+
+  const logger = new Logger(sessionService.getAppLogPath());
   const protocol = new Protocol(config.protocol, logger);
   const data = new DataStore();
   const eventBus = new EventBus();
@@ -91,7 +95,7 @@ function initializeServices(runtime: RuntimeContext): Services {
   const settings = createSettings(appService, logger);
   const windowManager = new WindowManager(
     logger,
-    appService,
+    runtime,
     // faviconService,
     bookmarkService,
     historyService,
@@ -100,6 +104,8 @@ function initializeServices(runtime: RuntimeContext): Services {
   );
 
   return {
+    runtime,
+    sessionService,
     logger,
     protocol,
     settings,
@@ -116,7 +122,7 @@ function initializeServices(runtime: RuntimeContext): Services {
 function onReady(services: Services, runtime: RuntimeContext) {
   services.logger.info('Event "ready" has started.');
 
-  if (services.appService.isPackaged) {
+  if (services.runtime.isPackaged) {
     services.logger.info("Application is packaged.");
     services.logger.setLogLevel("info");
   } else {
@@ -126,10 +132,15 @@ function onReady(services: Services, runtime: RuntimeContext) {
   try {
     services.protocol.handle();
 
-    registerCrashHandler(services.logger, runtime);
+    registerCrashHandler(services.logger, services.sessionService);
     registerLogHandler(services.logger);
     registerAppHandler(services.logger, services.appService, services.windowManager);
-    registerSettingsHandler(services.logger, services.settings, services.eventBus, services.appService);
+    registerSettingsHandler(
+      services.logger,
+      services.settings,
+      services.eventBus,
+      services.appService
+    );
     registerTabHandler(
       services.logger,
       services.windowManager,
@@ -152,7 +163,9 @@ function onReady(services: Services, runtime: RuntimeContext) {
     services.logger.info('Event "ready" has fired sucessfully.');
   } catch (err) {
     services.logger.error(
-      new Error('An error occurred during the execution of Event "ready".')
+      new Error(`An error occurred during the execution of Event "ready": ${err}`, {
+        cause: err,
+      })
     );
   }
 }
