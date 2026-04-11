@@ -66,7 +66,7 @@ export async function bootstrap() {
 
 function registerAppEvents(services: Services) {
   app.on("ready", () => {
-    onReady(services, services.runtime);
+    onReady(services);
   });
 
   app.on("window-all-closed", () => {
@@ -119,7 +119,7 @@ function initializeServices(): Services {
   };
 }
 
-function onReady(services: Services, runtime: RuntimeContext) {
+function onReady(services: Services) {
   services.logger.info('Event "ready" has started.');
 
   if (services.runtime.isPackaged) {

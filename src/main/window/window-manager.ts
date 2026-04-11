@@ -5,7 +5,6 @@ import { ApplicationMenuController } from "@/main/menu/application-menu/controll
 import { config } from "@/app.config";
 
 import type { Settings } from "@/main/settings/";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";

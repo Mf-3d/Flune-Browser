@@ -4,7 +4,6 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContents, WebContentsView } from "electron";
 
 import type { Window } from "@/main/window/window";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { Rect } from "@/shared/types/rect";
 import type { IRuntimeContext } from "@/main/application/runtime-context";
 

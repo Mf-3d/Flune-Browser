@@ -3,7 +3,6 @@ import { config } from "@/app.config";
 
 import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { Theme } from "@/shared/types/config";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { Logger } from "../utils/logger";
 import type { IRuntimeContext } from "../application/runtime-context";
 
