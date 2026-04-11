@@ -10,21 +10,7 @@ import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import type { Window } from "@/main/window/window";
 import type { Tab } from "@/main/tab/tab";
-
-export type ContextMenuActions = {
-  showEmojiPanel: () => void;
-  openInNewTab: () => void;
-  copyLinkURL: () => void;
-  toggleNavigationDevTools: () => void;
-  toggleDevTools: () => void;
-  openSettings: () => void;
-  searchSelectionText: () => void;
-  startPip: () => void;
-  goBack: () => void;
-  goForward: () => void;
-  reloadTab: () => void;
-  viewSource: () => void;
-};
+import type { ContextMenuActions } from "../types/actions";
 
 type ContextSource =
   | {

@@ -1,4 +1,4 @@
-import type { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
+import type { ContextMenuActions } from "../types/actions";
 import type { Tab } from "@/main/tab/tab";
 
 export function createTabMenuTemplate(
