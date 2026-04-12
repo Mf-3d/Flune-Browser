@@ -16,8 +16,8 @@ export class ThemeService {
   ) {
     this.urlPrefix =
       !this.runtime.isPackaged && process.env.ELECTRON_RENDERER_URL
-        ? `${process.env.ELECTRON_RENDERER_URL}/`
-        : `${config.protocol}://`;
+        ? `${process.env.ELECTRON_RENDERER_URL}/app/`
+        : `${config.protocol}://app/`;
   }
 
   getCurrentThemeId(): string {
