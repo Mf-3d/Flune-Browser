@@ -1,10 +1,10 @@
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
-import { ERR_CODES, ERR_PAGES } from "./types";
+import { ERR_CODES, ERR_PAGES } from "../constants/error-code";
 import { dialog, WebContents } from "electron";
 
 import type { Settings } from "@/main/settings";
 import type { Logger } from "@/main/utils/logger";
-import type { Tab } from "./tab";
+import type { Tab } from "../tab";
 import type { Window } from "@/main/window/window";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { HistoryService } from "@/main/history/service";

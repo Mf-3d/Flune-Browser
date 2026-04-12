@@ -3,12 +3,12 @@ import { Tab } from "./tab";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
-import { registerTabEvents } from "./tab-events";
+import { registerTabEvents } from "./events/tab-events";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { TabState } from "@/shared/types/preload-api";
 import type { Logger } from "@/main/utils/logger";
-import type { TabCollection } from "./tab-collection";
+import type { TabCollection } from "./collections/tab-collection";
 import type { BookmarkService } from "@/main/bookmark/service";
 import type { Window } from "@/main/window/window";
 import type { HistoryService } from "@/main/history/service";
