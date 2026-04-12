@@ -8,9 +8,6 @@ import type { Logger } from "@/main/utils/logger";
 import type { IRuntimeContext } from "../application/runtime-context";
 
 const urlPrefix = process.platform === "win32" ? "-\\" : "-/";
-console.log(
-  path.resolve(process.resourcesPath, "app.asar", "out", "renderer"), 
-  path.resolve(__dirname, "..", "..", "out", "renderer"))
 
 export class Protocol {
   private readonly router: Router;
@@ -41,16 +38,18 @@ export class Protocol {
         },
       ]);
     } catch (err) {
-      this.logger.error(new Error(`Failed to register protocol: ${err}`, {
-        cause: err,
-      }));
+      this.logger.error(
+        new Error(`Failed to register protocol: ${err}`, {
+          cause: err,
+        })
+      );
     }
   }
 
   handle() {
     try {
       if (protocol.isProtocolHandled(this.name)) return;
-      
+
       protocol.handle(this.name, async (req) => {
         const url = new URL(req.url);
         url.hostname = path.join(urlPrefix, url.hostname);
@@ -69,25 +68,23 @@ export class Protocol {
       this.logger.info(`Protocol ("${this.name}") handled.`);
     } catch (err) {
       this.logger.error(
-        new Error(
-          `Failed to handle Protocol ("${this.name}"): ${err}`,
-          { cause: err }
-        )
+        new Error(`Failed to handle Protocol ("${this.name}"): ${err}`, { cause: err })
       );
     }
   }
 }
 
 function createStaticHandler(runtime: IRuntimeContext): Route {
-  const baseDir = (runtime.isPackaged && process.platform === "darwin") ?
-    path.resolve(process.resourcesPath, "app.asar", "out", "renderer") :
-    path.resolve(__dirname, "..", "..", "out", "renderer");
+  const baseDir =
+    runtime.isPackaged && process.platform === "darwin"
+      ? path.join(process.resourcesPath, "app.asar", "out", "renderer")
+      : path.join(__dirname, "..", "..", "out", "renderer");
 
   return {
-    match: (path) => path.startsWith("-/"),
+    match: (path) => path.startsWith(urlPrefix),
     handle: async (ctx) => {
-      const filePath = path.join(baseDir, ctx.path).replace(urlPrefix, "");
-      ctx.logger.debug(pathToFileURL(filePath).toString())
+      const filePath = path.join(baseDir, ctx.path.replace(urlPrefix, ""));
+      ctx.logger.debug(pathToFileURL(filePath).toString());
       return net.fetch(pathToFileURL(filePath).toString());
     },
   };
