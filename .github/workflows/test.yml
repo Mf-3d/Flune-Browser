@@ -50,5 +50,5 @@ jobs:
           name: app-logs
           path: |
             ${{ matrix.os == 'window-latest' 
-              && 'C:\Users\runneradmin\AppData\Roaming\Flune-Browser\app.log' 
-              || '/Users/runner/Library/Application Support/Flune-Browser/app.log' }}
+              && 'C:\Users\runneradmin\AppData\Roaming\Flune-Browser\logs' 
+              || '/Users/runner/Library/Application Support/Flune-Browser/logs' }}
