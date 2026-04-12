@@ -39,6 +39,16 @@ export class Logger {
     this.writers.forEach((writer) => writer.write(level, formatted));
   }
 
+  debug(message: string) {
+    try {
+      const normalized = this.normalizer.normalize(message);
+      this.output("debug", normalized);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.error(styleText(["red", "bold"], "Failed to output log:"), err);
+    }
+  }
+
   info(message: string) {
     try {
       const normalized = this.normalizer.normalize(message);

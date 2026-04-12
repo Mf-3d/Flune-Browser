@@ -27,7 +27,10 @@ test("packaged app launches and survives", async ({}, testInfo) => {
     expect(window).toBeTruthy();
 
     // 3秒生存（即クラッシュ防止）
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  } catch (err) {
+    console.error(err);
+    throw err;
   } finally {
     if (app) {
       await app.close();

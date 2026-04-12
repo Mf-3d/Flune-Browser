@@ -84,10 +84,11 @@
             <td>
               <select id="search-engine">
                 <!-- 
-              <option value="search-engine">
-                Search Engine
-              </option>
-              --></select>
+                <option value="search-engine">
+                  Search Engine
+                </option>
+                -->
+              </select>
             </td>
           </tr>
           <tr>
@@ -97,6 +98,25 @@
                 type="checkbox"
                 name="setting-auto-save"
                 id="setting-auto-save"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <label
+                for="hardware-acceleration"
+                class="restart-required"
+                title="この設定の適用には再起動が必要です。"
+              >
+                ハードウェアアクセラレーション
+                <i data-lucide="circle-power"></i>
+              </label>
+            </th>
+            <td>
+              <input
+                type="checkbox"
+                name="hardware-acceleration"
+                id="hardware-acceleration"
               />
             </td>
           </tr>

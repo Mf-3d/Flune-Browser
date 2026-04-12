@@ -1,12 +1,12 @@
 {
   "name": "flune-browser",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.4",
   "description": "Newer and more challenging than anyone else.",
   "main": "out/main/main.js",
   "scripts": {
     "test": "playwright test",
-    "start": "electron-vite preview",
-    "dev": "electron-vite dev",
+    "start": "npm run check & electron-vite preview -- --runtime=vite-preview",
+    "dev": "npm run check & electron-vite dev -- --runtime=vite-server",
     "check": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -33,20 +33,21 @@
   "dependencies": {
     "chalk": "4.1.2",
     "electron-store": "^8.2.0",
-    "strip-ansi": "6.0.1",
-    "typescript": "^5.9.3"
+    "semver-parser": "^4.1.8",
+    "strip-ansi": "6.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.57.0",
-    "electron": "^41.0.3",
+    "@playwright/test": "^1.59.1",
+    "electron": "^41.2.0",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
-    "eslint": "^10.1.0",
+    "eslint": "^10.2.0",
     "globals": "^17.4.0",
-    "playwright": "^1.57.0",
-    "prettier": "^3.8.1",
-    "typescript-eslint": "^8.57.1",
-    "vite": "^7.3.1"
+    "playwright": "^1.59.1",
+    "prettier": "^3.8.2",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1",
+    "vite": "^7.3.2"
   }
 }

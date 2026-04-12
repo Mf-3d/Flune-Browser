@@ -2,7 +2,7 @@
 /src/**/*.js.map
 !/src/renderer/**/*.js
 test-results/
-artifacts
+**/*.DS_Store
 
 # Logs
 logs

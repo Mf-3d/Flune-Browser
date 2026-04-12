@@ -1,5 +1,5 @@
-import { IPC_INVOKE } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { config } from "@/app.config";
 
 import type { DefaultAPI, Versions, ComputerInfo } from "@/shared/types/preload-api";
@@ -11,7 +11,10 @@ export const DEFAULT: DefaultAPI = {
       ? process.env.ELECTRON_RENDERER_URL
       : `${config.protocol}://`,
 
-  log: {
+  logger: {
+    debug: (message) => {
+      ipcRenderer.invoke(IPC_INVOKE.LOG_DEBUG, message);
+    },
     info: (message) => {
       ipcRenderer.invoke(IPC_INVOKE.LOG_INFO, message);
     },

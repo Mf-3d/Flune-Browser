@@ -18,6 +18,7 @@ export type Config = {
   version: [number, number, number];
   settings: {
     autoSave: boolean;
+    hardwareAcceleration: boolean;
     window: {
       bounds: {
         width: number;

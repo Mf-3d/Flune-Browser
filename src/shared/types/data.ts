@@ -1,26 +1,7 @@
-export type Bookmark = {
-  type: "bookmark";
-  id: string;
-  title: string;
-  url: string;
-  tag: string[];
-  /**
-   * Specify the ID of "root" or parent folder.
-   */
-  parentId: string; // フォルダ
-};
-export type BookmarkFolder = {
-  type: "folder";
-  id: string;
-  title: string;
-  tag: string[];
-  parentId: string;
-};
-export type History = {
-  title: string;
-  url: string;
-  date: string;
-};
+// import type { NativeImage } from "electron";
+import type { BookmarkNode } from "./bookmark";
+import type { HistoryItem } from "./history";
+
 export type Download = {
   id: string;
   state: "progressing" | "interrupted" | "interrupted-done" | "completed" | "cancelled";
@@ -31,9 +12,7 @@ export type Download = {
   receivedSize: number | null;
   percentComplete: number | null;
 };
-
 export type FolderId = `${string}-${string}-${string}-${string}` | "root";
-
 export type BookmarkInput = {
   url: string;
   title: string;
@@ -43,6 +22,18 @@ export type BookmarkInput = {
    */
   parentId?: FolderId;
 };
+export type BookmarkFolderInput = {
+  title: string;
+  tag?: string[];
+  /**
+   * Specify the ID of "root" or parent folder.
+   */
+  parentId?: FolderId;
+};
+export type HistoryInput = {
+  title: string;
+  url: string;
+};
 
 export type Data = {
   /**
@@ -50,6 +41,11 @@ export type Data = {
    * @example [3,0,0]
    */
   version: [number, number, number];
-  history: History[];
-  bookmark: Bookmark[];
+  history: HistoryItem[];
+  bookmark: BookmarkNode[];
+};
+
+export type Favicon = {
+  url: string; // faviconのURL（キー）
+  dataUrl: string; // 画像データ
 };

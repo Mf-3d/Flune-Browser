@@ -1,6 +1,7 @@
-import { NavigationState } from "@/shared/types/preload-api";
+import { NavigationContext, NavigationState } from "@/shared/types/preload-api";
 import { applyTheme } from "../theme";
 import { navigationActions } from "../actions/navigation-actions";
+import { IpcRendererEvent } from "electron";
 
 export function registerNavigationEvents() {
   if (!window.flune.navigation) return;
@@ -10,19 +11,20 @@ export function registerNavigationEvents() {
   window.flune.navigation.onThemeChanged(onThemeChanged);
 }
 
-function onInit(_: Electron.IpcRendererEvent, state: NavigationState) {
-  if (state.showHomeButton !== undefined) {
-    const homeButton = document.getElementById("go-home")!;
+function onInit(_: IpcRendererEvent, state: NavigationContext) {
+  const homeButton = document.getElementById("go-home")!;
 
-    if (state.showHomeButton) {
-      homeButton.classList.remove("invisible");
-    } else {
-      homeButton.classList.add("invisible");
-    }
+  if (state.isMac) {
+    document.body.classList.add("mac");
+  }
+  if (state.showHomeButton) {
+    homeButton.classList.remove("invisible");
+  } else {
+    homeButton.classList.add("invisible");
   }
 }
 
-function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
+function onStateUpdated(_: IpcRendererEvent, state: NavigationState) {
   if (state.showHomeButton !== undefined) {
     const homeButton = document.getElementById("go-home")!;
 
@@ -70,6 +72,6 @@ function onStateUpdated(_: Electron.IpcRendererEvent, state: NavigationState) {
   }
 }
 
-function onThemeChanged(_: Electron.IpcRendererEvent, themeUrl: string) {
+function onThemeChanged(_: IpcRendererEvent, themeUrl: string) {
   applyTheme(themeUrl, navigationActions.updateSymbolColor);
 }

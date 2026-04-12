@@ -10,6 +10,8 @@ export function registerBookmarkHandler(
   bookmarkService: BookmarkService,
   logger: Logger
 ) {
+  logger.info("Bookmark IPC handler registration has started.");
+
   try {
     handle(IPC_INVOKE.BOOKMARK_TOGGLE, (event) => {
       const window = windowManager.getWindowFromWebContents(event.sender);
@@ -32,6 +34,12 @@ export function registerBookmarkHandler(
       });
     });
   } catch (err) {
-    logger.error(`Failed to register bookmarkHandler: ${err}`); // ロガーはまだ入れていないので仮
+    logger.error(
+      new Error("Failed to register Bookmark IPC handler.", {
+        cause: err,
+      })
+    );
   }
+
+  logger.info("Bookmark IPC handler registration has completed.");
 }

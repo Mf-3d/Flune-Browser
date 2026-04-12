@@ -92,3 +92,8 @@ input[type="text"] {
 table {
   border-spacing: 0.5em;
 }
+
+.restart-required svg {
+  stroke: color-mix(in srgb, var(--text-color) 40%, transparent);
+  width: 20px;
+}

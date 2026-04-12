@@ -3,21 +3,21 @@ import { config } from "@/app.config";
 
 import type { SettingsStore } from "@/main/infrastructure/storage/settings-store";
 import type { Theme } from "@/shared/types/config";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { Logger } from "../utils/logger";
+import type { IRuntimeContext } from "../application/runtime-context";
 
 export class ThemeService {
   private readonly urlPrefix: string;
 
   constructor(
     private readonly store: SettingsStore,
-    private readonly appService: ApplicationService,
+    private readonly runtime: IRuntimeContext,
     private readonly logger: Logger
   ) {
     this.urlPrefix =
-      !this.appService.isPackaged && process.env.ELECTRON_RENDERER_URL
-        ? `${process.env.ELECTRON_RENDERER_URL}/`
-        : `${config.protocol}://`;
+      !this.runtime.isPackaged && process.env.ELECTRON_RENDERER_URL
+        ? `${process.env.ELECTRON_RENDERER_URL}/-/`
+        : `${config.protocol}://-/`;
   }
 
   getCurrentThemeId(): string {

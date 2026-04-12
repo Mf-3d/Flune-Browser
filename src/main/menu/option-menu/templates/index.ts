@@ -17,6 +17,6 @@ export function buildOptionMenuPage(
       return buildBookmarksTemplate(context);
 
     case "history":
-      return buildHistoryTemplate();
+      return buildHistoryTemplate(context);
   }
 }

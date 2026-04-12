@@ -1,4 +1,4 @@
-import { ContextMenuActions } from "@/main/menu/context-menu/controllers/context-menu-controller";
+import type { ContextMenuActions } from "../types/actions";
 
 export function createLinkSelectionMenuTemplate(
   actions: ContextMenuActions

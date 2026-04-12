@@ -1,19 +1,25 @@
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 import { handle } from "@/main/ipc/handler";
+import { config } from "@/app.config";
+import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import type { ApplicationService } from "../application-service";
 import type { WindowManager } from "@/main/window/window-manager";
+import type { Logger } from "@/main/utils/logger";
 
 export function registerAppHandler(
+  logger: Logger,
   appService: ApplicationService,
   windowManager: WindowManager
 ) {
+  logger.info("Application IPC handler registration has started.");
+
   handle(IPC_INVOKE.APP_GET_VERSION, () => {
-    return appService.getVersion();
+    return config.version;
   });
 
   handle(IPC_INVOKE.APP_GET_VERSIONS, () => {
-    return appService.getVersions();
+    return config.versions;
   });
 
   handle(IPC_INVOKE.APP_GET_COMPUTER_INFO, () => {
@@ -44,7 +50,7 @@ export function registerAppHandler(
       throw new Error("Window does not exist.");
     }
 
-    appService.showSettingsPage(window);
+    window.tabManager.navigate(resolveView(ROUTE_MAP.settings));
   });
 
   handle(IPC_INVOKE.APP_SHOW_VERSIONS_PAGE, (event) => {
@@ -54,25 +60,14 @@ export function registerAppHandler(
       throw new Error("Window does not exist.");
     }
 
-    appService.showVersionsPage(window);
+    window.tabManager.navigate(resolveView(ROUTE_MAP.version));
   });
 
-  handle(IPC_INVOKE.APP_QUIT, (event, forced: boolean) => {
-    if (forced === true) {
-      appService.quit({
-        forced: true,
-      });
-    } else {
-      const window = windowManager.getWindowFromWebContents(event.sender);
-
-      if (!window) {
-        throw new Error("Window does not exist.");
-      }
-
-      appService.quit({
-        forced: false,
-        window,
-      });
-    }
+  handle(IPC_INVOKE.APP_QUIT, (_, forced: boolean) => {
+    appService.quit({
+      forced,
+    });
   });
+
+  logger.info("Application IPC handler registration has completed.");
 }

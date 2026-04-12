@@ -1,7 +1,10 @@
+import type { Logger } from "../utils/logger";
+
 type RequestContext = {
   url: URL;
   path: string;
   query: URLSearchParams;
+  logger: Logger;
 };
 
 export type Route = {

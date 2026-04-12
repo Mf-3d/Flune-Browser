@@ -5,14 +5,16 @@
  */
 
 import path from "node:path";
-import { WebContentsView } from "electron";
+import { dialog, WebContentsView } from "electron";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { IPC_NOTIFY, type IpcNotify } from "@/shared/ipc/channels";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
-import type { NavigationInit, NavigationState } from "@/shared/types/preload-api";
-import type { ApplicationService } from "@/main/application/application-service";
+import type { NavigationContext, NavigationState } from "@/shared/types/preload-api";
 import type { Window } from "@/main/window/window";
+import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "@/main/application/runtime-context";
+import type { ApplicationService } from "../application/application-service";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -28,19 +30,21 @@ export type Navigation = ReturnType<typeof createNavigationFeature>;
  * @returns
  */
 export function createNavigationFeature(
-  appService: ApplicationService,
+  runtime: IRuntimeContext,
   window: Window,
   settings: {
     viewY: number;
     themeUrl: string;
     showHomeButton: boolean;
   },
+  appService: ApplicationService,
+  logger: Logger,
   onLoaded?: () => void
 ) {
   const view = new WebContentsView({
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
-      additionalArguments: [`--is-packaged=${appService.isPackaged}`],
+      additionalArguments: [`--is-packaged=${runtime.isPackaged}`],
     },
   });
 
@@ -60,7 +64,7 @@ export function createNavigationFeature(
     callback(-3);
   });
 
-  registerWebContentsEvents(view, settings, onLoaded);
+  registerWebContentsEvents(view, settings, appService, logger, onLoaded);
 
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
@@ -84,7 +88,7 @@ export function createNavigationFeature(
   function send(
     channel: IpcNotify,
     // channel: IpcNotify & IpcEvents,
-    ...args: any[]
+    ...args: unknown[]
   ) {
     view.webContents.send(channel, ...args);
   }
@@ -98,6 +102,10 @@ export function createNavigationFeature(
     });
   }
 
+  function close() {
+    view.webContents.close();
+  }
+
   return {
     view,
     attach,
@@ -105,6 +113,7 @@ export function createNavigationFeature(
     updateTheme,
     setWidth,
     send,
+    close,
   };
 }
 
@@ -114,16 +123,74 @@ function registerWebContentsEvents(
     themeUrl: string;
     showHomeButton: boolean;
   },
+  appService: ApplicationService,
+  logger: Logger,
   onLoaded?: () => void
 ) {
-  const initOptions: NavigationInit = {
+  const context: NavigationContext = {
+    isMac: process.platform === "darwin",
     showHomeButton: settings.showHomeButton,
   };
 
   // ナビゲーションが読み込まれたらコールバックを返してIPCを送信する。
-  view.webContents.on("did-finish-load", () => {
+  view.webContents.once("did-finish-load", () => {
     onLoaded?.();
-    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, initOptions);
+    view.webContents.send(IPC_NOTIFY.NAVIGATION_INIT, context);
     view.webContents.send(IPC_NOTIFY.NAVIGATION_THEME, settings.themeUrl);
+
+    setTimeout(async () => {
+      const isBlank = await view.webContents.executeJavaScript(`
+        document.body && document.body.innerText.trim().length === 0
+      `);
+
+      if (isBlank) {
+        logger.warn("The navigation may not have loaded correctly.");
+
+        const choice = dialog.showMessageBoxSync({
+          type: "warning",
+          title: "アプリが正常に起動できませんでした。",
+          message: "ナビゲーションが正常に読み込まれていない可能性があります。",
+          detail: "アプリを終了して再起動してください。",
+          buttons: ["終了する", "キャンセル"],
+          defaultId: 0,
+          cancelId: 1,
+        });
+
+        if (choice === 0)
+          appService.quit({
+            forced: true,
+          });
+      }
+    }, 2000);
+  });
+
+  view.webContents.on("did-fail-load", (_, errCode, desc) => {
+    logger.error(new Error(`Navigation did fail load; CODE: ${errCode} DESC: ${desc}`));
+
+    const choice = dialog.showMessageBoxSync({
+      type: "error",
+      title: "アプリが正常に起動できませんでした。",
+      message: "ナビゲーションの読み込みに失敗しました。",
+      detail: "アプリを終了して再起動してください。",
+      buttons: ["終了する", "キャンセル"],
+      defaultId: 0,
+      cancelId: 1,
+    });
+
+    if (choice === 0)
+      appService.quit({
+        forced: true,
+      });
+  });
+
+  view.webContents.session.webRequest.onErrorOccurred((details) => {
+    logger.error(
+      new Error(
+        `An error occurred in WebRequest: "${details.error}"; URL: "${details.url}".`,
+        {
+          cause: details.error,
+        }
+      )
+    );
   });
 }

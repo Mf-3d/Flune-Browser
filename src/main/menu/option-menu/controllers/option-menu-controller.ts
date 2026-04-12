@@ -1,3 +1,4 @@
+import { wait } from "@/main/utils/wait";
 import { handleAction } from "../actions/option-menu-actions";
 import { buildOptionMenuPage } from "../templates/";
 
@@ -10,14 +11,17 @@ import type {
 } from "@/shared/types/menu";
 import type { ApplicationService } from "@/main/application/application-service";
 import type { BookmarkService } from "@/main/bookmark/service";
-import { wait } from "@/main/utils/wait";
+import type { HistoryService } from "@/main/history/service";
+import type { Logger } from "@/main/utils/logger";
 
-type OptionMenuControllerOptions = {
+type OptionMenuControllerContext = {
+  logger: Logger;
   view: OptionMenuView;
   window: Window;
   fadeTime: number;
   appService: ApplicationService;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
 };
 
 type MenuState = "closed" | "opening" | "open" | "closing";
@@ -26,18 +30,22 @@ export class OptionMenuController {
   private state: MenuState = "closed";
   private desiredState: "open" | "closed" = "closed";
   private eventTimeout?: NodeJS.Timeout;
+  private readonly logger;
   private readonly view;
   private readonly window;
   private readonly fadeTime;
   private readonly appService;
   private readonly bookmarkService;
+  private readonly historyService;
 
-  constructor(options: OptionMenuControllerOptions) {
-    this.view = options.view;
-    this.window = options.window;
-    this.fadeTime = options.fadeTime;
-    this.appService = options.appService;
-    this.bookmarkService = options.bookmarkService;
+  constructor(context: OptionMenuControllerContext) {
+    this.logger = context.logger;
+    this.view = context.view;
+    this.window = context.window;
+    this.fadeTime = context.fadeTime;
+    this.appService = context.appService;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
 
     this.view.setVisible(false);
   }
@@ -50,6 +58,7 @@ export class OptionMenuController {
     handleAction(action, {
       appService: this.appService,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       window: this.window,
       optionMenuManager: this,
     });
@@ -117,7 +126,11 @@ export class OptionMenuController {
           this.state = "open";
           resolve();
         } catch (err) {
-          console.error("Failed to open Option Menu:", err); // ロガーはまだ入れていないので仮
+          this.logger.error(
+            new Error("Failed to open Option Menu:", {
+              cause: err,
+            })
+          );
 
           reject(err);
         }
@@ -143,7 +156,8 @@ export class OptionMenuController {
 
   getPage(pageId: MenuPageId): OptionMenuItem[] {
     return buildOptionMenuPage(pageId, {
-      bookmarks: this.bookmarkService.getAll(),
+      bookmarkNodes: this.bookmarkService.getTree(),
+      groupedHistory: this.historyService.groupByDate(this.historyService.getRecent(10)),
     });
   }
 }

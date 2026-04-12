@@ -1,4 +1,4 @@
-import { app, Menu, ContextMenuParams, clipboard } from "electron";
+import { Menu, ContextMenuParams } from "electron";
 import { createEmojiMenuTemplate } from "@/main/menu/context-menu/templates/emoji";
 import { createTextSelectionMenuTemplate } from "@/main/menu/context-menu/templates/text-selection";
 import { createVideoSelectionMenuTemplate } from "@/main/menu/context-menu/templates/video-selection";
@@ -6,25 +6,11 @@ import { createEditableSelectionMenuTemplate } from "@/main/menu/context-menu/te
 import { createLinkSelectionMenuTemplate } from "@/main/menu/context-menu/templates/link-selection";
 import { createNavigationMenuTemplate } from "@/main/menu/context-menu/templates/navigation";
 import { createTabMenuTemplate } from "@/main/menu/context-menu/templates/tab";
-import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 
 import type { Window } from "@/main/window/window";
 import type { Tab } from "@/main/tab/tab";
-
-export type ContextMenuActions = {
-  showEmojiPanel: () => void;
-  openInNewTab: () => void;
-  copyLinkURL: () => void;
-  toggleNavigationDevTools: () => void;
-  toggleDevTools: () => void;
-  openSettings: () => void;
-  searchSelectionText: () => void;
-  startPip: () => void;
-  goBack: () => void;
-  goForward: () => void;
-  reloadTab: () => void;
-  viewSource: () => void;
-};
+import type { ContextMenuActions } from "../types/actions";
+import { createActions } from "../actions/context-menu-actions";
 
 type ContextSource =
   | {
@@ -40,7 +26,7 @@ export class ContextMenuController {
 
   register(webContents: Electron.WebContents, source: ContextSource) {
     webContents.on("context-menu", (_, params) => {
-      const actions = this.createActions(params);
+      const actions = createActions({ window: this.window }, params);
       const template = this.resolveTemplate(params, actions, source);
       const menu = Menu.buildFromTemplate(template);
       menu.popup();
@@ -91,43 +77,5 @@ export class ContextMenuController {
 
       return [{ type: "separator" }, ...section];
     });
-  }
-
-  private createActions(params: ContextMenuParams): ContextMenuActions {
-    return {
-      showEmojiPanel: () => app.showEmojiPanel(),
-      openInNewTab: () =>
-        this.window.tabManager.createTab({
-          input: params.linkURL,
-          isActive: true,
-        }),
-      copyLinkURL: () => {
-        clipboard.writeText(params.linkURL);
-      },
-      toggleNavigationDevTools: () =>
-        this.window.navigation.view.webContents.toggleDevTools(),
-      toggleDevTools: () => this.window.tabManager.getActiveTab()?.toggleDevTools(),
-      openSettings: () =>
-        this.window.tabManager.navigate(resolveView(ROUTE_MAP.settings)),
-      searchSelectionText: () =>
-        this.window.tabManager.createTab({
-          input: params.selectionText,
-          isActive: true,
-        }),
-      startPip: () =>
-        this.window.tabManager
-          .getActiveTab()
-          ?.webContents.executeJavaScript(
-            `(document.activeElement.tagName === "video") ? document.activeElement.requestPictureInPicture() : document.activeElement.querySelector("video").requestPictureInPicture();`
-          ),
-      goBack: () => this.window.tabManager.getActiveTab()?.goBack(),
-      goForward: () => this.window.tabManager.getActiveTab()?.goForward(),
-      reloadTab: () => this.window.tabManager.getActiveTab()?.reload(),
-      viewSource: () =>
-        this.window.tabManager?.createTab({
-          input: `view-source:${this.window.tabManager.getActiveTab()?.url}`,
-          isActive: true,
-        }),
-    };
   }
 }

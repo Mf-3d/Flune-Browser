@@ -5,3 +5,11 @@ contact_links:
   - name: GitHub Security Bug Bounty
     url: https://bounty.github.com/
     about: セキュリティ上の脆弱性はここで報告してください。
+
+defaults:
+  - template: "bug-report.yml"
+    name: "🐛 バグ報告"
+    about: "バグを報告する"
+  - template: "feature-request.yml"
+    name: "💡 機能リクエスト"
+    about: "新機能のアイデアを提案する"

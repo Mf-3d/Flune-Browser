@@ -2,6 +2,8 @@ name: Packaged App Test
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
 jobs:
   packaged-launch:
     strategy:
@@ -12,13 +14,16 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Check out Git repository
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v6
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run prebuild
@@ -27,22 +32,23 @@ jobs:
         run: npm run package
         shell: bash
 
-      - run: npx playwright install
+      - name: Install Playwright
+        run: npx playwright install
 
       - name: Run packaged launch test
         env:
           ELECTRON_EXECUTABLE_PATH: |
             ${{ matrix.os == 'windows-latest'
             && './dist/win-unpacked/Flune-Browser.exe'
-            || './dist/mac-arm64/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
+            || './dist/mac-universal/Flune-Browser.app/Contents/MacOS/Flune-Browser' }}
         run: npx playwright test tests/e2e/packaged-launch.test.ts
 
       - name: Upload logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-logs
           path: |
             ${{ matrix.os == 'window-latest' 
-              && 'C:\Users\runneradmin\AppData\Roaming\Flune-Browser\app.log' 
-              || '/Users/runner/Library/Application Support/Flune-Browser/app.log' }}
+              && 'C:\Users\runneradmin\AppData\Roaming\Flune-Browser\logs' 
+              || '/Users/runner/Library/Application Support/Flune-Browser/logs' }}

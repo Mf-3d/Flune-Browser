@@ -9,17 +9,25 @@ import {
 } from "@/main/navigation/navigation-feature";
 import { TabCollection } from "@/main/tab/tab-collection";
 import { OptionMenuController } from "@/main/menu/option-menu/controllers/option-menu-controller";
-import { OptionMenuView } from "../menu/option-menu/view/option-menu-view";
+import { OptionMenuView } from "@/main/menu/option-menu/view/option-menu-view";
+import { config } from "@/app.config";
+import { formatVersion } from "@/shared/format/version-formatter";
 
 import type { Settings } from "@/main/settings";
-import type { ApplicationService } from "@/main/application/application-service";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
-import type { BookmarkService } from "../bookmark/service";
+import type { BookmarkService } from "@/main/bookmark/service";
+import type { HistoryService } from "@/main/history/service";
 import type { Rect } from "@/shared/types/rect";
+import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "@/main/application/runtime-context";
+import type { ApplicationService } from "../application/application-service";
 
 type WindowContext = {
+  logger: Logger;
+  runtime: IRuntimeContext;
   appService: ApplicationService;
   bookmarkService: BookmarkService;
+  historyService: HistoryService;
   settings: Settings;
   eventBus: EventBus;
   bounds?: Rect;
@@ -28,33 +36,41 @@ type WindowContext = {
 export class Window {
   viewY: number = 66;
 
-  private readonly win: BaseWindow;
-  readonly navigation: Navigation;
-  readonly optionMenuController: OptionMenuController;
-  private readonly appService: ApplicationService;
-  private readonly bookmarkService: BookmarkService;
-  private readonly settings: Settings;
-  private readonly eventBus: EventBus;
+  private readonly appService;
+  private readonly runtime;
+  private readonly logger;
+  private readonly win;
+  readonly navigation;
+  readonly optionMenuController;
+  private readonly bookmarkService;
+  private readonly historyService;
+  private readonly settings;
+  private readonly eventBus;
 
   readonly tabManager: TabManager;
 
-  constructor(options: WindowContext) {
-    this.appService = options.appService;
-    this.bookmarkService = options.bookmarkService;
-    this.settings = options.settings;
-    this.eventBus = options.eventBus;
+  constructor(context: WindowContext) {
+    this.logger = context.logger;
+    this.runtime = context.runtime;
+    this.appService = context.appService;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
+    this.settings = context.settings;
+    this.eventBus = context.eventBus;
 
-    this.win = new BaseWindow(this.createWindowConstructorOptions(options.bounds));
+    this.win = new BaseWindow(this.createWindowConstructorOptions(context.bounds));
 
-    const optionMenuView = new OptionMenuView(this.appService, this, {
+    const optionMenuView = new OptionMenuView(this.runtime, this, {
       x: 0,
       y: this.viewY,
-      width: options.bounds ? options.bounds.width : this.getBounds().width,
-      height: options.bounds ? options.bounds.height : this.getBounds().height,
+      width: context.bounds ? context.bounds.width : this.getBounds().width,
+      height: context.bounds ? context.bounds.height : this.getBounds().height,
     });
     this.optionMenuController = new OptionMenuController({
+      logger: this.logger,
       appService: this.appService,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       view: optionMenuView,
       window: this,
       fadeTime: 400,
@@ -62,10 +78,12 @@ export class Window {
 
     const tabCollection = new TabCollection();
     this.tabManager = new TabManager({
+      logger: this.logger,
       collection: tabCollection,
       settings: this.settings,
       window: this,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       eventBus: this.eventBus,
     });
 
@@ -94,10 +112,7 @@ export class Window {
         : {}),
       minWidth: 300,
       minHeight: 300,
-      title: `${this.appService.name} ${this.appService
-        .getVersion()
-        .replace("-beta.", " Beta ")
-        .replace("-dev.", " Dev ")}`,
+      title: `${config.name} ${formatVersion(config.version)}`,
       titleBarStyle: "hidden",
       titleBarOverlay:
         process.platform === "darwin"
@@ -123,13 +138,15 @@ export class Window {
     if (!currentTheme) throw new Error();
 
     const navigation = createNavigationFeature(
-      this.appService,
+      this.runtime,
       this,
       {
         viewY: this.viewY,
         themeUrl: currentTheme.url,
         showHomeButton: this.settings.store.get("settings").design.showHomeButton,
       },
+      this.appService,
+      this.logger,
       () => {
         this.eventBus.send("navigation:init");
       }
@@ -164,6 +181,7 @@ export class Window {
   }
 
   close() {
+    this.navigation.close();
     this.tabManager.removeAll();
     this.win.close();
   }
@@ -172,7 +190,7 @@ export class Window {
     this.win.setTitleBarOverlay(options);
   }
 
-  getNativeWindow(): BaseWindow {
+  getNativeWindow(): Electron.BaseWindow {
     return this.win;
   }
 

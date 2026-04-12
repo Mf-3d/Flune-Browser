@@ -5,11 +5,19 @@ import type {
   WebContentsView,
 } from "electron";
 import type { Window } from "@/main/window/window";
-import type { TabOptions } from "./types";
 import type { Rect } from "@/shared/types/rect";
+import type { Logger } from "../utils/logger";
+
+type TabContext = {
+  logger: Logger;
+  view: WebContentsView;
+  bounds: Rect;
+};
 
 export class Tab {
   readonly id: string;
+
+  private readonly logger;
   private readonly view: WebContentsView;
 
   url?: URL;
@@ -24,13 +32,14 @@ export class Tab {
 
   cleanupEvents?: () => void;
 
-  constructor(options: TabOptions) {
-    this.view = options.view;
+  constructor(context: TabContext) {
+    this.logger = context.logger;
+    this.view = context.view;
 
     this.id = crypto.randomUUID();
     this.title = this.view.webContents.getTitle();
 
-    this.setBounds(options.bounds);
+    this.setBounds(context.bounds);
   }
 
   get webContents(): WebContents {
@@ -60,7 +69,7 @@ export class Tab {
     this.setVisible(visible);
     window.appendView(this.view);
 
-    console.info(`Tab (${this.id}) has been attached to the window.`);
+    this.logger.info(`Tab (${this.id}) has been attached to the window.`);
   }
 
   goBack() {

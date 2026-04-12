@@ -1,26 +1,37 @@
-import { shell } from "electron";
+import path from "node:path";
+import { dialog, shell } from "electron";
 import { Window } from "./window";
 import { ApplicationMenuController } from "@/main/menu/application-menu/controllers/application-menu-controller";
+import { config } from "@/app.config";
 
 import type { Settings } from "@/main/settings/";
-import type { ApplicationService } from "@/main/application/application-service";
-import type { EventBus } from "../infrastructure/event/event-bus";
-import { BookmarkService } from "../bookmark/service";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
+import type { BookmarkService } from "@/main/bookmark/service";
+import type { HistoryService } from "@/main/history/service";
+import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "../application/runtime-context";
+import { ApplicationService } from "../application/application-service";
 
 export class WindowManager {
   private baseWindow: Window | undefined;
 
   constructor(
+    private readonly logger: Logger,
+    private readonly runtime: IRuntimeContext,
     private readonly appService: ApplicationService,
     private readonly bookmarkService: BookmarkService,
+    private readonly historyService: HistoryService,
     private readonly settings: Settings,
     private readonly eventBus: EventBus
   ) {}
 
   create() {
     this.baseWindow = new Window({
+      logger: this.logger,
+      runtime: this.runtime,
       appService: this.appService,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       settings: this.settings,
       eventBus: this.eventBus,
     });
@@ -31,7 +42,7 @@ export class WindowManager {
       });
     });
 
-    if (!this.appService.isPackaged)
+    if (!this.runtime.isPackaged)
       this.baseWindow.navigation?.view.webContents.openDevTools({
         mode: "detach",
       });
@@ -64,7 +75,7 @@ export class WindowManager {
   }
 
   private setupApplicationMenu() {
-    const applicationMenuController = new ApplicationMenuController(this.appService, {
+    const applicationMenuController = new ApplicationMenuController({
       newTab: () => this.baseWindow?.tabManager.createTab(),
       reloadTab: () => this.baseWindow?.tabManager.getActiveTab()?.reload(),
       reloadTabIgnoringCache: () =>
@@ -79,8 +90,17 @@ export class WindowManager {
         this.baseWindow?.navigation?.view.webContents.focus();
         this.baseWindow?.navigation?.view.webContents.send("flune.focus-search-bar");
       },
-      reportIssue: () =>
-        shell.openExternal(`https://github.com/Mf-3d/${this.appService.name}/issues/new`),
+      reportIssue: () => {
+        if (config.github) shell.openExternal(path.join(config.github, "/issues/new"));
+        else {
+          dialog.showMessageBoxSync({
+            type: "error",
+            title: "The external link could not be opened.",
+            message: "GitHub repository URL is not set.",
+          });
+          throw new Error("GitHub repository URL is not set.");
+        }
+      },
     });
 
     applicationMenuController.setup();

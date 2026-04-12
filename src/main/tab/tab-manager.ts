@@ -3,27 +3,47 @@ import { Tab } from "./tab";
 import { IPC_NOTIFY } from "@/shared/ipc/channels";
 import { resolveView, ROUTE_MAP } from "@/shared/resolveView";
 import { WebContentsView } from "electron";
-import { registerTabEvents } from "./tab-events";
+import { registerTabEvents } from "./events/tab-events";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { TabState } from "@/shared/types/preload-api";
-import type { TabManagerOptions } from "./types";
+import type { Logger } from "@/main/utils/logger";
+import type { TabCollection } from "./tab-collection";
+import type { BookmarkService } from "@/main/bookmark/service";
+import type { Window } from "@/main/window/window";
+import type { HistoryService } from "@/main/history/service";
+import type { Settings } from "@/main/settings";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
+
+type TabManagerContext = {
+  logger: Logger;
+  collection: TabCollection;
+  window: Window;
+  bookmarkService: BookmarkService;
+  historyService: HistoryService;
+  settings: Settings;
+  eventBus: EventBus;
+};
 
 export class TabManager {
   private activeTabId?: string;
+  private readonly logger;
   private readonly collection;
   private readonly window;
   private readonly bookmarkService;
+  private readonly historyService;
   private readonly settings;
   private readonly eventBus;
   private readonly contextMenuController;
 
-  constructor(options: TabManagerOptions) {
-    this.collection = options.collection;
-    this.window = options.window;
-    this.bookmarkService = options.bookmarkService;
-    this.settings = options.settings;
-    this.eventBus = options.eventBus;
+  constructor(context: TabManagerContext) {
+    this.logger = context.logger;
+    this.collection = context.collection;
+    this.window = context.window;
+    this.bookmarkService = context.bookmarkService;
+    this.historyService = context.historyService;
+    this.settings = context.settings;
+    this.eventBus = context.eventBus;
 
     this.contextMenuController = new ContextMenuController(this.window);
   }
@@ -57,6 +77,7 @@ export class TabManager {
 
     const tab = new Tab({
       view,
+      logger: this.logger,
       bounds: {
         x: 0,
         y: this.window.viewY,
@@ -68,9 +89,11 @@ export class TabManager {
     tab.cleanupEvents = registerTabEvents({
       tab,
       isActiveTab: (id) => this.isActiveTab(id),
+      logger: this.logger,
       window: this.window,
       settings: this.settings,
       bookmarkService: this.bookmarkService,
+      historyService: this.historyService,
       eventBus: this.eventBus,
     });
     this.contextMenuController.register(tab.webContents, {
@@ -241,7 +264,7 @@ export class TabManager {
         : {}),
     });
 
-    console.info(`Tab (${activeTab.id}) has activated.`);
+    this.logger.info(`Tab (${activeTab.id}) has activated.`);
   }
 
   getActiveTab(): Tab | undefined {

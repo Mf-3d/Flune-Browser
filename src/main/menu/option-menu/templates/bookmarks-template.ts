@@ -2,19 +2,40 @@ import type { OptionMenuItem } from "@/shared/types/menu";
 import type { MenuTemplateContext } from "./types";
 
 export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenuItem[] {
-  const bookmarkMenuItem: OptionMenuItem[] = context.bookmarks.map((bookmark) => {
-    return {
-      type: "item",
-      enabled: false,
-      action: {
-        type: "open-bookmark",
-        payload: {
-          id: bookmark.id,
-        },
-      },
-      label: bookmark.title,
-    };
-  });
+  const max: number = 10;
+
+  const bookmarkItems: OptionMenuItem[] = context.bookmarkNodes
+    .slice(
+      context.bookmarkNodes.length - max <= 0 ? 0 : context.bookmarkNodes.length - max
+    )
+    .map((node) => {
+      switch (node.type) {
+        case "bookmark":
+          return {
+            type: "item",
+            action: {
+              type: "open-bookmark",
+              payload: {
+                id: node.id,
+              },
+            },
+            label: node.title,
+          };
+        case "folder":
+          return {
+            type: "item",
+            enabled: false,
+            action: {
+              type: "open-bookmark-folder",
+              payload: {
+                id: node.id,
+                children: node.children,
+              },
+            },
+            label: node.title,
+          };
+      }
+    });
 
   return [
     {
@@ -49,6 +70,6 @@ export function buildBookmarksTemplate(context: MenuTemplateContext): OptionMenu
     {
       type: "separator",
     },
-    ...bookmarkMenuItem,
+    ...bookmarkItems,
   ];
 }

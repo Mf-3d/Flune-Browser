@@ -1,9 +1,9 @@
-import { IPC_INVOKE, IPC_NOTIFY } from "../shared/ipc/channels";
 import { ipcRenderer } from "electron";
+import { IPC_INVOKE, IPC_NOTIFY } from "@/shared/ipc/channels";
 import { MenuPageId } from "@/shared/types/menu";
 import { config } from "@/app.config";
 
-import type { MenuAPI } from "../shared/types/preload-api";
+import type { MenuAPI } from "@/shared/types/preload-api";
 
 export function isMenuPage() {
   const isDev =
@@ -35,8 +35,8 @@ export const MENU: MenuAPI = {
     ipcRenderer.invoke(IPC_INVOKE.MENU_ITEM_CLICKED, action); // メニューアイテムをクリック
   },
 
-  getPage: (menuId: MenuPageId) => {
-    return ipcRenderer.invoke(IPC_INVOKE.MENU_GET_PAGE, menuId);
+  getPage: async (menuId: MenuPageId) => {
+    return await ipcRenderer.invoke(IPC_INVOKE.MENU_GET_PAGE, menuId);
   },
 
   /**

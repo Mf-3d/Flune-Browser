@@ -1,3 +1,5 @@
+import { Favicon } from "./data";
+
 export type PayloadOf<T extends MenuActionDescriptor["type"]> =
   Extract<MenuActionDescriptor, { type: T }> extends { payload?: infer P }
     ? P | undefined
@@ -26,7 +28,7 @@ export type MenuActionDescriptor =
       payload: undefined;
     }
   | {
-      type: "open-histories-page";
+      type: "open-history-page";
       payload: undefined;
     }
   | {
@@ -46,6 +48,10 @@ export type MenuActionDescriptor =
       payload: { id: string };
     }
   | {
+      type: "open-bookmark-folder";
+      payload: { id: string };
+    }
+  | {
       type: "open-history";
       payload: { id: string };
     };
@@ -56,7 +62,8 @@ export type OptionMenuItem =
   | MenuActionItem
   | MenuGoBackItem
   | MenuNavigationItem
-  | MenuSeparatorItem;
+  | MenuSeparatorItem
+  | MenuHeaderItem;
 
 type MenuActionItem = {
   type: "item";
@@ -74,6 +81,7 @@ type MenuActionItem = {
    * **Unused.**
    */
   checked?: boolean;
+  icon?: Favicon;
 };
 
 type MenuGoBackItem = {
@@ -91,4 +99,9 @@ export type MenuPageId = "root" | "bookmarks" | "history";
 
 type MenuSeparatorItem = {
   type: "separator";
+};
+
+type MenuHeaderItem = {
+  type: "header";
+  label: string;
 };

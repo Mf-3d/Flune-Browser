@@ -2,8 +2,15 @@ import { handle } from "@/main/ipc/handler";
 import { IPC_INVOKE } from "@/shared/ipc/channels";
 
 import type { WindowManager } from "@/main/window/window-manager";
+import type { Logger } from "@/main/utils/logger";
 
-export function registerTabHandler(windowManager: WindowManager, homeUrl: string) {
+export function registerTabHandler(
+  logger: Logger,
+  windowManager: WindowManager,
+  homeUrl: string
+) {
+  logger.info("Tab IPC handler registration has started.");
+
   try {
     handle(IPC_INVOKE.TAB_CREATE, (event) => {
       const window = windowManager.getWindowFromWebContents(event.sender);
@@ -122,6 +129,12 @@ export function registerTabHandler(windowManager: WindowManager, homeUrl: string
       window.tabManager.getActiveTab()?.webContents.focus();
     });
   } catch (err) {
-    console.error("Failed to register tabHandler:", err); // ロガーはまだ入れていないので仮
+    logger.error(
+      new Error("Failed to register Tab IPC handler.", {
+        cause: err,
+      })
+    );
   }
+
+  logger.info("Tab IPC handler registration has completed.");
 }
