@@ -7,7 +7,23 @@ import { registerTabEvents } from "./tab-events";
 import { ContextMenuController } from "@/main/menu/context-menu/controllers/context-menu-controller";
 
 import type { TabState } from "@/shared/types/preload-api";
-import type { TabManagerContext } from "./types";
+import type { Logger } from "@/main/utils/logger";
+import type { TabCollection } from "./tab-collection";
+import type { BookmarkService } from "@/main/bookmark/service";
+import type { Window } from "@/main/window/window";
+import type { HistoryService } from "@/main/history/service";
+import type { Settings } from "@/main/settings";
+import type { EventBus } from "@/main/infrastructure/event/event-bus";
+
+type TabManagerContext = {
+  logger: Logger;
+  collection: TabCollection;
+  window: Window;
+  bookmarkService: BookmarkService;
+  historyService: HistoryService;
+  settings: Settings;
+  eventBus: EventBus;
+};
 
 export class TabManager {
   private activeTabId?: string;

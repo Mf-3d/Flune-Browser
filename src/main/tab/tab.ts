@@ -5,8 +5,14 @@ import type {
   WebContentsView,
 } from "electron";
 import type { Window } from "@/main/window/window";
-import type { TabContext } from "./types";
 import type { Rect } from "@/shared/types/rect";
+import type { Logger } from "../utils/logger";
+
+type TabContext = {
+  logger: Logger;
+  view: WebContentsView;
+  bounds: Rect;
+};
 
 export class Tab {
   readonly id: string;
