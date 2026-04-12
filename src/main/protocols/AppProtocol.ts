@@ -7,7 +7,7 @@ import type { Route } from "./Router";
 import type { Logger } from "@/main/utils/logger";
 import type { IRuntimeContext } from "../application/runtime-context";
 
-const urlPrefix = process.platform === "win32" ? "app\\" : "app/";
+const urlPrefix = process.platform === "win32" ? "-\\" : "-/";
 console.log(
   path.resolve(process.resourcesPath, "app.asar", "out", "renderer"), 
   path.resolve(__dirname, "..", "..", "out", "renderer"))
@@ -84,7 +84,7 @@ function createStaticHandler(runtime: IRuntimeContext): Route {
     path.resolve(__dirname, "..", "..", "out", "renderer");
 
   return {
-    match: (path) => path.startsWith("app/"),
+    match: (path) => path.startsWith("-/"),
     handle: async (ctx) => {
       const filePath = path.join(baseDir, ctx.path).replace(urlPrefix, "");
       ctx.logger.debug(pathToFileURL(filePath).toString())

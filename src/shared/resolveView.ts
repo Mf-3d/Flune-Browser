@@ -33,5 +33,5 @@ export function resolveView(path: string) {
     return new URL(path, process.env.ELECTRON_RENDERER_URL).toString();
   }
 
-  return `${config.protocol}://app/${path}`;
+  return `${config.protocol}://-/${path}`;
 }

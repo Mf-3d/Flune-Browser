@@ -75,7 +75,7 @@ function initializeServices(): Services {
   const runtime = new RuntimeContext();
 
   const logger = new Logger(sessionService.getAppLogPath());
-  const protocol = new Protocol(config.protocol, logger);
+  const protocol = new Protocol(config.protocol, runtime, logger);
   const data = new DataStore();
   const eventBus = new EventBus();
 
