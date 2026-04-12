@@ -5,10 +5,13 @@ import type { ContextMenuActions } from "../types/actions";
 import type { Window } from "@/main/window/window";
 
 type ActionsContext = {
-  window: Window,
+  window: Window;
 };
 
-export function createActions(context: ActionsContext, params: Electron.ContextMenuParams): ContextMenuActions {
+export function createActions(
+  context: ActionsContext,
+  params: Electron.ContextMenuParams
+): ContextMenuActions {
   return {
     showEmojiPanel: () => app.showEmojiPanel(),
     openInNewTab: () =>
@@ -22,7 +25,8 @@ export function createActions(context: ActionsContext, params: Electron.ContextM
     toggleNavigationDevTools: () =>
       context.window.navigation.view.webContents.toggleDevTools(),
     toggleDevTools: () => context.window.tabManager.getActiveTab()?.toggleDevTools(),
-    openSettings: () => context.window.tabManager.navigate(resolveView(ROUTE_MAP.settings)),
+    openSettings: () =>
+      context.window.tabManager.navigate(resolveView(ROUTE_MAP.settings)),
     searchSelectionText: () =>
       context.window.tabManager.createTab({
         input: params.selectionText,

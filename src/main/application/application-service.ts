@@ -5,9 +5,7 @@ import type { QuitContext, RelaunchOptions } from "./types";
 import type { RuntimeContext } from "./runtime-context";
 
 export class ApplicationService {
-  constructor(
-    private readonly runtime: RuntimeContext
-  ) {}
+  constructor(private readonly runtime: RuntimeContext) {}
 
   disableHardwareAcceleration() {
     if (!app.isReady()) app.disableHardwareAcceleration();

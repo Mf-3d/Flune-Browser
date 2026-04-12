@@ -65,7 +65,7 @@ export function registerAppHandler(
 
   handle(IPC_INVOKE.APP_QUIT, (_, forced: boolean) => {
     appService.quit({
-      forced
+      forced,
     });
   });
 

@@ -4,7 +4,7 @@ type RequestContext = {
   url: URL;
   path: string;
   query: URLSearchParams;
-  logger: Logger,
+  logger: Logger;
 };
 
 export type Route = {
