@@ -1,51 +1,68 @@
-import { protocol, net } from "electron";
+import { protocol, net, app } from "electron";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { Router } from "./Router";
 
 import type { Route } from "./Router";
 import type { Logger } from "@/main/utils/logger";
+import type { IRuntimeContext } from "../application/runtime-context";
 
 const urlPrefix = process.platform === "win32" ? "app\\" : "app/";
-const baseDir = path.resolve(__dirname, "../../out/renderer");
+console.log(
+  path.resolve(process.resourcesPath, "app.asar", "out", "renderer"), 
+  path.resolve(__dirname, "..", "..", "out", "renderer"))
 
 export class Protocol {
   private readonly router: Router;
 
   constructor(
     private readonly name: string = "app",
+    private readonly runtime: IRuntimeContext,
     private readonly logger: Logger
   ) {
     this.router = new Router();
 
-    this.router.register(createStaticHandler(baseDir));
+    this.router.register(createStaticHandler(this.runtime));
 
-    protocol.registerSchemesAsPrivileged([
-      {
-        scheme: this.name,
-        privileges: {
-          standard: true,
-          secure: true,
-          supportFetchAPI: true,
-          corsEnabled: true,
+    try {
+      if (app.isReady()) {
+        throw new Error("Ready event has already been fired.");
+      }
+
+      protocol.registerSchemesAsPrivileged([
+        {
+          scheme: this.name,
+          privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true,
+            corsEnabled: true,
+          },
         },
-      },
-    ]);
+      ]);
+    } catch (err) {
+      this.logger.error(new Error(`Failed to register protocol: ${err}`, {
+        cause: err,
+      }));
+    }
   }
 
   handle() {
     try {
-      protocol.handle(this.name, (req) => {
+      if (protocol.isProtocolHandled(this.name)) return;
+      
+      protocol.handle(this.name, async (req) => {
         const url = new URL(req.url);
         url.hostname = path.join(urlPrefix, url.hostname);
         const pathname = path.join(url.hostname, url.pathname);
-  
-        this.logger.debug(`Protocol accessed: "${pathname}"`);
-  
-        return this.router.handle({
+
+        this.logger.info(`Protocol accessed: "${pathname}"`);
+
+        return await this.router.handle({
           url,
           path: pathname,
           query: url.searchParams,
+          logger: this.logger,
         });
       });
 
@@ -61,12 +78,16 @@ export class Protocol {
   }
 }
 
-function createStaticHandler(baseDir: string): Route {
+function createStaticHandler(runtime: IRuntimeContext): Route {
+  const baseDir = (runtime.isPackaged && process.platform === "darwin") ?
+    path.resolve(process.resourcesPath, "app.asar", "out", "renderer") :
+    path.resolve(__dirname, "..", "..", "out", "renderer");
+
   return {
-    // match: (path) => path.startsWith("/app/"),
-    match: () => true,
+    match: (path) => path.startsWith("app/"),
     handle: async (ctx) => {
       const filePath = path.join(baseDir, ctx.path).replace(urlPrefix, "");
+      ctx.logger.debug(pathToFileURL(filePath).toString())
       return net.fetch(pathToFileURL(filePath).toString());
     },
   };
