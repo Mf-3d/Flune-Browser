@@ -5,17 +5,15 @@
 
 Flune-Browserが生まれ変わりました！
 
-![スクリーンショット](.github/assets/image/screenshot-3.0.0-beta.2.webp)
+<!-- ![Logo of Flune-Browser with text](.github/assets/image/logo-with-text.png) -->
+
+## 📸 スクリーンショット
+
+| macOS                                                                | Windows                                                              |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| ![Screenshot](.github/assets/image/screenshot-3.0.0-beta.4-mac.webp) | ![Screenshot](.github/assets/image/screenshot-3.0.0-beta.4-win.webp) |
 
 [![GitHub all releases](https://img.shields.io/github/downloads/mf-3d/flune-browser/total?style=for-the-badge)](https://github.com/Mf-3d/Flune-Browser/releases)
-
-<!-- Flune-Browser 2.x系からの互換性があります。 -->
-<!-- ## 必須環境
-| バージョン        |       OS       |         OSバージョン          |   アーキテクチャ(macOS)    |
-|-----------------|-----------------|-----------------------------|-------------------------|
-|2.5.0 Beta 1 -   | macOS / Windows |macOS 10.11 - / Windows 10 - | Universal / Intel       |
-|2.4.1 -          | macOS / Windows |macOS 10.11 - / Windows 10 - | Arm64 / Intel           |
-|- 2.4.0          | macOS / Windows |macOS 10.11 - / Windows 10 - | Intel                   | -->
 
 ## 🔖 最新バージョン
 
