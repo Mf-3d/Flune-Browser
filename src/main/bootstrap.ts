@@ -46,14 +46,10 @@ type Services = {
 export async function bootstrap() {
   app.setName(config.productName);
 
-  if (process.platform === "darwin" && isArchitectureIntel()) {
-    app.disableHardwareAcceleration();
-  }
-
   const services = initializeServices();
   services.logger.info("The services have been initialized.");
 
-  if (!services.settings.store.get("settings.hardwareAcceleration")) {
+  if ((process.platform === "darwin" && isArchitectureIntel()) || !services.settings.store.get("settings.hardwareAcceleration")) {
     services.appService.disableHardwareAcceleration();
     services.logger.info("Hardware acceleration is disabled.");
   } else {
