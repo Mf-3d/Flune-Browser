@@ -34,6 +34,9 @@ export function registerSettingsHandler(
       key: P,
       value?: PathValue<Config, P>
     ) => {
+      // 値が変更されていない場合は処理を終了する
+      if (settings.store.get(key) === value) return;
+
       settings.store.set(key, value);
 
       eventBus.send("settings:updated");
