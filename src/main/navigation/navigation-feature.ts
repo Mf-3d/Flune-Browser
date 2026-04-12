@@ -14,6 +14,7 @@ import type { NavigationContext, NavigationState } from "@/shared/types/preload-
 import type { Window } from "@/main/window/window";
 import type { Logger } from "@/main/utils/logger";
 import type { IRuntimeContext } from "@/main/application/runtime-context";
+import type { ApplicationService } from "../application/application-service";
 
 export type Navigation = ReturnType<typeof createNavigationFeature>;
 
@@ -36,6 +37,7 @@ export function createNavigationFeature(
     themeUrl: string;
     showHomeButton: boolean;
   },
+  appService: ApplicationService,
   logger: Logger,
   onLoaded?: () => void
 ) {
@@ -62,7 +64,7 @@ export function createNavigationFeature(
     callback(-3);
   });
 
-  registerWebContentsEvents(view, settings, logger, onLoaded);
+  registerWebContentsEvents(view, settings, appService, logger, onLoaded);
 
   view.webContents.loadURL(resolveView(ROUTE_MAP.navigation));
 
@@ -121,6 +123,7 @@ function registerWebContentsEvents(
     themeUrl: string;
     showHomeButton: boolean;
   },
+  appService: ApplicationService,
   logger: Logger,
   onLoaded?: () => void
 ) {
@@ -143,12 +146,20 @@ function registerWebContentsEvents(
       if (isBlank) {
         logger.warn("The navigation may not have loaded correctly.");
 
-        dialog.showMessageBoxSync({
+        const choice = dialog.showMessageBoxSync({
           type: "warning",
-          title: "The app cannot be launched properly.",
-          message: "The navigation may not have loaded correctly.",
-          detail: "Please close and restart the app.",
+          title: "アプリが正常に起動できませんでした。",
+          message: "ナビゲーションが正常に読み込まれていない可能性があります。",
+          detail: "アプリを終了して再起動してください。",
+          buttons: ["終了する", "キャンセル"],
+          defaultId: 0,
+          cancelId: 1,
         });
+
+        if (choice === 0)
+          appService.quit({
+            forced: true,
+          });
       }
     }, 2000);
   });
@@ -156,12 +167,20 @@ function registerWebContentsEvents(
   view.webContents.on("did-fail-load", (_, errCode, desc) => {
     logger.error(new Error(`Navigation did fail load; CODE: ${errCode} DESC: ${desc}`));
 
-    dialog.showMessageBoxSync({
+    const choice = dialog.showMessageBoxSync({
       type: "error",
-      title: "The app cannot be launched properly.",
-      message: "Navigation did fail load!",
-      detail: "Please close and restart the app.",
+      title: "アプリが正常に起動できませんでした。",
+      message: "ナビゲーションの読み込みに失敗しました。",
+      detail: "アプリを終了して再起動してください。",
+      buttons: ["終了する", "キャンセル"],
+      defaultId: 0,
+      cancelId: 1,
     });
+
+    if (choice === 0)
+      appService.quit({
+        forced: true,
+      });
   });
 
   view.webContents.session.webRequest.onErrorOccurred((details) => {
