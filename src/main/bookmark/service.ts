@@ -1,4 +1,4 @@
-import type { BookmarkFolderInput, BookmarkInput, FolderId } from "@/shared/types/data";
+import type { BookmarkFolderInput, BookmarkInput } from "@/shared/types/data";
 import type { BookmarkRepository } from "./repository";
 import type { EventBus } from "@/main/infrastructure/event/event-bus";
 import type {
@@ -6,6 +6,7 @@ import type {
   BookmarkFolder,
   BookmarkNode,
   BookmarkNodeWithChildren,
+  FolderId,
 } from "@/shared/types/bookmark";
 
 export class BookmarkService {

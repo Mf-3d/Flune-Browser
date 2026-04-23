@@ -1,5 +1,5 @@
 // import type { NativeImage } from "electron";
-import type { BookmarkNode } from "./bookmark";
+import type { BookmarkNode, FolderId } from "./bookmark";
 import type { HistoryItem } from "./history";
 
 export type Download = {
@@ -12,7 +12,6 @@ export type Download = {
   receivedSize: number | null;
   percentComplete: number | null;
 };
-export type FolderId = `${string}-${string}-${string}-${string}` | "root";
 export type BookmarkInput = {
   url: string;
   title: string;

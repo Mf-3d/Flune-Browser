@@ -1,5 +1,4 @@
-import { FolderId } from "./data";
-
+export type FolderId = `${string}-${string}-${string}-${string}` | "root";
 export type Bookmark = {
   type: "bookmark";
   id: string;
