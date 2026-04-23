@@ -46,7 +46,7 @@
     "globals": "^17.4.0",
     "playwright": "^1.59.1",
     "prettier": "^3.8.2",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.1",
     "vite": "^7.3.2"
   }
