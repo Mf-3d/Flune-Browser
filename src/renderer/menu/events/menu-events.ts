@@ -8,8 +8,8 @@ export function registerMenuEvents() {
   window.flune.menu.onClosing(onClosing);
 }
 
-function onOpening() {
-  renderMenu("root");
+async function onOpening() {
+  await renderMenu("root");
   registerClickEvents();
 
   document.querySelector("main")?.classList.remove("hidden");

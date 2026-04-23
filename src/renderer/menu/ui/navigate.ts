@@ -11,16 +11,16 @@ export function getCurrentPage(): MenuPageId | undefined {
   return state.pageStack.at(-1);
 }
 
-export function navigateTo(page: MenuPageId) {
+export async function navigateTo(page: MenuPageId) {
   state.pageStack.push(page);
 
-  renderMenu(page);
+  await renderMenu(page);
   registerClickEvents();
 }
 
-export function goBack() {
+export async function goBack() {
   state.pageStack.pop();
   
-  renderMenu(getCurrentPage()!);
+  await renderMenu(getCurrentPage()!);
   registerClickEvents();
 }
