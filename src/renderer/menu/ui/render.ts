@@ -1,7 +1,6 @@
 import { menuIpc } from "../ipc/menu-ipc";
 
 import type { MenuPageId } from "../../../shared/types/menu";
-import { registerClickEvents } from "./click-events";
 import lucide from "../../utils/icons";
 
 export async function renderMenu(pageId: MenuPageId) {
@@ -81,6 +80,5 @@ export async function renderMenu(pageId: MenuPageId) {
   const menuElement = document.querySelector("main>div")!;
   menuElement.innerHTML = result;
 
-  registerClickEvents();
   lucide.createIcons();
 }
