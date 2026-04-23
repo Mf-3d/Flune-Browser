@@ -2,8 +2,11 @@ import { menuIpc } from "../ipc/menu-ipc";
 import { goBack, navigateTo } from "./navigate";
 
 import type { MenuActionDescriptorType, MenuPageId } from "../../../shared/types/menu";
+import { defaultIpc } from "@/renderer/ipc/default-ipc";
 
 export function registerClickEvents() {
+  defaultIpc.logger.debug("[MENU] Click event registration has started.");
+
   const menuItemElements: NodeListOf<HTMLAnchorElement> =
     document.querySelectorAll("a.menu-item");
 
@@ -30,4 +33,6 @@ export function registerClickEvents() {
   document.getElementById("toggle")?.addEventListener("click", () => {
     menuIpc.close();
   });
+
+  defaultIpc.logger.debug("[MENU] Click event registration has completed.");
 }
