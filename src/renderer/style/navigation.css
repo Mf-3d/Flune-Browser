@@ -100,11 +100,11 @@ nav a > svg:hover {
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
 }
 
-nav a.disabled {
+nav a.is-disabled {
   pointer-events: none;
 }
 
-nav a.disabled > svg {
+nav a.is-disabled > svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }
@@ -197,12 +197,12 @@ input[type="text"] {
   color: var(--tab-text-color);
 }
 
-.tab:not(:has(.right .downloading.disabled)):has(.right .audible.disabled) .title,
-.tab:not(:has(.right .audible.disabled)):has(.right .downloading.disabled) .title {
+.tab:not(:has(.right .downloading.is-disabled)):has(.right .audible.is-disabled) .title,
+.tab:not(:has(.right .audible.is-disabled)):has(.right .downloading.is-disabled) .title {
   width: calc(100% - 72px);
 }
 
-.tab:not(:has(.right .disabled)) .title {
+.tab:not(:has(.right .is-disabled)) .title {
   width: calc(100% - 96px);
 }
 
@@ -240,7 +240,7 @@ input[type="text"] {
     filter 0.5s;
 }
 
-#tabs a:not(.close-button).disabled {
+#tabs a:not(.close-button).is-disabled {
   cursor: default;
 
   animation-name: fadeOut;

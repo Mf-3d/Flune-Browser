@@ -58,7 +58,7 @@ main > div#children-menu > a {
   margin: 0.5em;
 }
 
-main > div a {
+.menu-item {
   user-select: none;
   -webkit-user-drag: none;
   color: var(--text-color);
@@ -73,46 +73,45 @@ main > div a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-style: bold;
 
   transition:
     background-color 0.2s linear,
     outline-width 0.3s linear,
     outline-color 0.3s linear;
 }
-main > div a:nth-of-type(even) {
+.menu-item:nth-of-type(even) {
   background-color: color-mix(in srgb, var(--text-color) 2%, transparent);
 }
-main > div a:hover:not(.disabled) {
+.menu-item:not(.is-disabled):hover {
   background-color: color-mix(in srgb, var(--hover-color) 15%, transparent);
   outline-width: 3px;
 }
-main > div a:active:not(.disabled) {
+.menu-item:not(.is-disabled):active {
   background-color: color-mix(in srgb, var(--hover-color) 35%, transparent);
   outline-width: 6px;
 }
-main > div a:focus:not(.disabled) {
+.menu-item:not(.is-disabled):focus {
   outline-color: color-mix(in srgb, #2582cf 35%, transparent);
   outline-width: 2px;
 }
-main > div a > .title {
+.menu-item > .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-main > div a > .accel {
+.menu-item > .accel {
   padding-right: 0.5em;
   float: right;
   font-weight: bold;
   color: color-mix(in srgb, var(--text-color) 50%, transparent);
 }
-main > div a > svg {
+.menu-item > svg {
   width: 20px;
   height: 20px;
   stroke-width: 3px;
   float: right;
 }
-main > div a.disabled {
+.menu-item.is-disabled {
   color: color-mix(in srgb, var(--text-color) 30%, var(--disabled-color));
   font-style: unset;
   cursor: default;

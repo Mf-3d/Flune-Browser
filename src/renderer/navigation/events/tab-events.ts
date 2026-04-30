@@ -41,11 +41,11 @@ function onCreated(_: IpcRendererEvent, tab: CreatedTab) {
   rightElements.classList.add("right");
 
   const isDownloadingElement = document.createElement("a");
-  isDownloadingElement.classList.add("downloading", "disabled");
+  isDownloadingElement.classList.add("downloading", "is-disabled");
   isDownloadingElement.innerHTML = '<i data-lucide="download"></i>';
 
   const isAudibleElement = document.createElement("a");
-  isAudibleElement.classList.add("audible", "disabled");
+  isAudibleElement.classList.add("audible", "is-disabled");
   isAudibleElement.innerHTML = '<i data-lucide="volume-2"></i>';
 
   rightElements.appendChild(isDownloadingElement);
@@ -65,15 +65,15 @@ function onCreated(_: IpcRendererEvent, tab: CreatedTab) {
   /*
   element.innerHTML = `
   <img src="" class="favicon" onerror="this.src='/image/tab-no-favicon.png';"/>
-  <a href="#" class="loading disabled">
+  <a href="#" class="loading is-disabled">
     <i data-lucide="loader-circle"></i>
   </a>
   <p class="title">${tab.title}</p>
   <span class="right">
-    <a href="#" class="downloading disabled">
+    <a href="#" class="downloading is-disabled">
       <i data-lucide="download"></i>
     </a>
-    <a href="#" class="audible disabled">
+    <a href="#" class="audible is-disabled">
       <i data-lucide="volume-2"></i>
     </a>
   </span>
@@ -142,16 +142,16 @@ function OnUpdated(_: IpcRendererEvent, tab: TabState) {
       defaultIpc.logger.debug(`Navigation state changed: isLoading: ${tab.isLoading}`);
       const loadingElement = tabElement.querySelector("a.loading")! as HTMLElement;
 
-      if (tab.isLoading) loadingElement.classList.remove("disabled");
-      else loadingElement.classList.add("disabled");
+      if (tab.isLoading) loadingElement.classList.remove("is-disabled");
+      else loadingElement.classList.add("is-disabled");
     }
 
     if (tab.isAudible !== undefined) {
       defaultIpc.logger.debug(`Navigation state changed: isAudible: ${tab.isAudible}`);
       const audibleElement = tabElement.querySelector("a.audible")! as HTMLElement;
 
-      if (tab.isAudible) audibleElement.classList.remove("disabled");
-      else audibleElement.classList.add("disabled");
+      if (tab.isAudible) audibleElement.classList.remove("is-disabled");
+      else audibleElement.classList.add("is-disabled");
     }
   });
 

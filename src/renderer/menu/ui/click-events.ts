@@ -12,7 +12,7 @@ export function registerClickEvents() {
 
   menuItemElements.forEach((element) => {
     element.addEventListener("click", () => {
-      if (element.classList.contains("disabled")) return;
+      if (element.classList.contains("is-disabled")) return;
 
       switch (element.dataset.action) {
         case "navigate":

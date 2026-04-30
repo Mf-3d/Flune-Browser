@@ -90,11 +90,11 @@ a > svg:hover {
   filter: drop-shadow(0 0 0.75rem var(--symbol-color));
 }
 
-a.disabled {
+a.is-disabled {
   pointer-events: none;
 }
 
-a.disabled > svg {
+a.is-disabled > svg {
   stroke: color-mix(in srgb, var(--symbol-color), var(--disabled-color) 80%);
   stroke-width: 2px;
 }

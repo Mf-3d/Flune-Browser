@@ -55,9 +55,9 @@ function onStateUpdated(_: IpcRendererEvent, state: NavigationState) {
     const goBackElement = document.querySelector(".go-back")!;
 
     if (state.canGoBack) {
-      goBackElement.classList.remove("disabled");
+      goBackElement.classList.remove("is-disabled");
     } else {
-      goBackElement.classList.add("disabled");
+      goBackElement.classList.add("is-disabled");
     }
   }
 
@@ -65,9 +65,9 @@ function onStateUpdated(_: IpcRendererEvent, state: NavigationState) {
     const goForwardElement = document.querySelector(".go-forward")!;
 
     if (state.canGoForward) {
-      goForwardElement.classList.remove("disabled");
+      goForwardElement.classList.remove("is-disabled");
     } else {
-      goForwardElement.classList.add("disabled");
+      goForwardElement.classList.add("is-disabled");
     }
   }
 }

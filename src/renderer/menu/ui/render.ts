@@ -22,7 +22,7 @@ export async function renderMenu(pageId: MenuPageId) {
             data-payload='${JSON.stringify(item.action.payload ?? {})}'
             aria-disabled="${item.enabled ?? true}"
             title="${item.label}"
-            class="menu-item ${(item.enabled ?? true) ? "" : "disabled"}"
+            class="menu-item ${(item.enabled ?? true) ? "" : "is-disabled"}"
           >
             <span class="title">${item.label}</span>
             ${
