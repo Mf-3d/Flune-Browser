@@ -24,7 +24,10 @@ export class ApplicationService {
       const choice = dialog.showMessageBoxSync({
         type: "question",
         message: "本当に再起動しますか？",
-        detail: `${options?.reason + "\n"}再起動するとすべてのタブを閉じます。`,
+        detail: `
+        ${options?.reason + "\n"}
+        再起動するとすべてのタブを閉じます。
+        `,
         buttons: ["再起動する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
@@ -66,7 +69,10 @@ export class ApplicationService {
       const choice = dialog.showMessageBoxSync({
         type: "question",
         message: "本当に終了しますか？",
-        detail: "すべてのタブを閉じます。",
+        detail: `
+        ${context?.reason + "\n"}
+        終了するとすべてのタブを閉じます。
+        `,
         buttons: ["終了する", "キャンセル"],
         defaultId: 0,
         cancelId: 1,
