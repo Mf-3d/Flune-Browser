@@ -18,7 +18,7 @@
     "package:mac": "electron-builder build --mac --x64 --config electron-builder.config.ts"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "repository": {
     "type": "git",
