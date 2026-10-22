@@ -1,0 +1,62 @@
+name: Security audit
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/security-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v6
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        id: install
+        continue-on-error: true
+        run: npm ci --ignore-scripts
+
+      - name: Audit dependencies
+        id: audit
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: npm audit --audit-level=high
+
+      - name: Notify Discord on failure
+        if: always() && (steps.install.outcome != 'success' || steps.audit.outcome == 'failure')
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_SECURITY_WEBHOOK_URL }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          INSTALL_RESULT: ${{ steps.install.outcome }}
+          AUDIT_RESULT: ${{ steps.audit.outcome }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo 'DISCORD_WEBHOOK_URL is not configured' >&2
+            exit 1
+          fi
+
+          if [ "$INSTALL_RESULT" != 'success' ]; then
+            MESSAGE="⚠️ Dependency installation failed in $REPOSITORY. Check: $RUN_URL"
+          else
+            MESSAGE="🔐 High/critical dependency audit finding or audit error in $REPOSITORY. Check: $RUN_URL"
+          fi
+
+          jq -n --arg content "$MESSAGE" '{content: $content}' > payload.json
+          curl --fail-with-body --silent --show-error \
+            -H 'Content-Type: application/json' \
+            -d @payload.json "$DISCORD_WEBHOOK_URL"
